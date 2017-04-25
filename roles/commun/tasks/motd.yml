@@ -1,0 +1,5 @@
+---
+# c'est joli
+
+- name: Copie du fichier
+  template: src=motd.j2 dest=/etc/motd owner=root group=root mode="u+rw,g+r,o+r"

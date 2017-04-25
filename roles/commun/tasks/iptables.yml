@@ -1,0 +1,10 @@
+---
+
+- name: Installation de netfilter-persistent
+  apt: name=netfilter-persistent state=present cache_valid_time=3600
+
+- name: Installation de iptables-persistent
+  apt: name=iptables-persistent state=present cache_valid_time=3600
+
+- name: Activer le service iptables au démérage
+  service: name=netfilter-persistent enabled=yes

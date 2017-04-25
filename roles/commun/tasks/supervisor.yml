@@ -1,0 +1,8 @@
+---
+# tache Installatiuon de supervisor
+
+- name: Installation de supervisor
+  apt: name=supervisor state=present cache_valid_time=3600
+
+- name: Activer supervisor au démérage
+  service: name=supervisor state=started enabled=yes

@@ -1,0 +1,39 @@
+---
+# Attention peut casser la connexion ssh. Penser à avoir un ControlPersist dans .ssh/config
+
+- stat: path=/etc/ssh/ssh_host_dsa_key
+  register: p
+
+- name: Supprimer cles ssh obselette
+  file: path=/etc/ssh/{{ item }} state=absent
+  with_items:
+    - ssh_host_dsa_key
+    - ssh_host_dsa_key.pub
+    - ssh_host_ecdsa_key
+    - ssh_host_ecdsa_key.pub
+    - ssh_host_ed25519_key
+    - ssh_host_ed25519_key.pub
+    - ssh_host_rsa_key
+    - ssh_host_rsa_key.pub
+  when: p.stat.exists == True
+
+- name: Reduire le modulo ssh
+  raw: awk '$5 > 2000' /etc/ssh/moduli > /tmp/moduli && mv /tmp/moduli /etc/ssh/moduli
+  when: p.stat.exists == True
+
+- name: Créer cles ssh ed25519
+  raw: ssh-keygen -N '' -t ed25519 -f /etc/ssh/ssh_host_ed25519_key < /dev/null
+  when: p.stat.exists == True
+
+- name: Créer cles ssh rsa4096
+  raw: ssh-keygen -N '' -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key < /dev/null
+  when: p.stat.exists == True
+
+- name: Copie des fichier config
+  copy: src=sshd_config dest=/etc/ssh/sshd_config owner=root group=root mode="u+rw,g+r,o+r"
+  notify:
+    - restart ssh
+
+- name: Activer les services au démérage
+  service: name=ssh state=started enabled=yes
+

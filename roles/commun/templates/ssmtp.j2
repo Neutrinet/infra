@@ -1,0 +1,11 @@
+root=postmaser-{{ ansible_hostname }}@neutri.net
+mailhub={{ fqdn_mail }}:587
+rewriteDomain=neutri.net
+hostname={{ ansible_fqdn }}
+UseTLS=Yes
+UseSTARTTLS=Yes
+AuthUser=postmaster-{{ ansible_hostname }}@neutri.net
+{% set key = 'postmaster-' + ansible_hostname + '@neutri.net' %}
+AuthPass={{ mail_user[key] }}
+FromLineOverride=yes
+

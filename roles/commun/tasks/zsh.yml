@@ -1,0 +1,19 @@
+---
+# confgig general de tout les hosts
+
+- name: Installation de zsh & pygments
+  package: name={{ item }} state=present
+  with_items:
+    - zsh
+    - python-pygments
+    - safe-rm
+
+- name: Copie des fichier de configuration (zsh)
+  copy: src={{ item }} dest=/etc/zsh/{{ item }} owner=root group=root mode="u+rw,g+r,o+r"
+  with_items:
+    - zlogin
+    - zlogout
+    - zprofile
+    - zshenv
+    - zshfct
+    - zshrc

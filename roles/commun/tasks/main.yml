@@ -1,0 +1,13 @@
+---
+# role commun de tout les hosts
+
+- include: repos.yml
+- include: motd.yml
+- include: openssh.yml
+- include: local.yml
+- include: iptables.yml
+- include: sshguard.yml
+- include: supervisor.yml
+- include: tools.yml
+- include: users.yml
+- include: zsh.yml

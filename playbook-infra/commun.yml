@@ -1,0 +1,13 @@
+---
+# confgig commun de tout les hosts
+# pour plus d'infos il faut regarder dans roles/*
+
+- hosts: all
+
+  pre_tasks:
+    - name: Update cache
+      apt: update_cache=yes cache_valid_time=3600
+ 
+  roles:
+    - commun
+

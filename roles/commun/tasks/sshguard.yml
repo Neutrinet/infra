@@ -1,0 +1,12 @@
+---
+
+- name: Installation de sshguard
+  apt: name=sshguard state=present cache_valid_time=3600
+
+- name: Config sshguard firewall
+  replace: dest=/etc/default/sshguard regexp='^ENABLE_FIREWALL=1$' replace='ENABLE_FIREWALL=0' backup=no
+  notify:
+    - restart sshguard
+
+- name: Activer le service sshguard au démérage
+  service: name=sshguard state=started enabled=yes

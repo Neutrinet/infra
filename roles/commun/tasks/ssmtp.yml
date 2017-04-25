@@ -1,0 +1,8 @@
+---
+# tache Installatiuon de usermod
+
+- name: Installation de ssmtp
+  apt: name=ssmtp state=present cache_valid_time=3600
+
+- name: Copie des fichier de ssmtp.conf
+  template: src=ssmtp.j2 dest=/etc/ssmtp/ssmtp.conf owner=root group=root mode="u+rw,g+r,o+r"

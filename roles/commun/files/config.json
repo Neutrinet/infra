@@ -1,0 +1,8 @@
+{
+  "redis": {
+    "host": "c-3po.tharyrok.eu.org"
+  },
+  "transport": {
+    "name": "redis"
+  }
+}
