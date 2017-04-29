@@ -5,7 +5,7 @@
   user: name=root shell=/bin/bash state=present
 
 - name: Ajout des utilisateurs
-  user: name={{ item.name }} shell=/bin/bash groups=sudo append=yes state=present
+  user: name={{ item.name }} shell=/bin/bash groups=sudo append=yes state=present password={{ 9999999999999999999999 | random | to_uuid }} update_password=on_create
   with_items: "{{ users }}"
 
 - name: Ajout cles ssh aux utilisateurs
