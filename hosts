@@ -3,4 +3,5 @@ gw.neutri.net ansible_become=yes
 vpn.neutri.net ansible_become=yes
 web.neutri.net ansible_become=yes
 dns.neutri.net ansible_become=yes
+monitor.neutri.net ansible_become=yes
 

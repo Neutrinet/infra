@@ -16,3 +16,4 @@
     - molly-guard
     - vim
     - mosh
+    - qemu-guest-agent
