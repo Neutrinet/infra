@@ -1,6 +1,6 @@
 {
   "redis": {
-    "host": "c-3po.tharyrok.eu.org"
+    "host": "monitor.neutri.net"
   },
   "transport": {
     "name": "redis"
