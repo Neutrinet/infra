@@ -1,6 +1,6 @@
 ---
-# confgig commun de tout les hosts
-# pour plus d'infos il faut regarder dans roles/*
+# config commun de tous les hosts
+# pour plus d'info, il faut regarder dans roles/*
 
 - hosts: all
 
