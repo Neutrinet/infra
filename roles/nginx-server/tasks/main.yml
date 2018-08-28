@@ -13,13 +13,23 @@
 - name: Créer répertoire ssl nginx avec du snakeoil (cert autogénéré et clé accessible publiquement)
   file: path=/etc/nginx/ssl state=directory owner=www-data group=www-data mode="u+rwX,g+rwX,o+r" recurse=yes
 
-- name: Copie des fichier de nginx
+- name: Copie des fichier ssl nginx
+  copy: src={{ item }} dest=/etc/nginx/{{ item }} owner=www-data group=www-data mode="u+rw,g+r,o+r"
+  with_items:
+    - ssl/nginx.crt
+    - ssl/nginx.key
+
+- name: Générer des params Diffie-Hellman si pas encore créés (Attention! Peut être très long... Du coup, on le fait en async)
+  openssl_dhparam: path=/etc/nginx/ssl/dhparams4096.pem size=4096 owner=www-data group=www-data mode="u+rw,g+r,o+r"
+  async: 86400
+  poll: 0
+
+
+- name: Copie des fichier de conf nginx
   copy: src={{ item }} dest=/etc/nginx/{{ item }} owner=root group=root mode="u+rw,g+r,o+r"
   with_items:
     - nginx.conf
     - sites-available/default
-    - ssl/nginx.crt
-    - ssl/nginx.key
 
 - name: Copie du site par défaut et des pages d erreur
   copy: src=web/{{ item }} dest=/var/www/{{ item }} owner=www-data group=www-data mode="u+rw,g+r,o+r"
@@ -29,5 +39,5 @@
     - error/-error-50x.html
 
 
-- name: Activer le service nginx au démérage
-service: name=nginx state=restarted enabled=yes
+- name: Activer le service nginx au démarage. Plantera la premiere fois car les params DH sont en cours de génération
+  service: name=nginx state=restarted enabled=yes
