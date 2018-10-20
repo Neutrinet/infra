@@ -1,0 +1,12 @@
+---
+# web config
+
+- hosts: vagrant_web
+  become: yes
+  gather_facts: no
+  pre_tasks:
+    - name: Update cache
+      apt: update_cache=yes cache_valid_time=3600
+  roles:
+    - nginx-server
+    - www-user
