@@ -1,0 +1,45 @@
+---
+# tasks to setup a local ruby env for a user
+
+- name: Create install dir
+  file:
+    path: /opt/rbenv
+    state: directory
+    owner: root
+    group: sudo
+    mode: 0775
+
+- name: Install rbenv
+  git:
+    repo: https://github.com/rbenv/rbenv.git
+    dest: /opt/rbenv
+    force: yes
+
+- name: Install ruby-build
+  git:
+    repo: https://github.com/rbenv/ruby-build.git
+    dest: /opt/rbenv/plugins/ruby-buid
+    force: yes
+
+- name: System-wide rbenv initialization
+  template:
+    src: rbenv_system.sh.j2
+    dest: /etc/profile.d/rbenv.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Install Ruby
+  shell: bash -lc "/opt/rbenv/bin/rbenv install --skip-existing {{ item.version }}"
+  with_items: "{{ ruby_versions }}"
+
+- name: Set Ruby version for whole system
+  shell: bash -lc "/opt/rbenv/bin/rbenv global {{ ruby_system_version }}"
+
+- name: Update permission
+  file:
+    path: /opt/rbenv
+    recurse: true
+    owner: root
+    group: sudo
+    mode: 0775

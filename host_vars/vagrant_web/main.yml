@@ -1,3 +1,8 @@
 ---
+# this should be moved to web.neutri.net.yml when finished
+
 domains:
   - name: accounting.neutrinet.be
+ruby_versions:
+  -  version: 2.5.3
+ruby_system_version: 2.5.3

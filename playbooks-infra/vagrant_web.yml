@@ -1,5 +1,6 @@
 ---
 # web config
+# this should be moved to web.neutri.net.yml when finished
 
 - hosts: vagrant_web
   become: yes
@@ -10,3 +11,4 @@
   roles:
     - nginx-server
     - www-user
+    - ruby
