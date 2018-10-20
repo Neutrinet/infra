@@ -1,0 +1,19 @@
+---
+# add a user whose name is derived from the domain name
+
+- name: Create www dir
+  file:
+    path=/var/www
+    state=directory
+    owner=www-data
+    group=www-data
+    mode="u+rwX,g+rwX,o+r"
+
+- name: Add users
+  user:
+    name={{ item.name | replace(".", "-") }}
+    shell=/bin/false
+    append=yes
+    state=present
+    home=/var/www/{{ item.name }}
+  with_items: "{{ domains }}"
