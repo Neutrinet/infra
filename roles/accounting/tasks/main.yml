@@ -1,0 +1,29 @@
+---
+# Install the accounting Rails app
+
+- name: Install a required packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - git
+    - libpq-dev
+
+- name: Download Rails app
+  git:
+    repo: https://github.com/neutrinet/accounting.git
+    dest: /var/www/accounting.neutrinet.be/accounting
+    force: yes
+
+- name: Update permission
+  file:
+    path: /var/www/accounting.neutrinet.be/accounting
+    recurse: true
+    owner: accounting-neutrinet-be
+    group: accounting-neutrinet-be
+
+- name: Install bundle
+  command: bash -lc "bundle install"
+  args:
+    chdir: /var/www/accounting.neutrinet.be/accounting

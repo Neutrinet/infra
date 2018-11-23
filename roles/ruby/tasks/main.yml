@@ -9,6 +9,25 @@
     group: sudo
     mode: 0775
 
+- name: Install a required packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - git
+    - autoconf
+    - bison
+    - build-essential
+    - libssl-dev
+    - libyaml-dev
+    - libreadline6-dev
+    - zlib1g-dev
+    - libncurses5-dev
+    - libffi-dev
+    - libgdbm3
+    - libgdbm-dev
+
 - name: Install rbenv
   git:
     repo: https://github.com/rbenv/rbenv.git
@@ -43,3 +62,6 @@
     owner: root
     group: sudo
     mode: 0775
+
+- name: Install bundler
+  command: bash -lc "gem install bundler --no-rdoc --no-ri"
