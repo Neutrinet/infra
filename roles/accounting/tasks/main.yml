@@ -27,3 +27,16 @@
   command: bash -lc "bundle install"
   args:
     chdir: /var/www/accounting.neutrinet.be/accounting
+
+- name: Create database
+  become_user: postgres
+  postgresql_db:
+    name: accounting
+    encoding: 'UTF-8'
+
+- name: Create database user
+  become_user: postgres
+  postgresql_user:
+    db: accounting
+    name: accounting
+    password: "TODO-PWD"

@@ -1,0 +1,10 @@
+---
+- name: Install Postgres
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - postgresql
+      - postgresql-contrib
+      - python-psycopg2

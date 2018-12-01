@@ -9,7 +9,8 @@
     - name: Update cache
       apt: update_cache=yes cache_valid_time=3600
   roles:
-    - nginx-server
-    - www-user
-    - ruby
+    # - nginx-server
+    - postgres
+    # - www-user
+    # - ruby
     - accounting
