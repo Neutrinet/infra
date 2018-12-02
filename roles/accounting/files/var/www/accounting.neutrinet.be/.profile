@@ -1,0 +1,3 @@
+export RAILS_ENV=production
+export SECRET_KEY_BASE=foobarwidget
+export NEUTRINETACCOUNTING_DATABASE_PASSWORD="TODO-PWD"

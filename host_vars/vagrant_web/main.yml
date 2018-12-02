@@ -1,6 +1,7 @@
 ---
 # this should be moved to web.neutri.net.yml when finished
 
+ansible_fqdn: web.neutri.net
 domains:
   - name: accounting.neutrinet.be
 ruby_versions:

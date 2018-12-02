@@ -10,6 +10,16 @@
     - git
     - libpq-dev
 
+- name: Install a required packages (from backports)
+  apt:
+    name: "{{ packages }}"
+    state: present
+    default_release: stretch-backports
+  vars:
+    packages:
+    - nodejs
+    - yarn
+
 - name: Download Rails app
   git:
     repo: https://github.com/neutrinet/accounting.git
@@ -31,12 +41,52 @@
 - name: Create database
   become_user: postgres
   postgresql_db:
-    name: accounting
+    name: accounting_production
     encoding: 'UTF-8'
 
 - name: Create database user
   become_user: postgres
   postgresql_user:
-    db: accounting
+    db: accounting_production
     name: accounting
     password: "TODO-PWD"
+
+- name: Copy .profile file
+  copy:
+    src: "{{ item }}"
+    dest: /{{ item }}
+    owner: accounting-neutrinet-be
+    mode: "u+rw,g+r,o+r"
+  with_items:
+    - var/www/accounting.neutrinet.be/.profile
+
+- name: Run migrations
+  command: bash -lc "source /var/www/accounting.neutrinet.be/.profile && bundle exec rails db:migrate"
+  args:
+    chdir: /var/www/accounting.neutrinet.be/accounting
+
+- name: Precompile assets
+  command: bash -lc "source /var/www/accounting.neutrinet.be/.profile && bundle exec rails  assets:precompile"
+  args:
+    chdir: /var/www/accounting.neutrinet.be/accounting
+ 
+- name: Copy service config file
+  copy:
+    src: etc/systemd/system/accounting.service
+    dest: /etc/systemd/system/accounting.service
+    owner: root
+    group: root
+    mode: 0664
+
+- name: Enable service
+  systemd:
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    name: accounting
+
+- name: Restart service
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: accounting
