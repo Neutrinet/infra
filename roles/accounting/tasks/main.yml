@@ -22,53 +22,51 @@
 
 - name: Download Rails app
   git:
-    repo: https://github.com/neutrinet/accounting.git
-    dest: /var/www/accounting.neutrinet.be/accounting
+    repo: "{{ repo_url }}"
+    dest: "{{ rails_root }}"
     force: yes
 
 - name: Update permission
   file:
-    path: /var/www/accounting.neutrinet.be/accounting
+    path: "{{ rails_root }}"
     recurse: true
-    owner: accounting-neutrinet-be
-    group: accounting-neutrinet-be
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
 
 - name: Install bundle
   command: bash -lc "bundle install"
   args:
-    chdir: /var/www/accounting.neutrinet.be/accounting
+    chdir: "{{ rails_root }}"
 
 - name: Create database
   become_user: postgres
   postgresql_db:
-    name: accounting_production
+    name: "{{ db_name }}"
     encoding: 'UTF-8'
 
 - name: Create database user
   become_user: postgres
   postgresql_user:
-    db: accounting_production
-    name: accounting
-    password: "TODO-PWD"
+    db: "{{ db_name }}"
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
 
 - name: Copy .profile file
-  copy:
-    src: "{{ item }}"
-    dest: /{{ item }}
-    owner: accounting-neutrinet-be
+  template:
+    src: profile.j2
+    dest: "{{ home }}/.profile"
+    owner: "{{ system_user }}"
     mode: "u+rw,g+r,o+r"
-  with_items:
-    - var/www/accounting.neutrinet.be/.profile
 
 - name: Run migrations
-  command: bash -lc "source /var/www/accounting.neutrinet.be/.profile && bundle exec rails db:migrate"
+  command: bash -lc "source {{ home }}/.profile && bundle exec rails db:migrate"
   args:
-    chdir: /var/www/accounting.neutrinet.be/accounting
+    chdir: "{{ rails_root }}"
 
 - name: Precompile assets
-  command: bash -lc "source /var/www/accounting.neutrinet.be/.profile && bundle exec rails  assets:precompile"
+  command: bash -lc "source {{ home }}/.profile && bundle exec rails  assets:precompile"
   args:
-    chdir: /var/www/accounting.neutrinet.be/accounting
+    chdir: "{{ rails_root }}"
  
 - name: Copy service config file
   copy:

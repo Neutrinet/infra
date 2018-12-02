@@ -1,0 +1,11 @@
+---
+# defaults for the accounting role
+
+repo_url: https://github.com/neutrinet/accounting.git
+system_user: accounting-neutrinet-be
+db_user: accounting
+db_name: accounting_production
+db_password: trustno1
+rails_env: production
+home: /var/www/accounting.neutrinet.be
+rails_root: /var/www/accounting.neutrinet.be/accounting
