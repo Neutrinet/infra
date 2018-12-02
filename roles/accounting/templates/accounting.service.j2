@@ -1,0 +1,17 @@
+[Unit]
+Description=Puma HTTP Server for accounting
+After=network.target
+
+[Service]
+Type=simple
+
+User={{ system_user }}
+
+WorkingDirectory={{ rails_root }}
+
+ExecStart=/bin/bash -lc 'bundle exec puma -C {{ rails_root }}/config/puma.rb'
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

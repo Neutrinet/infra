@@ -9,3 +9,4 @@ db_password: trustno1
 rails_env: production
 home: /var/www/accounting.neutrinet.be
 rails_root: /var/www/accounting.neutrinet.be/accounting
+puma_port: 3001
