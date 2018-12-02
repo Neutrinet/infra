@@ -67,7 +67,7 @@
   command: bash -lc "source {{ home }}/.profile && bundle exec rails  assets:precompile"
   args:
     chdir: "{{ rails_root }}"
- 
+
 - name: Copy service config file
   template:
     src: accounting.service.j2
@@ -88,3 +88,11 @@
     state: restarted
     daemon_reload: yes
     name: accounting
+
+- name: Update permission
+  file:
+    path: "{{ rails_root }}"
+    recurse: true
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+ 

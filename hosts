@@ -6,11 +6,10 @@ web.neutri.net ansible_become=yes
 dns.neutri.net ansible_become=yes
 monitor.neutri.net ansible_become=yes
 
-vagrant_web ansible_ssh_host=192.168.33.10
-
 [vagrant_servers]
 vagrant_web
 
 [vagrant_servers:vars]
+ansible_ssh_host=192.168.33.10
 ansible_ssh_user=vagrant
-ansible_ssh_private_key_file=/home/tb/Code/projects/Neutrinet/NeutrinetAccounting/.vagrant/machines/neutrinet-accounting/virtualbox/private_key
+ansible_ssh_private_key_file=./.vagrant/machines/web.neutri.net/virtualbox/private_key
