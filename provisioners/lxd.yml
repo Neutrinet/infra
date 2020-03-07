@@ -1,15 +1,12 @@
-- hosts: localhost
+- hosts: all
   # run this task in the host
   connection: local
   gather_facts: no
   tasks:
   - name: Création des conteneurs LXC
-    loop: "{{ groups.all }}"
-    loop_control:
-      loop_var: host
     lxd_container:
       # container name is based on the hostname
-      name: "{{ hostvars[host].inventory_hostname_short }}"
+      name: "{{ inventory_hostname_short }}"
       state: started
       source:
         type: image
@@ -27,6 +24,7 @@
       # url: unix:/var/snap/lxd/common/lxd/unix.socket
       wait_for_ipv4_addresses: true
       timeout: 600
+    delegate_to: localhost
     tags: container
 
 - hosts: all
