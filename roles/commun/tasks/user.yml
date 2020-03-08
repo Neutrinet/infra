@@ -15,6 +15,7 @@
 - name: Ajout des clés SSH pour l'utilisateur {{ user.name }}
   authorized_key:
     user: "{{ user.name }}"
+    state: present
     # we can pass multiple keys, but they must be separated by newlines
     key: "{{ user['keys'] | join('\n') }}"
     # remove obsolete keys
