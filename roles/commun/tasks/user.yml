@@ -15,7 +15,7 @@
 - name: Ajout des clés SSH pour l'utilisateur {{ user.name }}
   authorized_key:
     user: "{{ user.name }}"
-    key: "{{ user_key }}"
-  loop: "{{ user['keys'] }}"
-  loop_control:
-    loop_var: user_key
+    # we can pass multiple keys, but they must be separated by newlines
+    key: "{{ user['keys'] | join('\n') }}"
+    # remove obsolete keys
+    exclusive: yes
