@@ -12,44 +12,51 @@
   register: ssh_host_key_file
 
 # Si la clé DSA existe, la configuration des clés n'a pas encore été faite
-- name: Configuration des clés du serveur OpenSSH
+- name: Suppression des clés obsolètes du serveur OpenSSH
+  file:
+    path: /etc/ssh/{{ key_file }}
+    state: absent
+  loop:
+  - ssh_host_dsa_key
+  - ssh_host_dsa_key.pub
+  - ssh_host_ecdsa_key
+  - ssh_host_ecdsa_key.pub
+  - ssh_host_ed25519_key
+  - ssh_host_ed25519_key.pub
+  - ssh_host_rsa_key
+  - ssh_host_rsa_key.pub
+  loop_control:
+    loop_var: key_file
   when: ssh_host_key_file.stat.exists
-  block:
-  - name: Suppression des clés obsolètes du serveur OpenSSH
-    file:
-      path: /etc/ssh/{{ key_file }}
-      state: absent
-    loop:
-    - ssh_host_dsa_key
-    - ssh_host_dsa_key.pub
-    - ssh_host_ecdsa_key
-    - ssh_host_ecdsa_key.pub
-    - ssh_host_ed25519_key
-    - ssh_host_ed25519_key.pub
-    - ssh_host_rsa_key
-    - ssh_host_rsa_key.pub
-    loop_control:
-      loop_var: key_file
 
-  - name: Création de la clé SSH ed25519
-    openssh_keypair:
-      path: /etc/ssh/ssh_host_ed25519_key
-      owner: root
-      group: root
-      type: ed25519
+- name: Création de la clé SSH ed25519
+  openssh_keypair:
+    path: /etc/ssh/ssh_host_ed25519_key
+    owner: root
+    group: root
+    type: ed25519
+  notify: restart ssh
 
-  - name: Création de la clé SSH rsa4096
-    openssh_keypair:
-      path: /etc/ssh/ssh_host_rsa_key
-      owner: root
-      group: root
-      type: rsa
-      size: 4096
+- name: Création de la clé SSH rsa4096
+  openssh_keypair:
+    path: /etc/ssh/ssh_host_rsa_key
+    owner: root
+    group: root
+    type: rsa
+    size: 4096
+  notify: restart ssh
 
-  - name: Réduction du modulo SSH
-    raw: >-
-      awk '$5 > 2000' /etc/ssh/moduli > /tmp/moduli &&
-      mv /tmp/moduli /etc/ssh/moduli
+- name: Vérification des modulos du serveur OpenSSH
+  raw: awk '$5 <= 2000' /etc/ssh/moduli
+  register: ssh_obsolete_moduli
+  changed_when: ssh_obsolete_moduli.stdout | length > 0
+
+- name: Réduction du modulo SSH
+  raw: >-
+    awk '$5 > 2000' /etc/ssh/moduli > /tmp/moduli &&
+    mv /tmp/moduli /etc/ssh/moduli
+  when: ssh_obsolete_moduli.changed
+  notify: restart ssh
 
 - name: Copie du fichier de configuration du serveur OpenSSH
   copy:

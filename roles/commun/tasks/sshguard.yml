@@ -6,17 +6,19 @@
     state: present
     cache_valid_time: "3600"
 
-- name: Création de la configuration de sshguard
-  file:
+- name: Vérification de la présence de la configuration de sshguard
+  stat:
     path: /etc/default/sshguard
-    state: touch
+  register: sshguard_config_file
 
+# FIXME: Probably better to copy our own default config? Also, check that in buster, sshguard config file is still in /etc/default/sshguard because the file doesn't exist after install
 - name: Configuration du pare-feu sshguard
   replace:
     dest: /etc/default/sshguard
     regexp: '^ENABLE_FIREWALL=1$'
     replace: 'ENABLE_FIREWALL=0'
     backup: no
+  when: sshguard_config_file.stat.exists
   notify:
   - restart sshguard
 
