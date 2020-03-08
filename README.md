@@ -11,8 +11,8 @@ source env/bin/activate
 
 If you are planning to use linux containers (LXC), you will need to install the following package:
 ```shell
-apt install lxd
-systemctl start lxd
+sudo apt install lxd
+sudo systemctl start lxd
 ```
 
 You should add your user to the `lxd` group if you want to run LXC commands without being root:
@@ -33,4 +33,4 @@ You can also test the Neutrinet playbooks by provisioning linux containers (LXC)
 ansible-playbook -i hosts.local provisioners/lxd.yml
 ```
 
-By default, provisioned containers will be under Debian buster, but you can define another Debian distribution with the `debian_release` variable.
+By default, provisioned containers will be under Debian buster, but you can define another Debian release with the `debian_release` variable.
