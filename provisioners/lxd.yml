@@ -7,12 +7,12 @@
     lxd_container:
       # container name is based on the hostname
       name: "{{ inventory_hostname_short }}"
-      state: started
+      state: "{{ container_state | default('started') }}"
       source:
         type: image
         mode: pull
         server: https://images.linuxcontainers.org
-        alias: debian/buster/amd64
+        alias: debian/{{ debian_release | default('buster') }}/amd64
         protocol: simplestreams
       profiles:
       - default
@@ -45,13 +45,6 @@
       raw: apt install -y python3
     tags: python
   
-  - name: Définition de python3 comme valeur par défaut
-    alternatives:
-      name: python
-      link: /usr/bin/python
-      path: /usr/bin/python3
-    tags: python
-
   - name: Configuration de l'adresse IPv4 statique
     template:
       src: interfaces.j2
