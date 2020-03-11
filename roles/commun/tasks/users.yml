@@ -1,15 +1,28 @@
 ---
-# ajout des users & leurs cles ssh
+# Ajout des utilisateurs et de leurs clés SSH
+- name: Installation de sudo
+  package:
+    name: sudo
+    state: latest
+  tags: sudo
+
+- name: Suppression du mot de passe pour sudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+  tags: sudo
 
 - name: Update root
-  user: name=root shell=/bin/bash state=present
+  user:
+    name: root
+    shell: /bin/bash
+    state: present
 
-- name: Ajout des utilisateurs
-  user: name={{ item.name }} shell=/bin/bash groups=sudo append=yes state=present password={{ 9999999999999999999999 | random | to_uuid }} update_password=on_create
-  with_items: "{{ users }}"
-
-- name: Ajout cles ssh aux utilisateurs
-  authorized_key: user={{ item.0.name }} key="{{ item.1 }}"
-  with_subelements:
-     - "{{ users }}"
-     - keys
+- name: Ajout des utilisateurs et de leurs clés SSH
+  include_tasks: user.yml
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: user

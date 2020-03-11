@@ -1,12 +1,29 @@
 ---
 
 - name: Installation de sshguard
-  apt: name=sshguard state=present cache_valid_time=3600
+  apt:
+    name: sshguard
+    state: present
+    cache_valid_time: "3600"
 
-- name: Config sshguard firewall
-  replace: dest=/etc/default/sshguard regexp='^ENABLE_FIREWALL=1$' replace='ENABLE_FIREWALL=0' backup=no
+- name: Vérification de la présence de la configuration de sshguard
+  stat:
+    path: /etc/default/sshguard
+  register: sshguard_config_file
+
+# FIXME: Probably better to copy our own default config? Also, check that in buster, sshguard config file is still in /etc/default/sshguard because the file doesn't exist after install
+- name: Configuration du pare-feu sshguard
+  replace:
+    dest: /etc/default/sshguard
+    regexp: '^ENABLE_FIREWALL=1$'
+    replace: 'ENABLE_FIREWALL=0'
+    backup: no
+  when: sshguard_config_file.stat.exists
   notify:
-    - restart sshguard
+  - restart sshguard
 
-- name: Activer le service sshguard au démérage
-  service: name=sshguard state=started enabled=yes
+- name: Activation du service sshguard au démarrage
+  service:
+    name: sshguard
+    state: started
+    enabled: yes

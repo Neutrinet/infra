@@ -1,14 +1,36 @@
-# Infra for neutrinet
+# Ansible playbooks for Neutrinet
 
-`virtualenv env`
+## Installation
 
-`env/bin/pip install -r requirements.txt`
+Install Ansible and its dependencies in a python3 virtual env:
+```shell
+virtualenv env
+env/bin/pip install -r requirements.txt
+source env/bin/activate
+```
 
+If you are planning to use linux containers (LXC), you will need to install the following package:
+```shell
+sudo apt install lxd
+sudo systemctl start lxd
+```
 
-`env/bin/ansible-playbook -i hosts playbook-infra/commun.yml`
+You should add your user to the `lxd` group if you want to run LXC commands without being root:
+```shell
+usermod -G lxd -a <user>
+```
+This will be effective at your next login session.
 
-playbook-infra = installation des programmes, serveurs et des VMS (config standard mais pas spécifique - exemple, install de nginx + config générique mais pas des vhosts)
-playbook-apps = configuration des applications (ex config ispng, install mamboa, sensu,...)
-playbook-web = service web, similaire à apps, mais à part car il y a plein
+## Usage
 
+Run the following to setup the common config for all hosts:
+```shell
+ansible-playbook -i hosts playbooks-infra/commun.yml
+```
 
+You can also test the Neutrinet playbooks by provisioning linux containers (LXC) on your machine:
+```shell
+ansible-playbook -i hosts.local provisioners/lxd.yml
+```
+
+By default, provisioned containers will be under Debian buster, but you can define another Debian release with the `debian_release` variable.

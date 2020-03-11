@@ -1,13 +1,16 @@
 ---
 
 - name: restart ssh
-  service: name=ssh state=restarted
+  service:
+    name: ssh
+    state: restarted
 
 - name: restart unbound
-  service: name=unbound state=restarted
+  service:
+    name: unbound
+    state: restarted
 
 - name: restart sshguard
-  service: name=sshguard state=restarted
-
-- name: restart netfilter-persistent
-  service: name=netfilter-persistent state=restarted
+  service: 
+    name: sshguard
+    state: restarted

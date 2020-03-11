@@ -1,39 +1,75 @@
 ---
-# Attention peut casser la connexion ssh. Penser à avoir un ControlPersist dans .ssh/config
+# Attention peut casser la connexion ssh.
+# Penser à avoir un ControlPersist dans .ssh/config
+- name: Installation du serveur openssh
+  package:
+    name: ssh
+    state: latest
+  
+- name: Récupération des informations de la clé SSH DSA
+  stat:
+    path: /etc/ssh/ssh_host_dsa_key
+  register: ssh_host_key_file
 
-- stat: path=/etc/ssh/ssh_host_dsa_key
-  register: p
+# Si la clé DSA existe, la configuration des clés n'a pas encore été faite
+- name: Suppression des clés obsolètes du serveur OpenSSH
+  file:
+    path: /etc/ssh/{{ key_file }}
+    state: absent
+  loop:
+  - ssh_host_dsa_key
+  - ssh_host_dsa_key.pub
+  - ssh_host_ecdsa_key
+  - ssh_host_ecdsa_key.pub
+  - ssh_host_ed25519_key
+  - ssh_host_ed25519_key.pub
+  - ssh_host_rsa_key
+  - ssh_host_rsa_key.pub
+  loop_control:
+    loop_var: key_file
+  when: ssh_host_key_file.stat.exists
 
-- name: Supprimer cles ssh obselette
-  file: path=/etc/ssh/{{ item }} state=absent
-  with_items:
-    - ssh_host_dsa_key
-    - ssh_host_dsa_key.pub
-    - ssh_host_ecdsa_key
-    - ssh_host_ecdsa_key.pub
-    - ssh_host_ed25519_key
-    - ssh_host_ed25519_key.pub
-    - ssh_host_rsa_key
-    - ssh_host_rsa_key.pub
-  when: p.stat.exists == True
+- name: Création de la clé SSH ed25519
+  openssh_keypair:
+    path: /etc/ssh/ssh_host_ed25519_key
+    owner: root
+    group: root
+    type: ed25519
+  notify: restart ssh
 
-- name: Reduire le modulo ssh
-  raw: awk '$5 > 2000' /etc/ssh/moduli > /tmp/moduli && mv /tmp/moduli /etc/ssh/moduli
-  when: p.stat.exists == True
+- name: Création de la clé SSH rsa4096
+  openssh_keypair:
+    path: /etc/ssh/ssh_host_rsa_key
+    owner: root
+    group: root
+    type: rsa
+    size: 4096
+  notify: restart ssh
 
-- name: Créer cles ssh ed25519
-  raw: ssh-keygen -N '' -t ed25519 -f /etc/ssh/ssh_host_ed25519_key < /dev/null
-  when: p.stat.exists == True
+- name: Vérification des modulos du serveur OpenSSH
+  raw: awk '$5 <= 2000' /etc/ssh/moduli
+  register: ssh_obsolete_moduli
+  changed_when: ssh_obsolete_moduli.stdout | length > 0
 
-- name: Créer cles ssh rsa4096
-  raw: ssh-keygen -N '' -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key < /dev/null
-  when: p.stat.exists == True
+- name: Réduction du modulo SSH
+  raw: >-
+    awk '$5 > 2000' /etc/ssh/moduli > /tmp/moduli &&
+    mv /tmp/moduli /etc/ssh/moduli
+  when: ssh_obsolete_moduli.changed
+  notify: restart ssh
 
-- name: Copie des fichier config
-  copy: src=sshd_config dest=/etc/ssh/sshd_config owner=root group=root mode="u+rw,g+r,o+r"
+- name: Copie du fichier de configuration du serveur OpenSSH
+  copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "u+rw,og+r"
   notify:
-    - restart ssh
+  - restart ssh
 
-- name: Activer les services au démérage
-  service: name=ssh state=started enabled=yes
-
+- name: Activation du service SSH au démarrage
+  service:
+    name: ssh
+    state: started
+    enabled: yes
