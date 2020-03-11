@@ -52,6 +52,7 @@
 
   - name: Récupération des informations de l'OS
     gather_facts:
+    tags: always
   
   - name: Configuration commune de chaque host
     import_role:
