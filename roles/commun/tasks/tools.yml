@@ -1,8 +1,8 @@
 ---
 
 - name: Installation de divers outils
-  apt: name={{ item }} state=present cache_valid_time=3600
-  with_items:
+  apt:
+    name:
     - git
     - unzip
     - duplicity
@@ -17,3 +17,5 @@
     - vim
     - mosh
     - qemu-guest-agent
+    state: present
+    cache_valid_time: "3600"

@@ -1,0 +1,69 @@
+- hosts: all
+  # run this task in the host
+  connection: local
+  gather_facts: no
+  tasks:
+  - name: Création des conteneurs LXC
+    lxd_container:
+      # container name is based on the hostname
+      name: "{{ inventory_hostname_short }}"
+      state: "{{ container_state | default('started') }}"
+      source:
+        type: image
+        mode: pull
+        server: https://images.linuxcontainers.org
+        alias: debian/{{ debian_release | default('buster') }}/amd64
+        protocol: simplestreams
+      profiles:
+      - default
+      config:
+        security.nesting: 'true'
+        security.privileged: 'false'
+
+      # uncomment if you installed lxd using snap
+      # url: unix:/var/snap/lxd/common/lxd/unix.socket
+      wait_for_ipv4_addresses: true
+      timeout: 600
+    delegate_to: localhost
+    tags: container
+
+- hosts: all
+  # connect to the containers through lxd
+  connection: lxd
+  gather_facts: no
+  vars:
+    ip_address: "{{ hostvars[inventory_hostname].ansible_host }}"
+    ansible_host: "{{ inventory_hostname_short }}"
+  tasks:
+  - name: Vérification de la présence de python
+    block:
+    - name: Vérification de l'installation de python3
+      raw: python3 --version
+      changed_when: no
+    rescue:
+    - name: Installation de python3
+      raw: apt install -y python3
+    tags: python
+  
+  - name: Configuration de l'adresse IPv4 statique
+    template:
+      src: interfaces.j2
+      dest: /etc/network/interfaces
+      owner: root
+      group: root
+      mode: "u+rw,og+r"
+    notify: restart network
+    tags: network
+  
+  - name: Récupération des informations de l'OS
+    gather_facts:
+  
+  - name: Configuration commune de chaque host
+    include_role:
+      name: commun
+
+  handlers:
+  - name: restart network
+    service:
+      name: networking
+      state: restarted
