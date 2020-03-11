@@ -1,12 +1,19 @@
 ---
-# role commun de tout les hosts
-
-- include: repos.yml
-- include: motd.yml
-- include: openssh.yml
-- include: local.yml
-- include: sshguard.yml
-- include: supervisor.yml
-- include: tools.yml
-- include: users.yml
-- include: zsh.yml
+# Rôle commun à tous les hosts
+- import_tasks: repos.yml
+  tags: repos
+- import_tasks: motd.yml
+  tags: motd
+- import_tasks: openssh.yml
+  tags: openssh
+- import_tasks: local.yml
+- import_tasks: sshguard.yml
+  tags: sshguard
+- import_tasks: supervisor.yml
+  tags: supervisor
+- import_tasks: tools.yml
+  tags: tools
+- import_tasks: users.yml
+  tags: users
+- import_tasks: zsh.yml
+  tags: zsh

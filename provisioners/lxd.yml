@@ -1,7 +1,10 @@
 - hosts: all
-  # run this task in the host
-  connection: local
+  # connect to the containers through lxd
+  connection: lxd
   gather_facts: no
+  vars:
+    ip_address: "{{ hostvars[inventory_hostname].ansible_host }}"
+    ansible_host: "{{ inventory_hostname_short }}"
   tasks:
   - name: Création des conteneurs LXC
     lxd_container:
@@ -27,14 +30,6 @@
     delegate_to: localhost
     tags: container
 
-- hosts: all
-  # connect to the containers through lxd
-  connection: lxd
-  gather_facts: no
-  vars:
-    ip_address: "{{ hostvars[inventory_hostname].ansible_host }}"
-    ansible_host: "{{ inventory_hostname_short }}"
-  tasks:
   - name: Vérification de la présence de python
     block:
     - name: Vérification de l'installation de python3
@@ -54,12 +49,13 @@
       mode: "u+rw,og+r"
     notify: restart network
     tags: network
-  
+
   - name: Récupération des informations de l'OS
     gather_facts:
+    tags: always
   
   - name: Configuration commune de chaque host
-    include_role:
+    import_role:
       name: commun
 
   handlers:
