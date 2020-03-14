@@ -1,7 +1,0 @@
-description: Network bridge for Neutrinet
-config:
-  ipv4.address: 10.42.10.1/24
-  ipv4.nat: true
-  ipv6.address: fd42:acab:be:fab::1/64
-  ipv6.nat: true
-type: bridge
