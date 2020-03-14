@@ -30,7 +30,9 @@ ansible-playbook -i hosts playbooks-infra/commun.yml
 
 You can also test the Neutrinet playbooks by provisioning linux containers (LXC) on your machine:
 ```shell
-ansible-playbook -i hosts.local provisioners/lxd.yml
+ansible-playbook -i hosts.lxc provisioners/lxd.yml --ask-become-password
 ```
+
+It will prompt for your sudo password, because we need it to setup your `/etc/hosts`. You can run the playbook without this option. In that case, Ansible will try (and probably fail) to change your hosts file, but the playbook will continue.
 
 By default, provisioned containers will be under Debian buster, but you can define another Debian release with the `debian_release` variable.
