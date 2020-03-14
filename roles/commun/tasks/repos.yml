@@ -2,7 +2,7 @@
 # Configuration des dépôts et des mises à jour automatiques
 - name: Copie des fichiers de dépôts
   copy:
-    src: "{{ ansible_distribution_release }}/{{ repo }}"
+    src: "apt/{{ ansible_distribution_release }}/{{ repo }}"
     dest: /etc/apt/{{ repo }}
     owner: root
     group: root
@@ -12,29 +12,29 @@
   - source-security.list
   loop_control:
     loop_var: repo
+  register: apt_sources
 
-- name: Mise à jour des serveurs
-  apt:
-    upgrade: safe
-    update_cache: yes
-
-- name: Installation de cron-apt
-  apt:
-    name: cron-apt
-    state: present
-    cache_valid_time: "3600"
-
-- name: Copie des fichiers de configuration cron-apt
-  template:
-    src: config.j2
-    dest: /etc/cron-apt/config
+- name: Définition de la priorité des backports (Stretch)
+  copy:
+    content: |
+      Package: *
+      Pin: release a=stretch-backports
+      Pin-Priority: 500
+    dest: /etc/apt/preferences.d/99-backports
     owner: root
     group: root
     mode: "u+rw,go+r"
+  register: backports_priority
+  when: debian_release is defined and debian_release == 'stretch'
 
-- name: Installation automatique des mises à jour de sécurité
-  replace:
-    dest: /etc/cron-apt/action.d/3-download
-    regexp: "^dist-upgrade -d -y -o APT::Get::Show-Upgraded=true$"
-    replace: "dist-upgrade -y -o APT::Get::Show-Upgraded=true"
-    backup: no
+- name: Mise à jour du cache apt
+  apt:
+    upgrade: safe
+    update_cache: yes
+  when: apt_sources is changed or backports_priority is changed
+
+- name: Installation de unattended-upgrades
+  apt:
+    name: unattended-upgrades
+    state: present
+    cache_valid_time: "3600"

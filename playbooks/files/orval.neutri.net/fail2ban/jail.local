@@ -1,0 +1,24 @@
+[DEFAULT]
+# Destination email for action that send you an email
+destemail = postmaster@neutrinet.be
+
+# Default action. Will block user and send you an email with whois content and log lines.
+# action    = %(action_mwl)s
+action = %(action_)s
+
+# configure nftables
+banaction = nftables-multiport
+banaction_allports = nftables-allports
+chain     = input
+
+[recidive]
+enabled   = true
+
+[sshd]
+enabled = true
+
+[nginx-http-auth]
+enabled   = true
+
+[nginx-botsearch]
+enabled   = true
