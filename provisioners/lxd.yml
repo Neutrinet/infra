@@ -3,9 +3,34 @@
   connection: lxd
   gather_facts: no
   vars:
-    ip_address: "{{ hostvars[inventory_hostname].ansible_host }}"
-    ansible_host: "{{ inventory_hostname_short }}"
+    lxd_bridge_name: neutrinetbr0
   tasks:
+  - name: "Définition de l'adresse IPv4 locale"
+    set_fact:
+      ip_address: "{{ hostvars[inventory_hostname].ansible_host }}"
+
+  - name: "Définition du nom du conteneur"
+    set_fact:
+      ansible_host: "{{ inventory_hostname_short }}"
+
+  - name: Création du profil LXC pour Neutrinet
+    raw: |
+      lxc profile create neutrinet 2>/dev/null
+      lxc profile edit neutrinet <<< "{{ lookup('template', 'lxd/profile.yml.j2') }}"
+    tags: [lxc, lxc_profile]
+    delegate_to: localhost
+    changed_when: no
+    run_once: yes
+
+  - name: Création du bridge LXC pour Neutrinet
+    raw: |
+      lxc network create {{ lxd_bridge_name }}
+      lxc network edit {{ lxd_bridge_name }} <<< "{{ lookup('file', 'lxd/network.yml') }}"
+    tags: [lxc, lxc_network]
+    delegate_to: localhost
+    changed_when: no
+    run_once: yes
+    
   - name: Création des conteneurs LXC
     lxd_container:
       # container name is based on the hostname
@@ -18,7 +43,7 @@
         alias: debian/{{ debian_release | default('buster') }}/amd64
         protocol: simplestreams
       profiles:
-      - default
+      - neutrinet
       config:
         security.nesting: 'true'
         security.privileged: 'false'
@@ -28,7 +53,7 @@
       wait_for_ipv4_addresses: true
       timeout: 600
     delegate_to: localhost
-    tags: container
+    tags: [lxc, lxc_container]
 
   - name: Vérification de la présence de python
     block:
@@ -42,7 +67,7 @@
   
   - name: Configuration de l'adresse IPv4 statique
     template:
-      src: interfaces.j2
+      src: network/interfaces.j2
       dest: /etc/network/interfaces
       owner: root
       group: root
