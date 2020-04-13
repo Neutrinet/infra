@@ -43,15 +43,6 @@
     gather_facts:
     tags: always
 
-  - name: Configuration de /etc/hosts
-    lineinfile:
-      path: /etc/hosts
-      line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }} # Ansible managed LXC host for Neutrinet"
-      regexp: "{{ inventory_hostname }} # Ansible managed LXC host for Neutrinet$"
-    become: yes
-    delegate_to: localhost
-    ignore_errors: yes
-  
   - name: Configuration commune de chaque host
     import_role:
       name: commun

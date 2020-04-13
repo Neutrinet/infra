@@ -39,17 +39,35 @@ ansible-playbook -i hosts.lxc provisioners/lxd.yml --ask-become-password
 
 By default, provisioned containers will be under Debian buster, but you can define another Debian release with the `debian_release` variable.
 
-Ansible will prompt for your sudo password in order to setup your `/etc/hosts`. You can run the playbook without `--ask-become-password` option, but then Ansible will probably fail to change your hosts file. Note that the playbook will ignore the error and continue its work.
-
-Once the hosts file is configured, you might want to configure your `~/.ssh/config` with something like:
+It is possible to configure LXD to provide domain name resolution for your containers.
+1. First, check if LXD DNS is already configured:
+```shell
+# Assuming that the web container is up and running…
+ping -c1 web.lxd
 ```
-Host *.neutrinet.lxc
+2. If the above command fails, retrieve the gateway's IPv4 of LXD's default network:
+```shell
+lxc network info lxdbr0 | grep inet
+```
+3. Copy the IPv4 line (starting with `inet`)
+4. Add a new dnsmasq config file with the following content (replace <ip> with the gateway's IPv4):
+```
+bind-interfaces
+except-interface=lxdbr0
+server=/lxd/<ip>
+```
+
+The last step will depend on your OS. Usually, it will be located in `/etc/dnsmasq.d/`. Note that NetworkManager includes its own dnsmasq service, which means you will need to add the file in `/etc/NetworkManager/dnsmasq.d/`. Don't forget to reload dnsmasq (or NetworkManager) for the changes to take effect. If you experience some network issues with NetworkManager, try to restart your computer, it sometimes works...
+
+Once the DNS are configured, you might want to configure your `~/.ssh/config` with something like:
+```
+Host *.lxd
   PreferredAuthentications publickey
   User <username>
-  IdentityFile <path/to/ssh/privatekey>
+  IdentityFile <path/to/your/neutrinet/ssh/privatekey>
 ```
 
 After that, you will be able to easily connect to one of the containers with your public key. For instance:
 ```shell
-ssh web.neutrinet.lxc
+ssh web.lxd
 ```

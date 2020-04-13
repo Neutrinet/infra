@@ -3,7 +3,7 @@
 - name: Installation de sudo
   package:
     name: sudo
-    state: latest
+    state: present
   tags: sudo
 
 - name: Suppression du mot de passe pour sudo
