@@ -34,18 +34,19 @@ ansible-playbook -i hosts playbooks-infra/commun.yml
 
 You can also test the Neutrinet playbooks by provisioning linux containers (LXC) on your machine:
 ```shell
-ansible-playbook -i hosts.lxc provisioners/lxd.yml --ask-become-password
+ansible-playbook -i hosts.lxd provisioners/lxd.yml
 ```
 
 By default, provisioned containers will be under Debian buster, but you can define another Debian release with the `debian_release` variable.
 
 It is possible to configure LXD to provide domain name resolution for your containers.
-1. First, check if LXD DNS is already configured:
+1. First, check if the LXD DNS resolver is already configured:
 ```shell
 # Assuming that the web container is up and running…
 ping -c1 web.lxd
 ```
-2. If the above command fails, retrieve the gateway's IPv4 of LXD's default network:
+2. If the above command fails, then you need to configure a DNS resolver.  
+   Retrieve the gateway's IPv4 from LXD's default network:
 ```shell
 lxc network info lxdbr0 | grep inet
 ```
@@ -57,9 +58,9 @@ except-interface=lxdbr0
 server=/lxd/<ip>
 ```
 
-The last step will depend on your OS. Usually, it will be located in `/etc/dnsmasq.d/`. Note that NetworkManager includes its own dnsmasq service, which means you will need to add the file in `/etc/NetworkManager/dnsmasq.d/`. Don't forget to reload dnsmasq (or NetworkManager) for the changes to take effect. If you experience some network issues with NetworkManager, try to restart your computer, it sometimes works...
+The last step will depend on your OS.[^1] Usually, it will be located in `/etc/dnsmasq.d/`. Note that NetworkManager includes its own dnsmasq service, which means you will need to add the file in `/etc/NetworkManager/dnsmasq.d/`. Don't forget to reload dnsmasq (or NetworkManager) for the changes to take effect. If you experience some network issues with NetworkManager, try to restart your computer, it sometimes works...
 
-Once the DNS are configured, you might want to configure your `~/.ssh/config` with something like:
+Once the DNS resolver is configured, you might want to configure your `~/.ssh/config` with something like:
 ```
 Host *.lxd
   PreferredAuthentications publickey
@@ -71,3 +72,7 @@ After that, you will be able to easily connect to one of the containers with you
 ```shell
 ssh web.lxd
 ```
+
+# References
+
+[^1]: https://discuss.linuxcontainers.org/t/dns-for-lxc-containers/235/4
