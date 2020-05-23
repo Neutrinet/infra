@@ -2,9 +2,11 @@
   # connect to the containers through lxd
   connection: lxd
   gather_facts: no
+  
   vars:
     ansible_host: "{{ inventory_hostname_short }}"
-  tasks:
+  
+  pre_tasks:
   - name: Création des conteneurs LXC
     lxd_container:
       # container name is based on the hostname
@@ -43,6 +45,5 @@
     gather_facts:
     tags: always
 
-  - name: Configuration commune de chaque host
-    import_role:
-      name: commun
+  roles:
+  - commun
