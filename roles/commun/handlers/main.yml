@@ -14,13 +14,3 @@
   service: 
     name: sshguard
     state: restarted
-
-- name: restart nftables
-  service:
-    name: nftables
-    state: restarted
-
-- name: restart fail2ban
-  service:
-    name: fail2ban
-    state: restarted

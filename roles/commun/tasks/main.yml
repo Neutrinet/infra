@@ -13,8 +13,6 @@
   tags: supervisor
 - import_tasks: tools.yml
   tags: tools
-- import_tasks: fail2ban.yml
-  tags: fail2ban
 - import_tasks: users.yml
   tags: users
 - import_tasks: zsh.yml
