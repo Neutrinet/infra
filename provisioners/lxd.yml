@@ -3,7 +3,6 @@
   connection: lxd
   gather_facts: no
   vars:
-    ip_address: "{{ hostvars[inventory_hostname].ansible_host }}"
     ansible_host: "{{ inventory_hostname_short }}"
   tasks:
   - name: Création des conteneurs LXC
@@ -28,7 +27,7 @@
       wait_for_ipv4_addresses: true
       timeout: 600
     delegate_to: localhost
-    tags: container
+    tags: [lxc, lxc_container]
 
   - name: Vérification de la présence de python
     block:
@@ -39,27 +38,11 @@
     - name: Installation de python3
       raw: apt install -y python3
     tags: python
-  
-  - name: Configuration de l'adresse IPv4 statique
-    template:
-      src: interfaces.j2
-      dest: /etc/network/interfaces
-      owner: root
-      group: root
-      mode: "u+rw,og+r"
-    notify: restart network
-    tags: network
 
   - name: Récupération des informations de l'OS
     gather_facts:
     tags: always
-  
+
   - name: Configuration commune de chaque host
     import_role:
       name: commun
-
-  handlers:
-  - name: restart network
-    service:
-      name: networking
-      state: restarted
