@@ -27,14 +27,30 @@ This will be effective at your next login session.
 
 Run the following to setup the common config for all hosts:
 ```shell
-ansible-playbook -i hosts playbooks-infra/commun.yml
+ansible-playbook -i hosts playbooks/commun.yml
 ```
+
+### Proxmox
+
+When you create a new VM with Proxmox (assuming you know its IP):
+1. Add a line in the inventory file (`hosts`)
+2. Provide the `ansible_user` and `ansible_ssh_pass` of the first user
+3. Provide the root password with `ansible_become_password`
+4. Run the Proxmox provisioning playbook:
+```shell
+ansible-playbook -i hosts playbooks/proxmox_provisioner.yml -l <host>
+```
+
+Then, remove the extra variables (`ansible_user`, `ansible_ssh_pass` and 
+`ansible_become_password`).
+
+Finally, configure your `~/.ssh/config` in order to connect to the VM with your SSH key.
 
 ### Linux containers
 
 You can also test the Neutrinet playbooks by provisioning linux containers (LXC) on your machine:
 ```shell
-ansible-playbook -i hosts.lxd provisioners/lxd.yml
+ansible-playbook -i hosts.lxd playbooks/lxd_provisioner.yml
 ```
 
 By default, provisioned containers will be under Debian buster, but you can define another Debian release with the `debian_release` variable.
