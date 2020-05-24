@@ -1,11 +1,5 @@
 ---
 # Ajout des utilisateurs et de leurs clés SSH
-- name: Installation de sudo
-  package:
-    name: sudo
-    state: present
-  tags: sudo
-
 - name: Suppression du mot de passe pour sudo
   lineinfile:
     path: /etc/sudoers
