@@ -1,9 +1,15 @@
 # machines physiques 
 #
-# 2 x HP Gen 8 avec chacun 2 x Xeon 16 core - X x 32Gb
+# 2 x HP Gen 8 avec chacun 2 x Xeon 16 core - 2 x 32Gb
 # Le controleur Raid actuel est limité à 2 volumes logiques, c'est chiant
+# Chacun dispose de 2 disques SAS de 900GB (1 par « volume raid 0 »)
+# Chacun dispose de 1 disque SATA de 1TB pour les backups
+# Il y a un disque SAS de 900GB de réserve pour troll ou orval si besoin (il est dans l'un des deux serveur mais pas utilisé)
+# Chacun dispose de 4 ports RJ45 et 1 interface iLo (licence de 60 jours de démo possible si besoin d'accès à la console virtuelle)
+# Chacun dispose de 1 carte fibre optique avec 2 ports SFP+ (principalement pour le ceph)
+# Chacun dispose d'un alimentation mais il y a la place pour une deuxième
 #
-# # Matériel a acquérir 
+# # Matériel a acquérir pour améliorer, faire évoluer
 #
 # https://www.serverhome.nl/psu-hp-750-506822-101-hstns-pd18.html
 # https://www.serverhome.nl/parts/harddisk/brackets/hp/hp-bracket-gen8-651687-001.html
