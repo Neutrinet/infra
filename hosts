@@ -1,7 +1,12 @@
+# machines physiques
 orval.neutri.net ansible_become=yes
 troll.neutri.net ansible_become=yes
+
+# vms
 gw.neutri.net ansible_become=yes
 vpn.neutri.net ansible_become=yes
 web.neutri.net ansible_become=yes
 dns.neutri.net ansible_become=yes
+
+# hors datacenter
 monitor.neutri.net ansible_become=yes
