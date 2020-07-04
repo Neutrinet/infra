@@ -1,4 +1,16 @@
-# machines physiques
+# machines physiques 
+#
+# 2 x HP Gen 8 avec chacun 2 x Xeon 16 core - X x 32Gb
+# Le controleur Raid actuel est limité à 2 volumes logiques, c'est chiant
+#
+# # Matériel a acquérir 
+#
+# https://www.serverhome.nl/psu-hp-750-506822-101-hstns-pd18.html
+# https://www.serverhome.nl/parts/harddisk/brackets/hp/hp-bracket-gen8-651687-001.html
+# https://www.serverhome.nl/hp-smart-array-p420-raid-controller.html
+# 
+# il manque aussi comptoir.neutri.net
+#
 orval.neutri.net ansible_become=yes
 troll.neutri.net ansible_become=yes
 
