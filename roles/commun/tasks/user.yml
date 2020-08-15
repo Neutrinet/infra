@@ -9,13 +9,13 @@
     groups: 
     - sudo
     append: yes
-    state: present
+    state: "{{ user.state }}"
     update_password: on_create
 
 - name: Ajout des clés SSH pour l'utilisateur {{ user.name }}
   authorized_key:
     user: "{{ user.name }}"
-    state: present
+    state: "{{ user.state }}"
     # we can pass multiple keys, but they must be separated by newlines
     key: "{{ user['keys'] | join('\n') }}"
     # remove obsolete keys
