@@ -15,8 +15,15 @@
 - name: Ajout des clés SSH pour l'utilisateur {{ user.name }}
   authorized_key:
     user: "{{ user.name }}"
-    state: "{{ user.state }}"
+    state: present
     # we can pass multiple keys, but they must be separated by newlines
     key: "{{ user['keys'] | join('\n') }}"
     # remove obsolete keys
     exclusive: yes
+  when: user.state == 'present'
+
+- name: Suppression du dossier SSH de l'utilisateur {{ user.name }}
+  file:
+    path: "~{{ user.name}}/.ssh"
+    state: absent
+  when: user.state == 'absent'
