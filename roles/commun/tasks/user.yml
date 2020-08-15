@@ -24,6 +24,6 @@
 
 - name: Suppression du dossier SSH de l'utilisateur {{ user.name }}
   file:
-    path: "~{{ user.name}}/.ssh"
+    path: "/home/{{ user.name}}/.ssh"
     state: absent
   when: user.state == 'absent'
