@@ -1,0 +1,42 @@
+nextcloud_domain: "{{ inventory_hostname }}.local"
+nextcloud_owner: "{{ nextcloud_domain | replace('.', '-') }}"
+nextcloud_group: "{{ nextcloud_owner }}"
+nextcloud_home: /var/www/{{ nextcloud_owner }}
+
+nextcloud_certificate: /etc/ssl/certs/{{ nextcloud_domain }}.d/fullchain.pem
+nextcloud_private_key: /etc/ssl/private/{{ nextcloud_domain }}.key
+nextcloud_nginx_access_log: /var/log/nginx/{{ nextcloud_owner }}-access.log
+nextcloud_nginx_error_log: /var/log/nginx/{{ nextcloud_owner }}-error.log
+
+nextcloud_version: latest
+nextcloud_gpg_public_key_url: https://nextcloud.com/nextcloud.asc
+nextcloud_checksum_algorithm: sha512
+nextcloud_install_url: https://download.nextcloud.com/server/releases/{{ nextcloud_version }}.tar.bz2
+nextcloud_src_dir: /usr/local/src/nextcloud-{{ nextcloud_version }}
+nextcloud_src_archive: "{{ nextcloud_src_dir }}/{{ nextcloud_install_url | basename }}"
+nextcloud_install_dir: /var/www/{{ nextcloud_owner }}
+nextcloud_data_dir: "{{ nextcloud_install_dir }}/data"
+nextcloud_import_file: "{{ nextcloud_install_dir }}/config/import.json"
+
+nextcloud_timezone: Europe/Brussels
+nextcloud_config:
+  system:
+    trusted_domains:
+      0: "{{ nextcloud_domain }}"
+    datadirectory: "{{ nextcloud_data_dir }}"
+
+nextcloud_php_version: ""
+nextcloud_php_socket: /var/run/php-{{ nextcloud_owner }}.sock
+nextcloud_php_memory_limit: 512M
+
+postgres_install_enabled: yes
+nextcloud_database_driver: pgsql
+nextcloud_database_name: nextcloud
+nextcloud_database_username: nextcloud
+nextcloud_database_password: password
+nextcloud_database_host: localhost
+nextcloud_database_port: 5432
+
+nextcloud_admin_email: nextcloud@example.com
+nextcloud_admin_username: admin
+nextcloud_admin_password: password

@@ -1,0 +1,14 @@
+nextcloud_config_file: "{{ nextcloud_install_dir }}/config/config.php"
+
+nextcloud_php_modules:
+  - php-gd
+  - php-json
+  - php-pgsql
+  - php-curl
+  - php-mbstring
+  - php-intl
+  - php-imagick
+  - php-xml
+  - php-zip
+  - php-bz2
+  - php-fileinfo

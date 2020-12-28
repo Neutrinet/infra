@@ -1,0 +1,7 @@
+- name: Validation de la configuration Nginx
+  command: nginx -t
+
+- name: Redémarrage de Nginx
+  service:
+    name: nginx
+    state: reloaded

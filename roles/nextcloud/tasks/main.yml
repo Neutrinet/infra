@@ -1,0 +1,35 @@
+---
+- name: Génération d'un certificat auto-signé pour Nextcloud
+  import_role:
+    name: ssl-self-signed
+  vars:
+    ssl_domains:
+      - name: "{{ nextcloud_domain }}"
+  when: not acme_enabled
+  tags:
+    - ssl
+    - ssl_selfsigned
+
+- name: Création de l'utilisateur {{ nextcloud_owner }}
+  user:
+    name: "{{ nextcloud_owner }}"
+    shell: /sbin/nologin
+    home: "{{ nextcloud_home }}"
+    state: present
+  tags: user
+
+- name: Installation de PostgreSQL
+  import_tasks: postgres/main.yml
+  tags: postgres
+
+- name: Installation de PHP {{ nextcloud_php_version }}
+  import_tasks: php.yml
+  tags: php
+
+- name: Installation de Nextcloud
+  import_tasks: nextcloud/main.yml
+  tags: nextcloud
+
+- name: Configuration de Nginx
+  import_tasks: nginx.yml
+  tags: nginx
