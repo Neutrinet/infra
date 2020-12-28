@@ -51,5 +51,6 @@
       --data-dir {{ nextcloud_data_dir | quote }}
   args:
     chdir: "{{ nextcloud_install_dir }}"
-    creates: "{{ nextcloud_config_file }}"
   become_user: "{{ nextcloud_owner }}"
+  notify:
+    - reload php-fpm

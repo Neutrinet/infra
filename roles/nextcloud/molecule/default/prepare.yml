@@ -13,3 +13,8 @@
       package:
         name: nginx-light
         state: present
+
+    - name: Installation de Avahi
+      package:
+        name: avahi-daemon
+        state: present

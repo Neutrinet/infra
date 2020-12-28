@@ -3,7 +3,7 @@
     name: gpg
     state: present
 
-- name: Téléchargement du fichier à vérifier
+- name: Téléchargement du fichier à vérifier depuis {{ gpg_verify_url }}
   get_url:
     url: "{{ gpg_verify_url }}"
     dest: "{{ gpg_verify_dir }}/"
@@ -12,7 +12,7 @@
     mode: "{{ gpg_verify_mode }}"
     checksum: "{{ gpg_checksum_algorithm }}:{{ gpg_checksum_url }}"
 
-- name: Téléchargement de la clé publique GPG
+- name: Téléchargement de la clé publique GPG depuis {{ gpg_public_key_url }}
   uri:
     url: "{{ gpg_public_key_url }}"
     return_content: yes

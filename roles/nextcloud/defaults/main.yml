@@ -18,12 +18,21 @@ nextcloud_install_dir: /var/www/{{ nextcloud_owner }}
 nextcloud_data_dir: "{{ nextcloud_install_dir }}/data"
 nextcloud_import_file: "{{ nextcloud_install_dir }}/config/import.json"
 
+nextcloud_memcache_local: APCu
+
 nextcloud_timezone: Europe/Brussels
 nextcloud_config:
   system:
     trusted_domains:
       0: "{{ nextcloud_domain }}"
+    overwrite.cli.url: "https://{{ nextcloud_domain }}"
     datadirectory: "{{ nextcloud_data_dir }}"
+    dbname: "{{ nextcloud_database_name }}"
+    dbhost: "{{ nextcloud_database_host }}"
+    dbport: "{{ nextcloud_database_port }}"
+    dbuser: "{{ nextcloud_database_username }}"
+    dbpassword: "{{ nextcloud_database_password }}"
+    memcache.local: \OC\Memcache\{{ nextcloud_memcache_local }}
 
 nextcloud_php_version: ""
 nextcloud_php_socket: /var/run/php-{{ nextcloud_owner }}.sock

@@ -1,8 +1,3 @@
 postgres_local_hosts:
  - localhost
  - "127.0.0.1"
-postgres_packages:
-  - postgresql
-  - postgresql-contrib
-  - libpq-dev
-  - python3-psycopg2

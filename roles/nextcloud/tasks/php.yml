@@ -8,7 +8,18 @@
 - name: Copie de la configuration php-fpm de Nextcloud
   template:
     src: php-pool.conf.j2
-    dest: /etc/php/{{ php_version }}/fpm/pool.d/{{ nextcloud_owner }}.conf
+    dest: "{{ php_fpm_config_dir }}/pool.d/{{ nextcloud_owner }}.conf"
+    owner: root
+    group: root
+    mode: "644"
+  notify:
+    - reload php-fpm
+  tags: php_config
+
+- name: Copie de la configuration OPCache de Nextcloud
+  copy:
+    src: opcache.ini
+    dest: "{{ php_fpm_config_dir }}/conf.d/99-opcache.ini"
     owner: root
     group: root
     mode: "644"

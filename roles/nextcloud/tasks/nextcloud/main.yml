@@ -3,9 +3,24 @@
     path: "{{ nextcloud_config_file }}"
   register: _nextcloud_config
 
+- name: Vérification de l'état de l'installation de Nextcloud
+  when: _nextcloud_config.stat.exists
+  block:
+    - name: Vérification de l'état de l'installation de Nextcloud
+      command: php occ status --output json
+      args:
+        chdir: "{{ nextcloud_install_dir }}"
+      become_user: "{{ nextcloud_owner }}"
+      changed_when: no
+      register: _nextcloud_install_status
+
+    - name: Définition de l'état de l'installation de Nextcloud
+      set_fact:
+        _nextcloud_installed: "{{ (_nextcloud_install_status.stdout_lines[-1] | from_json).installed }}"
+
 - name: Installation de Nextcloud {{ nextcloud_version }}
   import_tasks: install.yml
-  when: not _nextcloud_config.stat.exists
+  when: not _nextcloud_config.stat.exists or not _nextcloud_installed
 
 - name: Copie de la configuration de Nextcloud
   copy:
@@ -21,4 +36,17 @@
   args:
     chdir: "{{ nextcloud_install_dir }}"
   become_user: "{{ nextcloud_owner }}"
-  when: _nextcloud_import is changed
+  when: _nextcloud_import is changed or not _nextcloud_installed
+  notify:
+    - reload php-fpm
+
+- name: Ajout des index manquants dans la base de données
+  command: php occ db:add-missing-indices
+  args:
+    chdir: "{{ nextcloud_install_dir }}"
+  become_user: "{{ nextcloud_owner }}"
+  changed_when: "'Adding' in _nextcloud_missing_indices_added.stdout"
+  register: _nextcloud_missing_indices_added
+
+- name: Trigger Nextcloud handlers
+  meta: flush_handlers

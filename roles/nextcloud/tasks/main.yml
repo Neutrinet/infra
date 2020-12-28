@@ -5,7 +5,6 @@
   vars:
     ssl_domains:
       - name: "{{ nextcloud_domain }}"
-  when: not acme_enabled
   tags:
     - ssl
     - ssl_selfsigned
