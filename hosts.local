@@ -1,7 +1,0 @@
-orval.neutri.net ansible_host=10.195.10.100
-troll.neutri.net ansible_host=10.195.10.101
-gw.neutri.net ansible_host=10.195.10.102
-vpn.neutri.net ansible_host=10.195.10.103
-web.neutri.net ansible_host=10.195.10.104
-dns.neutri.net ansible_host=10.195.10.105
-monitor.neutri.net ansible_host=10.195.10.106

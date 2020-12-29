@@ -1,0 +1,7 @@
+orval.neutri.net ansible_host=orval.lxd
+troll.neutri.net ansible_host=troll.lxd
+gw.neutri.net ansible_host=gw.lxd
+vpn.neutri.net ansible_host=vpn.lxd
+web.neutri.net ansible_host=web.lxd
+dns.neutri.net ansible_host=dns.lxd
+monitor.neutri.net ansible_host=monitor.lxd

@@ -9,7 +9,7 @@
     groups: 
     - sudo
     append: yes
-    state: present
+    state: "{{ user.state }}"
     update_password: on_create
 
 - name: Ajout des clés SSH pour l'utilisateur {{ user.name }}
@@ -20,3 +20,10 @@
     key: "{{ user['keys'] | join('\n') }}"
     # remove obsolete keys
     exclusive: yes
+  when: user.state == 'present'
+
+- name: Suppression du dossier SSH de l'utilisateur {{ user.name }}
+  file:
+    path: "/home/{{ user.name}}/.ssh"
+    state: absent
+  when: user.state == 'absent'
