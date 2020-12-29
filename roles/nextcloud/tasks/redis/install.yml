@@ -1,0 +1,23 @@
+- name: Installation de Redis
+  package:
+    name: redis-server
+    state: present
+
+- name: Copie de la configuration de Redis
+  template:
+    src: redis.conf.j2
+    dest: /etc/redis/redis.conf
+    owner: redis
+    group: redis
+    mode: "600"
+  notify:
+    - restart redis
+
+- name: Activation de Redis au démarrage
+  service:
+    name: redis-server
+    state: started
+    enabled: yes
+
+- name: Trigger Redis handlers
+  meta: flush_handlers

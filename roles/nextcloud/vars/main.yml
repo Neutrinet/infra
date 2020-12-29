@@ -19,5 +19,6 @@ nextcloud_php_modules:
   - php-json
   - php-mbstring
   - php-pgsql
+  - php-redis
   - php-xml
   - php-zip

@@ -1,2 +1,7 @@
 - name: reload nginx
   include_tasks: ../handlers/nginx.yml
+
+- name: restart redis
+  service:
+    name: redis-server
+    state: restarted

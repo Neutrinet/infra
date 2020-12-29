@@ -21,6 +21,10 @@
   import_tasks: postgres/main.yml
   tags: postgres
 
+- name: Installation de Redis
+  import_tasks: redis/main.yml
+  tags: redis
+
 - name: Installation de PHP {{ nextcloud_php_version }}
   import_tasks: php.yml
   tags: php
