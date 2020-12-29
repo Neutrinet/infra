@@ -1,10 +1,10 @@
 - name: Création du dossier des sources de Nextcloud {{ nextcloud_version }}
   file:
     path: "{{ nextcloud_src_dir }}"
+    state: directory
     owner: "{{ nextcloud_owner }}"
     group: "{{ nextcloud_group }}"
     mode: "755"
-    state: directory
 
 - name: Téléchargement des sources de Nextcloud {{ nextcloud_version }} et vérification de la signature GPG
   import_role: 
@@ -18,6 +18,14 @@
     gpg_verify_owner: "{{ nextcloud_owner }}"
     gpg_verify_group: "{{ nextcloud_group }}"
     gpg_verify_mode: "644"
+
+- name: Création du dossier d'installation de Nextcloud {{ nextcloud_version }}
+  file:
+    path: "{{ nextcloud_install_dir }}"
+    state: directory
+    owner: "{{ nextcloud_owner }}"
+    group: "{{ nextcloud_group }}"
+    mode: "755"
 
 - name: Décompression de Nextcloud {{ nextcloud_version }}
   unarchive:
@@ -38,7 +46,7 @@
 
 - name: Installation de Nextcloud {{ nextcloud_version }}
   command: >-
-    php occ maintenance:install --no-interaction
+    {{ php_executable }} occ maintenance:install --no-interaction
       --database {{ nextcloud_database_driver | quote }}
       --database-name {{ nextcloud_database_name | quote }}
       --database-host {{ nextcloud_database_host | quote }}
@@ -54,3 +62,8 @@
   become_user: "{{ nextcloud_owner }}"
   notify:
     - reload php-fpm
+
+- import_tasks: status.yml
+
+- name: Trigger Nextcloud handlers
+  meta: flush_handlers

@@ -1,4 +1,4 @@
 - name: reload php-fpm
   service:
-    name: php{{ php_version }}-fpm
+    name: "{{ php_fpm_executable }}"
     state: reloaded

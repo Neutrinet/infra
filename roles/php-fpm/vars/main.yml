@@ -1,3 +1,5 @@
 php_packages:
   - php
   - php-fpm
+php_executable: "php{{ php_version }}"
+php_fpm_executable: php{{ php_version }}-fpm
