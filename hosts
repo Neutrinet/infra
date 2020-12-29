@@ -1,3 +1,4 @@
+[all]
 orval.neutri.net ansible_become=yes
 troll.neutri.net ansible_become=yes
 gw.neutri.net ansible_become=yes
@@ -5,3 +6,6 @@ vpn.neutri.net ansible_become=yes
 web.neutri.net ansible_become=yes
 dns.neutri.net ansible_become=yes
 monitor.neutri.net ansible_become=yes
+
+[nextcloud]
+web.neutri.net
