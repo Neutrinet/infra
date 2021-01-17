@@ -3,11 +3,10 @@
 - name: Ajout de l'utilisateur {{ user.name }}
   user:
     name: "{{ user.name }}"
-    shell: /bin/bash
+    shell: "{{ user.shell }}"
     # See https://unix.stackexchange.com/questions/193066/how-to-unlock-account-for-public-key-ssh-authorization-but-not-for-password-aut/193131#193131
-    password: '*'
-    groups: 
-    - sudo
+    password: "{{ user.password }}"
+    groups: "{{ user.groups }}"
     append: yes
     state: "{{ user.state }}"
     update_password: on_create
@@ -17,13 +16,13 @@
     user: "{{ user.name }}"
     state: present
     # we can pass multiple keys, but they must be separated by newlines
-    key: "{{ user['keys'] | join('\n') }}"
+    key: "{{ user.ssh_keys | join('\n') }}"
     # remove obsolete keys
     exclusive: yes
   when: user.state == 'present'
 
 - name: Suppression du dossier SSH de l'utilisateur {{ user.name }}
   file:
-    path: "/home/{{ user.name}}/.ssh"
+    path: "{{ user.home }}/.ssh"
     state: absent
   when: user.state == 'absent'
