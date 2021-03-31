@@ -1,0 +1,65 @@
+{{ ansible_managed | comment }}
+
+{{ nextcloud_domain }} {
+    root {{ nextcloud_install_dir | to_json }}
+    encode gzip
+    file_server
+{% if not acme_enabled %}
+    tls internal
+{% endif %}
+
+    request_body {
+        max_size {{ nextcloud_max_upload_size }}
+    }
+
+    php_fastcgi unix/{{ nextcloud_php_socket | to_json }}
+
+    redir /.well-known/carddav /remote.php/dav 301
+    redir /.well-known/caldav /remote.php/dav 301
+{% if nextcloud_app_social_enabled %}
+    redir /.well-known/webfinger /public.php?service=webfinger
+{% endif %}
+{% if nextcloud_app_user_webfinger_enabled %}
+    redir /.well-known/host-meta /public.php?service=host-meta
+    redir /.well-known/host-meta.json /public.php?service=host-meta-json
+{% endif %}
+
+    @forbidden {
+        path /.htaccess
+        path /3rdparty/*
+        path /config/*
+        path /console.php
+        path /db_*
+        path /data/*
+        path /lib/*
+        path /occ
+        path /templates/*
+        path /README
+    }
+
+    respond @forbidden 404
+
+    header {
+        # Add headers to serve security related headers
+        # Before enabling Strict-Transport-Security headers please read into this
+        # topic first.
+        # WARNING: Only add the preload option once you read about
+        # the consequences in https://hstspreload.org/. This option
+        # will add the domain to a hardcoded list that is shipped
+        # in all major browsers and getting removed from this list
+        # could take several months.
+        Strict-Transport-Security            "max-age=15768000; {% if nextcloud_hsts_preload_enabled %}preload;{% endif %}"
+
+        Referrer-Policy                      "strict-origin-when-cross-origin"
+        X-Content-Type-Options               "nosniff"
+        X-Download-Options                   "noopen"
+        X-Frame-Options                      "SAMEORIGIN"
+        X-Permitted-Cross-Domain-Policies    "none"
+        X-Robots-Tag                         "none"
+        X-XSS-Protection                     "1; mode=block"
+    }
+    
+    log {
+        output file {{ nextcloud_caddy_log | to_json }}
+    }
+}

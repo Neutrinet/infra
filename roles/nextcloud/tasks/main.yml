@@ -1,14 +1,4 @@
 ---
-- name: Génération d'un certificat auto-signé pour Nextcloud
-  import_role:
-    name: ssl-self-signed
-  vars:
-    ssl_domains:
-      - name: "{{ nextcloud_domain }}"
-  tags:
-    - ssl
-    - ssl_selfsigned
-
 - name: Création de l'utilisateur {{ nextcloud_owner }}
   user:
     name: "{{ nextcloud_owner }}"
@@ -33,6 +23,6 @@
   import_tasks: nextcloud/main.yml
   tags: nextcloud
 
-- name: Configuration de Nginx
-  import_tasks: nginx.yml
-  tags: nginx
+- name: Configuration de Caddy2
+  import_tasks: caddy.yml
+  tags: caddy

@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+{
+    email {{ acme_account_email }}
+    acme_ca {{ acme_directory_url }}
+}
+
+import {{ caddy_vhosts_dir }}/*.conf

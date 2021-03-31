@@ -11,4 +11,4 @@
         cache_valid_time: 3600
  
   roles:
-    - nginx-server
+    - caddy-server

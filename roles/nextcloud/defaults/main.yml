@@ -2,10 +2,17 @@ nextcloud_domain: "{{ inventory_hostname }}.local"
 nextcloud_owner: "{{ nextcloud_domain | replace('.', '-') }}"
 nextcloud_group: "{{ nextcloud_owner }}"
 
-nextcloud_certificate: /etc/ssl/certs/{{ nextcloud_domain }}.d/fullchain.pem
-nextcloud_private_key: /etc/ssl/private/{{ nextcloud_domain }}.key
-nextcloud_nginx_access_log: /var/log/nginx/{{ nextcloud_owner }}-access.log
-nextcloud_nginx_error_log: /var/log/nginx/{{ nextcloud_owner }}-error.log
+acme_enabled: no
+
+caddy_config_dir: /etc/caddy
+caddy_vhosts_dir: "{{ caddy_config_dir }}/conf.d"
+caddy_log_dir: /var/log/caddy
+nextcloud_caddy_log: "{{ caddy_log_dir }}/{{ nextcloud_domain }}.log"
+nextcloud_hsts_preload_enabled: no
+nextcloud_max_upload_size: 512MB
+
+nextcloud_app_social_enabled: no
+nextcloud_app_user_webfinger: no
 
 nextcloud_version: latest-19
 nextcloud_upgrade_enabled: yes

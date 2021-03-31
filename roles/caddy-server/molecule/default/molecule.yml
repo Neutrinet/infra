@@ -5,10 +5,10 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-nextcloud-molecule
+  - name: buster-caddy-molecule
     box: debian/buster64
     cpu: 2
-    memory: 512
+    memory: 256
     interfaces:
       - network_name: forwarded_port
         guest: 80

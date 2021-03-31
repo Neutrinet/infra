@@ -1,5 +1,7 @@
-- name: reload nginx
-  include_tasks: ../handlers/nginx.yml
+- name: reload caddy
+  service:
+    name: caddy
+    state: reloaded
 
 - name: restart redis
   service:
