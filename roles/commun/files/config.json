@@ -1,8 +1,0 @@
-{
-  "redis": {
-    "host": "monitor.neutri.net"
-  },
-  "transport": {
-    "name": "redis"
-  }
-}

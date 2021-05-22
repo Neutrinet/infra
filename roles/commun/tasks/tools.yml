@@ -1,13 +1,10 @@
 ---
 
 - name: Installation de divers outils
-  apt:
+  ansible.builtin.package:
     name:
     - git
     - unzip
-    - duplicity
-    - duply
-    - python-openstackclient
     - htop
     - tree
     - wget
@@ -17,5 +14,8 @@
     - vim
     - mosh
     - qemu-guest-agent
+    - ncdu
+    - screen
+    - rsync
+    - tmux
     state: present
-    cache_valid_time: "3600"

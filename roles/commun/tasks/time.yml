@@ -1,0 +1,16 @@
+---
+
+- name: Changement de la timezone vers UTC
+  file:
+    src: /usr/share/zoneinfo/Etc/UTC
+    dest: /etc/localtime
+    state: link
+    force: yes
+  tags: timezone
+
+- name: Activation de systemd-timesyncd au démarrage
+  service:
+    name: systemd-timesyncd
+    state: started
+    enabled: yes
+  tags: ntp
