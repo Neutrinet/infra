@@ -19,11 +19,13 @@
     replace: 'ENABLE_FIREWALL=0'
     backup: no
   when: sshguard_config_file.stat.exists
-  notify:
-  - restart sshguard
+  notify: restart sshguard
 
 - name: Activation du service sshguard au démarrage
   service:
     name: sshguard
     state: started
     enabled: yes
+
+- name: Trigger sshguard handlers
+  meta: flush_handlers
