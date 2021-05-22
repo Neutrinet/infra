@@ -1,0 +1,28 @@
+---
+- name: Création de l'utilisateur {{ nextcloud_owner }}
+  user:
+    name: "{{ nextcloud_owner }}"
+    shell: /sbin/nologin
+    system: yes
+    state: present
+  tags: user
+
+- name: Installation de PostgreSQL
+  import_tasks: postgres/main.yml
+  tags: postgres
+
+- name: Installation de Redis
+  import_tasks: redis/main.yml
+  tags: redis
+
+- name: Installation de PHP {{ nextcloud_php_version }}
+  import_tasks: php.yml
+  tags: php
+
+- name: Installation de Nextcloud
+  import_tasks: nextcloud/main.yml
+  tags: nextcloud
+
+- name: Configuration de Caddy2
+  import_tasks: caddy.yml
+  tags: caddy

@@ -1,0 +1,27 @@
+- name: Ajout des index manquants dans la base de données
+  command: "{{ php_executable }} occ db:add-missing-indices"
+  args:
+    chdir: "{{ nextcloud_install_dir }}"
+  become_user: "{{ nextcloud_owner }}"
+  changed_when: "'Adding' in _nextcloud_missing_indices_added.stdout"
+  register: _nextcloud_missing_indices_added
+
+- name: Ajout des clés primaires manquantes dans la base de données
+  command: "{{ php_executable }} occ db:add-missing-primary-keys"
+  args:
+    chdir: "{{ nextcloud_install_dir }}"
+  become_user: "{{ nextcloud_owner }}"
+  changed_when: "'Adding' in _nextcloud_missing_primary_keys_added.stdout"
+  register: _nextcloud_missing_primary_keys_added
+  when: nextcloud_install_status.version is version('20.0.2', '>=')
+
+- name: Conversion des colonnes de la base de données en big int
+  command: "{{ php_executable }} occ db:convert-filecache-bigint --no-interaction"
+  args:
+    chdir: "{{ nextcloud_install_dir }}"
+  become_user: "{{ nextcloud_owner }}"
+  changed_when: "'All tables already up to date!' not in _nextcloud_filecache_bigint_converted.stdout"
+  register: _nextcloud_filecache_bigint_converted
+
+- name: Trigger Nextcloud handlers
+  meta: flush_handlers

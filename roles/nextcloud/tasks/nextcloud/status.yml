@@ -1,0 +1,19 @@
+- name: Vérification de la présence du fichier de configuration de Nextcloud
+  stat:
+    path: "{{ nextcloud_config_file }}"
+  register: _nextcloud_config
+
+- name: Informations sur la version installée de Nextcloud
+  when: _nextcloud_config.stat.exists
+  block:
+    - name: Récupération des informations sur la version installée de Netxcloud
+      command: "{{ php_executable }} occ status --output json"
+      args:
+        chdir: "{{ nextcloud_install_dir }}"
+      become_user: "{{ nextcloud_owner }}"
+      changed_when: no
+      register: _nextcloud_install_status
+
+    - name: Définition des informations sur la version installée de Nextcloud
+      set_fact:
+        nextcloud_install_status: "{{ _nextcloud_install_status.stdout_lines[-1] | from_json }}"

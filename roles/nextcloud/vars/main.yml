@@ -1,0 +1,24 @@
+nextcloud_config_file: "{{ nextcloud_install_dir }}/config/config.php"
+
+postgres_packages:
+  - postgresql
+  - postgresql-contrib
+  - libpq-dev
+  - python3-psycopg2
+
+nextcloud_php_modules:
+  - php-apcu
+  - php-curl
+  - php-bcmath
+  - php-bz2
+  - php-fileinfo
+  - php-gd
+  - php-gmp
+  - php-imagick
+  - php-intl
+  - php-json
+  - php-mbstring
+  - php-pgsql
+  - php-redis
+  - php-xml
+  - php-zip

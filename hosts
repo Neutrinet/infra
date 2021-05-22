@@ -1,3 +1,4 @@
+[all]
 # Machines physiques 
 #
 # Troll et Orval - Proxmox
@@ -37,3 +38,6 @@ dns.neutri.net ansible_become=yes
 # mail.neutri.net
 # support.neutri.net
 monitor.neutri.net ansible_become=yes
+
+[nextcloud]
+web.neutri.net

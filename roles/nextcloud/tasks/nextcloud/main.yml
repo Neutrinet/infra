@@ -1,0 +1,20 @@
+- import_tasks: status.yml
+  tags:
+    - nextcloud_install
+    - nextcloud_database
+
+- import_tasks: install.yml
+  when: nextcloud_install_status is not defined or not nextcloud_install_status.installed
+  tags: nextcloud_install
+
+- import_tasks: config.yml
+  tags: nextcloud_config
+
+- import_tasks: upgrade.yml
+  when: nextcloud_upgrade_enabled
+  tags: nextcloud_upgrade
+
+- import_tasks: database.yml
+  tags:
+    - nextcloud_install
+    - nextcloud_database

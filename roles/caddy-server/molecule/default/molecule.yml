@@ -1,0 +1,27 @@
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+platforms:
+  - name: buster-caddy-molecule
+    box: debian/buster64
+    cpu: 2
+    memory: 256
+    interfaces:
+      - network_name: forwarded_port
+        guest: 80
+        host: 8080
+      - network_name: forwarded_port
+        guest: 443
+        host: 8443
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: /usr/bin/python3
+    ssh_connection:
+      pipelining: true
+verifier:
+  name: ansible

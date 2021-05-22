@@ -1,0 +1,12 @@
+- name: Copie de la configuration Caddy2
+  template:
+    src: Caddyfile.j2
+    dest: "{{ caddy_vhosts_dir }}/nextcloud.conf"
+    owner: root
+    group: root
+    mode: "644"
+  notify:
+    - reload caddy
+
+- name: Trigger Caddy handlers
+  meta: flush_handlers

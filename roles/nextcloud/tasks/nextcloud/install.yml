@@ -1,0 +1,69 @@
+- name: Création du dossier des sources de Nextcloud {{ nextcloud_version }}
+  file:
+    path: "{{ nextcloud_src_dir }}"
+    state: directory
+    owner: "{{ nextcloud_owner }}"
+    group: "{{ nextcloud_group }}"
+    mode: "755"
+
+- name: Téléchargement des sources de Nextcloud {{ nextcloud_version }} et vérification de la signature GPG
+  import_role: 
+    name: gpg-signature
+  vars:
+    gpg_public_key_url: "{{ nextcloud_gpg_public_key_url }}"
+    gpg_checksum_algorithm: "{{ nextcloud_checksum_algorithm }}"
+    gpg_verify_url: "{{ nextcloud_install_url }}"
+    gpg_verify_dir: "{{ nextcloud_src_dir }}"
+    gpg_verify_path: "{{ nextcloud_src_archive }}"
+    gpg_verify_owner: "{{ nextcloud_owner }}"
+    gpg_verify_group: "{{ nextcloud_group }}"
+    gpg_verify_mode: "644"
+
+- name: Création du dossier d'installation de Nextcloud {{ nextcloud_version }}
+  file:
+    path: "{{ nextcloud_install_dir }}"
+    state: directory
+    owner: "{{ nextcloud_owner }}"
+    group: "{{ nextcloud_group }}"
+    mode: "755"
+
+- name: Décompression de Nextcloud {{ nextcloud_version }}
+  unarchive:
+    src: "{{ nextcloud_src_archive }}"
+    dest: "{{ nextcloud_install_dir }}"
+    owner: "{{ nextcloud_owner }}"
+    group: "{{ nextcloud_group }}"
+    remote_src: yes
+    extra_opts: "--strip-components=1"
+
+- name: Création du dossier des données de Nextcloud {{ nextcloud_version }}
+  file:
+    path: "{{ nextcloud_data_dir }}"
+    owner: "{{ nextcloud_owner }}"
+    group: "{{ nextcloud_group }}"
+    mode: "755"
+    state: directory
+
+- name: Installation de Nextcloud {{ nextcloud_version }}
+  command: >-
+    {{ php_executable }} occ maintenance:install --no-interaction
+      --database {{ nextcloud_database_driver | quote }}
+      --database-name {{ nextcloud_database_name | quote }}
+      --database-host {{ nextcloud_database_host | quote }}
+      --database-port {{ nextcloud_database_port | quote }}
+      --database-user {{ nextcloud_database_username | quote }}
+      --database-pass {{ nextcloud_database_password | quote }}
+      --admin-user {{ nextcloud_admin_username | quote }}
+      --admin-pass {{ nextcloud_admin_password | quote }}
+      --admin-email {{ nextcloud_admin_email | quote }}
+      --data-dir {{ nextcloud_data_dir | quote }}
+  args:
+    chdir: "{{ nextcloud_install_dir }}"
+  become_user: "{{ nextcloud_owner }}"
+  notify:
+    - reload php-fpm
+
+- import_tasks: status.yml
+
+- name: Trigger Nextcloud handlers
+  meta: flush_handlers

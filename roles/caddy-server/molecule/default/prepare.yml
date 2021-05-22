@@ -1,0 +1,15 @@
+- name: Prepare
+  hosts: all
+  become: yes
+
+  pre_tasks:
+    - name: Mise à jour du cache APT
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+  tasks:
+    - name: Installation de Avahi
+      package:
+        name: avahi-daemon
+        state: present

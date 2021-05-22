@@ -1,0 +1,13 @@
+- name: Installation de PostgreSQL et de ses dépendences
+  package:
+    name: "{{ package }}"
+    state: present
+  loop: "{{ postgres_packages }}"
+  loop_control:
+    loop_var: package
+
+- name: Activation de PostgreSQL au démarrage
+  service:
+    name: postgresql
+    state: started
+    enabled: yes

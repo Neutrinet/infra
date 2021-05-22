@@ -4,7 +4,6 @@
 
 - hosts: web.neutri.net
   become: yes
-  
   pre_tasks:
     - name: Update cache
       apt:
@@ -12,4 +11,4 @@
         cache_valid_time: 3600
  
   roles:
-    - nginx-server
+    - caddy-server

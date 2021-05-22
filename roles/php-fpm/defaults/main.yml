@@ -1,0 +1,17 @@
+php_version: ""
+
+php_config_dir: "/etc/php/{{ php_version }}"
+php_fpm_config_dir: "{{ php_config_dir }}/fpm"
+php_fpm_common_config: "{{ php_fpm_config_dir }}/common.conf"
+
+php_listen_owner: www-data
+php_listen_group: "{{ php_listen_owner }}"
+php_listen_mode: "0660"
+
+php_max_children: 5
+php_process_idle_timeout: 10s
+php_max_requests: 500
+
+php_display_error: no
+
+php_modules: []

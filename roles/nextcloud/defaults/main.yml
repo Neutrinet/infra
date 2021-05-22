@@ -1,0 +1,77 @@
+nextcloud_domain: "{{ inventory_hostname }}.local"
+nextcloud_owner: "{{ nextcloud_domain | replace('.', '-') }}"
+nextcloud_group: "{{ nextcloud_owner }}"
+
+acme_enabled: no
+
+caddy_config_dir: /etc/caddy
+caddy_vhosts_dir: "{{ caddy_config_dir }}/conf.d"
+caddy_log_dir: /var/log/caddy
+nextcloud_caddy_log: "{{ caddy_log_dir }}/{{ nextcloud_domain }}.log"
+nextcloud_hsts_preload_enabled: no
+nextcloud_max_upload_size: 512MB
+
+nextcloud_app_social_enabled: no
+nextcloud_app_user_webfinger: no
+
+nextcloud_version: latest-19
+nextcloud_upgrade_enabled: yes
+nextcloud_gpg_public_key_url: https://nextcloud.com/nextcloud.asc
+nextcloud_checksum_algorithm: sha512
+nextcloud_install_url: https://download.nextcloud.com/server/releases/{{ nextcloud_version }}.tar.bz2
+nextcloud_src_dir: /usr/local/src/nextcloud-{{ nextcloud_version }}
+nextcloud_src_archive: "{{ nextcloud_src_dir }}/{{ nextcloud_install_url | basename }}"
+nextcloud_install_dir: /var/www/{{ nextcloud_owner }}
+nextcloud_data_dir: "{{ nextcloud_install_dir }}/data"
+nextcloud_import_file: "{{ nextcloud_install_dir }}/config/import.json"
+
+nextcloud_php_version: ""
+nextcloud_php_socket: /var/run/php-{{ nextcloud_owner }}.sock
+nextcloud_php_memory_limit: 512M
+
+nextcloud_postgres_install_enabled: yes
+nextcloud_database_driver: pgsql
+nextcloud_database_name: nextcloud
+nextcloud_database_username: nextcloud
+nextcloud_database_password: password
+nextcloud_database_host: localhost
+nextcloud_database_port: 5432
+
+nextcloud_redis_install_enabled: yes
+nextcloud_redis_socket: /var/run/redis/redis-server.sock
+nextcloud_redis_host: "{{ nextcloud_redis_socket }}"
+nextcloud_redis_port: 0
+nextcloud_redis_dbindex: 0
+nextcloud_redis_password:
+nextcloud_redis_timeout: "1.5"
+
+nextcloud_memcache_namespace: \OC\Memcache\
+nextcloud_memcache_local: APCu
+nextcloud_memcache_distributed: Redis
+nextcloud_memcache_locking: Redis
+
+nextcloud_timezone: Europe/Brussels
+nextcloud_config:
+  system:
+    trusted_domains:
+      0: "{{ nextcloud_domain }}"
+    overwrite.cli.url: "https://{{ nextcloud_domain }}"
+    datadirectory: "{{ nextcloud_data_dir }}"
+    dbname: "{{ nextcloud_database_name }}"
+    dbhost: "{{ nextcloud_database_host }}"
+    dbport: "{{ nextcloud_database_port }}"
+    dbuser: "{{ nextcloud_database_username }}"
+    dbpassword: "{{ nextcloud_database_password }}"
+    memcache.local: "{{ nextcloud_memcache_namespace }}{{ nextcloud_memcache_local }}"
+    memcache.distributed: "{{ nextcloud_memcache_namespace }}{{ nextcloud_memcache_distributed }}"
+    memcache.locking: "{{ nextcloud_memcache_namespace }}{{ nextcloud_memcache_locking }}"
+    redis:
+      host: "{{ nextcloud_redis_host }}"
+      port: "{{ nextcloud_redis_port }}"
+      dbindex: "{{ nextcloud_redis_dbindex }}"
+      password: "{{ nextcloud_redis_password }}"
+      timeout: "{{ nextcloud_redis_timeout }}"
+
+nextcloud_admin_email: nextcloud@example.com
+nextcloud_admin_username: admin
+nextcloud_admin_password: password
