@@ -1,40 +1,38 @@
 ---
 # Configuration des dépôts et des mises à jour automatiques
 - name: Copie des fichiers de dépôts
-  copy:
-    src: "apt/{{ ansible_distribution_release }}/{{ repo }}"
-    dest: /etc/apt/{{ repo }}
+  template:
+    src: "apt/sources.list.j2"
+    dest: /etc/apt/sources.list
     owner: root
     group: root
-    mode: "u+rw,go+r"
-  loop:
-  - sources.list
-  - source-security.list
-  loop_control:
-    loop_var: repo
+    mode: "u=rw,go=r"
   register: apt_sources
-
-- name: Définition de la priorité des backports (Stretch)
-  copy:
-    content: |
-      Package: *
-      Pin: release a=stretch-backports
-      Pin-Priority: 500
-    dest: /etc/apt/preferences.d/99-backports
-    owner: root
-    group: root
-    mode: "u+rw,go+r"
-  register: backports_priority
-  when: debian_release is defined and debian_release == 'stretch'
 
 - name: Mise à jour du cache apt
   apt:
     upgrade: safe
     update_cache: yes
-  when: apt_sources is changed or backports_priority is changed
+    cache_valid_time: "3600"
+  when: apt_sources is changed
 
 - name: Installation de unattended-upgrades
-  apt:
+  ansible.builtin.package:
     name: unattended-upgrades
     state: present
-    cache_valid_time: "3600"
+
+- name: Copie du template unattended-upgrade
+  template:
+    src: repos/50unattended-upgrades.j2
+    dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: Copie du template 20auto-updates
+  copy:
+    src: repos/20auto-updates
+    dest: "/etc/apt/apt.conf.d/20auto-updates"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"

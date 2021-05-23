@@ -65,11 +65,13 @@
     owner: root
     group: root
     mode: "u+rw,og+r"
-  notify:
-  - restart ssh
+  notify: restart ssh
 
 - name: Activation du service SSH au démarrage
   service:
     name: ssh
     state: started
     enabled: yes
+
+- name: Trigger SSH handlers
+  meta: flush_handlers
