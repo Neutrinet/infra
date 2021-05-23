@@ -2,7 +2,7 @@
 # confgig general de tout les hosts
 
 - name: Installation de zsh & pygments
-  apt:
+  ansible.builtin.package:
     name:
     - zsh
     - python-pygments
@@ -10,7 +10,7 @@
 
 - name: Copie des fichiers de configuration de zsh
   copy:
-    src: "{{ config_file }}"
+    src: "zsh/{{ config_file }}"
     dest: /etc/zsh/{{ config_file }}
     owner: root
     group: root

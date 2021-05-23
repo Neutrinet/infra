@@ -3,7 +3,7 @@
 - name: Ajout de l'utilisateur {{ user.name }}
   user:
     name: "{{ user.name }}"
-    shell: /bin/bash
+    shell: "{{ user.shell | default('/bin/bash') }}"
     # See https://unix.stackexchange.com/questions/193066/how-to-unlock-account-for-public-key-ssh-authorization-but-not-for-password-aut/193131#193131
     password: '*'
     groups: 
