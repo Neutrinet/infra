@@ -38,5 +38,9 @@ users:
     state: present
     keys:
       - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDt0fB0C+G96ku1/Gp28As9fUGksS+qa3mWX7NSxRU+91CN+IR6eUL3r6ABDphBAgnrsjyKOxR7NQa50h9EptKoPzzd00+iQmum0v3OEIsU69aQSpoLFp9YIcF/A/uDuJhc6jSnrad3rrRMMlux1bDA6JX7vVDvSKHUaQzif+MfyLAvpoowfO6e6gec9M9T6L98lvlsWh3bmlgo49PObggijW/UhN6QRE7u3+Ut7SnlrENcwjFPyhwlJrYetQNP4GBezstZVMG4YJybiHwJsaNWmmewk86RyNO9bjkXMCj3qy6UGqkaw0TeTXZZVusDv+hqPOqe5ctxvm6ODGJtcq2L"
+  - name: celo
+    state: present
+    keys:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPjigU9KeN4e973Lhbp39RvifzkC0uVZjTefD8wXtNDE celo@smeagol"
 
 mail_notification: "hub-infra@neutrinet.be"
