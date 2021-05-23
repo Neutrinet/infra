@@ -9,7 +9,7 @@
   shell:
     cmd: | 
       /opt/letsencrypt/bin/certbot certonly \
-      --staging --non-interactive \
+      --non-interactive \
       --authenticator dns-gandi \
       --dns-gandi-credentials /etc/letsencrypt/gandi/gandi.ini \
       --key-type ecdsa \

@@ -48,7 +48,7 @@
   shell:
     cmd: | 
       /opt/letsencrypt/bin/certbot register \
-      --staging --non-interactive \
+      --non-interactive \
       --email {{ mail_notification }} \
       --no-eff-email \
       --agree-tos
