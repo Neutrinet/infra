@@ -1,0 +1,8 @@
+http://{{ inventory_hostname }} {
+    respond * 404
+    respond /healthcheck 200
+
+    log {
+        output file {{ caddy_healthcheck_log | to_json }}
+    }
+}

@@ -1,10 +1,18 @@
 haproxy: 
   - hostname: neutrinet.be
-    target: grav.patata.neutrinet.be
+    target: grav.patata.louise.neutri.net
     target_port: 80
     healthcheck: false
   - hostname: www.neutrinet.be
-    target: grav.patata.neutrinet.be
+    target: grav.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+  - hostname: mediawiki.neutrinet.be
+    target: web-static.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+  - hostname: wikijs.neutrinet.be
+    target: web-static.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
 

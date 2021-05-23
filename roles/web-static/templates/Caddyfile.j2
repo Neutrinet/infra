@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+
+http://{{ domain }} {
+    root * {{ domain_data_dir | to_json }}
+    encode gzip
+    file_server
+   
+    log {
+        output file {{ domain_caddy_log | to_json }}
+    }
+}

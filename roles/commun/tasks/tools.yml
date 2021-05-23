@@ -19,4 +19,7 @@
     - rsync
     - tmux
     - sudo
+    - ca-certificates
+    - openssl
+    - jq
     state: present

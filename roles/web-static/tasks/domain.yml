@@ -1,0 +1,29 @@
+---
+- name: Création de l'utilisateur {{ domain_owner }}
+  user:
+    name: "{{ domain_owner }}"
+    shell: /sbin/nologin
+    system: yes
+    state: present
+  tags: user
+
+- name: Création du dossier {{ domain_data_dir }}
+  file:
+    path: "{{ domain_data_dir }}"
+    owner: "{{ domain_owner }}"
+    group: "{{ domain_owner }}"
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Copie de la configuration Caddy2
+  template:
+    src: Caddyfile.j2
+    dest: "{{ caddy_vhosts_dir }}/{{ domain_owner }}.conf"
+    owner: root
+    group: root
+    mode: "644"
+  notify: reload caddy
+  tags: caddy_config
+
+- name: Trigger Caddy handlers
+  meta: flush_handlers

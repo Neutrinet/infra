@@ -1,7 +1,9 @@
 ---
 - name: Installation de GPG
   package:
-    name: gpg
+    name: 
+      - gpg
+      - gpg-agent
     state: present
 
 - name: Ajout de la clé GPG de Caddy dans APT
@@ -26,7 +28,7 @@
     state: directory
     owner: root
     group: root
-    mode: "0755"
+    mode: "u=rwx,go=rx"
 
 - name: Copie du fichier de config principal
   template:
@@ -34,7 +36,17 @@
     dest: "{{ caddy_config_dir }}/Caddyfile"
     owner: root
     group: root
-    mode: "0644"
+    mode: "u=rw,go=r"
+    validate: caddy validate --adapter caddyfile --config %s
+  notify: reload caddy
+
+- name: Copie de la config du healthcheck 
+  template:
+    src: healthcheck.Caddyfile.j2
+    dest: "{{ caddy_vhosts_dir }}/healthcheck.conf"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
     validate: caddy validate --adapter caddyfile --config %s
   notify: reload caddy
 
@@ -44,10 +56,13 @@
     state: directory
     owner: "{{ caddy_owner }}"
     group: "{{ caddy_group }}"
-    mode: "0750"
+    mode: "u=rwx,g=rx,o="
 
 - name: Activation du service caddy au démarage
   service:
     name: caddy
     state: started
     enabled: yes
+
+- name: Trigger Caddy handlers
+  meta: flush_handlers

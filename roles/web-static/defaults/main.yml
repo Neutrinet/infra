@@ -1,0 +1,4 @@
+web_static_data_dir: /var/www
+web_static_domains:
+  - mediawiki.neutrinet.be
+  - wikijs.neutrinet.be
