@@ -6,7 +6,7 @@
     dest: /etc/apt/sources.list
     owner: root
     group: root
-    mode: "u+rw,go+r"
+    mode: "u=rw,go=r"
   register: apt_sources
 
 - name: Mise à jour du cache apt
@@ -27,7 +27,7 @@
     dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
     owner: root
     group: root
-    mode: "u=rwx,go=r"
+    mode: "u=rw,go=r"
 
 - name: Copie du template 20auto-updates
   copy:
@@ -35,4 +35,4 @@
     dest: "/etc/apt/apt.conf.d/20auto-updates"
     owner: root
     group: root
-    mode: "u=rwx,go=r"
+    mode: "u=rw,go=r"

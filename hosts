@@ -1,7 +1,7 @@
 [all]
 # Machines physiques 
 #
-# Troll et Orval - Proxmox
+# Nam et Bour - Proxmox
 #
 # 2 x HP Gen 8 avec chacun 2 x Xeon 16 core - 2 x 32Gb
 # Le controleur Raid actuel est limité à 2 volumes logiques, c'est chiant
@@ -18,26 +18,30 @@
 # https://www.serverhome.nl/parts/harddisk/brackets/hp/hp-bracket-gen8-651687-001.html
 # https://www.serverhome.nl/hp-smart-array-p420-raid-controller.html
 # 
-# Comptoir - Pour le Quorum Ceph
+# topi - Pour le Quorum Ceph
 # 
 # Mini PC Fanless, 1 x Celeron® (avec AES), 1 x 4Gb (max possible 32Gb), 1 disque SSD 32Gb, 6 ports RJ45
 #
-#comptoir.neutri.net ansible_become=yes
-orval.neutri.net ansible_become=yes
-troll.neutri.net ansible_become=yes
-
-# Machines Virtuelles
-#
-gw.neutri.net ansible_become=yes
-vpn.neutri.net ansible_become=yes
-web.neutri.net ansible_become=yes
-dns.neutri.net ansible_become=yes
+topi.louise.neutri.net
+nam.louise.neutri.net
+bour.louise.neutri.net
 
 # Hors datacenter
 #
 # mail.neutri.net
 # support.neutri.net
-monitor.neutri.net ansible_become=yes
+mail.htz.neutri.net
+monitoring.htz.neutri.net
+probe-01.first.neutri.net
+probe-02.ovh.neutri.net
+
+[patata]
+# Machines Virtuelles
+#
+vpn.patata.louise.neutri.net
+web.patata.louise.neutri.net
+dns.patata.louise.neutri.net
+meta.patata.louise.neutri.net
 
 [nextcloud]
-web.neutri.net
+web.patata.louise.neutri.net
