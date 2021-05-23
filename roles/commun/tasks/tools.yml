@@ -18,4 +18,5 @@
     - screen
     - rsync
     - tmux
+    - sudo
     state: present

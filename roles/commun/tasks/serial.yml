@@ -1,0 +1,34 @@
+---
+
+- name: Enable serial ttyS0
+  lineinfile:
+    path: "/etc/default/grub"
+    regexp: 'GRUB_CMDLINE_LINUX_DEFAULT="(.*)"'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS0,115200n8 console=tty0 quiet"'
+  register: grub_cmd_default
+
+- name: Clean option grub
+  lineinfile:
+    path: "/etc/default/grub"
+    regexp: 'GRUB_CMDLINE_LINUX="(.*)"'
+    line: 'GRUB_CMDLINE_LINUX=""'
+  register: grub_cmd
+
+- name: Enable serial and console in grub
+  lineinfile:
+    path: "/etc/default/grub"
+    line: 'GRUB_TERMINAL="serial console"'
+    create: yes
+  register: grub_terminal
+
+- name: Config serial speed in grub
+  lineinfile:
+    path: "/etc/default/grub"
+    line: 'GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"'
+    create: yes
+  register: grub_serial
+
+- name: update grub
+  shell: 
+    cmd: "grub-mkconfig -o /boot/grub/grub.cfg"
+  when: grub_cmd_default is changed or grub_cmd is changed or grub_terminal is changed or grub_terminal is changed

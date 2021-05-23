@@ -1,0 +1,13 @@
+haproxy: 
+  - hostname: neutrinet.be
+    target: grav.patata.neutrinet.be
+    target_port: 80
+    healthcheck: false
+  - hostname: www.neutrinet.be
+    target: grav.patata.neutrinet.be
+    target_port: 80
+    healthcheck: true
+
+haproxy-redirect:
+  - from: www.neutrinet.be
+    to: neutrinet.be

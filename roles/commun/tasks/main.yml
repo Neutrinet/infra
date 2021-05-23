@@ -6,15 +6,18 @@
   tags: motd
 - import_tasks: openssh.yml
   tags: openssh
-- import_tasks: sshguard.yml
-  tags: sshguard
 - import_tasks: tools.yml
   tags: tools
-- import_tasks: users.yml
-  tags: users
 - import_tasks: zsh.yml
   tags: zsh
+- import_tasks: users.yml
+  tags: users
 - import_tasks: locales.yml
   tags: locales
 - import_tasks: time.yml
   tags: time
+- import_tasks: sshguard.yml
+  tags: sshguard
+- import_tasks: serial.yml
+  tags: serial
+  when: ansible_virtualization_type == 'kvm'

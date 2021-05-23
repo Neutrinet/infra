@@ -38,10 +38,12 @@ probe-02.ovh.neutri.net
 [patata]
 # Machines Virtuelles
 #
-vpn.patata.louise.neutri.net
-web.patata.louise.neutri.net
-dns.patata.louise.neutri.net
-meta.patata.louise.neutri.net
+haproxy-01.patata.louise.neutri.net
+haproxy-02.patata.louise.neutri.net
 
 [nextcloud]
 web.patata.louise.neutri.net
+
+[haproxy]
+haproxy-01.patata.louise.neutri.net
+haproxy-02.patata.louise.neutri.net

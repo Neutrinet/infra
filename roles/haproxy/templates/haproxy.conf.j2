@@ -1,0 +1,71 @@
+global
+    nbproc 1
+    nbthread 4
+    cpu-map auto:1/1-4 0-3
+    maxconn 20480
+
+    log /dev/log	local0
+    log /dev/log	local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
+
+    # https://stackoverflow.com/a/64119235
+    noreuseport
+
+    # generated 2021-04-28, Mozilla Guideline v5.6, HAProxy 2.2.8, OpenSSL 1.1.1d, intermediate configuration
+    # https://ssl-config.mozilla.org/#server=haproxy&version=2.2.8&config=intermediate&openssl=1.1.1d&guideline=5.6
+    # intermediate configuration
+    ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+    ssl-default-bind-options prefer-client-ciphers no-sslv3 no-tlsv10 no-tlsv11 no-tls-tickets
+
+    ssl-default-server-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    ssl-default-server-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+    ssl-default-server-options no-sslv3 no-tlsv10 no-tlsv11 no-tls-tickets
+
+defaults
+    log	global
+    mode	http
+    option	dontlognull
+    option	httplog
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
+    errorfile 400 /etc/haproxy/errors/400.http
+    errorfile 403 /etc/haproxy/errors/403.http
+    errorfile 408 /etc/haproxy/errors/408.http
+    errorfile 500 /etc/haproxy/errors/500.http
+    errorfile 502 /etc/haproxy/errors/502.http
+    errorfile 503 /etc/haproxy/errors/503.http
+    errorfile 504 /etc/haproxy/errors/504.http
+
+frontend haproxy-frontend
+    bind :80
+    bind :443 ssl crt /etc/haproxy/ssl alpn h2,http/1.1 allow-0rtt
+    mode http
+
+    http-response set-header Strict-Transport-Security max-age=63072000
+    redirect scheme https code 301 if !{ ssl_fc }
+
+{% for host in haproxy %}
+    acl {{ host.hostname | replace('.', '-') }}-acl hdr(host) {{ host.hostname }}
+    use_backend {{ host.hostname | replace('.', '-') }}-backend if {{ host.hostname | replace('.', '-') }}-acl
+
+{% endfor %}
+
+{% for host in haproxy %}
+backend {{ host.hostname | replace('.', '-') }}-backend
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    mode http
+{% if "healthcheck" in host and host.healthcheck %}
+    option httpchk GET /healthcheck
+{% endif %}
+    option forwardfor
+    option http-server-close
+    server {{ host.target | replace('.', '-') }} {{ host.target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check{% endif %} cookie sl
+
+{% endfor %}

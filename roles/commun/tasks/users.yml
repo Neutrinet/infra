@@ -20,3 +20,6 @@
   loop: "{{ users }}"
   loop_control:
     loop_var: user
+
+- name: Trigger SSH handlers
+  meta: flush_handlers

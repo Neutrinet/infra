@@ -72,6 +72,3 @@
     name: ssh
     state: started
     enabled: yes
-
-- name: Trigger SSH handlers
-  meta: flush_handlers
