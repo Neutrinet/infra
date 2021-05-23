@@ -17,7 +17,7 @@
   when: apt_sources is changed
 
 - name: Installation de unattended-upgrades
-  apt:
+  ansible.builtin.package:
     name: unattended-upgrades
     state: present
 

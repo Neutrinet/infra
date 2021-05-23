@@ -6,7 +6,6 @@
   tags: motd
 - import_tasks: openssh.yml
   tags: openssh
-- import_tasks: local.yml
 - import_tasks: sshguard.yml
   tags: sshguard
 - import_tasks: tools.yml

@@ -2,7 +2,7 @@
 # confgig general de tout les hosts
 
 - name: Installation de zsh & pygments
-  apt:
+  ansible.builtin.package:
     name:
     - zsh
     - python-pygments
