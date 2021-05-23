@@ -1,3 +1,6 @@
+letsencrypt:
+    - neutrinet.be
+
 haproxy: 
   - hostname: neutrinet.be
     target: grav.patata.louise.neutri.net

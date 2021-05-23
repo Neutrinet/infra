@@ -1,4 +1,0 @@
----
-
-- name: acmebot update # noqa 305
-  shell: /opt/acmebot/.env/bin/python /opt/acmebot/acmebot --accept --quiet
