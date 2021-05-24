@@ -1,6 +1,6 @@
 {{ ansible_managed | comment }}
 
-http://{{ domain }} {
+http://{{ domain.name }} {
     root * {{ domain_data_dir | to_json }}
     encode gzip
     file_server

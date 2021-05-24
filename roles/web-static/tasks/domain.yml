@@ -2,6 +2,7 @@
 - name: Création de l'utilisateur {{ domain_owner }}
   user:
     name: "{{ domain_owner }}"
+    home: "{{ domain_owner_home_dir }}"
     shell: /sbin/nologin
     system: yes
     state: present
@@ -17,7 +18,7 @@
 
 - name: Copie de la configuration Caddy2
   template:
-    src: Caddyfile.j2
+    src: "{{ domain.template }}"
     dest: "{{ caddy_vhosts_dir }}/{{ domain_owner }}.conf"
     owner: root
     group: root

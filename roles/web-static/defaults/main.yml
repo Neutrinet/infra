@@ -1,3 +1,4 @@
 web_static_data_dir: /var/www
 web_static_domains:
-  - example.com
+  - name: example.com
+    template: caddy/mediawiki.j2

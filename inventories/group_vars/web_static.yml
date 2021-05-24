@@ -1,3 +1,5 @@
 web_static_domains:
-  - mediawiki.neutrinet.be
-  - wikijs.neutrinet.be
+  - name: mediawiki.neutrinet.be
+    template: caddy/mediawiki.j2
+  - name: wikijs.neutrinet.be
+    template: caddy/wikijs.j2

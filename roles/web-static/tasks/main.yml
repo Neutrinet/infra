@@ -4,12 +4,13 @@
     name: caddy-server
   tags: caddy_install
 
-- name: Configuration des domaines statiques
+- name: Configuration des sites statiques
   include_tasks: domain.yml
   loop: "{{ web_static_domains }}"
   loop_control:
     loop_var: domain
   vars:
-    domain_owner: "{{ domain | replace('.', '-') }}"
-    domain_data_dir: "{{ web_static_data_dir }}/{{ domain_owner }}"
+    domain_owner: "{{ domain.name | replace('.', '-') }}"
+    domain_owner_home_dir: "{{ web_static_data_dir }}/{{ domain_owner }}"
+    domain_data_dir: "{{ domain_owner_home_dir }}/dist"
     domain_caddy_log: "{{ caddy_log_dir }}/{{ domain_owner }}.log"

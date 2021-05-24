@@ -1,0 +1,14 @@
+{{ ansible_managed | comment }}
+
+http://{{ domain.name }} {
+    root * {{ domain_data_dir | to_json }}
+    encode gzip
+    file_server {
+        hide .*
+        index Main_Page.html
+    }
+   
+    log {
+        output file {{ domain_caddy_log | to_json }}
+    }
+}
