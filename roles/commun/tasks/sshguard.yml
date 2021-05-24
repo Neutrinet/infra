@@ -10,13 +10,15 @@
     path: /etc/default/sshguard
   register: sshguard_config_file
 
-# FIXME: Probably better to copy our own default config? Also, check that in buster, sshguard config file is still in /etc/default/sshguard because the file doesn't exist after install
+# FIXME: Probably better to copy our own default config? Also,
+# check that in buster, sshguard config file is still in /etc/default/sshguard because the file doesn't exist after install
+
 - name: Configuration du pare-feu sshguard
   replace:
     dest: /etc/default/sshguard
     regexp: '^ENABLE_FIREWALL=1$'
     replace: 'ENABLE_FIREWALL=0'
-    backup: no
+    backup: false
   when: sshguard_config_file.stat.exists
   notify: restart sshguard
 
@@ -24,7 +26,7 @@
   service:
     name: sshguard
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Trigger sshguard handlers
   meta: flush_handlers

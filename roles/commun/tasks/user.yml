@@ -6,11 +6,12 @@
     shell: "{{ user.shell | default('/bin/bash') }}"
     # See https://unix.stackexchange.com/questions/193066/how-to-unlock-account-for-public-key-ssh-authorization-but-not-for-password-aut/193131#193131
     password: '*'
-    groups: 
-    - sudo
-    append: yes
+    groups:
+      - sudo
+    append: true
     state: "{{ user.state }}"
     update_password: on_create
+  no_log: true
 
 - name: Ajout des clés SSH pour l'utilisateur {{ user.name }}
   authorized_key:
@@ -19,11 +20,11 @@
     # we can pass multiple keys, but they must be separated by newlines
     key: "{{ user['keys'] | join('\n') }}"
     # remove obsolete keys
-    exclusive: yes
+    exclusive: true
   when: user.state == 'present'
 
 - name: Suppression du dossier SSH de l'utilisateur {{ user.name }}
   file:
-    path: "/home/{{ user.name}}/.ssh"
+    path: "/home/{{ user.name }}/.ssh"
     state: absent
   when: user.state == 'absent'

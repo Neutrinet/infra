@@ -9,11 +9,10 @@
     mode: "u=rw,go=r"
   register: apt_sources
 
-- name: Mise à jour du cache apt
+- name: Mise à jour du cache apt  # noqa 503
   apt:
     upgrade: safe
-    update_cache: yes
-    cache_valid_time: "3600"
+    update_cache: true
   when: apt_sources is changed
 
 - name: Installation de unattended-upgrades

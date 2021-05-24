@@ -3,21 +3,24 @@
 # pour plus d'info, il faut regarder dans roles/*
 
 - hosts: all
-  become: yes
+  become: true
 
   pre_tasks:
     - name: Update cache
       apt:
-        update_cache: yes
+        update_cache: true
         cache_valid_time: 3600
 
   roles:
     - commun
 
   tasks:
-    - import_role:
+    - name: Apllication du role haproxy
+      import_role:
         name: haproxy
       when: "'haproxy' in group_names"
-    - import_role:
+
+    - name: Apllication du role web-static
+      import_role:
         name: web-static
       when: "'web_static' in group_names"

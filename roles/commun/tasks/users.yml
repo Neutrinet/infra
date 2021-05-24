@@ -7,7 +7,7 @@
     regexp: '^%sudo'
     line: '%sudo ALL=(ALL) NOPASSWD: ALL'
     validate: 'visudo -cf %s'
-  tags: sudo
+  tags: ['sudo']
 
 - name: Update root
   user:

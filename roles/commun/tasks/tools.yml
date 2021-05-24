@@ -3,23 +3,25 @@
 - name: Installation de divers outils
   ansible.builtin.package:
     name:
-    - git
-    - unzip
-    - htop
-    - tree
-    - wget
-    - curl
-    - nano
-    - molly-guard
-    - vim
-    - mosh
-    - qemu-guest-agent
-    - ncdu
-    - screen
-    - rsync
-    - tmux
-    - sudo
-    - ca-certificates
-    - openssl
-    - jq
+      - git
+      - unzip
+      - htop
+      - tree
+      - wget
+      - curl
+      - nano
+      - molly-guard
+      - vim
+      - mosh
+      - qemu-guest-agent
+      - ncdu
+      - screen
+      - rsync
+      - tmux
+      - sudo
+      - ca-certificates
+      - openssl
+      - jq
+      - dbus
+      - safe-rm
     state: present

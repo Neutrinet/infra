@@ -2,7 +2,7 @@
 - name: Installation de Caddy2
   import_role:
     name: caddy-server
-  tags: caddy_install
+  tags: ['caddy_install']
 
 - name: Configuration des sites statiques
   include_tasks: domain.yml

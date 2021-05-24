@@ -4,8 +4,8 @@
 - name: Installation du serveur openssh
   package:
     name: ssh
-    state: latest
-  
+    state: present
+
 - name: Récupération des informations de la clé SSH DSA
   stat:
     path: /etc/ssh/ssh_host_dsa_key
@@ -16,15 +16,15 @@
   file:
     path: /etc/ssh/{{ key_file }}
     state: absent
-  loop:
-  - ssh_host_dsa_key
-  - ssh_host_dsa_key.pub
-  - ssh_host_ecdsa_key
-  - ssh_host_ecdsa_key.pub
-  - ssh_host_ed25519_key
-  - ssh_host_ed25519_key.pub
-  - ssh_host_rsa_key
-  - ssh_host_rsa_key.pub
+    loop:
+      - ssh_host_dsa_key
+      - ssh_host_dsa_key.pub
+      - ssh_host_ecdsa_key
+      - ssh_host_ecdsa_key.pub
+      - ssh_host_ed25519_key
+      - ssh_host_ed25519_key.pub
+      - ssh_host_rsa_key
+      - ssh_host_rsa_key.pub
   loop_control:
     loop_var: key_file
   when: ssh_host_key_file.stat.exists
@@ -51,7 +51,7 @@
   register: ssh_obsolete_moduli
   changed_when: ssh_obsolete_moduli.stdout | length > 0
 
-- name: Réduction du modulo SSH
+- name: Réduction du modulo SSH  # noqa 503
   raw: >-
     awk '$5 > 2000' /etc/ssh/moduli > /tmp/moduli &&
     mv /tmp/moduli /etc/ssh/moduli
@@ -71,4 +71,4 @@
   service:
     name: ssh
     state: started
-    enabled: yes
+    enabled: true

@@ -3,9 +3,9 @@
 - name: Instalation des dépendance
   ansible.builtin.package:
     name:
-    - python3-dev
-    - python3-virtualenv
-    - virtualenv
+      - python3-dev
+      - python3-virtualenv
+      - virtualenv
     state: present
 
 - name: "Création des dossier"
@@ -23,9 +23,9 @@
 - name: Install pip
   ansible.builtin.pip:
     name:
-    - pip
-    - certbot
-    - certbot-plugin-gandi
+      - pip
+      - certbot
+      - certbot-plugin-gandi
     virtualenv: /opt/letsencrypt
     virtualenv_python: python3
     state: latest
@@ -44,9 +44,9 @@
     path: /etc/letsencrypt/accounts
   register: letsencrypt_accounts
 
-- name: Enregistrement du compte LE
+- name: Enregistrement du compte LE  # noqa command-instead-of-shell
   shell:
-    cmd: | 
+    cmd: |
       /opt/letsencrypt/bin/certbot register \
       --non-interactive \
       --email {{ mail_notification }} \

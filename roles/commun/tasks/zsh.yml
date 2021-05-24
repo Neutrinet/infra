@@ -4,9 +4,9 @@
 - name: Installation de zsh & pygments
   ansible.builtin.package:
     name:
-    - zsh
-    - python-pygments
-    - safe-rm
+      - zsh
+      - python-pygments
+      - safe-rm
 
 - name: Copie des fichiers de configuration de zsh
   copy:
@@ -16,11 +16,11 @@
     group: root
     mode: "u+rw,go+r"
   loop:
-  - zlogin
-  - zlogout
-  - zprofile
-  - zshenv
-  - zshfct
-  - zshrc
+    - zlogin
+    - zlogout
+    - zprofile
+    - zshenv
+    - zshfct
+    - zshrc
   loop_control:
     loop_var: config_file

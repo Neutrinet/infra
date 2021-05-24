@@ -11,6 +11,10 @@
     state: restarted
 
 - name: restart sshguard
-  service: 
+  service:
     name: sshguard
     state: restarted
+
+- name: update grub  # noqa command-instead-of-shell
+  shell:
+    cmd: "grub-mkconfig -o /boot/grub/grub.cfg"

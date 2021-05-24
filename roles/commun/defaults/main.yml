@@ -1,3 +1,5 @@
+---
+
 mail_notification: ahoy@example.com
 users:
   - name: neutrinet
