@@ -1,7 +1,7 @@
 ---
 - name: Installation de GPG
   package:
-    name: 
+    name:
       - gpg
       - gpg-agent
     state: present
@@ -40,7 +40,7 @@
     validate: caddy validate --adapter caddyfile --config %s
   notify: reload caddy
 
-- name: Copie de la config du healthcheck 
+- name: Copie de la config du healthcheck
   template:
     src: healthcheck.Caddyfile.j2
     dest: "{{ caddy_vhosts_dir }}/healthcheck.conf"
@@ -62,7 +62,7 @@
   service:
     name: caddy
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Trigger Caddy handlers
   meta: flush_handlers
