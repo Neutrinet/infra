@@ -4,4 +4,5 @@
   become: true
 
   roles:
-    - web-static
+    - caddy-server
+    - web-app

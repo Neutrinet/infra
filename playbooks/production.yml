@@ -14,13 +14,8 @@
   roles:
     - commun
 
-  tasks:
-    - name: Apllication du role haproxy
-      import_role:
-        name: haproxy
-      when: "'haproxy' in group_names"
+- name: Application du role haproxy
+  import_playbook: haproxy.yml
 
-    - name: Apllication du role web-static
-      import_role:
-        name: web-static
-      when: "'web_static' in group_names"
+- name: Application du role web-static
+  import_playbook: web-static.yml
