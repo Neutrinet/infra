@@ -4,4 +4,4 @@
   become: true
 
   roles:
-    - commun
+    - web_static

@@ -1,0 +1,15 @@
+---
+- name: Installation de Caddy2
+  import_role:
+    name: caddy_server
+  tags: ['caddy_install']
+
+- name: Configuration des sites statiques
+  include_role:
+    name: web_app
+  loop: "{{ web_static_domains }}"
+  loop_control:
+    loop_var: domain
+  vars:
+    web_app_domain: "{{ domain.name }}"
+    web_app_template: "{{ domain.template | default('Caddyfile.j2') }}"

@@ -1,0 +1,4 @@
+web_static_domains:
+  - name: example.com
+  - name: wiki.example.com
+    template: caddy/mediawiki.j2

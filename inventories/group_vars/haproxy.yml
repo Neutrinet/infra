@@ -1,7 +1,7 @@
 letsencrypt:
-    - neutrinet.be
+  - neutrinet.be
 
-haproxy: 
+haproxy:
   - hostname: neutrinet.be
     target: grav.patata.louise.neutri.net
     target_port: 80

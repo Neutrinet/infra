@@ -1,0 +1,68 @@
+---
+- name: Installation de GPG
+  package:
+    name:
+      - gpg
+      - gpg-agent
+    state: present
+
+- name: Ajout de la clé GPG de Caddy dans APT
+  apt_key:
+    url: https://dl.cloudsmith.io/public/caddy/stable/gpg.155B6D79CA56EA34.key
+    state: present
+
+- name: Ajout du dépôt APT Caddy
+  apt_repository:
+    repo: deb https://dl.cloudsmith.io/public/caddy/stable/deb/{{ ansible_distribution | lower }} any-version main
+    filename: caddy-stable
+    state: present
+
+- name: Installation de Caddy
+  package:
+    name: caddy
+    state: present
+
+- name: Création du dossier de config des VHosts
+  file:
+    path: "{{ caddy_vhosts_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: Copie du fichier de config principal
+  template:
+    src: Caddyfile.j2
+    dest: "{{ caddy_config_dir }}/Caddyfile"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: caddy validate --adapter caddyfile --config %s
+  notify: reload caddy
+
+- name: Copie de la config du healthcheck
+  template:
+    src: healthcheck.Caddyfile.j2
+    dest: "{{ caddy_vhosts_dir }}/healthcheck.conf"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: caddy validate --adapter caddyfile --config %s
+  notify: reload caddy
+
+- name: Création du dossier des logs
+  file:
+    path: "{{ caddy_log_dir }}"
+    state: directory
+    owner: "{{ caddy_owner }}"
+    group: "{{ caddy_group }}"
+    mode: "u=rwx,g=rx,o="
+
+- name: Activation du service caddy au démarage
+  service:
+    name: caddy
+    state: started
+    enabled: true
+
+- name: Trigger Caddy handlers
+  meta: flush_handlers

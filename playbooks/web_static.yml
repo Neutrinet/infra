@@ -1,0 +1,13 @@
+---
+# Déploiement des sites web statiques
+- hosts: web_static
+  become: true
+
+  pre_tasks:
+    - name: Update cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+  roles:
+    - web_static
