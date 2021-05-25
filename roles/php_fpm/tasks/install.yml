@@ -29,4 +29,4 @@
   service:
     name: "{{ php_fpm_executable }}"
     state: started
-    enabled: false
+    enabled: true
