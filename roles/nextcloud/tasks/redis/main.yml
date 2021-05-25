@@ -13,6 +13,6 @@
     state: present
     groups:
       - redis
-    append: yes
+    append: true
   notify:
     - reload php-fpm

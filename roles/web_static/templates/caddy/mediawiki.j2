@@ -7,7 +7,7 @@ http://{{ web_app_domain }} {
         hide .*
         index Main_Page.html
     }
-   
+
     log {
         output file {{ web_app_caddy_log | to_json }}
     }

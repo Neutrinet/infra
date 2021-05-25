@@ -20,7 +20,7 @@
     - /etc/letsencrypt/gandi
     - /opt/letsencrypt
 
-- name: Install pip
+- name: Install pip  # noqa package-latest
   ansible.builtin.pip:
     name:
       - pip

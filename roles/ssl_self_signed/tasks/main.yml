@@ -1,0 +1,14 @@
+- name: Installation des dépendences SSL et création des dossiers SSL
+  import_tasks: install.yml
+  tags: ssl_install
+
+- name: Installation des certificats de chaque domaine
+  include_tasks:
+    file: domain.yml
+    apply:
+      tags: ssl_domain
+  loop: "{{ ssl_domains }}"
+  loop_control:
+    loop_var: domain
+    label: "{{ domain.name }}"
+  tags: ssl_domain

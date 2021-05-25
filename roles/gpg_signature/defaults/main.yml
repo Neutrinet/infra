@@ -1,0 +1,19 @@
+gpg_public_key_url: "http://example.com/public-key.gpg"
+gpg_checksum_algorithm: sha256
+
+gpg_verify_url: "http://example.com/file.tar.gz"
+gpg_signature_url: "{{ gpg_verify_url }}.asc"
+gpg_checksum_url: "{{ gpg_verify_url }}.{{ gpg_checksum_algorithm }}"
+
+gpg_verify_dir: "/tmp"
+gpg_signature_dir: "{{ gpg_verify_dir }}"
+
+gpg_verify_path: "{{ gpg_verify_dir }}/{{ gpg_verify_url | basename }}"
+gpg_signature_path: "{{ gpg_signature_dir }}/{{ gpg_signature_url | basename }}"
+
+gpg_verify_owner: root
+gpg_verify_group: "{{ gpg_verify_owner }}"
+gpg_verify_mode: "644"
+gpg_signature_owner: "{{ gpg_verify_owner }}"
+gpg_signature_group: "{{ gpg_signature_owner }}"
+gpg_signature_mode: "{{ gpg_verify_mode }}"

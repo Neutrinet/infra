@@ -4,7 +4,7 @@
 
 - name: Création de la base de données et de l'utilisateur PostgreSQL
   import_role:
-    name: postgres-user
+    name: postgres_user
   vars:
     postgres_host: "{{ nextcloud_database_host }}"
     postgres_port: "{{ nextcloud_database_port }}"

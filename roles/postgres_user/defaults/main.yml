@@ -1,0 +1,11 @@
+postgres_host: localhost
+postgres_port: 5432
+postgres_login_host: "{{ postgres_host if postgres_host not in postgres_local_hosts else omit }}"
+postgres_login_username: postgres
+postgres_become_user: "{{ postgres_login_username if postgres_host in postgres_local_hosts else omit }}"
+postgres_database: database
+postgres_username: postgres-user
+postgres_password: password
+postgres_privs: ALL
+
+postgres_encoding: UTF-8

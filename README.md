@@ -9,17 +9,14 @@ env/bin/pip install -r requirements.txt
 source env/bin/activate
 ```
 
-If you are planning to use linux containers (LXC), you will need to install the following package:
-```shell
-sudo apt install lxd
-sudo systemctl start lxd
-```
+## Pre-comit
+We use pre-commit to validate merge requests.
+It is strongly advised to add pre-commit on your computer to avoid your merge request to be refused.
 
-You should add your user to the `lxd` group if you want to run LXC commands without being root:
-```shell
-usermod -G lxd -a <user>
+You can run this command in your virtualenv.
 ```
-This will be effective at your next login session.
+pre-commit install
+```
 
 ## Usage
 
@@ -41,7 +38,7 @@ When you create a new VM with Proxmox (assuming you know its IP):
 ansible-playbook -i hosts playbooks/proxmox_provisioner.yml -l <host>
 ```
 
-Then, remove the extra variables (`ansible_user`, `ansible_ssh_pass` and 
+Then, remove the extra variables (`ansible_user`, `ansible_ssh_pass` and
 `ansible_become_password`).
 
 Finally, configure your `~/.ssh/config` in order to connect to the VM with your SSH key.
@@ -61,7 +58,7 @@ It is possible to configure LXD to provide domain name resolution for your conta
 # Assuming that the web container is up and running…
 ping -c1 web.lxd
 ```
-2. If the above command fails, then you need to configure a DNS resolver.  
+2. If the above command fails, then you need to configure a DNS resolver.
    Retrieve the gateway's IPv4 from LXD's default network:
 ```shell
 lxc network info lxdbr0 | grep inet
