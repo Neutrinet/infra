@@ -5,17 +5,10 @@ workflow:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 stages:
-  - install
   - quality
 
-install:
-  image: python:3.6
-  stage: install
-  script:
-    - pip install pre-commit
-
 linting:
-  extends: install
   stage: quality
   script:
+    - pip install pre-commit==2.13.0
     - pre-commit run --all-files
