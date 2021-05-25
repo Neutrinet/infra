@@ -1,0 +1,8 @@
+---
+- name: Création du dossier {{ web_app_data_dir }}
+  file:
+    path: "{{ web_app_data_dir }}"
+    owner: "{{ web_app_owner }}"
+    group: "{{ web_app_group }}"
+    mode: "u=rwx,go=rx"
+    state: directory

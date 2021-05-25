@@ -1,20 +1,15 @@
 nextcloud_domain: "{{ inventory_hostname }}.local"
-nextcloud_owner: "{{ nextcloud_domain | replace('.', '-') }}"
-nextcloud_group: "{{ nextcloud_owner }}"
+nextcloud_template: caddy/nextcloud.j2
 
 acme_enabled: false
 
-caddy_config_dir: /etc/caddy
-caddy_vhosts_dir: "{{ caddy_config_dir }}/conf.d"
-caddy_log_dir: /var/log/caddy
-nextcloud_caddy_log: "{{ caddy_log_dir }}/{{ nextcloud_domain }}.log"
 nextcloud_hsts_preload_enabled: false
 nextcloud_max_upload_size: 512MB
 
 nextcloud_app_social_enabled: false
 nextcloud_app_user_webfinger: false
 
-nextcloud_version: latest-19
+nextcloud_version: latest-20
 nextcloud_upgrade_enabled: true
 nextcloud_gpg_public_key_url: https://nextcloud.com/nextcloud.asc
 nextcloud_checksum_algorithm: sha512

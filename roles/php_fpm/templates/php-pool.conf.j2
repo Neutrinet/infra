@@ -1,15 +1,15 @@
 {{ ansible_managed | comment(decoration=';')}}
 
-listen.owner = {{ php_listen_owner }}
-listen.group = {{ php_listen_group }}
-listen.mode = {{ php_listen_mode }}
+listen.owner = {{ php_fpm_listen_owner }}
+listen.group = {{ php_fpm_listen_group }}
+listen.mode = {{ php_fpm_listen_mode }}
 
 user = $pool
 group = $pool
 
 pm = ondemand
-pm.max_children = {{ php_max_children }}
-pm.process_idle_timeout = {{ php_process_idle_timeout }}
-pm.max_requests = {{ php_max_requests }}
+pm.max_children = {{ php_fpm_max_children }}
+pm.process_idle_timeout = {{ php_fpm_process_idle_timeout }}
+pm.max_requests = {{ php_fpm_max_requests }}
 
-php_flag[display_errors] = {{ php_display_error | ternary('on', 'off') }}
+php_flag[display_errors] = {{ php_fpm_display_error | ternary('on', 'off') }}

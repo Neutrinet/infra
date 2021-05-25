@@ -1,10 +1,7 @@
 - name: Installation de PHP {{ php_version }} et de ses modules
   package:
-    name: "{{ package }}"
+    name: "{{ php_packages + php_modules | map('regex_replace', '$', php_version) | list }}"
     state: present
-  loop: "{{ php_packages + php_modules | map('regex_replace', '$', php_version) | list }}"
-  loop_control:
-    loop_var: package
 
 - name: Installation de imagemagick
   package:

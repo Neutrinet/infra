@@ -1,3 +1,4 @@
+---
 - name: Installation de PHP {{ nextcloud_php_version }}
   import_role:
     name: php_fpm
@@ -14,7 +15,7 @@
     mode: "644"
   notify:
     - reload php-fpm
-  tags: php_config
+  tags: ['php_config']
 
 - name: Copie de la configuration OPCache de Nextcloud
   copy:
@@ -25,7 +26,7 @@
     mode: "644"
   notify:
     - reload php-fpm
-  tags: php_config
+  tags: ['php_config']
 
 - name: Trigger PHP handlers
   meta: flush_handlers

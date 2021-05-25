@@ -1,0 +1,10 @@
+---
+- name: Copie de la configuration commune de php-fpm
+  template:
+    src: php-pool.conf.j2
+    dest: "{{ php_fpm_common_config }}"
+    owner: root
+    group: root
+    mode: "644"
+  notify:
+    - reload php-fpm
