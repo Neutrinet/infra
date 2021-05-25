@@ -8,7 +8,8 @@ stages:
   - quality
 
 linting:
+  image: python:3.6
   stage: quality
   script:
-    - pip install pre-commit==2.13.0
+    - pip install pre-commit
     - pre-commit run --all-files
