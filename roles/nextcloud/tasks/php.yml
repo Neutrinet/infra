@@ -1,6 +1,6 @@
 - name: Installation de PHP {{ nextcloud_php_version }}
   import_role:
-    name: php-fpm
+    name: php_fpm
   vars:
     php_version: "{{ nextcloud_php_version }}"
     php_modules: "{{ nextcloud_php_modules }}"
