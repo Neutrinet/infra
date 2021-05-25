@@ -1,12 +1,12 @@
 ---
 - name: Installation de Caddy2
   import_role:
-    name: caddy-server
+    name: caddy_server
   tags: ['caddy_install']
 
 - name: Configuration des sites statiques
   include_role:
-    name: web-app
+    name: web_app
   loop: "{{ web_static_domains }}"
   loop_control:
     loop_var: domain

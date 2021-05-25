@@ -4,4 +4,4 @@
   become: true
 
   roles:
-    - web-static
+    - web_static

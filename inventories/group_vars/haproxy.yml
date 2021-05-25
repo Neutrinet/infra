@@ -1,5 +1,5 @@
 letsencrypt:
-    - neutrinet.be
+  - neutrinet.be
 
 haproxy:
   - hostname: neutrinet.be

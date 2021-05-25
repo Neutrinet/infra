@@ -17,5 +17,5 @@
 - name: Application du role haproxy
   import_playbook: haproxy.yml
 
-- name: Application du role web-static
-  import_playbook: web-static.yml
+- name: Application du role web_static
+  import_playbook: web_static.yml
