@@ -2,20 +2,20 @@ nextcloud_domain: "{{ inventory_hostname }}.local"
 nextcloud_owner: "{{ nextcloud_domain | replace('.', '-') }}"
 nextcloud_group: "{{ nextcloud_owner }}"
 
-acme_enabled: no
+acme_enabled: false
 
 caddy_config_dir: /etc/caddy
 caddy_vhosts_dir: "{{ caddy_config_dir }}/conf.d"
 caddy_log_dir: /var/log/caddy
 nextcloud_caddy_log: "{{ caddy_log_dir }}/{{ nextcloud_domain }}.log"
-nextcloud_hsts_preload_enabled: no
+nextcloud_hsts_preload_enabled: false
 nextcloud_max_upload_size: 512MB
 
-nextcloud_app_social_enabled: no
-nextcloud_app_user_webfinger: no
+nextcloud_app_social_enabled: false
+nextcloud_app_user_webfinger: false
 
 nextcloud_version: latest-19
-nextcloud_upgrade_enabled: yes
+nextcloud_upgrade_enabled: true
 nextcloud_gpg_public_key_url: https://nextcloud.com/nextcloud.asc
 nextcloud_checksum_algorithm: sha512
 nextcloud_install_url: https://download.nextcloud.com/server/releases/{{ nextcloud_version }}.tar.bz2
@@ -29,7 +29,7 @@ nextcloud_php_version: ""
 nextcloud_php_socket: /var/run/php-{{ nextcloud_owner }}.sock
 nextcloud_php_memory_limit: 512M
 
-nextcloud_postgres_install_enabled: yes
+nextcloud_postgres_install_enabled: true
 nextcloud_database_driver: pgsql
 nextcloud_database_name: nextcloud
 nextcloud_database_username: nextcloud
@@ -37,7 +37,7 @@ nextcloud_database_password: password
 nextcloud_database_host: localhost
 nextcloud_database_port: 5432
 
-nextcloud_redis_install_enabled: yes
+nextcloud_redis_install_enabled: true
 nextcloud_redis_socket: /var/run/redis/redis-server.sock
 nextcloud_redis_host: "{{ nextcloud_redis_socket }}"
 nextcloud_redis_port: 0

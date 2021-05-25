@@ -11,7 +11,7 @@
       args:
         chdir: "{{ nextcloud_install_dir }}"
       become_user: "{{ nextcloud_owner }}"
-      changed_when: no
+      changed_when: false
       register: _nextcloud_install_status
 
     - name: Définition des informations sur la version installée de Nextcloud

@@ -2,7 +2,7 @@ ssl_config_dir: /etc/ssl
 ssl_certs_dir: "{{ ssl_config_dir }}/certs"
 ssl_csr_dir: "{{ ssl_config_dir }}/csr"
 ssl_keys_dir: "{{ ssl_config_dir }}/private"
-ssl_certificate: "{{ ssl_certs_dir }}/{{ domain.name }}.d/fullchain.pem" 
+ssl_certificate: "{{ ssl_certs_dir }}/{{ domain.name }}.d/fullchain.pem"
 ssl_csr: "{{ ssl_csr_dir }}/{{ domain.name }}.csr"
 ssl_private_key: "{{ ssl_keys_dir }}/{{ domain.name }}.key"
 ssl_private_key_size: 4096

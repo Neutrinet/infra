@@ -17,7 +17,7 @@
   service:
     name: redis-server
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Trigger Redis handlers
   meta: flush_handlers

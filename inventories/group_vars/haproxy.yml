@@ -19,6 +19,6 @@ haproxy:
     target_port: 80
     healthcheck: true
 
-haproxy-redirect:
+haproxy_redirect:
   - from: www.neutrinet.be
     to: neutrinet.be

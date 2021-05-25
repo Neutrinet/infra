@@ -7,8 +7,8 @@
     mode: "755"
 
 - name: Téléchargement des sources de Nextcloud {{ nextcloud_version }} et vérification de la signature GPG
-  import_role: 
-    name: gpg-signature
+  import_role:
+    name: gpg_signature
   vars:
     gpg_public_key_url: "{{ nextcloud_gpg_public_key_url }}"
     gpg_checksum_algorithm: "{{ nextcloud_checksum_algorithm }}"
@@ -33,7 +33,7 @@
     dest: "{{ nextcloud_install_dir }}"
     owner: "{{ nextcloud_owner }}"
     group: "{{ nextcloud_group }}"
-    remote_src: yes
+    remote_src: true
     extra_opts: "--strip-components=1"
 
 - name: Création du dossier des données de Nextcloud {{ nextcloud_version }}
@@ -44,7 +44,8 @@
     mode: "755"
     state: directory
 
-- name: Installation de Nextcloud {{ nextcloud_version }}
+# FIWME Commands should not change things if nothing needs doing
+- name: Installation de Nextcloud {{ nextcloud_version }}  # noqa no-changed-when
   command: >-
     {{ php_executable }} occ maintenance:install --no-interaction
       --database {{ nextcloud_database_driver | quote }}

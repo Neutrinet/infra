@@ -1,12 +1,12 @@
 ---
 - name: Converge
   hosts: all
-  become: yes
+  become: true
 
   pre_tasks:
     - name: Mise à jour du cache APT
       apt:
-        update_cache: yes
+        update_cache: true
         cache_valid_time: 3600
 
   roles:

@@ -33,7 +33,7 @@
     path: "{{ ssl_certificate }}"
     csr_path: "{{ ssl_csr }}"
     privatekey_path: "{{ ssl_private_key }}"
-    provider: selfsigned 
+    provider: selfsigned
     state: present
     owner: "{{ ssl_cert_owner }}"
     group: "{{ ssl_cert_group }}"

@@ -274,5 +274,3 @@ compinit
 # simplement « j un_bout_du_nom_du_répertoire ». Si vous souhaitez l'utiliser,
 # installez le paquet autojump et décommentez la ligne suivante :
 #. /usr/share/autojump/autojump.sh
-
-

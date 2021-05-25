@@ -7,7 +7,7 @@
     mode: "640"
   register: _nextcloud_import
 
-- name: Configuration de Nextcloud
+- name: Configuration de Nextcloud  # noqa no-handler
   command: "{{ php_executable }} occ config:import {{ nextcloud_import_file | quote }}"
   args:
     chdir: "{{ nextcloud_install_dir }}"

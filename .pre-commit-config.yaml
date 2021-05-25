@@ -1,0 +1,21 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: no-commit-to-branch
+      - id: mixed-line-ending
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: fix-byte-order-marker
+
+  - repo: https://github.com/ansible/ansible-lint.git
+    rev: v5.0.11
+    hooks:
+      - id: ansible-lint
+        files: \.(yaml|yml)$

@@ -15,10 +15,11 @@
     db: "{{ postgres_database }}"
     login_host: "{{ postgres_login_host }}"
     port: "{{ postgres_port }}"
-    encrypted: yes
+    encrypted: true
     state: present
   become_user: "{{ postgres_become_user }}"
-  
+  no_log: true
+
 - name: Octroi des privilèges pour l'utilisateur '{{ postgres_username }}' sur la base de données '{{ postgres_database }}'
   postgresql_privs:
     role: "{{ postgres_username }}"

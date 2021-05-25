@@ -25,4 +25,3 @@ umask 022
 
 # Ne pas passer par le proxy pour les domaines locaux
 #export no_proxy="exemple.org"
-
