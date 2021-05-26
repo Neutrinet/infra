@@ -1,6 +1,6 @@
 {{ ansible_managed | comment(decoration=';')}}
 
-[{{ nextcloud_owner }}]
+[{{ web_app_owner }}]
 listen = {{ nextcloud_php_socket }}
 include = {{ php_fpm_common_config }}
 

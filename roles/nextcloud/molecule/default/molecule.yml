@@ -10,12 +10,9 @@ platforms:
     cpu: 2
     memory: 512
     interfaces:
-      - network_name: forwarded_port
-        guest: 80
-        host: 8080
-      - network_name: forwarded_port
-        guest: 443
-        host: 8443
+      - network_name: private_network
+        type: dhcp
+        auto_config: true
 provisioner:
   name: ansible
   config_options:
