@@ -11,7 +11,7 @@ stages:
   - quality
 
 linting:
-  image: pre-commit:1.0.0
+  image: neutrinet/pre-commit:1.0.0
   stage: quality
   script:
     - pre-commit run --all-files
