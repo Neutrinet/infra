@@ -18,7 +18,7 @@ linting:
     - pre-commit run --all-files
   cache:
     key:
-      paths:
+      files:
         - .pre-commit-config.yaml
     paths:
       - ${PRE_COMMIT_HOME}
