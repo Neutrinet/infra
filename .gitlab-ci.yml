@@ -15,7 +15,7 @@ linting:
   image: python:3.6
   stage: quality
   script:
-    - pip install -U pre-commit
+    - pip install pre-commit
     - pre-commit run --all-files
   cache:
     - key:
