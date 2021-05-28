@@ -5,6 +5,7 @@ workflow:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 variables:
+  PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/pip"
   PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
 
 stages:
@@ -14,12 +15,16 @@ linting:
   image: python:3.6
   stage: quality
   script:
-    - pip install pre-commit
+    - pip install -U pre-commit
     - pre-commit run --all-files
   cache:
-    key:
-      files:
-        - .pre-commit-config.yaml
-    paths:
-      - ${PRE_COMMIT_HOME}
-    policy: pull-push
+    - key:
+        files:
+          - .pre-commit-config.yaml
+      paths:
+        - ${PRE_COMMIT_HOME}
+      policy: pull-push
+    - key: pip
+      paths:
+        - ${PIP_CACHE_DIR}
+      policy: pull-push
