@@ -24,4 +24,5 @@
       - jq
       - dbus
       - safe-rm
+      - bash-completion
     state: present

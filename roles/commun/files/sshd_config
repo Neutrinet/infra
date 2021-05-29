@@ -92,3 +92,4 @@ UsePAM no
 UsePrivilegeSeparation sandbox
 
 UseDNS no
+MaxAuthTries 3
