@@ -1,3 +1,6 @@
+---
+mail_notification: letsencrypt@exemple.com
+
 letsencrypt:
   dns_gandi_api_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -14,27 +17,15 @@ letsencrypt:
           3139626262313437640a623462346133303264393234366665663838663931653062616130643639
           31303535323864323031353032346664643562626563633864366237373935386438353138643337
           6632383964373738663761343065306137313163303838633763
-  staging: false
+  staging: true
   domains:
     - neutrinet.be
 
 haproxy:
   - hostname: neutrinet.be
-    target: grav.patata.louise.neutri.net
-    target_port: 80
+    target: 127.0.0.1
+    target_port: 8080
     healthcheck: false
-  - hostname: www.neutrinet.be
-    target: grav.patata.louise.neutri.net
-    target_port: 80
-    healthcheck: true
-  - hostname: mediawiki.neutrinet.be
-    target: web-static.patata.louise.neutri.net
-    target_port: 80
-    healthcheck: true
-  - hostname: wikijs.neutrinet.be
-    target: web-static.patata.louise.neutri.net
-    target_port: 80
-    healthcheck: true
 
 haproxy_redirect:
   - from: www.neutrinet.be
