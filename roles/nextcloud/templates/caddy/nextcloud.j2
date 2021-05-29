@@ -1,18 +1,15 @@
 {{ ansible_managed | comment }}
 
-{{ nextcloud_domain }} {
-    root {{ nextcloud_install_dir | to_json }}
+http://{{ nextcloud_domain }} {
+    root * {{ web_app_dist_dir | to_json }}
     encode gzip
     file_server
-{% if not acme_enabled %}
-    tls internal
-{% endif %}
 
     request_body {
         max_size {{ nextcloud_max_upload_size }}
     }
 
-    php_fastcgi unix/{{ nextcloud_php_socket | to_json }}
+    php_fastcgi unix/{{ php_fpm_socket_file | to_json }}
 
     redir /.well-known/carddav /remote.php/dav 301
     redir /.well-known/caldav /remote.php/dav 301
@@ -60,6 +57,6 @@
     }
 
     log {
-        output file {{ nextcloud_caddy_log | to_json }}
+        output file {{ web_app_caddy_log | to_json }}
     }
 }

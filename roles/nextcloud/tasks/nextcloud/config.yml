@@ -2,16 +2,16 @@
   copy:
     content: "{{ nextcloud_config | to_json }}"
     dest: "{{ nextcloud_import_file }}"
-    owner: "{{ nextcloud_owner }}"
-    group: "{{ nextcloud_group }}"
+    owner: "{{ web_app_owner }}"
+    group: "{{ web_app_group }}"
     mode: "640"
   register: _nextcloud_import
 
 - name: Configuration de Nextcloud  # noqa no-handler
   command: "{{ php_executable }} occ config:import {{ nextcloud_import_file | quote }}"
   args:
-    chdir: "{{ nextcloud_install_dir }}"
-  become_user: "{{ nextcloud_owner }}"
+    chdir: "{{ web_app_dist_dir }}"
+  become_user: "{{ web_app_owner }}"
   when: _nextcloud_import is changed
   notify:
     - reload php-fpm

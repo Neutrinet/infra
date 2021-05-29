@@ -1,4 +1,29 @@
-- import_tasks: install.yml
-  tags: ['php_install']
-- import_tasks: php-fpm.yml
-  tags: ['php_config', 'php_fpm']
+- name: Installation de PHP {{ php_version }} et de ses modules
+  package:
+    name: "{{ php_packages + php_modules | map('regex_replace', '$', php_version) | list }}"
+    state: present
+
+- name: Installation de imagemagick
+  package:
+    name: imagemagick
+    state: present
+  when: "'php-imagick' in php_modules"
+
+- name: Récupération et définition de la dernière version de PHP
+  when: php_version == ""
+  block:
+    - name: Récupération de la dernière version de PHP
+      # Regex: https://unix.stackexchange.com/questions/13466/can-grep-output-only-specified-groupings-that-match/13467#13467
+      shell: php -v | sed -n 's/^PHP \([[:digit:]]\.[[:digit:]]\).*/\1/p'
+      changed_when: false
+      register: _php_version
+
+    - name: Définition de la dernière version de PHP
+      set_fact:
+        php_version: "{{ _php_version.stdout }}"
+
+- name: Activation de php{{ php_version }}-fpm au démarrage
+  service:
+    name: "{{ php_fpm_executable }}"
+    state: started
+    enabled: true

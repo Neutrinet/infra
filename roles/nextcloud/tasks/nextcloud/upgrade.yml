@@ -1,8 +1,8 @@
 - name: Mise à jour de Nextcloud
   command: "{{ php_executable }} updater/updater.phar --no-interaction"
   args:
-    chdir: "{{ nextcloud_install_dir }}"
-  become_user: "{{ nextcloud_owner }}"
+    chdir: "{{ web_app_dist_dir }}"
+  become_user: "{{ web_app_owner }}"
   changed_when: "'No update available.' not in _nextcloud_upgraded.stdout"
   register: _nextcloud_upgraded
   notify:

@@ -9,8 +9,8 @@
     - name: Récupération des informations sur la version installée de Netxcloud
       command: "{{ php_executable }} occ status --output json"
       args:
-        chdir: "{{ nextcloud_install_dir }}"
-      become_user: "{{ nextcloud_owner }}"
+        chdir: "{{ web_app_dist_dir }}"
+      become_user: "{{ web_app_owner }}"
       changed_when: false
       register: _nextcloud_install_status
 

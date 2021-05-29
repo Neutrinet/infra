@@ -7,9 +7,9 @@
   when: nextcloud_redis_install_enabled
   tags: redis_install
 
-- name: Ajout de l'utilisateur {{ nextcloud_owner }} au groupe redis
+- name: Ajout de l'utilisateur {{ web_app_owner }} au groupe redis
   user:
-    name: "{{ nextcloud_owner }}"
+    name: "{{ web_app_owner }}"
     state: present
     groups:
       - redis

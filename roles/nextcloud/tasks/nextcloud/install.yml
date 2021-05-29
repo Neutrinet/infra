@@ -2,8 +2,8 @@
   file:
     path: "{{ nextcloud_src_dir }}"
     state: directory
-    owner: "{{ nextcloud_owner }}"
-    group: "{{ nextcloud_group }}"
+    owner: "{{ web_app_owner }}"
+    group: "{{ web_app_group }}"
     mode: "755"
 
 - name: Téléchargement des sources de Nextcloud {{ nextcloud_version }} et vérification de la signature GPG
@@ -15,32 +15,32 @@
     gpg_verify_url: "{{ nextcloud_install_url }}"
     gpg_verify_dir: "{{ nextcloud_src_dir }}"
     gpg_verify_path: "{{ nextcloud_src_archive }}"
-    gpg_verify_owner: "{{ nextcloud_owner }}"
-    gpg_verify_group: "{{ nextcloud_group }}"
+    gpg_verify_owner: "{{ web_app_owner }}"
+    gpg_verify_group: "{{ web_app_group }}"
     gpg_verify_mode: "644"
 
 - name: Création du dossier d'installation de Nextcloud {{ nextcloud_version }}
   file:
-    path: "{{ nextcloud_install_dir }}"
+    path: "{{ web_app_dist_dir }}"
     state: directory
-    owner: "{{ nextcloud_owner }}"
-    group: "{{ nextcloud_group }}"
+    owner: "{{ web_app_owner }}"
+    group: "{{ web_app_group }}"
     mode: "755"
 
 - name: Décompression de Nextcloud {{ nextcloud_version }}
   unarchive:
     src: "{{ nextcloud_src_archive }}"
-    dest: "{{ nextcloud_install_dir }}"
-    owner: "{{ nextcloud_owner }}"
-    group: "{{ nextcloud_group }}"
+    dest: "{{ web_app_dist_dir }}"
+    owner: "{{ web_app_owner }}"
+    group: "{{ web_app_group }}"
     remote_src: true
     extra_opts: "--strip-components=1"
 
 - name: Création du dossier des données de Nextcloud {{ nextcloud_version }}
   file:
     path: "{{ nextcloud_data_dir }}"
-    owner: "{{ nextcloud_owner }}"
-    group: "{{ nextcloud_group }}"
+    owner: "{{ web_app_owner }}"
+    group: "{{ web_app_group }}"
     mode: "755"
     state: directory
 
@@ -59,8 +59,8 @@
       --admin-email {{ nextcloud_admin_email | quote }}
       --data-dir {{ nextcloud_data_dir | quote }}
   args:
-    chdir: "{{ nextcloud_install_dir }}"
-  become_user: "{{ nextcloud_owner }}"
+    chdir: "{{ web_app_dist_dir }}"
+  become_user: "{{ web_app_owner }}"
   notify:
     - reload php-fpm
 

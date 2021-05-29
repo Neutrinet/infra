@@ -3,7 +3,7 @@
   tags: ['web_app_user']
 - import_tasks: config.yml
   tags: ['web_app_config']
-- import_tasks: php.yml
-  tags: ['php_config']
+- import_tasks: php-fpm.yml
+  tags: ['php_fpm_config']
 - import_tasks: caddy.yml
   tags: ['caddy_config']

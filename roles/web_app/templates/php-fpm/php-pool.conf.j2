@@ -1,0 +1,35 @@
+{{ ansible_managed | comment(decoration=';')}}
+
+[{{ web_app_owner }}]
+user = {{ web_app_owner }}
+group = {{ web_app_group }}
+
+listen = {{ php_fpm_socket_file }}
+listen.owner = {{ caddy_owner }}
+listen.group = {{ caddy_group }}
+listen.mode = {{ php_fpm_socket_mode }}
+
+pm = {{ php_fpm_pm }}
+pm.max_children = {{ php_fpm_pm_max_children | int }}
+pm.process_idle_timeout = {{ php_fpm_pm_process_idle_timeout }}
+pm.max_requests = {{ php_fpm_pm_max_requests | int }}
+
+request_terminate_timeout = {{ php_fpm_request_terminate_timeout }}
+
+php_admin_value[output_buffering] = {{ php_fpm_output_buffering | bool }}
+php_admin_value[memory_limit] = {{ php_fpm_memory_limit }}
+php_admin_value[date.timezone] = {{ php_fpm_date_timezone }}
+php_value[upload_max_filesize] = {{ php_fpm_upload_max_filesize }}
+php_admin_value[post_max_size] = {{ php_fpm_post_max_size }}
+php_flag[display_errors] = {{ php_fpm_display_error | bool }}
+
+env[HOSTNAME] = $HOSTNAME
+env[TMP] = {{ php_fpm_tmp_dir }}
+env[TMPDIR] = {{ php_fpm_tmp_dir }}
+env[TEMP] = {{ php_fpm_tmp_dir }}
+env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+php_admin_value[session.cookie_httponly] = {{ php_fpm_session_cookie_httponly | bool }}
+php_admin_value[session.use_only_cookies] = {{ php_fpm_session_use_only_cookies | bool }}
+php_admin_value[session.cookie_secure] = {{ php_fpm_session_cookie_secure | bool }}
+php_admin_value[session.name] = {{ php_fpm_session_name | to_json }}

@@ -1,6 +1,0 @@
-- name: Installation de PHP FPM
-  import_role:
-    name: php_fpm
-  vars:
-    php_fpm_owner: "{{ web_app_owner }}"
-    php_fpm_group: "{{ web_app_group }}"
