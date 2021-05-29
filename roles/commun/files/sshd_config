@@ -90,3 +90,6 @@ Subsystem sftp internal-sftp -f AUTHPRIV -l INFO
 UsePAM no
 
 UsePrivilegeSeparation sandbox
+
+UseDNS no
+MaxAuthTries 3

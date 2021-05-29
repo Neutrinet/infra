@@ -1,21 +1,5 @@
 ---
-# config commun de tous les hosts
-# pour plus d'info, il faut regarder dans roles/*
 
-- hosts: all
-  become: true
-
-  pre_tasks:
-    - name: Update cache
-      apt:
-        update_cache: true
-        cache_valid_time: 3600
-
-  roles:
-    - commun
-
-- name: Application du role haproxy
-  import_playbook: haproxy.yml
-
-- name: Application du role web_static
-  import_playbook: web_static.yml
+- import_playbook: apps/debian_commun.yml
+- import_playbook: apps/haproxy.yml
+- import_playbook: apps/web_static.yml
