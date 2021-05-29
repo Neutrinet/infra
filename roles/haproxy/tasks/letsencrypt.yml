@@ -49,6 +49,7 @@
     cmd: |
       /opt/letsencrypt/bin/certbot register \
       --non-interactive \
+      {% if letsencrypt.staging | default(true) %}--staging \{% endif %}
       --email {{ mail_notification }} \
       --no-eff-email \
       --agree-tos
@@ -64,12 +65,12 @@
 
 - name: Création des crtificat rsa
   include_tasks: letsencrypt-rsa.yml
-  loop: "{{ letsencrypt }}"
+  loop: "{{ letsencrypt.domains }}"
   loop_control:
     loop_var: domain
 
 - name: Création des crtificat ecdsa
   include_tasks: letsencrypt-ecdsa.yml
-  loop: "{{ letsencrypt }}"
+  loop: "{{ letsencrypt.domains }}"
   loop_control:
     loop_var: domain

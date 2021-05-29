@@ -1,5 +1,7 @@
 letsencrypt:
-  - neutrinet.be
+  staging: true
+  domains:
+    - neutrinet.be
 
 haproxy:
   - hostname: neutrinet.be

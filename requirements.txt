@@ -30,3 +30,6 @@ tenacity==7.0.0
 toml==0.10.2
 virtualenv==20.4.7
 wcmatch==8.2
+molecule~=3.2.2
+molecule-vagrant==0.6.1
+python-vagrant~=0.5.15
