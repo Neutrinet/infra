@@ -16,15 +16,15 @@
   file:
     path: /etc/ssh/{{ key_file }}
     state: absent
-    loop:
-      - ssh_host_dsa_key
-      - ssh_host_dsa_key.pub
-      - ssh_host_ecdsa_key
-      - ssh_host_ecdsa_key.pub
-      - ssh_host_ed25519_key
-      - ssh_host_ed25519_key.pub
-      - ssh_host_rsa_key
-      - ssh_host_rsa_key.pub
+  loop:
+    - ssh_host_dsa_key
+    - ssh_host_dsa_key.pub
+    - ssh_host_ecdsa_key
+    - ssh_host_ecdsa_key.pub
+    - ssh_host_ed25519_key
+    - ssh_host_ed25519_key.pub
+    - ssh_host_rsa_key
+    - ssh_host_rsa_key.pub
   loop_control:
     loop_var: key_file
   when: ssh_host_key_file.stat.exists
