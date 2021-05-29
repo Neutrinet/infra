@@ -2,7 +2,9 @@
 
 - name: Installation de sshguard
   ansible.builtin.package:
-    name: sshguard
+    name:
+      - nftables
+      - sshguard
     state: present
 
 - name: Vérification de la présence de la configuration de sshguard

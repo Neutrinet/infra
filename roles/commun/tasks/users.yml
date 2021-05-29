@@ -15,6 +15,18 @@
     shell: /bin/bash
     state: present
 
+- name: test si l'hote est un proxmox
+  stat:
+    path: /etc/pve
+  register: pve_dirs
+
+- name: supprission du mots de pass root
+  user:
+    name: root
+    password: '*'
+  when: not pve_dirs.stat.exists
+  no_log: true
+
 - name: Ajout des utilisateurs et de leurs clés SSH
   include_tasks: user.yml
   loop: "{{ users }}"
