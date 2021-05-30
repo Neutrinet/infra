@@ -1,0 +1,14 @@
+; OPCache
+; See https://www.scalingphpbook.com/blog/2014/02/14/best-zend-opcache-settings.html
+opcache.enable = {{ php_fpm_opcache_enabled | bool }}
+;; php code will be stored in memory until the php-fpm daemon is reloaded
+opcache.validate_timestamps = {{ php_fpm_opcache_validate_timestamps | bool }}
+{% if php_fpm_opcache_validate_timestamps %}
+opcache.revalidate_freq = {{ php_fpm_opcache_revalidate_freq | int }}
+{% endif %}
+;; number of files stored in memory, must be greater than the codebase
+opcache.max_accelerated_files = {{ php_fpm_opcache_max_accelerated_files | int }}
+;; number of Mb reserved to cache strings
+opcache.interned_strings_buffer = {{ php_fpm_opcache_max_interned_strings_buffer | int }}
+opcache.memory_consumption = {{ php_fpm_opcache_memory_consumption | int }}
+opcache.save_comments = {{ php_fpm_opcache_save_comments | bool }}

@@ -22,6 +22,17 @@
       set_fact:
         php_version: "{{ _php_version.stdout }}"
 
+- name: Copie de la configuration OPCache de Nextcloud
+  template:
+    src: opcache.ini.j2
+    dest: "{{ php_fpm_config_dir }}/conf.d/99-opcache.ini"
+    owner: root
+    group: root
+    mode: "644"
+  notify:
+    - reload php-fpm
+  tags: ['php_config']
+
 - name: Activation de php{{ php_version }}-fpm au démarrage
   service:
     name: "{{ php_fpm_executable }}"
