@@ -5,7 +5,7 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-php_fpm-molecule
+  - name: buster-php-fpm-molecule
     box: debian/buster64
     cpu: 2
     memory: 512

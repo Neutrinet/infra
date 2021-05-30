@@ -8,9 +8,6 @@
         update_cache: true
         cache_valid_time: 3600
 
-  roles:
-    - caddy_server
-
   tasks:
     - name: Installation de Avahi
       package:
