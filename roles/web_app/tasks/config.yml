@@ -1,4 +1,12 @@
 ---
+- name: Création du dossier {{ web_app_www_dir }}
+  file:
+    path: "{{ web_app_www_dir }}"
+    owner: "{{ caddy_owner }}"
+    group: "{{ caddy_group }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
 - name: Création du dossier {{ web_app_dist_dir }}
   file:
     path: "{{ web_app_dist_dir }}"
