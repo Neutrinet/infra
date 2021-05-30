@@ -4,7 +4,7 @@
     dest: "{{ php_fpm_pool_dir }}/{{ web_app_owner }}.conf"
     owner: root
     group: root
-    mode: "644"
+    mode: "u=rw,go=r"
   notify:
     - reload php-fpm
   tags: ['php_config']

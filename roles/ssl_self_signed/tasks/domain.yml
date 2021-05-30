@@ -4,29 +4,29 @@
     state: directory
     owner: "{{ ssl_cert_owner }}"
     group: "{{ ssl_cert_group }}"
-    mode: "755"
-  tags: ssl_install
+    mode: "u=rwx,go=rx"
+  tags: ['ssl_install']
 
 - name: Génération de la clé privée '{{ ssl_private_key }}'
   openssl_privatekey:
     path: "{{ ssl_private_key }}"
     owner: "{{ ssl_private_key_owner }}"
     group: "{{ ssl_private_key_group }}"
-    mode: "640"
+    mode: "u=rw,g=r,o="
     type: RSA
     size: "{{ ssl_private_key_size }}"
-  tags: ssl_config
+  tags: ['ssl_config']
 
 - name: Génération du CSR '{{ ssl_csr }}'
   openssl_csr:
     path: "{{ ssl_csr }}"
     owner: "{{ ssl_cert_owner }}"
     group: "{{ ssl_cert_group }}"
-    mode: "644"
+    mode: "u=rw,go=r"
     privatekey_path: "{{ ssl_private_key }}"
     common_name: "{{ domain.name }}"
     subject_alt_name: "{{ domain.alt_names | default([]) | map('regex_replace', '^', 'DNS:') | list }}"
-  tags: ssl_config
+  tags: ['ssl_config']
 
 - name: Génération du certificat auto-signé '{{ ssl_certificate }}'
   openssl_certificate:
@@ -37,5 +37,5 @@
     state: present
     owner: "{{ ssl_cert_owner }}"
     group: "{{ ssl_cert_group }}"
-    mode: "644"
-  tags: ssl_config
+    mode: "u=rw,go=r"
+  tags: ['ssl_config']

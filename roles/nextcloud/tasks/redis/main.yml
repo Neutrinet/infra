@@ -3,7 +3,7 @@
   vars:
     redis_port: "{{ nextcloud_redis_port }}"
     redis_socket: "{{ nextcloud_redis_socket }}"
-    redis_socket_mode: "770"
+    redis_socket_mode: "ug=rwx,o="
   when: nextcloud_redis_install_enabled
   tags: redis_install
 

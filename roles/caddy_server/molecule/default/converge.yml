@@ -28,6 +28,6 @@
         dest: "{{ caddy_vhosts_dir }}/example.conf"
         owner: root
         group: root
-        mode: "0644"
+        mode: "u=rw,go=r"
         validate: caddy validate --adapter caddyfile --config %s
       notify: reload caddy

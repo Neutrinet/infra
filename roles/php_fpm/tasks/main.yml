@@ -28,7 +28,7 @@
     dest: "{{ php_fpm_config_dir }}/conf.d/99-opcache.ini"
     owner: root
     group: root
-    mode: "644"
+    mode: "u=rw,go=r"
   notify:
     - reload php-fpm
   tags: ['php_config']
