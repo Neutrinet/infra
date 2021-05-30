@@ -4,6 +4,7 @@
 - import_tasks: config.yml
   tags: ['web_app_config']
 - import_tasks: php-fpm.yml
+  when: web_app_php_fpm_enabled
   tags: ['php_fpm_config']
 - import_tasks: caddy.yml
   tags: ['caddy_config']
