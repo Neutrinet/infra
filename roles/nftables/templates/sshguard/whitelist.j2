@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+# Address blocks in CIDR notation
+127.0.0.0/8
+::1/128
+{% foreach whitelist in sshguard_whitelist | default([]) %}
+{{ whitelist }}
+{% endforeach %}

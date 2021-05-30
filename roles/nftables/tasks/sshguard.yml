@@ -1,0 +1,12 @@
+---
+
+- name: Installation de sshguard
+  ansible.builtin.package:
+    name: sshguard
+    state: present
+
+- name: Activation du service sshguard au démarrage
+  service:
+    name: sshguard
+    state: started
+    enabled: true

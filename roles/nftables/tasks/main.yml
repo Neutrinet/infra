@@ -1,0 +1,9 @@
+---
+# tasks file for nftables
+
+
+- import_tasks: nftables.yml
+- import_tasks: sshguard.yml
+
+- name: Trigger sshguard handlers
+  meta: flush_handlers

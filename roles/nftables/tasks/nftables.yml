@@ -1,0 +1,6 @@
+---
+
+- name: Installation de nftables
+  ansible.builtin.package:
+    name: nftables
+    state: present
