@@ -40,7 +40,6 @@ nextcloud_memcache_local: APCu
 nextcloud_memcache_distributed: Redis
 nextcloud_memcache_locking: Redis
 
-nextcloud_timezone: Europe/Brussels
 nextcloud_config:
   system:
     trusted_domains:

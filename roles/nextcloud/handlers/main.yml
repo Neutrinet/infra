@@ -1,8 +1,3 @@
-- name: reload caddy
-  service:
-    name: caddy
-    state: reloaded
-
 - name: restart redis
   service:
     name: redis-server
