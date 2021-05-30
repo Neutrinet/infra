@@ -13,8 +13,3 @@
     chdir: "{{ web_app_dist_dir }}"
   become_user: "{{ web_app_owner }}"
   when: _nextcloud_import is changed
-  notify:
-    - reload php-fpm
-
-- name: Trigger Nextcloud handlers
-  meta: flush_handlers

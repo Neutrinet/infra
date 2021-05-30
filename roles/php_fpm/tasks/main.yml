@@ -22,7 +22,7 @@
       set_fact:
         php_version: "{{ _php_version.stdout }}"
 
-- name: Copie de la configuration OPCache de Nextcloud
+- name: Copie de la configuration OPCache
   template:
     src: opcache.ini.j2
     dest: "{{ php_fpm_config_dir }}/conf.d/99-opcache.ini"

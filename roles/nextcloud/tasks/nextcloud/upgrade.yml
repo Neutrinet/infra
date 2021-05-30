@@ -5,10 +5,5 @@
   become_user: "{{ web_app_owner }}"
   changed_when: "'No update available.' not in _nextcloud_upgraded.stdout"
   register: _nextcloud_upgraded
-  notify:
-    - reload php-fpm
 
 - import_tasks: status.yml
-
-- name: Trigger Netxcloud handlers
-  meta: flush_handlers

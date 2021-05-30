@@ -61,10 +61,5 @@
   args:
     chdir: "{{ web_app_dist_dir }}"
   become_user: "{{ web_app_owner }}"
-  notify:
-    - reload php-fpm
 
 - import_tasks: status.yml
-
-- name: Trigger Nextcloud handlers
-  meta: flush_handlers
