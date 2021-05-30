@@ -3,3 +3,5 @@ web_static_domains:
     template: caddy/mediawiki.j2
   - name: wikijs.neutrinet.be
     template: caddy/wikijs.j2
+  - name: realms-wiki.neutrinet.be
+    template: caddy/realms-wiki.j2
