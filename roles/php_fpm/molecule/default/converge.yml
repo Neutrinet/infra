@@ -1,4 +1,5 @@
-- name: Prepare
+---
+- name: Converge
   hosts: all
   become: true
 
@@ -8,8 +9,5 @@
         update_cache: true
         cache_valid_time: 3600
 
-  tasks:
-    - name: Installation de Avahi
-      package:
-        name: avahi-daemon
-        state: present
+  roles:
+    - php_fpm

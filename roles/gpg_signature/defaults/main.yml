@@ -13,7 +13,7 @@ gpg_signature_path: "{{ gpg_signature_dir }}/{{ gpg_signature_url | basename }}"
 
 gpg_verify_owner: root
 gpg_verify_group: "{{ gpg_verify_owner }}"
-gpg_verify_mode: "644"
+gpg_verify_mode: "u=rw,go=r"
 gpg_signature_owner: "{{ gpg_verify_owner }}"
 gpg_signature_group: "{{ gpg_signature_owner }}"
 gpg_signature_mode: "{{ gpg_verify_mode }}"

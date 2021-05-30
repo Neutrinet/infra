@@ -1,31 +1,9 @@
 ---
-- name: Création de l'utilisateur {{ web_app_owner }}
-  user:
-    name: "{{ web_app_owner }}"
-    home: "{{ web_app_owner_home_dir }}"
-    shell: /sbin/nologin
-    system: true
-    state: present
+- import_tasks: user.yml
   tags: ['web_app_user']
-
-- name: Création du dossier {{ web_app_data_dir }}
-  file:
-    path: "{{ web_app_data_dir }}"
-    owner: "{{ web_app_owner }}"
-    group: "{{ web_app_group }}"
-    mode: "u=rwx,go=rx"
-    state: directory
+- import_tasks: config.yml
   tags: ['web_app_config']
-
-- name: Copie de la configuration Caddy2
-  template:
-    src: "{{ web_app_template }}"
-    dest: "{{ caddy_vhosts_dir }}/{{ web_app_owner }}.conf"
-    owner: root
-    group: root
-    mode: "644"
-  notify: reload caddy
-  tags: ['web_app_config', 'caddy_config']
-
-- name: Trigger Caddy handlers
-  meta: flush_handlers
+- import_tasks: php-fpm.yml
+  tags: ['php_fpm_config']
+- import_tasks: caddy.yml
+  tags: ['caddy_config']

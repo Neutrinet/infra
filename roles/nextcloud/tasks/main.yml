@@ -1,28 +1,34 @@
 ---
-- name: Création de l'utilisateur {{ nextcloud_owner }}
-  user:
-    name: "{{ nextcloud_owner }}"
-    shell: /sbin/nologin
-    system: true
-    state: present
-  tags: user
+- name: Installation de Caddy2
+  import_role:
+    name: caddy_server
+  tags: ['caddy']
+
+- name: Installation de PHP FPM
+  import_role:
+    name: php_fpm
+  vars:
+    php_version: "{{ nextcloud_php_version }}"
+    php_modules: "{{ nextcloud_php_modules }}"
+  tags: ['php_fpm']
+
+- name: Installation l'application web
+  import_role:
+    name: web_app
+  vars:
+    web_app_domain: "{{ nextcloud_domain }}"
+    web_app_template: "{{ nextcloud_template }}"
+    web_app_php_fpm_enabled: true
+  tags: ['web_app']
 
 - name: Installation de PostgreSQL
   import_tasks: postgres/main.yml
-  tags: postgres
+  tags: ['postgres']
 
 - name: Installation de Redis
   import_tasks: redis/main.yml
-  tags: redis
-
-- name: Installation de PHP {{ nextcloud_php_version }}
-  import_tasks: php.yml
-  tags: php
+  tags: ['redis']
 
 - name: Installation de Nextcloud
   import_tasks: nextcloud/main.yml
-  tags: nextcloud
-
-- name: Configuration de Caddy2
-  import_tasks: caddy.yml
-  tags: caddy
+  tags: ['nextcloud']

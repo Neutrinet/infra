@@ -1,0 +1,10 @@
+- name: Copie de la configuration php-fpm
+  template:
+    src: php-fpm/php-pool.conf.j2
+    dest: "{{ php_fpm_pool_dir }}/{{ web_app_owner }}.conf"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload php-fpm
+  tags: ['php_config']

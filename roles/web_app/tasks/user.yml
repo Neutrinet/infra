@@ -1,0 +1,7 @@
+- name: Création de l'utilisateur {{ web_app_owner }}
+  user:
+    name: "{{ web_app_owner }}"
+    home: "{{ web_app_home_dir }}"
+    shell: /sbin/nologin
+    system: true
+    state: present

@@ -1,9 +1,10 @@
 web_app_domain: example.com
 web_app_owner: "{{ web_app_domain | replace('.', '-') }}"
 web_app_group: "{{ web_app_owner }}"
-web_app_owner_home_dir: /var/www/{{ web_app_owner }}
-web_app_data_dir: "/var/www/{{ web_app_owner }}/dist"
+web_app_home_dir: /var/www/{{ web_app_owner }}
+web_app_dist_dir: "/var/www/{{ web_app_owner }}/dist"
 
 web_app_caddy_log: "{{ caddy_log_dir }}/{{ web_app_owner }}.log"
 
 web_app_template: Caddyfile.j2
+web_app_php_fpm_enabled: false

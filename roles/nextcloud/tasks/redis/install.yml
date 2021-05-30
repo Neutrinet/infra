@@ -9,7 +9,7 @@
     dest: /etc/redis/redis.conf
     owner: redis
     group: redis
-    mode: "600"
+    mode: "u=rw,go="
   notify:
     - restart redis
 

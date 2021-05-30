@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
 http://{{ web_app_domain }} {
-    root * {{ web_app_data_dir | to_json }}
+    root * {{ web_app_dist_dir | to_json }}
     encode gzip
     file_server
 

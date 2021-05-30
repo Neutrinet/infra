@@ -1,10 +1,11 @@
-nextcloud_config_file: "{{ nextcloud_install_dir }}/config/config.php"
+nextcloud_config_file: "{{ web_app_dist_dir }}/config/config.php"
 
 postgres_packages:
   - postgresql
   - postgresql-contrib
   - libpq-dev
   - python3-psycopg2
+  - acl
 
 nextcloud_php_modules:
   - php-apcu
