@@ -26,7 +26,7 @@ php_fpm_session_name: __Host-PHPSESSID
 # OpCache
 php_fpm_opcache_enabled: true
 php_fpm_opcache_validate_timestamps: true
-php_fpm_opcache_revalidate_freq: 1
+php_fpm_opcache_revalidate_freq: 2
 php_fpm_opcache_max_accelerated_files: 10000
 php_fpm_opcache_max_interned_strings_buffer: 16
 php_fpm_opcache_memory_consumption: 128
