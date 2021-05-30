@@ -35,6 +35,10 @@ haproxy:
     target: web-static.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
+  - hostname: realms-wiki.neutrinet.be
+    target: web-static.patata.louise.neutri.net
+    target_port: 80
+    healtcheck: true
 
 haproxy_redirect:
   - from: www.neutrinet.be
