@@ -9,29 +9,25 @@
     validate: 'visudo -cf %s'
   tags: ['sudo']
 
-- name: Update root
-  user:
-    name: root
-    shell: /bin/bash
-    state: present
-
-- name: test si l'hote est un proxmox
-  stat:
-    path: /etc/pve
-  register: pve_dirs
-
-- name: supprission du mots de pass root
-  user:
-    name: root
-    password: '*'
-  when: not pve_dirs.stat.exists
-  no_log: true
-
 - name: Ajout des utilisateurs et de leurs clés SSH
   include_tasks: user.yml
   loop: "{{ users }}"
   loop_control:
     loop_var: user
+
+- name: Test si l'hôte est un Proxmox
+  stat:
+    path: /etc/pve
+  register: _pve_directory
+
+- name: Suppression du mot de passe root
+  user:
+    name: root
+    state: present
+    shell: /bin/bash
+    password: '*'
+  when: not _pve_directory.stat.exists
+  tags: ['skip_ansible_lint']
 
 - name: Trigger SSH handlers
   meta: flush_handlers

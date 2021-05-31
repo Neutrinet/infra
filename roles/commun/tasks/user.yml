@@ -11,7 +11,7 @@
     append: true
     state: "{{ user.state }}"
     update_password: on_create
-  no_log: true
+  tags: ['skip_ansible_lint']
 
 - name: Ajout des clés SSH pour l'utilisateur {{ user.name }}
   authorized_key:
