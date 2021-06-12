@@ -44,14 +44,6 @@ haproxy:
     target_port: 8443
     ssl: "ssl verify none"
     healtcheck: false
-  - hostname: apps.neutrinet.be
-    target: web.patata.louise.neutri.net
-    target_port: 80
-    healtcheck: false
-  - hostname: apps.neutrinet.be
-    target: web.patata.louise.neutri.net
-    target_port: 80
-    healtcheck: false
   - hostname: chat.neutrinet.be
     target: web.patata.louise.neutri.net
     target_port: 8065
