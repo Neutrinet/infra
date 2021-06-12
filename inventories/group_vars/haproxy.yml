@@ -74,8 +74,6 @@ haproxy_redirect:
     to: neutrinet.be
   - from: beta-wiki.neutrinet.be
     to: wiki.neutrinet.be
-  - from: beta-wiki.neutrinet.be
-    to: wiki.neutrinet.be
   - from: wiki-old.neutrinet.be
     to: mediawiki.neutrinet.be
   - from: admin.neutrinet.be
