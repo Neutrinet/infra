@@ -71,14 +71,14 @@
     group: root
     mode: "u=rw,go="
 
-- name: Création des crtificat rsa
-  include_tasks: letsencrypt-rsa.yml
-  loop: "{{ letsencrypt.domains }}"
+- name: Création des crtificat rsa par challenge gandi
+  include_tasks: letsencrypt-gandi-rsa.yml
+  loop: "{{ letsencrypt.domains-gandi }}"
   loop_control:
     loop_var: domain
 
-- name: Création des crtificat ecdsa
-  include_tasks: letsencrypt-ecdsa.yml
-  loop: "{{ letsencrypt.domains }}"
+- name: Création des crtificat rsa par challenge gandi
+  include_tasks: letsencrypt-gandi-ecdsa.yml
+  loop: "{{ letsencrypt.domains-gandi }}"
   loop_control:
     loop_var: domain
