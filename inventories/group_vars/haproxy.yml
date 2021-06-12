@@ -35,10 +35,6 @@ haproxy:
     target: web-static.patata.louise.neutri.net
     target_port: 80
     healtcheck: true
-  - hostname: admin.neutrinet.be
-    target: web.patata.louise.neutri.net
-    target_port: 80
-    healtcheck: false
   - hostname: api.neutrinet.be
     target: vpn.patata.louise.neutri.net
     target_port: 8443
