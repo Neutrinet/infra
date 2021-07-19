@@ -1,3 +1,5 @@
+{{ ansible_managed | comment }}
+
 # Package generated configuration file
 # See the sshd_config(5) manpage for details
 # https://infosec.mozilla.org/guidelines/openssh.html
@@ -23,7 +25,7 @@ LogLevel VERBOSE
 
 # Authentication:
 LoginGraceTime 2m
-PermitRootLogin no # or 'without-password' to allow SSH key based login
+PermitRootLogin {{ ssh_permit_root_login | ternary('no', 'without-password') }}
 StrictModes yes
 
 PubkeyAuthentication yes
@@ -89,7 +91,8 @@ Subsystem sftp internal-sftp -f AUTHPRIV -l INFO
 # and ChallengeResponseAuthentication to 'no'.
 UsePAM no
 
-UsePrivilegeSeparation sandbox
-
 UseDNS no
-MaxAuthTries 3
+MaxAuthTries 1
+
+Match group users
+    MaxAuthTries 6
