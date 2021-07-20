@@ -73,12 +73,14 @@
 
 - name: Création des crtificat rsa par challenge gandi
   include_tasks: letsencrypt-gandi-rsa.yml
-  loop: "{{ letsencrypt.domains-gandi }}"
+  loop: "{{ letsencrypt.domains_gandi }}"
   loop_control:
     loop_var: domain
+  when: '"domains_gandi" in letsencrypt'
 
-- name: Création des crtificat rsa par challenge gandi
+- name: Création des crtificat ecdsa par challenge gandi
   include_tasks: letsencrypt-gandi-ecdsa.yml
-  loop: "{{ letsencrypt.domains-gandi }}"
+  loop: "{{ letsencrypt.domains_gandi }}"
   loop_control:
     loop_var: domain
+  when: '"domains_gandi" in letsencrypt'

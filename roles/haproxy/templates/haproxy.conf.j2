@@ -54,7 +54,7 @@ frontend haproxy-frontend
     redirect scheme https code 301 if !{ ssl_fc }
 
 {% for redirect in haproxy_redirect %}
-    http-request redirect prefix http://{{ redirect.from }} code 301 if { hdr(host) -i {{ redirect.to }} }
+    http-request redirect prefix https://{{ redirect.to }} code 301 if { hdr(host) -i {{ redirect.from }} }
 {% endfor %}
 
 {% for host in haproxy %}
@@ -72,6 +72,6 @@ backend {{ host.hostname | replace('.', '-') }}-backend
 {% endif %}
     option forwardfor
     option http-server-close
-    server {{ host.target | replace('.', '-') }} {{ host.target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check{% endif %} {% if "ssl" in host %} {{ ssl }} {% endif %} cookie sl
+    server {{ host.target | replace('.', '-') }} {{ host.target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check{% endif %} {% if "ssl" in host %} {{ host.ssl }} {% endif %} cookie sl
 
 {% endfor %}
