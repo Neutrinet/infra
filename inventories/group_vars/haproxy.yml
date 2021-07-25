@@ -15,31 +15,77 @@ letsencrypt:
           31303535323864323031353032346664643562626563633864366237373935386438353138643337
           6632383964373738663761343065306137313163303838633763
   staging: false
-  domains:
+  domains_gandi:
     - neutrinet.be
 
 haproxy:
   - hostname: neutrinet.be
-    target: grav.patata.louise.neutri.net
+    target: web.patata.louise.neutri.net
     target_port: 80
     healthcheck: false
-  - hostname: www.neutrinet.be
-    target: grav.patata.louise.neutri.net
-    target_port: 80
-    healthcheck: true
+
   - hostname: mediawiki.neutrinet.be
     target: web-static.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
+    healthcheck_url: 'GET /healthcheck'
+
   - hostname: wikijs.neutrinet.be
     target: web-static.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
+    healthcheck_url: 'GET /healthcheck'
+
   - hostname: realms-wiki.neutrinet.be
     target: web-static.patata.louise.neutri.net
     target_port: 80
     healtcheck: true
+    healthcheck_url: 'GET /healthcheck'
+
+  - hostname: chat.neutrinet.be
+    target: web.patata.louise.neutri.net
+    target_port: 8065
+    healtcheck: true
+    healthcheck_url: 'GET /api/v4/system/ping'
+
+  - hostname: cube.neutrinet.be
+    target: web.patata.louise.neutri.net
+    target_port: 5005
+    healtcheck: false
+
+  - hostname: ffdnapi.neutrinet.be
+    target: web.patata.louise.neutri.net
+    target_port: 80
+    healtcheck: false
+
+  - hostname: files.neutrinet.be
+    target: web.patata.louise.neutri.net
+    target_port: 80
+    healtcheck: false
+
+  - hostname: user.neutrinet.be
+    target: web.patata.louise.neutri.net
+    target_port: 80
+    healtcheck: false
+
+  - hostname: wiki.neutrinet.be
+    target: web.patata.louise.neutri.net
+    target_port: 80
+    healtcheck: false
+
+  - hostname: meta.neutrinet.be
+    target: meta.patata.louise.neutri.net
+    target_port: 80
+    healtcheck: false
 
 haproxy_redirect:
   - from: www.neutrinet.be
     to: neutrinet.be
+  - from: beta-wiki.neutrinet.be
+    to: wiki.neutrinet.be
+  - from: wiki-old.neutrinet.be
+    to: mediawiki.neutrinet.be
+  - from: admin.neutrinet.be
+    to: cube.neutrinet.be
+  - from: vpn.neutrinet.be
+    to: api.neutrinet.be
