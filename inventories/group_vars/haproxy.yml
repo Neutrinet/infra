@@ -97,7 +97,7 @@ haproxy:
       - ceph-s3-02.patata.louise.neutri.net
       - ceph-s3-03.patata.louise.neutri.net
     target_port: 7480
-    healtcheck: true
+    healthcheck: true
     healthcheck_url: 'HEAD /'
 
 haproxy_redirect:
