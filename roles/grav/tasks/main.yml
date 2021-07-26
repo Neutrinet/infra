@@ -8,6 +8,7 @@
   import_role:
     name: php_fpm
   vars:
+    # Grav handles php session name by itself
     php_fpm_session_name: ""
   tags: ['php_fpm']
 
