@@ -1,0 +1,41 @@
+{{ ansible_managed | comment }}
+
+http://{{ web_app_domain }} {
+    root * {{ web_app_dist_dir | to_json }}
+    encode gzip zstd
+    file_server
+
+    php_fastcgi unix/{{ php_fpm_socket_file }}
+
+    @forbidden {
+        path /data/*
+        path /conf/*
+        path /bin/*
+        path /inc/*
+        path /install.php
+    }
+    respond @forbidden 403
+
+    try_files {path} {path}/index.html
+
+    route {
+        handle_path /_media/* {
+            rewrite * /lib/exe/fetch.php?media={path}&{query}
+        }
+        handle_path /_detail/* {
+            rewrite * /lib/exe/detail.php?media={path}&{query}
+        }
+        handle /_export/* {
+            @export path_regexp export ^/_export/([^/]+)/(.*)
+            rewrite @export /doku.php?do=export_{re.export.1}&{query}&id={re.export.2}
+        }
+        handle / {
+            rewrite * /doku.php?{query}
+        }
+        try_files {path} /doku.php?id={path}&{query}
+    }
+
+    log {
+        output file {{ web_app_caddy_log | to_json }}
+    }
+}

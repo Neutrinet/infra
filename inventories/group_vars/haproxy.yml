@@ -40,44 +40,45 @@ haproxy:
   - hostname: realms-wiki.neutrinet.be
     target: web-static.patata.louise.neutri.net
     target_port: 80
-    healtcheck: true
+    healthcheck: true
     healthcheck_url: 'GET /healthcheck'
 
   - hostname: chat.neutrinet.be
     target: web.patata.louise.neutri.net
     target_port: 8065
-    healtcheck: true
+    healthcheck: true
     healthcheck_url: 'GET /api/v4/system/ping'
 
   - hostname: cube.neutrinet.be
     target: web.patata.louise.neutri.net
     target_port: 5005
-    healtcheck: false
+    healthcheck: false
 
   - hostname: ffdnapi.neutrinet.be
     target: web.patata.louise.neutri.net
     target_port: 80
-    healtcheck: false
+    healthcheck: false
 
   - hostname: files.neutrinet.be
     target: web.patata.louise.neutri.net
     target_port: 80
-    healtcheck: false
+    healthcheck: false
 
   - hostname: user.neutrinet.be
     target: web.patata.louise.neutri.net
     target_port: 80
-    healtcheck: false
+    healthcheck: false
 
   - hostname: wiki.neutrinet.be
-    target: web.patata.louise.neutri.net
+    target: dokuwiki.patata.louise.neutri.net
     target_port: 80
-    healtcheck: false
+    healthcheck: true
+    healthcheck_url: "GET /healthcheck"
 
   - hostname: meta.neutrinet.be
     target: meta.patata.louise.neutri.net
     target_port: 80
-    healtcheck: false
+    healthcheck: false
 
 haproxy_redirect:
   - from: www.neutrinet.be
