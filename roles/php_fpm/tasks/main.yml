@@ -1,6 +1,3 @@
-# - debug:
-#     var: php_modules
-
 - name: Installation de PHP {{ php_version }} et de ses modules
   package:
     name: "{{ php_packages + php_modules | map('regex_replace', '$', php_version) | list }}"
