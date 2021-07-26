@@ -5,6 +5,10 @@ http://{{ web_app_domain }} {
     encode gzip
     file_server
 
+{% if web_app_php_fpm_enabled %}
+    php_fastcgi unix/{{ php_fpm_socket_file }}
+{% endif %}
+
     log {
         output file {{ web_app_caddy_log | to_json }}
     }

@@ -1,0 +1,16 @@
+- name: Vérification de la présence du binaire de Composer
+  stat:
+    path: /usr/local/bin/composer
+  register: composer_bin
+  tags: ['composer_install']
+
+- name: Installation de Composer
+  import_tasks: install.yml
+  tags: ['composer_install']
+  when: not composer_bin.stat.exists
+
+- name: Mise à jour de Composer vers la dernière version
+  command: composer self-update
+  register: composer_update
+  changed_when: "'Upgrading to version' in composer_update.stdout"
+  tags: ['composer_update']

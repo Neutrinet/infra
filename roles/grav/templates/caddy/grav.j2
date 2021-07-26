@@ -1,0 +1,45 @@
+{{ ansible_managed | comment }}
+
+http://{{ web_app_domain }} {
+    root * {{ web_app_dist_dir | to_json }}
+    encode gzip
+    file_server
+
+    php_fastcgi unix/{{ php_fpm_socket_file }}
+
+    @forbidden {
+        # Deny all direct access for these folders
+        path /.git/*
+        path /cache/*
+        path /bin/*
+        path /logs/*
+        path /backups/*
+        path /tests/*
+
+        # Deny access to specific files in the root folder
+        path /LICENSE.txt
+        path /composer.lock
+        path /composer.json
+        path /nginx.conf
+        path /web.config
+        path /htaccess.txt
+        path /.htaccess
+    }
+
+    # Deny running scripts inside core system folders
+    @forbidden_core path_regexp /(system|vendor)/.*\.(txt|xml|md|html|yaml|yml|php|pl|py|cgi|twig|sh|bat)$
+
+    # Deny running scripts inside user folder
+    @forbidden_user path_regexp /user/.*\.(txt|md|yaml|yml|php|pl|py|cgi|twig|sh|bat)$
+
+    respond @forbidden 403
+    respond @forbidden_core 403
+    respond @forbidden_user 403
+
+    # global rewrite should come last.
+    try_files {path} {path}/ /index.php?_url={uri}&{query}
+
+    log {
+        output file {{ web_app_caddy_log | to_json }}
+    }
+}

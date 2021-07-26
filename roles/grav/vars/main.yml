@@ -1,0 +1,9 @@
+php_modules:
+  - php-curl
+  - php-gd
+  - php-xml
+  - php-mbstring
+  - php-zip
+  - php-apcu
+  - php-yaml
+  - php-sqlite3

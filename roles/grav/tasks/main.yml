@@ -1,0 +1,31 @@
+---
+- name: Installation de Caddy2
+  import_role:
+    name: caddy_server
+  tags: ['caddy']
+
+- name: Installation de PHP
+  import_role:
+    name: php_fpm
+  vars:
+    # Grav handles php session name by itself
+    php_fpm_session_name: ""
+  tags: ['php_fpm']
+
+- name: Installation de Composer
+  import_role:
+    name: composer
+  tags: ['composer']
+
+- name: Configuration du site (caddy, php-fpm, etc.)
+  import_role:
+    name: web_app
+  vars:
+    web_app_domain: "{{ grav_domain }}"
+    web_app_template: caddy/grav.j2
+    web_app_php_fpm_enabled: true
+  tags: ['web_app']
+
+- name: Installation du scheduler
+  import_tasks: scheduler.yml
+  tags: ['scheduler']

@@ -1,0 +1,25 @@
+- name: Installation du cron job
+  cron:
+    name: grav-scheduler
+    cron_file: grav
+    job: "bin/grav scheduler 1>> /dev/null 2>&1"
+    user: "{{ web_app_owner }}"
+    state: present
+
+- name: Configuration de la variable HOME du cron job
+  cron:
+    name: HOME
+    cron_file: grav
+    value: "{{ web_app_dist_dir }}"
+    user: "{{ web_app_owner }}"
+    state: present
+    env: true
+
+- name: Configuration de la variable PATH du cron job
+  cron:
+    name: PATH
+    cron_file: grav
+    value: "/usr/local/bin:/usr/bin"
+    user: "{{ web_app_owner }}"
+    state: present
+    env: true
