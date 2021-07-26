@@ -32,4 +32,6 @@ env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 php_admin_value[session.cookie_httponly] = {{ php_fpm_session_cookie_httponly | bool }}
 php_admin_value[session.use_only_cookies] = {{ php_fpm_session_use_only_cookies | bool }}
 php_admin_value[session.cookie_secure] = {{ php_fpm_session_cookie_secure | bool }}
+{% if php_fpm_session_name %}
 php_admin_value[session.name] = {{ php_fpm_session_name | to_json }}
+{% endif %}

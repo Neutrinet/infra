@@ -20,9 +20,10 @@ letsencrypt:
 
 haproxy:
   - hostname: neutrinet.be
-    target: web.patata.louise.neutri.net
+    target: grav.patata.louise.neutri.net
     target_port: 80
-    healthcheck: false
+    healthcheck: true
+    healthcheck_url: "GET /healthcheck"
 
   - hostname: mediawiki.neutrinet.be
     target: web-static.patata.louise.neutri.net
