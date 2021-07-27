@@ -67,8 +67,8 @@ frontend haproxy-frontend
 backend {{ host.hostname | replace('.', '-') }}-backend
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
     mode http
-{% if "healthcheck" in host and host.healthcheck %}
-    option httpchk GET /healthcheck
+{% if "healthcheck_url" in host and host.healthcheck_url %}
+    option httpchk {{ host.healthcheck_url }}
 {% endif %}
     option forwardfor
     option http-server-close
