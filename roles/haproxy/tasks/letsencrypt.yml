@@ -37,7 +37,7 @@
     cron_file: letsencrypt-update
     special_time: daily
     user: "root"
-    job: "/opt/letsencrypt/bin/certbot certonly"
+    job: "/opt/letsencrypt/bin/certbot renew"
 
 - name: Test si le compte LE existe
   stat:
