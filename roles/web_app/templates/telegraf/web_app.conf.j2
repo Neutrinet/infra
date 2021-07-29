@@ -1,0 +1,33 @@
+{{ ansible_managed | comment }}
+
+# HTTP/HTTPS request given an address a method and a timeout
+[[inputs.http_response]]
+  ## List of urls to query.
+  urls = ["http://localhost"]
+
+  ## Set response_timeout (default 5 seconds)
+  response_timeout = "10s"
+
+  ## HTTP Request Method
+  method = "GET"
+
+  ## Whether to follow redirects from the server (defaults to false)
+  follow_redirects = true
+
+  [inputs.http_response.headers]
+    Host = {{ web_app_domain | to_json }}
+
+
+{% if web_app_php_fpm_enabled %}
+# Read metrics of phpfpm, via HTTP status page or socket
+[[inputs.phpfpm]]
+  ## An array of addresses to gather stats about. Specify an ip or hostname
+  ## with optional port and path
+  ##
+  ## Example of multiple gathering from local socket and remote host
+  ## urls = ["http://192.168.1.20/status", "/tmp/fpm.sock"]
+  urls = [{{ php_fpm_socket_file | to_json }}]
+
+  ## Duration allowed to complete HTTP requests.
+  timeout = "10s"
+{% endif %}

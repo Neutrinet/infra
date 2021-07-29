@@ -30,3 +30,6 @@ haproxy:
 haproxy_redirect:
   - from: www.neutrinet.be
     to: neutrinet.be
+
+haproxy_ssl_dir: /etc/haproxy/ssl
+haproxy_stats_socket_file: /run/haproxy/admin.sock

@@ -8,3 +8,8 @@
   tags: ['php_fpm_config']
 - import_tasks: caddy.yml
   tags: ['caddy_config']
+
+- name: Installation des plugins Telegraf
+  import_role:
+    name: telegraf_plugin
+  tags: ['telegraf_config']

@@ -1,0 +1,2 @@
+telegraf_plugin_template: telegraf/haproxy.conf.j2
+telegraf_plugin_name: haproxy

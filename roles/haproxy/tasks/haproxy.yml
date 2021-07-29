@@ -6,18 +6,18 @@
     state: present
     default_release: "{{ ansible_distribution_release }}-backports"
 
-- name: creation du repertoir ssl
+- name: Création du répertoire ssl
   file:
-    path: /etc/haproxy/ssl
+    path: "{{ haproxy_ssl_dir }}"
     mode: "u=rwx,go=rx"
     owner: root
     group: root
     state: directory
 
-- name: copie du certificat par default
+- name: Copie du certificat par défaut
   copy:
     src: default.pem
-    dest: /etc/haproxy/ssl/default.pem
+    dest: "{{ haproxy_ssl_dir }}/default.pem"
     mode: "u=rw,go=r"
     owner: root
     group: root
@@ -32,7 +32,7 @@
     validate: "haproxy -f %s -c -q"
   notify: reload haproxy
 
-- name: Activation de haproxy au démarage
+- name: Activation de haproxy au démarrage
   service:
     name: haproxy
     state: started

@@ -24,6 +24,9 @@
 - import_tasks: time.yml
   tags: ['time']
 
+- import_tasks: telegraf.yml
+  tags: ['telegraf']
+
 - import_tasks: serial.yml
   tags: ['serial']
   when: ansible_virtualization_type == 'kvm'

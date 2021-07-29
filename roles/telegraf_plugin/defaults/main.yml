@@ -1,0 +1,5 @@
+telegraf_owner: telegraf
+telegraf_group: "{{ telegraf_owner }}"
+telegraf_plugin_dir: /etc/telegraf/telegraf.d
+telegraf_plugin_name: example
+telegraf_plugin_template: telegraf/example.conf.j2

@@ -7,13 +7,10 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
-  register: apt_sources
+  notify: update apt cache
 
-- name: Mise à jour du cache apt  # noqa 503
-  apt:
-    upgrade: safe
-    update_cache: true
-  when: apt_sources is changed
+- name: Trigger APT handler
+  meta: flush_handlers
 
 - name: Installation de unattended-upgrades
   ansible.builtin.package:

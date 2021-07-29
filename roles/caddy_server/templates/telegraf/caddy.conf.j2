@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from Caddy
+  urls = ["http://localhost:2019/metrics"]

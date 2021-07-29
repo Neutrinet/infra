@@ -15,6 +15,10 @@
     name: sshguard
     state: restarted
 
+- name: update apt cache
+  apt:
+    update_cache: true
+
 - name: update grub  # noqa command-instead-of-shell
   shell:
     cmd: "grub-mkconfig -o /boot/grub/grub.cfg"
