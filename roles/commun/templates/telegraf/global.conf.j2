@@ -5,7 +5,7 @@
 
 [agent]
   ## Override default hostname, if empty use os.Hostname()
-  hostname = {{ ansible_fqdn }}
+  hostname = {{ ansible_fqdn | to_json }}
 
 
 ###############################################################################
@@ -34,48 +34,6 @@
 ###############################################################################
 #                            INPUT PLUGINS                                    #
 ###############################################################################
-
-
-# Read metrics about cpu usage
-[[inputs.cpu]]
-  ## Whether to report per-cpu stats or not
-  percpu = true
-  ## Whether to report total system cpu stats or not
-  totalcpu = true
-  ## If true, collect raw CPU time metrics
-  collect_cpu_time = false
-  ## If true, compute and report the sum of all non-idle CPU states
-  report_active = false
-
-
-# Read metrics about disk usage by mount point
-[[inputs.disk]]
-  ## Ignore mount points by filesystem type.
-  ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
-
-
-# Read metrics about disk IO by device
-[[inputs.diskio]]
-
-
-# Get kernel statistics from /proc/stat
-[[inputs.kernel]]
-
-
-# Read metrics about memory usage
-[[inputs.mem]]
-
-
-# Get the number of processes and group them by status
-[[inputs.processes]]
-
-
-# Read metrics about swap memory usage
-[[inputs.swap]]
-
-
-# Read metrics about system load & uptime
-[[inputs.system]]
 
 
 # # Collect statistics about itself

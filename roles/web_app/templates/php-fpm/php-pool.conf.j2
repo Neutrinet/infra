@@ -13,6 +13,7 @@ pm = {{ php_fpm_pm }}
 pm.max_children = {{ php_fpm_pm_max_children | int }}
 pm.process_idle_timeout = {{ php_fpm_pm_process_idle_timeout }}
 pm.max_requests = {{ php_fpm_pm_max_requests | int }}
+pm.status_path = /status
 
 request_terminate_timeout = {{ php_fpm_request_terminate_timeout }}
 

@@ -17,6 +17,9 @@
   [inputs.http_response.headers]
     Host = {{ web_app_domain | to_json }}
 
+  [inputs.http_response.tags]
+    domain = {{ web_app_domain | to_json }}
+
 
 {% if web_app_php_fpm_enabled %}
 # Read metrics of phpfpm, via HTTP status page or socket

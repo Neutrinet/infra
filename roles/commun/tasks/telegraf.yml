@@ -41,6 +41,13 @@
     name: telegraf_plugin
   tags: ['telegraf_config']
 
+- name: Désactivation de la sortie influxdb
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    regexp: '^\[\[outputs\.influxdb\]\]'
+    line: '# [[outputs.influxdb]]'
+  notify: reload telegraf
+
 - name: Activation de Telegraf au démarrage
   service:
     name: telegraf

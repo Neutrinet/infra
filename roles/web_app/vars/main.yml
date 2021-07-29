@@ -1,2 +1,2 @@
 telegraf_plugin_template: "{{ web_app_telegraf_template }}"
-telegraf_plugin_name: "{{ web_app_domain }}"
+telegraf_plugin_name: "{{ web_app_owner }}"
