@@ -9,18 +9,19 @@
 - name: creation du repertoir ssl
   file:
     path: /etc/haproxy/ssl
-    mode: "u=rwx,go=rx"
-    owner: root
-    group: root
+    mode: "u=rwx,g=rx,o="
+    owner: "{{ haproxy_owner }}"
+    group: "{{ haproxy_group }}"
     state: directory
 
 - name: copie du certificat par default
   copy:
     src: default.pem
     dest: /etc/haproxy/ssl/default.pem
-    mode: "u=rw,go=r"
-    owner: root
-    group: root
+    mode: "u=rw,g=r,o="
+    owner: "{{ haproxy_owner }}"
+    group: "{{ haproxy_group }}"
+  notify: reload haproxy
 
 - name: Config de haproxy
   template:
