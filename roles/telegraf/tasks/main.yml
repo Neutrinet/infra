@@ -27,15 +27,6 @@
     name: telegraf
     state: present
 
-# - name: Copie de la config principale de Telegraf
-#   template:
-#     src: telegraf/telegraf.conf.j2
-#     dest: "{{ telegraf_config_dir }}/telegraf.conf"
-#     owner: root
-#     group: telegraf
-#     mode: "u=rw,g=r,o="
-#   notify: restart telegraf
-
 - name: Copie des plugins globaux de Telegraf
   import_role:
     name: telegraf_plugin

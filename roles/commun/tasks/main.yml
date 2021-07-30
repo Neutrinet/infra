@@ -24,7 +24,9 @@
 - import_tasks: time.yml
   tags: ['time']
 
-- import_tasks: telegraf.yml
+- name: Installation de Telegraf
+  import_role:
+    name: telegraf
   tags: ['telegraf']
 
 - import_tasks: serial.yml

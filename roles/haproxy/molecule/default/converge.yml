@@ -3,12 +3,5 @@
   hosts: all
   become: true
 
-  tasks:
-    - name: Update cache
-      apt:
-        update_cache: true
-        cache_valid_time: 3600
-      when: ansible_facts['os_family'] == 'Debian'
-
   roles:
     - haproxy
