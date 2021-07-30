@@ -5,7 +5,15 @@
     owner: "{{ telegraf_owner }}"
     group: "{{ telegraf_group }}"
     mode: "u=rw,g=r,o="
-  notify: reload telegraf
+  notify: restart telegraf
+
+- name: Ajout de groupes à l'utilisateur telegraf
+  user:
+    name: telegraf
+    groups: "{{ telegraf_append_groups }}"
+    append: true
+  notify: restart telegraf
+  when: telegraf_append_groups | length > 0
 
 - name: Trigger Telegraf handlers
   meta: flush_handlers

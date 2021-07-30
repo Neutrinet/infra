@@ -7,7 +7,7 @@ group = {{ web_app_group }}
 listen = {{ php_fpm_socket_file }}
 listen.owner = {{ caddy_owner }}
 listen.group = {{ caddy_group }}
-listen.mode = {{ php_fpm_socket_mode }}
+listen.mode = "0660"
 
 pm = {{ php_fpm_pm }}
 pm.max_children = {{ php_fpm_pm_max_children | int }}

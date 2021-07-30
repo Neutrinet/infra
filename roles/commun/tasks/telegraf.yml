@@ -34,7 +34,7 @@
 #     owner: root
 #     group: telegraf
 #     mode: "u=rw,g=r,o="
-#   notify: reload telegraf
+#   notify: restart telegraf
 
 - name: Copie des plugins globaux de Telegraf
   import_role:
@@ -43,10 +43,10 @@
 
 - name: Désactivation de la sortie influxdb
   lineinfile:
-    path: /etc/telegraf/telegraf.conf
+    path: "{{ telegraf_config_dir }}/telegraf.conf"
     regexp: '^\[\[outputs\.influxdb\]\]'
     line: '# [[outputs.influxdb]]'
-  notify: reload telegraf
+  notify: restart telegraf
 
 - name: Activation de Telegraf au démarrage
   service:

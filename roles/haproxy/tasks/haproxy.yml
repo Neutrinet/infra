@@ -9,18 +9,19 @@
 - name: Création du répertoire ssl
   file:
     path: "{{ haproxy_ssl_dir }}"
-    mode: "u=rwx,go=rx"
-    owner: root
-    group: root
+    mode: "u=rwx,g=rx,o="
+    owner: "{{ haproxy_owner }}"
+    group: "{{ haproxy_group }}"
     state: directory
 
 - name: Copie du certificat par défaut
   copy:
     src: default.pem
     dest: "{{ haproxy_ssl_dir }}/default.pem"
-    mode: "u=rw,go=r"
-    owner: root
-    group: root
+    mode: "u=rw,g=r,o="
+    owner: "{{ haproxy_owner }}"
+    group: "{{ haproxy_group }}"
+  notify: reload haproxy
 
 - name: Config de haproxy
   template:

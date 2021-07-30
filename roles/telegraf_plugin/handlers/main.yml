@@ -1,4 +1,4 @@
-- name: reload telegraf
+- name: restart telegraf
   service:
     name: telegraf
-    state: reloaded
+    state: restarted

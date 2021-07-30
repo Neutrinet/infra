@@ -18,12 +18,13 @@ letsencrypt:
           31303535323864323031353032346664643562626563633864366237373935386438353138643337
           6632383964373738663761343065306137313163303838633763
   staging: true
-  domains:
+  domains_gandi:
     - neutrinet.be
 
 haproxy:
   - hostname: neutrinet.be
-    target: 127.0.0.1
+    target:
+      - 127.0.0.1
     target_port: 8080
     healthcheck: false
 
@@ -33,3 +34,5 @@ haproxy_redirect:
 
 haproxy_ssl_dir: /etc/haproxy/ssl
 haproxy_stats_socket_file: /run/haproxy/admin.sock
+haproxy_owner: haproxy
+haproxy_group: "{{ haproxy_owner }}"

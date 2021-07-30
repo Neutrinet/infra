@@ -39,7 +39,7 @@
     user: "root"
     job: "/opt/letsencrypt/bin/certbot renew"
 
-- name: Test si le compte LE existe
+- name: Test si le compte Let's Encrypt existe
   stat:
     path: /etc/letsencrypt/accounts
   register: letsencrypt_accounts
