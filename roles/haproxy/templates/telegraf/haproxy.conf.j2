@@ -1,13 +1,8 @@
 {{ ansible_managed | comment }}
 
-# Read metrics of haproxy, via socket or csv stats page
-[[inputs.haproxy]]
-  servers = [{{ haproxy_stats_socket_file | to_json }}]
-
-  ## By default, some of the fields are renamed from what haproxy calls them.
-  ## Setting this option to true results in the plugin keeping the original
-  ## field names.
-  # keep_field_names = false
+[[inputs.prometheus]]
+  ## Scrape metrics directly from haproxy's prometheus exporter
+  urls = ["http://localhost:8405/metrics"]
 
 
 # Reads metrics from a SSL certificate

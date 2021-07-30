@@ -45,6 +45,10 @@ defaults
     errorfile 503 /etc/haproxy/errors/503.http
     errorfile 504 /etc/haproxy/errors/504.http
 
+frontend prometheus-frontend
+   bind localhost:8405
+   http-request use-service prometheus-exporter if { path /metrics }
+
 frontend haproxy-frontend
     bind :80
     bind :443 ssl crt {{ haproxy_ssl_dir }} alpn h2,http/1.1 allow-0rtt
