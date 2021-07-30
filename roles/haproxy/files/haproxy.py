@@ -7,17 +7,11 @@ import re
 import sys
 
 
-OS_OWNERS = {}
-OS_GROUPS = {}
-
-
 def chown(path: str, owner: str, group: str, **kwargs) -> None:
     """Change ownership of a file or directory."""
-    if owner not in OS_OWNERS:
-        OS_OWNERS[owner] = pwd.getpwnam(owner).pw_uid
-    if group not in OS_GROUPS:
-        OS_GROUPS[group] = grp.getgrnam(group).gr_gid
-    os.chown(path, OS_OWNERS[owner], OS_GROUPS[group], **kwargs)
+    uid = pwd.getpwnam(owner).pw_uid
+    gid = grp.getgrnam(group).gr_gid
+    os.chown(path, uid, gid, **kwargs)
 
 
 # Certbot sets an environment variable RENEWED_LINEAGE, which points to the
