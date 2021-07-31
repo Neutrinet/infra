@@ -1,5 +1,6 @@
 ---
 ssh_permit_root_login: false
+ssh_use_pam: false
 mail_notification: ahoy@example.com
 users:
   - name: neutrinet
