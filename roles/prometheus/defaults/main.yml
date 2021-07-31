@@ -1,0 +1,8 @@
+prometheus_owner: prometheus
+prometheus_group: "{{ prometheus_owner }}"
+prometheus_config_dir: /etc/prometheus
+prometheus_telegraf_hosts: "{{ groups.all }}"
+
+alertmanager_owner: "{{ prometheus_owner }}"
+alertmanager_group: "{{ alertmanager_owner }}"
+alertmanager_config_dir: "{{ prometheus_config_dir }}"
