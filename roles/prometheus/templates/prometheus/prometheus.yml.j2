@@ -43,7 +43,7 @@ scrape_configs:
         - '{job="telegraf-.*"}'
     static_configs:
       - targets:
-          - {{ host }}
+          - {{ host }}:9090
 {% endfor %}
 
 {% for host in prometheus_telegraf_hosts %}
