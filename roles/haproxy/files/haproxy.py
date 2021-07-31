@@ -8,7 +8,7 @@ import sys
 
 
 def chown(path: str, owner: str, group: str, **kwargs) -> None:
-    """Change ownership of a file or directory."""
+    """Change ownership of a file or directory given an username and a group name."""
     uid = pwd.getpwnam(owner).pw_uid
     gid = grp.getgrnam(group).gr_gid
     os.chown(path, uid, gid, **kwargs)
@@ -43,6 +43,7 @@ source_key = lineage + "/privkey.pem"
 source_chain = lineage + "/fullchain.pem"
 
 # HAproxy requires to combine the key and chain in one .pem file
+# Open a file descriptor to handle permissions. See https://stackoverflow.com/a/45368120
 deploy_fd = os.open(deploy_path, os.O_CREAT | os.O_WRONLY, 0o640)
 with os.fdopen(deploy_fd, "w") as deploy, \
         open(source_key, "r") as key, \
