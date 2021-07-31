@@ -1,4 +1,11 @@
 ---
 
 - import_tasks: haproxy.yml
+  tags: ['haproxy']
 - import_tasks: letsencrypt.yml
+  tags: ['letsencrypt']
+
+- name: Installation des plugins Telegraf
+  import_role:
+    name: telegraf_plugin
+  tags: ['telegraf_config']

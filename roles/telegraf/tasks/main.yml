@@ -1,0 +1,49 @@
+---
+- name: Installation de GPG
+  package:
+    name:
+      - gpg
+      - gpg-agent
+      - dirmngr
+    state: present
+
+- name: Ajout de la clé GPG de InfluxDB
+  apt_key:
+    url: https://repos.influxdata.com/influxdb.key
+    state: present
+
+- name: Ajout du dépôt APT pour Telegraf
+  apt_repository:
+    repo: deb https://repos.influxdata.com/debian {{ ansible_distribution_release }} stable
+    state: present
+    filename: telegraf
+  notify: update apt cache
+
+- name: Trigger APT handler
+  meta: flush_handlers
+
+- name: Installation de Telegraf
+  apt:
+    name: telegraf
+    state: present
+
+- name: Copie des plugins globaux de Telegraf
+  import_role:
+    name: telegraf_plugin
+  tags: ['telegraf_config']
+
+- name: Désactivation de la sortie influxdb
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    regexp: '^\[\[outputs\.influxdb\]\]'
+    line: '# [[outputs.influxdb]]'
+  notify: restart telegraf
+
+- name: Activation de Telegraf au démarrage
+  service:
+    name: telegraf
+    state: started
+    enabled: true
+
+- name: Trigger telegraf handlers
+  meta: flush_handlers

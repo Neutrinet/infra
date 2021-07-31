@@ -1,0 +1,13 @@
+{{ ansible_managed | comment }}
+
+# Read metrics of phpfpm, via HTTP status page or socket
+[[inputs.phpfpm]]
+  ## An array of addresses to gather stats about. Specify an ip or hostname
+  ## with optional port and path
+  ##
+  ## Example of multiple gathering from local socket and remote host
+  ## urls = ["http://192.168.1.20/status", "/tmp/fpm.sock"]
+  urls = [{{ php_fpm_socket_file | to_json }}]
+
+  ## Duration allowed to complete HTTP requests.
+  timeout = "10s"

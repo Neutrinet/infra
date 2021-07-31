@@ -1,6 +1,6 @@
 - name: Copie de la configuration Caddy2
   template:
-    src: "{{ web_app_template }}"
+    src: "{{ web_app_caddy_template }}"
     dest: "{{ caddy_vhosts_dir }}/{{ web_app_owner }}.conf"
     owner: root
     group: root

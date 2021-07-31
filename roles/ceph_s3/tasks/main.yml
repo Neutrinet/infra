@@ -1,12 +1,4 @@
 ---
-- name: Installation de GPG
-  package:
-    name:
-      - gpg
-      - gpg-agent
-      - dirmngr
-    state: present
-
 - name: Ajout de la clé GPG de ceph proxmox dans APT
   apt_key:
     url: "{{ ceph_proxmox_gpg_key_url }}"
@@ -17,3 +9,12 @@
     repo: "deb http://download.proxmox.com/debian/ceph-{{ ceph_proxmox_version }} {{ ansible_distribution_release }} main"
     filename: proxmox-ceph
     state: present
+  notify: update apt cache
+
+- name: Trigger APT handler
+  meta: flush_handlers
+
+- name: Installation des plugins Telegraf
+  import_role:
+    name: telegraf_plugin
+  tags: ['telegraf_config']

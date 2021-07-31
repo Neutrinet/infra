@@ -1,0 +1,62 @@
+{{ ansible_managed | comment }}
+
+[global_tags]
+  dc = {{ datacenter_name | to_json }}
+
+[agent]
+  ## Override default hostname, if empty use os.Hostname()
+  hostname = {{ ansible_fqdn | to_json }}
+
+
+###############################################################################
+#                            OUTPUT PLUGINS                                   #
+###############################################################################
+
+
+# Publish all metrics to /metrics for Prometheus to scrape
+[[outputs.prometheus_client]]
+  ## Address to listen on.
+  listen = ":9273"
+
+  ## Metric version controls the mapping from Telegraf metrics into
+  ## Prometheus format.  When using the prometheus input, use the same value in
+  ## both plugins to ensure metrics are round-tripped without modification.
+  ##
+  ##   example: metric_version = 1; deprecated in 1.13
+  ##            metric_version = 2; recommended version
+  metric_version = 2
+
+  ## Use HTTP Basic Authentication.
+  basic_username = {{ telegraf_username | to_json }}
+  basic_password = {{ telegraf_password | to_json }}
+
+
+###############################################################################
+#                            INPUT PLUGINS                                    #
+###############################################################################
+
+
+# # Collect statistics about itself
+[[inputs.internal]]
+  ## If true, collect telegraf memory stats.
+  # collect_memstats = true
+
+
+# Get kernel statistics from /proc/vmstat
+[[inputs.kernel_vmstat]]
+
+
+# Read metrics about network interface usage
+[[inputs.net]]
+
+
+# Read TCP metrics such as established, time wait and sockets counts.
+[[inputs.netstat]]
+
+
+# Gather systemd units state
+[[inputs.systemd_units]]
+  ## Filter for a specific unit type, default is "service", other possible
+  ## values are "socket", "target", "device", "mount", "automount", "swap",
+  ## "timer", "path", "slice" and "scope ":
+  unittype = "service"

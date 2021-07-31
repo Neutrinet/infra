@@ -24,6 +24,11 @@
 - import_tasks: time.yml
   tags: ['time']
 
+- name: Installation de Telegraf
+  import_role:
+    name: telegraf
+  tags: ['telegraf']
+
 - import_tasks: serial.yml
   tags: ['serial']
   when: ansible_virtualization_type == 'kvm'

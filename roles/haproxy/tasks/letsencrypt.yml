@@ -1,6 +1,6 @@
 ---
 
-- name: Instalation des dépendance
+- name: Installation des dépendances python
   ansible.builtin.package:
     name:
       - python3-dev
@@ -8,7 +8,7 @@
       - virtualenv
     state: present
 
-- name: "Création des dossier"
+- name: Création des dossiers Let's Encrypt
   file:
     path: "{{ item }}"
     owner: root
@@ -20,7 +20,7 @@
     - /etc/letsencrypt/gandi
     - /opt/letsencrypt
 
-- name: Install pip  # noqa package-latest
+- name: Installation de pip et certbot  # noqa package-latest
   ansible.builtin.pip:
     name:
       - pip
@@ -31,7 +31,7 @@
     state: latest
     chdir: /opt/letsencrypt
 
-- name: Creates a cron file under /etc/cron.d
+- name: Création d'un cron job pour renouveler les certificats
   cron:
     name: "letsencrypt-update"
     cron_file: letsencrypt-update
@@ -39,12 +39,12 @@
     user: "root"
     job: "/opt/letsencrypt/bin/certbot renew"
 
-- name: Test si le compte LE existe
+- name: Test si le compte Let's Encrypt existe
   stat:
     path: /etc/letsencrypt/accounts
   register: letsencrypt_accounts
 
-- name: Enregistrement du compte LE  # noqa command-instead-of-shell
+- name: Enregistrement du compte Let's Encrypt  # noqa command-instead-of-shell
   shell:
     cmd: |
       /opt/letsencrypt/bin/certbot register \
@@ -55,7 +55,7 @@
       --agree-tos
   when: not letsencrypt_accounts.stat.exists
 
-- name: placeent du hook pour haproxy
+- name: Placement du hook pour haproxy
   copy:
     src: haproxy.py
     dest: /etc/letsencrypt/haproxy.py
@@ -63,7 +63,7 @@
     owner: root
     group: root
 
-- name: Config de gandi pour letsencrypt
+- name: Config de Gandi pour Let's Encrypt
   template:
     dest: /etc/letsencrypt/gandi/gandi.ini
     src: gandi.ini.j2
@@ -71,14 +71,14 @@
     group: root
     mode: "u=rw,go="
 
-- name: Création des crtificat rsa par challenge gandi
+- name: Création des certificats rsa par challenge gandi
   include_tasks: letsencrypt-gandi-rsa.yml
   loop: "{{ letsencrypt.domains_gandi }}"
   loop_control:
     loop_var: domain
   when: '"domains_gandi" in letsencrypt'
 
-- name: Création des crtificat ecdsa par challenge gandi
+- name: Création des certificats ecdsa par challenge gandi
   include_tasks: letsencrypt-gandi-ecdsa.yml
   loop: "{{ letsencrypt.domains_gandi }}"
   loop_control:

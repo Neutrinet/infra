@@ -5,10 +5,14 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-commun-molecule
+  - name: buster-haproxy-molecule
     box: debian/buster64
     cpu: 2
     memory: 512
+    interfaces:
+      - network_name: private_network
+        type: dhcp
+        auto_config: true
 provisioner:
   name: ansible
   config_options:

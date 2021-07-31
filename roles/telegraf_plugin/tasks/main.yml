@@ -1,0 +1,19 @@
+- name: Copie de la configuration Telegraf
+  template:
+    src: "{{ telegraf_plugin_template }}"
+    dest: /etc/telegraf/telegraf.d/{{ telegraf_plugin_name }}.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+  notify: restart telegraf
+
+- name: Ajout de groupes à l'utilisateur telegraf
+  user:
+    name: telegraf
+    groups: "{{ telegraf_append_groups }}"
+    append: true
+  notify: restart telegraf
+  when: telegraf_append_groups | length > 0
+
+- name: Trigger Telegraf handlers
+  meta: flush_handlers

@@ -1,8 +1,3 @@
-- name: Installation de GPG
-  package:
-    name: gpg
-    state: present
-
 - name: Téléchargement du fichier à vérifier depuis {{ gpg_verify_url }}
   get_url:
     url: "{{ gpg_verify_url }}"
