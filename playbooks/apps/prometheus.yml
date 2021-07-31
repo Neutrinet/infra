@@ -1,5 +1,5 @@
 ---
-# Déploiement de Prometheus
+# Déploiement de Prometheus et Alertmanager
 - hosts: prometheus
   become: true
 

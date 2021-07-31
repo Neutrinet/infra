@@ -33,6 +33,12 @@ scrape_configs:
       - targets:
           - localhost:9090
 
+  # Grab metrics about alertmanager
+  - job_name: alertmanager
+    static_configs:
+      - targets:
+          - localhost:9093
+
 {% for host in prometheus_federation_hosts %}
   - job_name: federation-{{ host }}
     honor_labels: true

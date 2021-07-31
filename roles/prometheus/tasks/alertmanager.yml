@@ -1,0 +1,31 @@
+- name: Installation d'Alertmanager
+  package:
+    name: prometheus-alertmanager
+    state: present
+
+- name: Configuration de l'environnement d'Alertmanager
+  template:
+    src: alertmanager/alertmanager.env.j2
+    dest: /etc/default/prometheus-alertmanager
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  notify: restart alertmanager
+
+- name: Configuration d'Alertmanager
+  template:
+    src: alertmanager/alertmanager.yml.j2
+    dest: /etc/prometheus/alertmanager.yml
+    owner: prometheus
+    group: prometheus
+    mode: "u=rw,g=r,o="
+  notify: reload alertmanager
+
+- name: Activation d'Alertmanager au démarrage
+  service:
+    name: prometheus-alertmanager
+    state: started
+    enabled: yes
+
+- name: Trigger Alertmanager handlers
+  meta: flush_handlers

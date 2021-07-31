@@ -3,7 +3,17 @@
     name: prometheus
     state: restarted
 
+- name: restart alertmanager
+  service:
+    name: prometheus-alertmanager
+    state: restarted
+
 - name: reload prometheus
   service:
     name: prometheus
+    state: reloaded
+
+- name: reload alertmanager
+  service:
+    name: prometheus-alertmanager
     state: reloaded
