@@ -12,6 +12,15 @@
     mode: "u=rw,g=r,o=r"
   notify: restart prometheus
 
+- name: Création du dossier des rules
+  file:
+    path: /etc/prometheus/rules.d
+    owner: prometheus
+    group: prometheus
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  notify: reload prometheus
+
 - name: Configuration de Prometheus
   template:
     src: prometheus/prometheus.yml.j2
