@@ -89,7 +89,7 @@ Subsystem sftp internal-sftp -f AUTHPRIV -l INFO
 # If you just want the PAM account and session checks to run without
 # PAM authentication, then enable this but set PasswordAuthentication
 # and ChallengeResponseAuthentication to 'no'.
-UsePAM yes
+UsePAM {{ ssh_use_pam | ternary('yes','no') }}
 
 UseDNS no
 MaxAuthTries 1
