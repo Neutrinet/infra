@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
 
 import os
+import pwd
+import grp
 import re
 import sys
+
+
+def chown(path: str, owner: str, group: str, **kwargs) -> None:
+    """Change ownership of a file or directory given an username and a group name."""
+    uid = pwd.getpwnam(owner).pw_uid
+    gid = grp.getgrnam(group).gr_gid
+    os.chown(path, uid, gid, **kwargs)
+
 
 # Certbot sets an environment variable RENEWED_LINEAGE, which points to the
 # path of the renewed certificate. We use that path to determine and find
@@ -33,11 +43,14 @@ source_key = lineage + "/privkey.pem"
 source_chain = lineage + "/fullchain.pem"
 
 # HAproxy requires to combine the key and chain in one .pem file
-with open(deploy_path, "w") as deploy, \
+# Open a file descriptor to handle permissions. See https://stackoverflow.com/a/45368120
+deploy_fd = os.open(deploy_path, os.O_CREAT | os.O_WRONLY, 0o640)
+with os.fdopen(deploy_fd, "w") as deploy, \
         open(source_key, "r") as key, \
         open(source_chain, "r") as chain:
     deploy.write(key.read())
     deploy.write(chain.read())
+chown(deploy_path, "haproxy", "haproxy")
 
 # Here you can add your service reload command. Which will be executed after
 # every renewal, which is fine if you only have a few domains.
