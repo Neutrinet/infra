@@ -15,9 +15,9 @@
 - name: Configuration d'Alertmanager
   template:
     src: alertmanager/alertmanager.yml.j2
-    dest: "{{ alertmanager_config_dir }}/alertmanager.yml"
-    owner: "{{ alertmanager_owner }}"
-    group: "{{ alertmanager_group }}"
+    dest: /etc/prometheus/alertmanager.yml
+    owner: prometheus
+    group: prometheus
     mode: "u=rw,g=r,o="
   notify: reload alertmanager
 

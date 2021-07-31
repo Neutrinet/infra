@@ -14,9 +14,9 @@
 
 - name: Création du dossier des rules
   file:
-    path: "{{ prometheus_config_dir }}/rules.d"
-    owner: "{{ prometheus_owner }}"
-    group: "{{ prometheus_group }}"
+    path: /etc/prometheus/rules.d
+    owner: prometheus
+    group: prometheus
     mode: "u=rwx,g=rx,o="
     state: directory
   notify: reload prometheus
@@ -24,9 +24,9 @@
 - name: Configuration de Prometheus
   template:
     src: prometheus/prometheus.yml.j2
-    dest: "{{ prometheus_config_dir }}/prometheus.yml"
-    owner: "{{ prometheus_owner }}"
-    group: "{{ prometheus_group }}"
+    dest: /etc/prometheus/prometheus.yml
+    owner: prometheus
+    group: prometheus
     mode: "u=rw,g=r,o="
   notify: reload prometheus
 
