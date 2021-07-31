@@ -12,4 +12,5 @@
 - name: Installation des plugins Telegraf
   import_role:
     name: telegraf_plugin
+  when: web_app_php_fpm_enabled
   tags: ['telegraf_config']
