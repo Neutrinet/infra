@@ -2,8 +2,8 @@
 - name: Création du dossier {{ web_app_www_dir }}
   file:
     path: "{{ web_app_www_dir }}"
-    owner: "{{ caddy_owner }}"
-    group: "{{ caddy_group }}"
+    owner: caddy
+    group: caddy
     mode: "u=rwx,go=rx"
     state: directory
 

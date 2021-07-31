@@ -34,7 +34,7 @@
 
 - name: Désactivation de la sortie influxdb
   lineinfile:
-    path: "{{ telegraf_config_dir }}/telegraf.conf"
+    path: /etc/telegraf/telegraf.conf
     regexp: '^\[\[outputs\.influxdb\]\]'
     line: '# [[outputs.influxdb]]'
   notify: restart telegraf

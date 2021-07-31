@@ -47,8 +47,8 @@
   file:
     path: "{{ caddy_log_dir }}"
     state: directory
-    owner: "{{ caddy_owner }}"
-    group: "{{ caddy_group }}"
+    owner: caddy
+    group: caddy
     mode: "u=rwx,g=rx,o="
 
 - name: Activation du service caddy au démarage

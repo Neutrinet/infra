@@ -1,9 +1,9 @@
 - name: Copie de la configuration Telegraf
   template:
     src: "{{ telegraf_plugin_template }}"
-    dest: "{{ telegraf_plugin_dir }}/{{ telegraf_plugin_name }}.conf"
-    owner: "{{ telegraf_owner }}"
-    group: "{{ telegraf_group }}"
+    dest: /etc/telegraf/telegraf.d/{{ telegraf_plugin_name }}.conf
+    owner: telegraf
+    group: telegraf
     mode: "u=rw,g=r,o="
   notify: restart telegraf
 
