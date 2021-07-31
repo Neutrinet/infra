@@ -1,0 +1,6 @@
+prometheus_federation_hosts:
+  - probe-01.first.neutri.net:9090
+  - probe-02.ovh.neutri.net:9090
+prometheus_telegraf_hosts:
+  - '127.0.0.1:9273'
+  - '[2001:913:1000:11::202]:9273' # vpn.neutri.net

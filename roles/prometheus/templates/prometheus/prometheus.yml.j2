@@ -39,6 +39,19 @@ scrape_configs:
       - targets:
           - localhost:9093
 
+{% for host in prometheus_federation_hosts %}
+  - job_name: federation-{{ host }}
+    honor_labels: true
+    metrics_path: /federate
+    params:
+      'match[]':
+        - '{job="prometheus"}'
+        - '{job="telegraf-.*"}'
+    static_configs:
+      - targets:
+          - {{ host }}
+{% endfor %}
+
 {% for host in prometheus_telegraf_hosts %}
   # Grab telegraf metrics from {{ host }}
   - job_name: telegraf-{{ host }}

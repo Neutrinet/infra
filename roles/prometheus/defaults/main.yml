@@ -1,1 +1,4 @@
+prometheus_listen_address: localhost
+
+prometheus_federation_hosts: []
 prometheus_telegraf_hosts: "{{ groups.all }}"

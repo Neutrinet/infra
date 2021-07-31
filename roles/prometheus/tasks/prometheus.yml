@@ -28,6 +28,7 @@
     owner: prometheus
     group: prometheus
     mode: "u=rw,g=r,o="
+    validate: promtool check config %s
   notify: reload prometheus
 
 - name: Activation de Prometheus au démarrage
