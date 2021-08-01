@@ -1,0 +1,27 @@
+{{ ansible_managed | comment }}
+
+[[inputs.http_response]]
+  ## List of urls to query.
+  urls = [
+{% for url in probe_http_urls %}
+    {{ url | to_json }}{% if not loop.last %},{% endif %}
+
+{% endfor %}
+  ]
+
+  ## Set response_timeout (default 5 seconds)
+  response_timeout = "10s"
+
+  ## HTTP Request Method
+  method = "GET"
+
+
+[[inputs.ping]]
+  ## Hosts to send ping packets to.
+  urls = [
+{% for host in probe_ping_hosts %}
+    "{{ host }}"{% if not loop.last %},{% endif %}
+
+{% endfor %}
+  ]
+  method = "native"
