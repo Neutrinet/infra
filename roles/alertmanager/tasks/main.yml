@@ -27,5 +27,20 @@
     state: started
     enabled: yes
 
-- name: Trigger Alertmanager handlers
-  meta: flush_handlers
+- name: Ajout du job alertmanager dans Prometheus
+  copy:
+    src: prometheus/alertmanager.yml
+    dest: /etc/prometheus/conf.d/alertmanager.yml
+    owner: prometheus
+    group: prometheus
+    mode: "u=rw,go=r"
+  notify: reload prometheus
+
+- name: Création du dossier des rules
+  file:
+    path: /etc/prometheus/rules.d
+    owner: prometheus
+    group: prometheus
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  notify: reload prometheus

@@ -27,17 +27,16 @@ rule_files:
 
 # A list of scrape configurations.
 scrape_configs:
+  - job_name: extra-config # This is a default value, it is mandatory.
+    file_sd_configs:
+      - files:
+          - conf.d/*.yml
+
   # Grab metrics about prometheus itself
   - job_name: prometheus
     static_configs:
       - targets:
           - localhost:9090
-
-  # Grab metrics about alertmanager
-  - job_name: alertmanager
-    static_configs:
-      - targets:
-          - localhost:9093
 
 {% if prometheus_federation_hosts | length > 0 %}
   # Grab federation metrics from other Prometheus hosts
