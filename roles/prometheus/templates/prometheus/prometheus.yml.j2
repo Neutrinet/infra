@@ -33,17 +33,17 @@ scrape_configs:
       - targets:
           - localhost:9090
 
-{% for host in prometheus_federation_hosts %}
-  # Grab federation metrics from Prometheus {{ host }}
-  - job_name: federation-{{ host | replace('.', '-') }}
+  # Grab federation metrics from other Prometheus hosts
+  - job_name: federation
     honor_labels: true
     metrics_path: /federate
     params:
       'match[]':
         - '{job="prometheus"}'
-        - '{job="telegraf-.*"}'
+        - '{job=~"telegraf-.*"}'
     static_configs:
       - targets:
+{% for host in prometheus_federation_hosts %}
           - "{{ host }}:9090"
 {% endfor %}
 
