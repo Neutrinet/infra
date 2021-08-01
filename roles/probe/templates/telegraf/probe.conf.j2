@@ -1,23 +1,28 @@
 {{ ansible_managed | comment }}
 
+{% for http_url in probe_http_urls %}
 [[inputs.http_response]]
   ## List of urls to query.
-  urls = [
-{% for url in probe_http_urls %}
-    {{ url | to_json }}{% if not loop.last %},{% endif %}
-
-{% endfor %}
-  ]
+  urls = [{{ http_url.url | to_json }}]
 
   ## Set response_timeout (default 5 seconds)
   response_timeout = "10s"
 
   ## HTTP Request Method
-  method = "GET"
+  method = {{ http_url.method | default("GET") | to_json }}
 
   ## Whether to follow redirects from the server (defaults to false)
   follow_redirects = true
 
+{% if http_url.body is defined %}
+  ## Optional substring or regex match in body of the response (case sensitive)
+  # response_string_match = "\"service_status\": \"up\""
+  # response_string_match = "ok"
+  # response_string_match = "\".*_status\".?:.?\"up\""
+  response_string_match = {{ http_url.body | to_json }}
+
+{% endif %}
+{% endfor %}
 
 [[inputs.ping]]
   ## Hosts to send ping packets to.

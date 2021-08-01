@@ -1,16 +1,17 @@
 probe_http_urls:
-  - https://neutrinet.be
-  - https://mediawiki.neutrinet.be
-  - https://wikijs.neutrinet.be
-  - https://realms-wiki.neutrinet.be
-  - https://chat.neutrinet.be
-  - https://cube.neutrinet.be
-  - https://ffdnapi.neutrinet.be/isp.json
-  - https://files.neutrinet.be
-  - https://user.neutrinet.be
-  - https://wiki.neutrinet.be
-  - https://meta.neutrinet.be
-  - https://s3.neutrinet.be
+  - url: https://neutrinet.be/en
+    body: Neutral, Decentralized, And you ?
+  - url: https://mediawiki.neutrinet.be
+  - url: https://wikijs.neutrinet.be
+  - url: https://realms-wiki.neutrinet.be
+  - url: https://chat.neutrinet.be
+  - url: https://cube.neutrinet.be
+  - url: https://ffdnapi.neutrinet.be/isp.json
+  - url: https://files.neutrinet.be
+  - url: https://user.neutrinet.be
+  - url: https://wiki.neutrinet.be
+  - url: https://meta.neutrinet.be
+  - url: https://s3.neutrinet.be
 
 probe_ping_hosts:
   - "80.67.181.1"
