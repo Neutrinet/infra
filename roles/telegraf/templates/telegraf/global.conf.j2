@@ -16,7 +16,7 @@
 # Publish all metrics to /metrics for Prometheus to scrape
 [[outputs.prometheus_client]]
   ## Address to listen on.
-  listen = ":9273"
+  listen = "{{ telegraf_prometheus_client_listen_address }}:9273"
 
   ## Metric version controls the mapping from Telegraf metrics into
   ## Prometheus format.  When using the prometheus input, use the same value in

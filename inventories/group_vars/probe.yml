@@ -1,0 +1,24 @@
+telegraf_prometheus_client_listen_address: localhost
+
+probe_http_urls:
+  - https://neutrinet.be
+  - https://mediawiki.neutrinet.be
+  - https://wikijs.neutrinet.be
+  - https://realms-wiki.neutrinet.be
+  - https://chat.neutrinet.be
+  - https://cube.neutrinet.be
+  - https://ffdnapi.neutrinet.be/isp.json
+  - https://files.neutrinet.be
+  - https://user.neutrinet.be
+  - https://wiki.neutrinet.be
+  - https://meta.neutrinet.be
+  - https://s3.neutrinet.be
+
+probe_ping_hosts:
+  - "80.67.181.1"
+  - "80.67.181.2"
+  - "80.67.181.17"
+
+  - "2001:0913:1000:100::1"
+  - "2001:0913:1000:100::2"
+  - "2001:0913:1000:200::17"
