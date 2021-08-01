@@ -1,0 +1,13 @@
+---
+# Déploiement des probes
+- hosts: probe
+  become: true
+
+  pre_tasks:
+    - name: Update cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+  roles:
+    - probe
