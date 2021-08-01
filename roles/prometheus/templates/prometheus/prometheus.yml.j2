@@ -44,17 +44,19 @@ scrape_configs:
         - '{job="telegraf-.*"}'
     static_configs:
       - targets:
-          - {{ host }}:9090
+          - "{{ host }}:9090"
 {% endfor %}
 
 {% for host in prometheus_telegraf_hosts %}
   # Grab telegraf metrics from {{ host }}
   - job_name: telegraf-{{ host | replace('.', '-') }}
+{% if hostvars[host].telegraf_username is defined and hostvars[host].telegraf_password is defined %}
     basic_auth:
       username: {{ hostvars[host].telegraf_username | to_json }}
-      password: {{ hostvars[host].telegraf_password | to_json }}
+      password: {{ hostvars[host].telegraf_password | string | to_json }}
+{% endif %}
     static_configs:
       - targets:
-          - {{ host }}:9273
+          - "{{ host }}:9273"
 
 {% endfor %}

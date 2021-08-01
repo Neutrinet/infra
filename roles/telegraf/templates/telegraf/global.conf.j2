@@ -28,7 +28,7 @@
 
   ## Use HTTP Basic Authentication.
   basic_username = {{ telegraf_username | to_json }}
-  basic_password = {{ telegraf_password | to_json }}
+  basic_password = {{ telegraf_password | string | to_json }}
 
 
 ###############################################################################
