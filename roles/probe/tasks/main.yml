@@ -1,0 +1,23 @@
+- name: Création du dossier de config systemd pour telegraf.service
+  file:
+    path: /etc/systemd/system/telegraf.service.d/
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Configuration des permissions pour telegraf.service
+  copy:
+    src: telegraf.service/override.conf
+    dest: /etc/systemd/system/telegraf.service.d/override.conf
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart telegraf
+
+- name: Installation des plugins Telegraf
+  import_role:
+    name: telegraf_plugin
+  tags: ['telegraf_config']

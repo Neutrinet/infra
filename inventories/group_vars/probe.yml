@@ -1,0 +1,23 @@
+probe_http_urls:
+  - url: https://neutrinet.be/en
+    body: Neutral, Decentralized, And you ?
+  - url: https://mediawiki.neutrinet.be
+  - url: https://wikijs.neutrinet.be
+  - url: https://realms-wiki.neutrinet.be
+  - url: https://chat.neutrinet.be
+  - url: https://cube.neutrinet.be
+  - url: https://ffdnapi.neutrinet.be/isp.json
+  - url: https://files.neutrinet.be
+  - url: https://user.neutrinet.be
+  - url: https://wiki.neutrinet.be
+  - url: https://meta.neutrinet.be
+  - url: https://s3.neutrinet.be
+
+probe_ping_hosts:
+  - "80.67.181.1"
+  - "80.67.181.2"
+  - "80.67.181.17"
+
+  - "2001:0913:1000:100::1"
+  - "2001:0913:1000:100::2"
+  - "2001:0913:1000:200::17"

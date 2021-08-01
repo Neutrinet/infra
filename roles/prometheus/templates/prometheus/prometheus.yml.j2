@@ -39,27 +39,32 @@ scrape_configs:
       - targets:
           - localhost:9093
 
-{% for host in prometheus_federation_hosts %}
-  - job_name: federation-{{ host }}
+{% if prometheus_federation_hosts | length > 0 %}
+  # Grab federation metrics from other Prometheus hosts
+  - job_name: federation
     honor_labels: true
     metrics_path: /federate
     params:
       'match[]':
         - '{job="prometheus"}'
-        - '{job="telegraf-.*"}'
+        - '{job=~"telegraf-.*"}'
     static_configs:
       - targets:
-          - {{ host }}
+{% for host in prometheus_federation_hosts %}
+          - "{{ host }}:9090"
 {% endfor %}
+{% endif %}
 
 {% for host in prometheus_telegraf_hosts %}
   # Grab telegraf metrics from {{ host }}
-  - job_name: telegraf-{{ host }}
+  - job_name: telegraf-{{ host | replace('.', '-') }}
+{% if hostvars[host].telegraf_username is defined and hostvars[host].telegraf_password is defined %}
     basic_auth:
       username: {{ hostvars[host].telegraf_username | to_json }}
-      password: {{ hostvars[host].telegraf_password | to_json }}
+      password: {{ hostvars[host].telegraf_password | string | to_json }}
+{% endif %}
     static_configs:
       - targets:
-          - {{ host }}:9273
+          - "{{ host }}:9273"
 
 {% endfor %}
