@@ -22,6 +22,9 @@
   response_string_match = {{ http_url.body | to_json }}
 
 {% endif %}
+  [inputs.http_response.tags]
+    name = {{ http_url.name | default(http_url.url) | to_json }}
+
 {% endfor %}
 
 [[inputs.ping]]

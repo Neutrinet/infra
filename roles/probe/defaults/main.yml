@@ -2,7 +2,8 @@ probe_http_urls:
   - url: https://example.com
     body: 'Example Domain'
     method: GET
-  - url: http://localhost:9090
+  - name: https://prometheus.example.com
+    url: http://localhost:9090
 
 probe_ping_hosts:
   - '127.0.0.1'

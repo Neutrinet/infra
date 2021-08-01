@@ -1,16 +1,25 @@
 probe_http_urls:
-  - url: https://neutrinet.be/en
+  - name: https://neutrinet.be
+    url: https://neutrinet.be/en
     body: Neutral, Decentralized, And you ?
   - url: https://mediawiki.neutrinet.be
   - url: https://wikijs.neutrinet.be
   - url: https://realms-wiki.neutrinet.be
-  - url: https://chat.neutrinet.be
+  - name: https://chat.neutrinet.be
+    url: https://chat.neutrinet.be/api/v4/system/ping?get_server_status=1
+    body: '"database_status":"OK","filestore_status":"OK","status":"OK"'
   - url: https://cube.neutrinet.be
   - url: https://ffdnapi.neutrinet.be/isp.json
-  - url: https://files.neutrinet.be
+    body: '"website": "http://neutrinet.be"'
+  - name: https://files.neutrinet.be
+    url: https://files.neutrinet.be/status.php
+    body: '"productname":"Neutrinet"'
   - url: https://user.neutrinet.be
+  - url: https://api.neutrinet.be
   - url: https://wiki.neutrinet.be
-  - url: https://meta.neutrinet.be
+  - name: https://meta.neutrinet.be
+    url: https://meta.neutrinet.be/srv/status
+    body: ^ok$
   - url: https://s3.neutrinet.be
 
 probe_ping_hosts:
