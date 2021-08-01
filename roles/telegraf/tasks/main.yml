@@ -37,6 +37,7 @@
     path: /etc/telegraf/telegraf.conf
     regexp: '^\[\[outputs\.influxdb\]\]'
     line: '# [[outputs.influxdb]]'
+    validate: telegraf --config %s --test
   notify: restart telegraf
 
 - name: Activation de Telegraf au démarrage
@@ -44,6 +45,3 @@
     name: telegraf
     state: started
     enabled: true
-
-- name: Trigger telegraf handlers
-  meta: flush_handlers
