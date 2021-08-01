@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: prometheus
+  become: true
+
+  roles:
+    - prometheus

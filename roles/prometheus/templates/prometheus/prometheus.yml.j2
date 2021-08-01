@@ -1,0 +1,60 @@
+{{ ansible_managed | comment }}
+
+# Prometheus config file.
+# Check the documentation for more details: https://prometheus.io/docs/prometheus/latest/configuration/configuration
+
+global:
+  scrape_interval:     10s # How frequently to scrape targets
+  scrape_timeout:      10s # How long until a scrape request times out.
+  evaluation_interval: 15s # How frequently to evaluate rules.
+
+  # The labels to add to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: {{ ansible_fqdn }}
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - localhost:9093
+
+# Rule files specifies a list of globs. Rules and alerts are read from
+# all matching files.
+rule_files:
+  - /etc/prometheus/rules.d/*.rules
+
+# A list of scrape configurations.
+scrape_configs:
+  # Grab metrics about prometheus itself
+  - job_name: prometheus
+    static_configs:
+      - targets:
+          - localhost:9090
+
+{% for host in prometheus_federation_hosts %}
+  # Grab federation metrics from Prometheus {{ host }}
+  - job_name: federation-{{ host | replace('.', '-') }}
+    honor_labels: true
+    metrics_path: /federate
+    params:
+      'match[]':
+        - '{job="prometheus"}'
+        - '{job="telegraf-.*"}'
+    static_configs:
+      - targets:
+          - {{ host }}:9090
+{% endfor %}
+
+{% for host in prometheus_telegraf_hosts %}
+  # Grab telegraf metrics from {{ host }}
+  - job_name: telegraf-{{ host | replace('.', '-') }}
+    basic_auth:
+      username: {{ hostvars[host].telegraf_username | to_json }}
+      password: {{ hostvars[host].telegraf_password | to_json }}
+    static_configs:
+      - targets:
+          - {{ host }}:9273
+
+{% endfor %}
