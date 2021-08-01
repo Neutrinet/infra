@@ -33,6 +33,7 @@ scrape_configs:
       - targets:
           - localhost:9090
 
+{% if prometheus_federation_hosts | length > 0 %}
   # Grab federation metrics from other Prometheus hosts
   - job_name: federation
     honor_labels: true
@@ -46,6 +47,7 @@ scrape_configs:
 {% for host in prometheus_federation_hosts %}
           - "{{ host }}:9090"
 {% endfor %}
+{% endif %}
 
 {% for host in prometheus_telegraf_hosts %}
   # Grab telegraf metrics from {{ host }}
