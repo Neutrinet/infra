@@ -5,6 +5,7 @@
     owner: telegraf
     group: telegraf
     mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
   notify: restart telegraf
 
 - name: Ajout de groupes à l'utilisateur telegraf
@@ -14,6 +15,3 @@
     append: true
   notify: restart telegraf
   when: telegraf_append_groups | length > 0
-
-- name: Trigger Telegraf handlers
-  meta: flush_handlers
