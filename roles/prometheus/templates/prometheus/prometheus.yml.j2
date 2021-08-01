@@ -34,7 +34,8 @@ scrape_configs:
           - localhost:9090
 
 {% for host in prometheus_federation_hosts %}
-  - job_name: federation-{{ host }}
+  # Grab federation metrics from Prometheus {{ host }}
+  - job_name: federation-{{ host | replace('.', '-') }}
     honor_labels: true
     metrics_path: /federate
     params:
@@ -48,7 +49,7 @@ scrape_configs:
 
 {% for host in prometheus_telegraf_hosts %}
   # Grab telegraf metrics from {{ host }}
-  - job_name: telegraf-{{ host }}
+  - job_name: telegraf-{{ host | replace('.', '-') }}
     basic_auth:
       username: {{ hostvars[host].telegraf_username | to_json }}
       password: {{ hostvars[host].telegraf_password | to_json }}
