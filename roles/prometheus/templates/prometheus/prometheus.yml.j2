@@ -59,6 +59,6 @@ scrape_configs:
 {% endif %}
     static_configs:
       - targets:
-          - "{{ host }}:9273"
+          - "{{ (host != inventory_hostname) | ternary(host, 'localhost') }}:9273"
 
 {% endfor %}
