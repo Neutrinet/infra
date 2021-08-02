@@ -1,6 +1,7 @@
 prometheus_federation_hosts:
   - probe-01.first.neutri.net
   - probe-02.ovh.neutri.net
+  - man.patata.louise.neutri.net
 prometheus_telegraf_hosts:
-  - '127.0.0.1'
-  - '[2001:913:1000:11::202]' # vpn.neutri.net
+  - "{{ inventory_hostname }}"
+  - vpn.neutri.net
