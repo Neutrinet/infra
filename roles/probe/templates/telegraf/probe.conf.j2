@@ -36,3 +36,15 @@
 {% endfor %}
   ]
   method = "native"
+
+{% if probe_http_certs | length > 0 %}
+[[inputs.x509_cert]]
+  ## List certificate sources
+  ## Prefix your entry with 'file://' if you intend to use relative paths
+  sources = [
+{% for url in probe_http_certs %}
+    "{{ url }}"{% if not loop.last %},{% endif %}
+
+{% endfor %}
+  ]
+{% endif %}

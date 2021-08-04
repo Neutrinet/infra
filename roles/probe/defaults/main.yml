@@ -5,6 +5,8 @@ probe_http_urls:
   - name: https://prometheus.example.com
     url: http://localhost:9090
 
+probe_http_certs: []
+
 probe_ping_hosts:
   - '127.0.0.1'
   - '::1'

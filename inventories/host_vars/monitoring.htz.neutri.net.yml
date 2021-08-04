@@ -5,3 +5,6 @@ prometheus_federation_hosts:
 prometheus_telegraf_hosts:
   - "{{ inventory_hostname }}"
   - vpn.neutri.net
+
+probe_http_certs:
+  - https://neutrinet.be:443
