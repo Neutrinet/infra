@@ -7,4 +7,4 @@ prometheus_telegraf_hosts:
   - vpn.neutri.net
 
 probe_http_certs:
-  - https://neutrinet.be
+  - https://neutrinet.be:443
