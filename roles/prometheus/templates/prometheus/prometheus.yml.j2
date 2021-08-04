@@ -27,6 +27,11 @@ rule_files:
 
 # A list of scrape configurations.
 scrape_configs:
+  - job_name: extra-config # This is a default value, it is mandatory.
+    file_sd_configs:
+      - files:
+          - conf.d/*.yml
+
   # Grab metrics about prometheus itself
   - job_name: prometheus
     static_configs:

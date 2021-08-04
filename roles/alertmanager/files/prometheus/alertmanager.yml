@@ -1,0 +1,5 @@
+# Grab metrics about alertmanager
+- targets:
+    - localhost:9093
+  labels:
+    job: alertmanager
