@@ -1,0 +1,2 @@
+prometheus_listen_address: 0.0.0.0
+prometheus_telegraf_hosts: "{{ groups.louise_patata }}"

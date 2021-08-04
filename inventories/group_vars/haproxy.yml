@@ -24,72 +24,77 @@ haproxy:
       - grav.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
-    healthcheck_url: "GET /healthcheck"
+    healthcheck_url: GET /healthcheck
 
   - hostname: mediawiki.neutrinet.be
     target:
       - web-static.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
-    healthcheck_url: 'GET /healthcheck'
+    healthcheck_url: GET /healthcheck
 
   - hostname: wikijs.neutrinet.be
     target:
       - web-static.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
-    healthcheck_url: 'GET /healthcheck'
+    healthcheck_url: GET /healthcheck
 
   - hostname: realms-wiki.neutrinet.be
     target:
       - web-static.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
-    healthcheck_url: 'GET /healthcheck'
+    healthcheck_url: GET /healthcheck
 
   - hostname: chat.neutrinet.be
     target:
       - web.patata.louise.neutri.net
     target_port: 8065
     healthcheck: true
-    healthcheck_url: 'GET /api/v4/system/ping'
+    healthcheck_url: GET /api/v4/system/ping
 
   - hostname: cube.neutrinet.be
     target:
       - web.patata.louise.neutri.net
-    target_port: 5005
-    healthcheck: false
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: HEAD /
 
   - hostname: ffdnapi.neutrinet.be
     target:
       - web.patata.louise.neutri.net
     target_port: 80
-    healthcheck: false
+    healthcheck: true
+    healthcheck_url: HEAD /
 
   - hostname: files.neutrinet.be
     target:
       - web.patata.louise.neutri.net
     target_port: 80
-    healthcheck: false
+    healthcheck: true
+    healthcheck_url: HEAD /
 
   - hostname: user.neutrinet.be
     target:
       - web.patata.louise.neutri.net
     target_port: 80
-    healthcheck: false
+    healthcheck: true
+    healthcheck_url: HEAD /
 
   - hostname: wiki.neutrinet.be
     target:
       - dokuwiki.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
-    healthcheck_url: "GET /healthcheck"
+    healthcheck_url: GET /healthcheck
 
   - hostname: meta.neutrinet.be
     target:
       - meta.patata.louise.neutri.net
     target_port: 80
-    healthcheck: false
+    healthcheck: true
+    healthcheck_url: HEAD /
 
   - hostname: s3.neutrinet.be
     target:
@@ -98,7 +103,7 @@ haproxy:
       - ceph-s3-03.patata.louise.neutri.net
     target_port: 7480
     healthcheck: true
-    healthcheck_url: 'HEAD /'
+    healthcheck_url: HEAD /
 
 haproxy_redirect:
   - from: www.neutrinet.be
