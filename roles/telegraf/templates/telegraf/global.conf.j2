@@ -5,7 +5,8 @@
 
 [agent]
   ## Override default hostname, if empty use os.Hostname()
-  hostname = {{ ansible_fqdn | to_json }}
+  hostname = "{{ ansible_fqdn }}"
+  user_agent = "telegraf/{{ ansible_fqdn }}"
 
 
 ###############################################################################
