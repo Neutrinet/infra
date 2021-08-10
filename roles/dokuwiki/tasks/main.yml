@@ -15,7 +15,6 @@
       - php-xml
       - php-mbstring
       - php-zip
-      - php-apcu
     # Dokuwiki handles php session name by itself
     php_fpm_session_name: ""
   tags: ['php_fpm']

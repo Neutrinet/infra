@@ -14,7 +14,6 @@
       - php-xml
       - php-mbstring
       - php-zip
-      - php-apcu
       - php-yaml
       - php-sqlite3
     # Grav handles php session name by itself
