@@ -5,7 +5,7 @@
 
 [agent]
   ## Override default hostname, if empty use os.Hostname()
-  hostname = {{ ansible_fqdn | to_json }}
+  hostname = "{{ ansible_fqdn }}"
 
 
 ###############################################################################

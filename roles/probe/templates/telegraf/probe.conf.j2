@@ -25,6 +25,9 @@
   [inputs.http_response.tags]
     name = {{ http_url.name | default(http_url.url) | to_json }}
 
+  [inputs.http_response.headers]
+    User-Agent = "telegraf/{{ ansible_fqdn }}"
+
 {% endfor %}
 
 [[inputs.ping]]
