@@ -7,6 +7,17 @@
 - name: Installation de PHP
   import_role:
     name: php_fpm
+  vars:
+    php_version: "7.4"
+    php_modules:
+      - php-curl
+      - php-gd
+      - php-xml
+      - php-mbstring
+      - php-zip
+      - php-apcu
+    # Dokuwiki handles php session name by itself
+    php_fpm_session_name: ""
   tags: ['php_fpm']
 
 - name: Configuration du site (caddy, php-fpm, etc.)
