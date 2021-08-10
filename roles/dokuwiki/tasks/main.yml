@@ -7,9 +7,6 @@
 - name: Installation de PHP
   import_role:
     name: php_fpm
-  vars:
-    # Dokuwiki handles php session name by itself
-    php_fpm_session_name: ""
   tags: ['php_fpm']
 
 - name: Configuration du site (caddy, php-fpm, etc.)

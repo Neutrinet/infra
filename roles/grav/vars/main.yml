@@ -7,3 +7,5 @@ php_modules:
   - php-apcu
   - php-yaml
   - php-sqlite3
+# Grav handles php session name by itself
+php_fpm_session_name: ""

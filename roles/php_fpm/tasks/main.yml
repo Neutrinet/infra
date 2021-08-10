@@ -1,6 +1,17 @@
+- name: Ajout de la clé GPG de Sury dans APT
+  apt_key:
+    url: https://packages.sury.org/php/apt.gpg
+    state: present
+
+- name: Ajout du dépôt Sury
+  apt_repository:
+    repo: deb https://packages.sury.org/php/ {{ ansible_distribution_release }} main
+    filename: sury-php
+    state: present
+
 - name: Installation de PHP {{ php_version }} et de ses modules
   package:
-    name: "{{ php_packages + php_modules | map('regex_replace', '$', php_version) | list }}"
+    name: "{{ (php_packages + php_modules) | map('regex_replace', '^php', 'php' + php_version) | list }}"
     state: present
 
 - name: Installation de imagemagick
