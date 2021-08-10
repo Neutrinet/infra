@@ -9,16 +9,12 @@
     filename: sury-php
     state: present
 
-- name: Installation de PHP {{ php_version }} et de ses modules
+- name: Installation de PHP et PHP-FPM
   package:
-    name: "{{ (php_packages + php_modules) | map('regex_replace', '^php', 'php' + php_version) | list }}"
+    name:
+      - "{{ php_executable }}"
+      - "{{ php_fpm_executable }}"
     state: present
-
-- name: Installation de imagemagick
-  package:
-    name: imagemagick
-    state: present
-  when: "'php-imagick' in php_modules"
 
 - name: Récupération et définition de la dernière version de PHP
   when: php_version == ""
@@ -32,6 +28,17 @@
     - name: Définition de la dernière version de PHP
       set_fact:
         php_version: "{{ _php_version.stdout }}"
+
+- name: Installation des modules PHP
+  package:
+    name: "{{ php_modules | map('regex_replace', '^php', 'php' + php_version) | list }}"
+    state: present
+
+- name: Installation de imagemagick
+  package:
+    name: imagemagick
+    state: present
+  when: "'php-imagick' in php_modules"
 
 - name: Copie de la configuration OPCache
   template:
