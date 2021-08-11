@@ -8,6 +8,7 @@ postgres_packages:
   - acl
 
 nextcloud_php_modules:
+  - php-opcache
   - php-curl
   - php-bcmath
   - php-bz2

@@ -10,6 +10,7 @@
   vars:
     php_version: "7.4"
     php_modules:
+      - php-opcache
       - php-curl
       - php-gd
       - php-xml
