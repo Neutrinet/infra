@@ -9,13 +9,6 @@
     name: php_fpm
   vars:
     php_version: "7.4"
-    php_modules:
-      - php-opcache
-      - php-curl
-      - php-gd
-      - php-xml
-      - php-mbstring
-      - php-zip
     # Dokuwiki handles php session name by itself
     php_fpm_session_name: ""
   tags: ['php_fpm']

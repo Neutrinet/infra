@@ -9,7 +9,17 @@
     name: php_fpm
   vars:
     php_version: "{{ nextcloud_php_version }}"
-    php_modules: "{{ nextcloud_php_modules }}"
+    php_extra_modules:
+      - bcmath
+      - bz2
+      - fileinfo
+      - gmp
+      - imagick
+      - intl
+      - json
+      - pgsql
+      - redis
+
   tags: ['php_fpm']
 
 - name: Installation l'application web

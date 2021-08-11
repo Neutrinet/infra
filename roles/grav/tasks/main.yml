@@ -8,15 +8,9 @@
   import_role:
     name: php_fpm
   vars:
-    php_modules:
-      - php-opcache
-      - php-curl
-      - php-gd
-      - php-xml
-      - php-mbstring
-      - php-zip
-      - php-yaml
-      - php-sqlite3
+    php_extra_modules:
+      - yaml
+      - sqlite3
     # Grav handles php session name by itself
     php_fpm_session_name: ""
   tags: ['php_fpm']

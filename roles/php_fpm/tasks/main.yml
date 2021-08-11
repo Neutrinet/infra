@@ -29,16 +29,40 @@
       set_fact:
         php_version: "{{ _php_version.stdout }}"
 
-- name: Installation des modules PHP
+- name: Installation des modules PHP par défaut
   package:
-    name: "{{ php_modules | map('regex_replace', '^php', 'php' + php_version) | list }}"
+    name: "{{ php_module }}"
     state: present
+  loop:
+    - cli
+    - curl
+    - gd
+    - mbstring
+    - opcache
+    - xml
+    - zip
+  loop_control:
+    loop_var: module_name
+    label: "{{ php_module }}"
+  vars:
+    php_module: "{{ php_executable }}-{{ module_name }}"
+
+- name: Installation des modules PHP additionnels
+  package:
+    name: "{{ php_module }}"
+    state: present
+  loop: "{{ php_extra_modules }}"
+  loop_control:
+    loop_var: module_name
+    label: "{{ php_module }}"
+  vars:
+    php_module: "{{ php_executable }}-{{ module_name }}"
 
 - name: Installation de imagemagick
   package:
     name: imagemagick
     state: present
-  when: "'php-imagick' in php_modules"
+  when: "'imagick' in php_extra_modules"
 
 - name: Copie de la configuration OPCache
   template:
