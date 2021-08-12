@@ -5,6 +5,7 @@
 global:
   # The smarthost and SMTP sender used for mail notifications.
   smtp_smarthost: {{ alertmanager_smtp_host }}:{{ alertmanager_smtp_port }}
+  smtp_require_tls: {{ alertmanager_smtp_require_tls | bool | lower }}
   smtp_from: {{ alertmanager_smtp_from }}
 {% if alertmanager_smtp_username and alertmanager_smtp_password %}
   smtp_auth_username: {{ alertmanager_smtp_username | to_json }}
