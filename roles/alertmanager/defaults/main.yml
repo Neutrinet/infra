@@ -1,6 +1,6 @@
 alertmanager_smtp_host: localhost
 alertmanager_smtp_port: 25
 alertmanager_smtp_from: alertmanager@example.com
-alertmanager_smtp_to: dringdring@example.com
-alertmanager_smtp_username: alertmanager
-alertmanager_smtp_password: neutrinet
+alertmanager_smtp_to: dringdring@localhost
+alertmanager_smtp_username: ""
+alertmanager_smtp_password: ""
