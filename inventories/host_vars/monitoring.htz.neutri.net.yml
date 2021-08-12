@@ -9,3 +9,6 @@ prometheus_telegraf_hosts:
 probe_http_certs:
   - https://neutrinet.be:443
   - https://api.neutrinet.be:443
+  - https://grafana.neutrinet.be:443
+  - https://support.neutrinet.be:443
+  - https://mail.neutri.net:443
