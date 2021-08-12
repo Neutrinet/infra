@@ -28,6 +28,7 @@
     owner: prometheus
     group: prometheus
     mode: "u=rw,g=r,o="
+    validate: amtool check-config %s
   notify: reload alertmanager
 
 - name: Activation d'Alertmanager au démarrage
@@ -60,4 +61,5 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
+    validate: promtool check rules %s
   notify: reload prometheus
