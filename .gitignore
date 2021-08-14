@@ -132,3 +132,4 @@ env
 # End of https://www.gitignore.io/api/ansible,intellij,virtualenv,sublimetext,visualstudiocode
 
 ansible_fact_cache/
+log/
