@@ -17,10 +17,6 @@
     repo: deb https://repos.influxdata.com/debian {{ ansible_distribution_release }} stable
     state: present
     filename: telegraf
-  notify: update apt cache
-
-- name: Trigger APT handler
-  meta: flush_handlers
 
 - name: Installation de Telegraf
   apt:
