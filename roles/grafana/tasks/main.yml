@@ -1,4 +1,4 @@
-- import_tasks: grafana.yml
+- import_tasks: grafana/main.yml
   tags: ['grafana']
 
 - import_tasks: caddy.yml
