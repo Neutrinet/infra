@@ -1,0 +1,5 @@
+# Grab metrics about grafana
+- targets:
+    - localhost:3000
+  labels:
+    job: grafana
