@@ -1,0 +1,80 @@
+- name: Ajout de la clé GPG de Grafana dans APT
+  apt_key:
+    url: https://packages.grafana.com/gpg.key
+    state: present
+
+- name: Ajout du dépôt APT Grafana
+  apt_repository:
+    repo: deb https://packages.grafana.com/oss/deb stable main
+    filename: grafana
+    state: present
+
+- name: Installation de Grafana
+  package:
+    name: grafana
+    state: present
+
+- name: Configuration de Grafana
+  template:
+    src: grafana/grafana.ini.j2
+    dest: /etc/grafana/grafana.ini
+    owner: grafana
+    group: grafana
+    mode: "u=rw,g=r,o="
+  notify: restart grafana
+
+- name: Activation de Grafana au démarrage
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes
+
+- name: Vérification du mot de passe admin
+  uri:
+    url: http://localhost:3000/api/login/ping
+    user: admin
+    password: "{{ grafana_admin_password }}"
+    force_basic_auth: true
+    status_code: [200, 401]
+  no_log: true
+  register: _grafana_admin_login_checked
+  retries: 10
+  delay: 3
+  until: _grafana_admin_login_checked is success
+
+- name: Modification du mot de passe admin
+  command: grafana-cli admin reset-admin-password {{ grafana_admin_password | quote }}
+  when: _grafana_admin_login_checked.status == 401
+  no_log: true
+
+- name: Récupération des infos de l'organisation par défaut
+  uri:
+    url: http://localhost:3000/api/org
+    user: admin
+    password: "{{ grafana_admin_password }}"
+    force_basic_auth: true
+  register: _grafana_org
+  no_log: true
+
+- name: Modification du nom de l'organisation
+  # Nécessaire pour permettre un accès anonyme aux dashboards de l'organisation
+  uri:
+    url: http://localhost:3000/api/org
+    method: PUT
+    body_format: form-multipart
+    body:
+      name: "{{ grafana_org_name }}"
+    user: admin
+    password: "{{ grafana_admin_password }}"
+    force_basic_auth: true
+  changed_when: _grafana_org.json.name != grafana_org_name
+  no_log: true
+
+- name: Ajout du job grafana dans Prometheus
+  copy:
+    src: prometheus/grafana.yml
+    dest: /etc/prometheus/conf.d/grafana.yml
+    owner: prometheus
+    group: prometheus
+    mode: "u=rw,go=r"
+  notify: reload prometheus

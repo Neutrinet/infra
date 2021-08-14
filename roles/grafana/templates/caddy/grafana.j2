@@ -1,0 +1,16 @@
+{{ grafana_domain }} {
+{% if not acme_enabled %}
+    tls internal
+{% endif %}
+    reverse_proxy {
+        to http://127.0.0.1:3000
+        flush_interval -1
+        transport http {
+            keepalive 310s
+            compression off
+        }
+    }
+    log {
+        output file /var/log/caddy/{{ grafana_domain | replace('.', '-') }}.log
+    }
+}

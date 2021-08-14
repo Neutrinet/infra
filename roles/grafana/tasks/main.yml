@@ -1,0 +1,5 @@
+- import_tasks: grafana.yml
+  tags: ['grafana']
+
+- import_tasks: caddy.yml
+  tags: ['caddy']

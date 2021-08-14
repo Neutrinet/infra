@@ -1,0 +1,3 @@
+grafana_domain: grafana.example.com
+grafana_org_name: Example
+grafana_admin_password: neutrinet

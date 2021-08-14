@@ -3,5 +3,6 @@ caddy_vhosts_dir: "{{ caddy_config_dir }}/conf.d"
 caddy_log_dir: /var/log/caddy
 caddy_healthcheck_log: "{{ caddy_log_dir }}/healthcheck.log"
 
+acme_enabled: false
 acme_account_email: contact@example.com
-acme_directory_url: https://acme-v02.api.letsencrypt.org/directory
+acme_directory_url: https://acme-staging-v02.api.letsencrypt.org/directory
