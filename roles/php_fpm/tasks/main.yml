@@ -1,26 +1,55 @@
-- name: Installation de PHP {{ php_version }} et de ses modules
-  package:
-    name: "{{ php_packages + php_modules | map('regex_replace', '$', php_version) | list }}"
+- name: Ajout de la clé GPG de Sury dans APT
+  apt_key:
+    url: https://packages.sury.org/php/apt.gpg
     state: present
+
+- name: Ajout du dépôt Sury
+  apt_repository:
+    repo: deb https://packages.sury.org/php/ {{ ansible_distribution_release }} main
+    filename: sury-php
+    state: present
+
+- name: Installation de PHP et PHP-FPM
+  package:
+    name:
+      - "{{ php_executable }}"
+      - "{{ php_fpm_executable }}"
+    state: present
+
+- name: Installation des modules PHP par défaut
+  package:
+    name: "{{ php_module }}"
+    state: present
+  loop:
+    - cli
+    - curl
+    - gd
+    - mbstring
+    - opcache
+    - xml
+    - zip
+  loop_control:
+    loop_var: module_name
+    label: "{{ php_module }}"
+  vars:
+    php_module: "{{ php_executable }}-{{ module_name }}"
+
+- name: Installation des modules PHP additionnels
+  package:
+    name: "{{ php_module }}"
+    state: present
+  loop: "{{ php_extra_modules }}"
+  loop_control:
+    loop_var: module_name
+    label: "{{ php_module }}"
+  vars:
+    php_module: "{{ php_executable }}-{{ module_name }}"
 
 - name: Installation de imagemagick
   package:
     name: imagemagick
     state: present
-  when: "'php-imagick' in php_modules"
-
-- name: Récupération et définition de la dernière version de PHP
-  when: php_version == ""
-  block:
-    - name: Récupération de la dernière version de PHP
-      # Regex: https://unix.stackexchange.com/questions/13466/can-grep-output-only-specified-groupings-that-match/13467#13467
-      shell: php -v | sed -n 's/^PHP \([[:digit:]]\.[[:digit:]]\).*/\1/p'
-      changed_when: false
-      register: _php_version
-
-    - name: Définition de la dernière version de PHP
-      set_fact:
-        php_version: "{{ _php_version.stdout }}"
+  when: "'imagick' in php_extra_modules"
 
 - name: Copie de la configuration OPCache
   template:
@@ -33,7 +62,7 @@
     - reload php-fpm
   tags: ['php_config']
 
-- name: Activation de php{{ php_version }}-fpm au démarrage
+- name: Activation de {{ php_fpm_executable }} au démarrage
   service:
     name: "{{ php_fpm_executable }}"
     state: started

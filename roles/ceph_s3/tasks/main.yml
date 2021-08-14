@@ -9,10 +9,6 @@
     repo: "deb http://download.proxmox.com/debian/ceph-{{ ceph_proxmox_version }} {{ ansible_distribution_release }} main"
     filename: proxmox-ceph
     state: present
-  notify: update apt cache
-
-- name: Trigger APT handler
-  meta: flush_handlers
 
 - name: Installation des plugins Telegraf
   import_role:

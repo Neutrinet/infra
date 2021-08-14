@@ -17,8 +17,6 @@ nextcloud_src_archive: "{{ nextcloud_src_dir }}/{{ nextcloud_install_url | basen
 nextcloud_data_dir: "{{ web_app_dist_dir }}/data"
 nextcloud_import_file: "{{ web_app_dist_dir }}/config/import.json"
 
-nextcloud_php_version: ""
-
 nextcloud_postgres_install_enabled: true
 nextcloud_database_driver: pgsql
 nextcloud_database_name: nextcloud

@@ -1,5 +1,9 @@
 ---
 
+- name: update apt cache
+  apt:
+    update_cache: true
+
 - name: restart ssh
   service:
     name: ssh
