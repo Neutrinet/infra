@@ -8,7 +8,7 @@
   import_role:
     name: php_fpm
   vars:
-    php_version: "{{ nextcloud_php_version }}"
+    php_version: "8.0"
     php_extra_modules:
       - bcmath
       - bz2

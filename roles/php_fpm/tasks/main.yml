@@ -16,19 +16,6 @@
       - "{{ php_fpm_executable }}"
     state: present
 
-- name: Récupération et définition de la dernière version de PHP
-  when: php_version == ""
-  block:
-    - name: Récupération de la dernière version de PHP
-      # Regex: https://unix.stackexchange.com/questions/13466/can-grep-output-only-specified-groupings-that-match/13467#13467
-      shell: php -v | sed -n 's/^PHP \([[:digit:]]\.[[:digit:]]\).*/\1/p'
-      changed_when: false
-      register: _php_version
-
-    - name: Définition de la dernière version de PHP
-      set_fact:
-        php_version: "{{ _php_version.stdout }}"
-
 - name: Installation des modules PHP par défaut
   package:
     name: "{{ php_module }}"
@@ -75,7 +62,7 @@
     - reload php-fpm
   tags: ['php_config']
 
-- name: Activation de php{{ php_version }}-fpm au démarrage
+- name: Activation de {{ php_fpm_executable }} au démarrage
   service:
     name: "{{ php_fpm_executable }}"
     state: started

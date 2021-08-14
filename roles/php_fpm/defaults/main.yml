@@ -1,4 +1,4 @@
-php_version: ""
+php_version: "8.0"
 php_config_dir: "/etc/php/{{ php_version }}"
 php_extra_modules: []
 
