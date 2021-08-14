@@ -12,6 +12,15 @@
     mode: "u=rw,g=r,o=r"
   notify: restart alertmanager
 
+- name: Configuration du template des notifications mail
+  copy:
+    src: alertmanager/email.tmpl
+    dest: /etc/prometheus/alertmanager_templates/email.tmpl
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify: reload alertmanager
+
 - name: Configuration d'Alertmanager
   template:
     src: alertmanager/alertmanager.yml.j2
@@ -19,6 +28,7 @@
     owner: prometheus
     group: prometheus
     mode: "u=rw,g=r,o="
+    validate: amtool check-config %s
   notify: reload alertmanager
 
 - name: Activation d'Alertmanager au démarrage
@@ -36,11 +46,20 @@
     mode: "u=rw,go=r"
   notify: reload prometheus
 
-- name: Création du dossier des rules
+- name: Création du dossier des alertes
   file:
     path: /etc/prometheus/rules.d
     owner: prometheus
     group: prometheus
     mode: "u=rwx,g=rx,o="
     state: directory
+
+- name: Copie des alertes de base
+  copy:
+    src: alertmanager/base.rules
+    dest: /etc/prometheus/rules.d/base.rules
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: promtool check rules %s
   notify: reload prometheus
