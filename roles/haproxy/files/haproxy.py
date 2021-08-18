@@ -35,7 +35,7 @@ if not result:
 domain = result.group(1)
 
 # Define a path for HAproxy where you want to write the .pem file.
-deploy_path="/etc/haproxy/ssl/" + domain + ".pem"
+deploy_path="/etc/haproxy/ssl/" + domain.replace('.', '-') + ".pem"
 
 # The source files can be found in below paths, constructed with the lineage
 # path
