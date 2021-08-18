@@ -2,9 +2,13 @@
 
 - import_tasks: haproxy.yml
   tags: ['haproxy']
-- import_tasks: letsencrypt.yml
+- name: Création des certificats Let's Encrypt
+  import_role:
+    name: letsencrypt
+  vars:
+    letsencrypt_hook_scripts:
+      - haproxy.py
   tags: ['letsencrypt']
-
 - name: Installation des plugins Telegraf
   import_role:
     name: telegraf_plugin

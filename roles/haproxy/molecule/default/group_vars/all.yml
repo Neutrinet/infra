@@ -1,0 +1,7 @@
+letsencrypt_domains:
+  - name: neutrinet.be
+    hooks:
+      deploy:
+        - /etc/letsencrypt/hooks.d/haproxy.py
+      post:
+        - systemctl reload haproxy

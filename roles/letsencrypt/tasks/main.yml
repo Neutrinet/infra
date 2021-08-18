@@ -60,7 +60,7 @@
 
 - name: Installation des hooks
   copy:
-    src: "{{ hook_script }}"
+    src: "hooks/{{ hook_script }}"
     dest: /etc/letsencrypt/hooks.d/{{ hook_script }}
     mode: "u=rwx,go=rx"
     owner: root

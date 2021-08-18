@@ -11,9 +11,9 @@
   ## List certificate sources
   ## Prefix your entry with 'file://' if you intend to use relative paths
   sources = [
-{% for domain in letsencrypt.domains_gandi %}
-    "/etc/haproxy/ssl/{{ domain | replace('.', '-') }}.pem",
-    "/etc/haproxy/ssl/{{ domain | replace('.', '-') }}-ecdsa.pem"{% if not loop.last %},{% endif %}
+{% for domain in letsencrypt_domains %}
+    "/etc/haproxy/ssl/{{ domain.name | replace('.', '-') }}-rsa.pem",
+    "/etc/haproxy/ssl/{{ domain.name | replace('.', '-') }}-ecdsa.pem"{% if not loop.last %},{% endif %}
 
 {% endfor %}
   ]
