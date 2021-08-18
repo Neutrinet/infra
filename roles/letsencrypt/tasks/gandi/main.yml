@@ -1,0 +1,6 @@
+- include_tasks: create.yml
+  loop:
+    - rsa
+    - ecdsa
+  loop_control:
+    loop_var: algorithm
