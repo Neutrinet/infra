@@ -15,12 +15,7 @@ letsencrypt_dns_gandi_sharing_id: !vault |
           6632383964373738663761343065306137313163303838633763
 letsencrypt_staging: false
 letsencrypt_domains:
-  - name: neutrinet.be
-    hooks:
-      deploy:
-        - /etc/letsencrypt/hooks.d/haproxy.py
-      post:
-        - systemctl reload haproxy
+  - neutrinet.be
 
 haproxy:
   - hostname: neutrinet.be

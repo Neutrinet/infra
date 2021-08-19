@@ -8,6 +8,10 @@
   vars:
     letsencrypt_hook_scripts:
       - haproxy.py
+    letsencrypt_deploy_hooks:
+      - /etc/letsencrypt/hooks.d/haproxy.py
+    letsencrypt_post_hooks:
+      - systemctl reload haproxy
   tags: ['letsencrypt']
 - name: Installation des plugins Telegraf
   import_role:

@@ -1,15 +1,14 @@
 ---
-
-- name: Définition du nom du certificat {{ algorithm | upper }} {{ domain.name }}
+- name: Définition du nom du certificat {{ algorithm | upper }} {{ domain }}
   set_fact:
-    cert_name: "{{ domain.name | replace('.', '-') }}-{{ algorithm }}"
+    cert_name: "{{ domain | replace('.', '-') }}-{{ algorithm }}"
 
-- name: Test si le certificat {{ algorithm | upper }} {{ domain.name }} existe
+- name: Test si le certificat {{ algorithm | upper }} {{ domain }} existe
   stat:
     path: /etc/letsencrypt/live/{{ cert_name }}/cert.pem
   register: letsencrypt_domain
 
-- name: Création du certificat {{ algorithm | upper }} {{ domain.name }}
+- name: Création du certificat {{ algorithm | upper }} {{ domain }}
   command: >
     /opt/letsencrypt/bin/certbot certonly
       --non-interactive
@@ -23,13 +22,13 @@
       --rsa-key-size 4096
     {% endif %}
       --cert-name {{ cert_name }}
-      --domain {{ domain.name }}
-      --domain *\.{{ domain.name }}
-    {% for hook in domain.hooks.deploy | default([]) %}
+      --domain {{ domain }}
+      --domain *\.{{ domain }}
+    {% for hook in letsencrypt_deploy_hooks %}
       --deploy-hook {{ hook | quote }}
 
     {% endfor %}
-    {% for hook in domain.hooks.post | default([]) %}
+    {% for hook in letsencrypt_post_hooks %}
       --post-hook {{ hook | quote }}
 
     {% endfor %}

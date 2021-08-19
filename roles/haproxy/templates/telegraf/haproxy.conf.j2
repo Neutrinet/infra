@@ -12,8 +12,8 @@
   ## Prefix your entry with 'file://' if you intend to use relative paths
   sources = [
 {% for domain in letsencrypt_domains %}
-    "/etc/haproxy/ssl/{{ domain.name | replace('.', '-') }}-rsa.pem",
-    "/etc/haproxy/ssl/{{ domain.name | replace('.', '-') }}-ecdsa.pem"{% if not loop.last %},{% endif %}
+    "/etc/haproxy/ssl/{{ domain | replace('.', '-') }}-rsa.pem",
+    "/etc/haproxy/ssl/{{ domain | replace('.', '-') }}-ecdsa.pem"{% if not loop.last %},{% endif %}
 
 {% endfor %}
   ]

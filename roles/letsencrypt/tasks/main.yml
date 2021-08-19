@@ -82,4 +82,3 @@
   loop: "{{ letsencrypt_domains }}"
   loop_control:
     loop_var: domain
-    label: "{{ domain.name }}"

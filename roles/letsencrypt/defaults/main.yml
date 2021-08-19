@@ -16,8 +16,7 @@ letsencrypt_dns_gandi_sharing_id: !vault |
 
 letsencrypt_staging: true
 letsencrypt_hook_scripts: []
+letsencrypt_deploy_hooks: []
+letsencrypt_post_hooks: []
 letsencrypt_domains:
-  - name: neutrinet.be
-    hooks:
-      deploy: []
-      post: []
+  - neutrinet.be
