@@ -15,7 +15,7 @@
       --dns-gandi-credentials /etc/letsencrypt/gandi/gandi.ini \
       --key-type rsa \
       --rsa-key-size 4096 \
-      --cert-name {{ domain }} \
+      --cert-name {{ domain | replace('.', '-') }} \
       --domain {{ domain }} \
       --domain *\.{{ domain }} \
       --post-hook 'systemctl restart haproxy' \
