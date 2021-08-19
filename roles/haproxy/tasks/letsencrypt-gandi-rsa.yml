@@ -2,7 +2,7 @@
 
 - name: Test si le certificat {{ domain }} rsa existe
   stat:
-    path: /etc/letsencrypt/live/{{ domain }}/cert.pem
+    path: /etc/letsencrypt/live/{{ domain | replace('.', '-') }}/cert.pem
   register: letsencrypt_domain_rsa
 
 - name: Création du certificat {{ domain }} rsa  # noqa command-instead-of-shell
