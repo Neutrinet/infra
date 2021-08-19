@@ -2,7 +2,7 @@
 
 - name: Test si le certificat {{ domain }} ecdsa existe
   stat:
-    path: /etc/letsencrypt/live/{{ domain }}-ecdsa/cert.pem
+    path: /etc/letsencrypt/live/{{ domain | replace('.', '-') }}-ecdsa/cert.pem
   register: letsencrypt_domain_ecdsa
 
 - name: Création du certificat {{ domain }} ecdsa  # noqa command-instead-of-shell
