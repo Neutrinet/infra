@@ -1,0 +1,6 @@
+---
+postgresql_standalone_major_version: 13
+postgresql_standalone_user_become: postgres
+postgresql_standalone_user_monitoring: telegraf
+postgresql_standalone_password_monitoring: neutrinet
+postgresql_standalone_default_cluster_name: main
