@@ -1,0 +1,3 @@
+[[inputs.postgresql]]
+  address = "postgres://{{ postgresql_standalone_user_monitoring }}:{{ postgresql_standalone_password_monitoring }}@127.0.0.1/postgres"
+  ignored_databases = ["template0", "template1"]

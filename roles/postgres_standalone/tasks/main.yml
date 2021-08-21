@@ -1,0 +1,59 @@
+---
+# tasks file for postgres_standalone
+
+- name: Installation de GPG
+  package:
+    name:
+      - gpg
+      - gpg-agent
+      - dirmngr
+    state: present
+  tags: ['postgresql_standalone_install']
+
+- name: Ajout de la clé GPG de PostgreSQL
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+  tags: ['postgresql_standalone_install']
+
+- name: Ajout du dépôt APT pour PostgreSQL
+  apt_repository:
+    repo: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
+    state: present
+    filename: postgresql
+  tags: ['postgresql_standalone_install']
+
+- name: Installation de PostgreSQL
+  package:
+    name:
+      - postgresql-{{ postgresql_standalone_major_version }}
+      - postgresql-client-{{ postgresql_standalone_major_version }}
+      - python3-psycopg2
+    state: present
+  tags: ['postgresql_standalone_install']
+
+- name: Création de l'utilisateur PostgreSQL "{{ postgresql_standalone_user_monitoring }}"
+  community.postgresql.postgresql_user:
+    name: "{{ postgresql_standalone_user_monitoring }}"
+    password: "{{ postgresql_standalone_password_monitoring }}"
+    groups:
+      - pg_monitor
+  become_user: "{{ postgresql_standalone_user_become }}"
+  no_log: true
+  tags: ['telegraf_config']
+
+- name: Installation des plugins Telegraf
+  import_role:
+    name: telegraf_plugin
+  vars:
+    telegraf_plugin_name: postgres
+    telegraf_plugin_template: telegraf/postgres.conf.j2
+    telegraf_append_groups: []
+  tags: ['telegraf_config']
+
+- name: Activation de PostgreSQL au démarrage
+  service:
+    name: postgresql@{{ postgresql_standalone_major_version }}-{{ postgresql_standalone_default_cluster_name }}
+    state: started
+    enabled: true
+  tags: ['postgresql_standalone_install']
