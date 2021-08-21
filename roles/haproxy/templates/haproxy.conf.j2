@@ -51,8 +51,8 @@ frontend prometheus-frontend
    http-request use-service prometheus-exporter if { path /metrics }
 
 frontend haproxy-frontend
-    bind :80
-    bind :443 ssl crt /etc/haproxy/ssl alpn h2,http/1.1 allow-0rtt
+    bind :::80 v4v6
+    bind :::443 v4v6 ssl crt /etc/haproxy/ssl alpn h2,http/1.1 allow-0rtt
     mode http
 
     http-response set-header Strict-Transport-Security max-age=63072000
