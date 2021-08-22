@@ -35,7 +35,7 @@
   service:
     name: prometheus-alertmanager
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Ajout du job alertmanager dans Prometheus
   copy:

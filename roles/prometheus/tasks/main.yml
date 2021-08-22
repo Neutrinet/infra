@@ -34,7 +34,7 @@
   service:
     name: prometheus
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Trigger Prometheus handlers
   meta: flush_handlers
