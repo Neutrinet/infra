@@ -46,7 +46,7 @@
     src: haproxy.conf.j2
     owner: root
     group: root
-    mode: "u=rw,go=r"
+    mode: "u=rw,g=r,o="
     validate: "haproxy -f %s -c -q"
   notify: reload haproxy
 
