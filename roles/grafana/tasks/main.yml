@@ -1,15 +1,58 @@
-- import_tasks: grafana/main.yml
-  tags: ['grafana']
+- name: Ajout de la clé GPG de Grafana dans APT
+  apt_key:
+    url: https://packages.grafana.com/gpg.key
+    state: present
 
-- name: Installation de HAProxy
-  import_role:
-    name: haproxy
-  vars:
-    haproxy:
-      - hostname: "{{ grafana_domain }}"
-        target:
-          - 127.0.0.1
-        target_port: 3000
-        healthcheck: true
-        healthcheck_url: GET /api/health
-  tags: ['haproxy']
+- name: Ajout du dépôt APT Grafana
+  apt_repository:
+    repo: deb https://packages.grafana.com/oss/deb stable main
+    filename: grafana
+    state: present
+
+- name: Installation de Grafana
+  package:
+    name: grafana
+    state: present
+
+- name: Configuration de Grafana
+  template:
+    src: grafana/grafana.ini.j2
+    dest: /etc/grafana/grafana.ini
+    owner: grafana
+    group: grafana
+    mode: "u=rw,g=r,o="
+  notify: restart grafana
+
+- name: Activation de Grafana au démarrage
+  service:
+    name: grafana-server
+    state: started
+    enabled: true
+
+- name: Ajout du job grafana dans Prometheus
+  copy:
+    src: prometheus/grafana.yml
+    dest: /etc/prometheus/conf.d/grafana.yml
+    owner: prometheus
+    group: prometheus
+    mode: "u=rw,go=r"
+  notify: reload prometheus
+
+- name: Vérification du mot de passe admin
+  uri:
+    url: http://localhost:3000/api/login/ping
+    user: admin
+    # on utilise le mot de passe par défaut
+    # permet de vérifier si c'est une nouvelle install
+    password: admin
+    force_basic_auth: true
+    status_code: [200, 401]
+  no_log: true
+  register: _grafana_admin_login_checked
+  retries: 10
+  delay: 3
+  until: _grafana_admin_login_checked is success
+
+- import_tasks: postinstall.yml
+  when: _grafana_admin_login_checked.status == 200
+  tags: ['grafana_postinstall']

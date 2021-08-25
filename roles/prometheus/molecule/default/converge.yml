@@ -1,7 +1,8 @@
 ---
 - name: Converge
-  hosts: prometheus
+  hosts: all
   become: true
 
   roles:
     - prometheus
+    - haproxy

@@ -1,3 +1,13 @@
 telegraf_username: telegraf
 telegraf_password: neutrinet
 telegraf_prometheus_client_listen_address: localhost
+
+haproxy:
+  - hostname: "{{ ansible_fqdn }}"
+    target:
+      - 127.0.0.1
+    target_port: 9090
+    healthcheck: true
+    healthcheck_url: GET /-/healthy
+    username: "{{ prometheus_username }}"
+    password: "{{ prometheus_password }}"

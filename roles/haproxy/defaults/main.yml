@@ -27,6 +27,8 @@ haproxy:
       - 127.0.0.1
     target_port: 8080
     healthcheck: false
+    # username: admin
+    # password: neutrinet
 
 haproxy_redirect:
   - from: www.neutrinet.be
