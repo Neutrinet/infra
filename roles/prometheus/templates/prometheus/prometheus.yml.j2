@@ -52,6 +52,7 @@ scrape_configs:
       username: {{ hostvars[host].prometheus_username | to_json }}
       password: {{ hostvars[host].prometheus_password | string | to_json }}
 {% endif %}
+    scheme: https
     static_configs:
       - targets:
           - "{{ host }}"
