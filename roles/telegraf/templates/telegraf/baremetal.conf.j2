@@ -1,0 +1,49 @@
+{{ ansible_managed | comment }}
+
+# Read metrics from the bare metal servers via IPMI
+[[inputs.ipmi_sensor]]
+  ## Setting 'use_sudo' to true will make use of sudo to run ipmitool.
+  ## Sudo must be configured to allow the telegraf user to run ipmitool
+  ## without a password.
+  # use_sudo = false
+  ##
+
+  ## Recommended: use metric 'interval' that is a multiple of 'timeout' to avoid
+  ## gaps or overlap in pulled data
+  interval = "40s"
+
+  ## Timeout for the ipmitool command to complete
+  timeout = "20s"
+
+  ## Schema Version: (Optional, defaults to version 1)
+  metric_version = 2
+
+  ## If ipmitool should use a cache
+  ## for me ipmitool runs about 2 to 10 times faster with cache enabled on HP G10 servers (when using ubuntu20.04)
+  ## the cache file may not work well for you if some sensors come up late
+  # use_cache = false
+
+  ## Path to the ipmitools cache file (defaults to OS temp dir)
+  ## The provided path must exist and must be writable
+  # cache_path = ""
+
+# Read metrics from storage devices supporting S.M.A.R.T.
+[[inputs.smart]]
+  ## On most platforms used cli utilities requires root access.
+  ## Setting 'use_sudo' to true will make use of sudo to run smartctl or nvme-cli.
+  ## Sudo must be configured to allow the telegraf user to run smartctl or nvme-cli
+  ## without a password.
+  # use_sudo = false
+
+
+# Monitor disks' temperatures using hddtemp
+[[inputs.hddtemp]]
+  ## By default, telegraf gathers temps data from all disks detected by the
+  ## hddtemp.
+  ##
+  ## Only collect temps from the selected disks.
+  ##
+  ## A * as the device name will return the temperature values of all disks.
+  ##
+  # address = "127.0.0.1:7634"
+  # devices = ["sda", "*"]
