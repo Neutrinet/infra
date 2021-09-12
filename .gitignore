@@ -133,3 +133,6 @@ env
 
 ansible_fact_cache/
 log/
+.gitsecret/keys/random_seed
+!*.secret
+vault.key
