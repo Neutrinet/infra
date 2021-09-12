@@ -9,13 +9,53 @@ env/bin/pip install -r requirements.txt
 source env/bin/activate
 ```
 
-## Pre-comit
+## Pre-commit
 We use pre-commit to validate merge requests.
 It is strongly advised to add pre-commit on your computer to avoid your merge request to be refused.
 
 You can run this command in your virtualenv.
-```
+```bash
 pre-commit install
+```
+
+## Git-secret
+
+We use [git-secret](https://git-secret.io) to protect sensitive data such as the key to encrypt / decrypt Ansible vaults.
+
+In order to decrypt these secrets, you must [install git-secret on your computer](https://git-secret.io/installation). You must also have a GPG key pair to be able to decrypt the secrets.
+
+This git repository has been configured for git-secret as follows:
+```bash
+git-secret init
+git secret tell <email address>
+git secret add vault.key
+git secret hide
+```
+These steps must be done **once**.
+
+### Add a new user
+
+Add the GPG key of the user:
+```bash
+git secret tell <email address>
+```
+or
+```bash
+git --homedir .gitsecret/keys --import <pubkey file>
+```
+
+Then, reencrypt the secrets:
+```bash
+git secret hide
+```
+
+Don't forget to commit and push your changes!
+
+### Decrypt the secrets
+
+After cloning the repository, just run:
+```bash
+git secret reveal
 ```
 
 ## Usage
