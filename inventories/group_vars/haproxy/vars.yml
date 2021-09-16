@@ -92,6 +92,12 @@ haproxy:
     healthcheck: true
     healthcheck_url: HEAD /
 
+  - hostname: librenms.neutrinet.be
+    target:
+      - librenms.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: false
+
 haproxy_redirect:
   - from: www.neutrinet.be
     to: neutrinet.be
