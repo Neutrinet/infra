@@ -45,6 +45,12 @@ defaults
     errorfile 503 /etc/haproxy/errors/503.http
     errorfile 504 /etc/haproxy/errors/504.http
 
+{% for host in haproxy if host.username is defined and host.password is defined %}
+userlist {{ host.hostname | replace('.', '-') }}-credentials
+  user {{ host.username }} insecure-password {{ host.password }}
+
+{% endfor %}
+
 frontend prometheus-frontend
    bind localhost:8405
    option dontlog-normal
@@ -77,6 +83,9 @@ backend {{ host.hostname | replace('.', '-') }}-backend
 {% endif %}
     option forwardfor
     option http-server-close
+{% if host.username is defined and host.password is defined %}
+    http-request auth unless { http_auth({{ host.hostname | replace('.', '-') }}-credentials) }
+{% endif %}
 {% if "timeout" in host and host.timeout %}
     timeout server {{ host.timeout }}
 {% endif %}

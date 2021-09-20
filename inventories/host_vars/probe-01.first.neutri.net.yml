@@ -1,3 +1,2 @@
-prometheus_listen_address: 0.0.0.0
 prometheus_telegraf_hosts:
   - "{{ inventory_hostname }}"
