@@ -47,6 +47,7 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: HEAD /
+    timeout: 2m
 
   - hostname: ffdnapi.neutrinet.be
     target:
