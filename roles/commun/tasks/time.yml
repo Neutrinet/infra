@@ -8,6 +8,12 @@
     force: true
   tags: ['timezone']
 
+- name: Désinstallation de NTP
+  # See https://github.com/ilri/rmg-ansible-public/issues/46
+  package:
+    name: ntp
+    state: absent
+
 - name: Activation de systemd-timesyncd au démarrage
   service:
     name: systemd-timesyncd
