@@ -3,6 +3,8 @@ telegraf_prometheus_client_listen_address: localhost
 prometheus_username: prometheus
 prometheus_password: "{{ vault_prometheus_password }}"
 
+prometheus_federation_hosts: []
+
 letsencrypt:
   dns_gandi_api_key: "{{ vault_dns_gandi_api_key }}"
   dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"
@@ -10,6 +12,7 @@ letsencrypt:
   domains_gandi:
     - neutri.net
 
+haproxy_redirect: []
 haproxy:
   - hostname: "{{ ansible_fqdn }}"
     target:
