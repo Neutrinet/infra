@@ -8,3 +8,11 @@
   notify:
     - reload php-fpm
   tags: ['php_config']
+
+- name: Création du dossier tmp pour php-fpm
+  file:
+    path: "{{ php_fpm_tmp_dir }}"
+    owner: "{{ web_app_owner }}"
+    group: "{{ web_app_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
