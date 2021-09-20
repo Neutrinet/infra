@@ -1,1 +1,21 @@
 telegraf_prometheus_client_listen_address: localhost
+
+prometheus_username: prometheus
+prometheus_password: "{{ vault_prometheus_password }}"
+
+letsencrypt:
+  dns_gandi_api_key: "{{ vault_dns_gandi_api_key }}"
+  dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"
+  staging: false
+  domains_gandi:
+    - neutri.net
+
+haproxy:
+  - hostname: "{{ ansible_fqdn }}"
+    target:
+      - 127.0.0.1
+    target_port: 9090
+    healthcheck: true
+    healthcheck_url: GET /-/healthy
+    username: "{{ prometheus_username }}"
+    password: "{{ prometheus_password }}"
