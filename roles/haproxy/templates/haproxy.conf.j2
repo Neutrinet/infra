@@ -78,7 +78,7 @@ backend {{ host.hostname | replace('.', '-') }}-backend
     option forwardfor
     option http-server-close
 {% if "timeout" in host and host.timeout %}
-    server timeout {{ host.timeout }}
+    timeout server {{ host.timeout }}
 {% endif %}
 {% for target in host.target %}
     server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check{% endif %} {% if "ssl" in host %} {{ host.ssl }} {% endif %} cookie sl
