@@ -65,11 +65,11 @@ frontend haproxy-frontend
     redirect scheme https code 301 if !{ ssl_fc }
 
 {% for redirect in haproxy_redirect %}
-    http-request redirect prefix https://{{ redirect.to }} code 301 if { hdr(host) -i {{ redirect.from }} }
+    http-request redirect prefix https://{{ redirect.to }} code 301 if { hdr(host),field(1,:) -i {{ redirect.from }} }
 {% endfor %}
 
 {% for host in haproxy %}
-    acl {{ host.hostname | replace('.', '-') }}-acl hdr(host) {{ host.hostname }}
+    acl {{ host.hostname | replace('.', '-') }}-acl hdr(host),field(1,:) {{ host.hostname }}
     use_backend {{ host.hostname | replace('.', '-') }}-backend if {{ host.hostname | replace('.', '-') }}-acl
 
 {% endfor %}
