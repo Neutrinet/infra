@@ -1,2 +1,9 @@
 prometheus_telegraf_hosts:
   - "{{ inventory_hostname }}"
+
+letsencrypt:
+  dns_gandi_api_key: "{{ vault_dns_gandi_api_key }}"
+  dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"
+  staging: false
+  domains_gandi:
+    - ovh.neutri.net
