@@ -16,3 +16,22 @@
     group: "{{ web_app_owner }}"
     mode: "u=rwx,g=rx,o="
     state: directory
+
+- name: Installation des plugins Telegraf
+  template:
+    src: telegraf/php-fpm.conf.j2
+    dest: /etc/telegraf/telegraf.d/{{ web_app_owner }}.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: restart telegraf
+  tags: ['telegraf_config']
+
+- name: Ajout de l'utilisateur telegraf au groupe caddy
+  user:
+    name: telegraf
+    groups: caddy
+    append: true
+  notify: restart telegraf
+  tags: ['telegraf_config']

@@ -2,6 +2,12 @@
   tags: ['caddy']
 
 - name: Installation des plugins Telegraf
-  import_role:
-    name: telegraf_plugin
+  template:
+    src: telegraf/caddy.conf.j2
+    dest: /etc/telegraf/telegraf.d/caddy.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: restart telegraf
   tags: ['telegraf_config']
