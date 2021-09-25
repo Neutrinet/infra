@@ -2,30 +2,34 @@
     "production": {
         "domain": "{{ hedgedoc_domain }}",
         "urlAddPort": {{ hedgedoc_url_add_port | bool | lower }},
+        "allowOrigins": ["localhost", "{{ hedgedoc_domain }}"],
         "loglevel": "info",
         "hsts": {
-            "enable": false,
+            "enable": true,
             "maxAgeSeconds": 31536000,
             "includeSubdomains": true,
             "preload": true
         },
         "csp": {
             "enable": true,
-            "directives": {
-            },
+            "directives": {},
             "upgradeInsecureRequests": "auto",
             "addDefaults": true,
             "addDisqus": false,
-            "addGoogleAnalytics": false
+            "addGoogleAnalytics": false,
+            "allowFraming": false,
+            "allowPDFEmbed": false
         },
         "cookiePolicy": "lax",
         "db": {
             "username": "{{ hedgedoc_database_username }}",
-            "password": "{{ hedgedoc_database_password }}",
+            "password": {{ hedgedoc_database_password | to_json }},
             "database": "hedgedoc",
             "host": "localhost",
             "port": "5432",
             "dialect": "postgres"
-        }
+        },
+        "allowAnonymous": true,
+        "allowFreeURL": true
     }
 }
