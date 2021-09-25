@@ -1,2 +1,3 @@
 hedgedoc_domain: doc.neutrinet.be
 hedgedoc_database_password: "{{ vault_hedgedoc_database_password }}"
+hedgedoc_url_add_port: false
