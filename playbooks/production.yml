@@ -6,6 +6,7 @@
 - import_playbook: apps/ceph_s3.yml
 - import_playbook: apps/grav.yml
 - import_playbook: apps/dokuwiki.yml
+- import_playbook: apps/hedgedoc.yml
 - import_playbook: apps/probe.yml
 - import_playbook: apps/prometheus.yml
 - import_playbook: apps/etcd.yml
