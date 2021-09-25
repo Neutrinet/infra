@@ -5,3 +5,9 @@ hedgedoc_database_username: "{{ hedgedoc_owner }}"
 hedgedoc_database_password: neutrinet
 
 hedgedoc_url_add_port: true
+
+hedgedoc_s3_enabled: false
+hedgedoc_s3_host: s3.example.com
+hedgedoc_s3_port: 443
+hedgedoc_s3_access_key: ""
+hedgedoc_s3_secret_key: ""
