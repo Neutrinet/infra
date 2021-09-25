@@ -1,0 +1,32 @@
+---
+- name: Ajout de la clé GPG de NodeJS dans APT
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
+
+- name: Ajout du dépôt APT NodeJS
+  apt_repository:
+    repo: deb https://deb.nodesource.com/node_{{ nodejs_major_version }}.x {{ ansible_distribution_release }} main
+    filename: nodejs
+    state: present
+
+- name: Installation de NodeJS
+  package:
+    name: nodejs
+    state: present
+
+- name: Ajout de la clé GPG de Yarn dans APT
+  apt_key:
+    url: https://dl.yarnpkg.com/debian/pubkey.gpg
+    state: present
+
+- name: Ajout du dépôt APT Yarn
+  apt_repository:
+    repo: deb https://dl.yarnpkg.com/debian/ stable main
+    filename: yarn
+    state: present
+
+- name: Installation de Yarn
+  package:
+    name: yarn
+    state: present
