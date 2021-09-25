@@ -1,0 +1,16 @@
+- name: Création de la base de données PostgreSQL
+  community.postgresql.postgresql_db:
+    name: hedgedoc
+    state: present
+  become_user: postgres
+  tags: ['postgres']
+
+- name: Création de l'utilisateur PostgreSQL {{ hedgedoc_database_username }}
+  community.postgresql.postgresql_user:
+    db: hedgedoc
+    name: "{{ hedgedoc_database_username }}"
+    password: "{{ hedgedoc_database_password }}"
+    priv: ALL
+  become_user: postgres
+  no_log: true
+  tags: ['postgres']

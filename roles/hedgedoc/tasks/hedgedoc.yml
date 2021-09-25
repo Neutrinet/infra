@@ -1,0 +1,72 @@
+- name: Installation de Git
+  package:
+    name: git
+    state: present
+
+- name: Recherche de la dernière version de Hedgedoc
+  uri:
+    url: https://api.github.com/repos/hedgedoc/hedgedoc/releases/latest
+  register: _hedgedoc_latest_version
+
+- name: Définition de la dernière version
+  set_fact:
+    hedgedoc_version: "{{ _hedgedoc_latest_version.json.tag_name }}"
+
+- name: Création du dossier de Hedgedoc
+  file:
+    path: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
+    owner: "{{ hedgedoc_owner }}"
+    group: "{{ hedgedoc_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de Hedgedoc v{{ hedgedoc_version }}
+  unarchive:
+    src: https://github.com/hedgedoc/hedgedoc/releases/download/{{ hedgedoc_version }}/hedgedoc-{{ hedgedoc_version }}.tar.gz
+    dest: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
+    creates: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/README.md
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: "{{ hedgedoc_owner }}"
+    group: "{{ hedgedoc_owner }}"
+
+- name: Installation de Hedgedoc
+  command:
+    cmd: bin/setup
+    chdir: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
+    creates: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/config.json
+  become_user: "{{ hedgedoc_owner }}"
+
+- name: Configuration de Hedgedoc
+  template:
+    src: hedgedoc/config.json.j2
+    dest: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/config.json
+    owner: "{{ hedgedoc_owner }}"
+    group: "{{ hedgedoc_owner }}"
+    mode: "u=rw,g=r,o="
+  notify: restart hedgedoc
+
+- name: Configuration du service systemd
+  template:
+    src: systemd/hedgedoc.service.j2
+    dest: /etc/systemd/system/hedgedoc.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart hedgedoc
+
+- name: Création du lien symbolique vers la dernière version de Hedgedoc
+  file:
+    src: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
+    dest: /var/www/{{ hedgedoc_owner }}/dist
+    state: link
+  notify: restart hedgedoc
+
+- name: Démarrage du serveur Hedgedoc
+  service:
+    name: hedgedoc
+    state: started
+    enabled: true

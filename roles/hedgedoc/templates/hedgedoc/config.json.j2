@@ -1,0 +1,30 @@
+{
+    "production": {
+        "domain": "{{ hedgedoc_domain }}",
+        "loglevel": "info",
+        "hsts": {
+            "enable": false,
+            "maxAgeSeconds": 31536000,
+            "includeSubdomains": true,
+            "preload": true
+        },
+        "csp": {
+            "enable": true,
+            "directives": {
+            },
+            "upgradeInsecureRequests": "auto",
+            "addDefaults": true,
+            "addDisqus": false,
+            "addGoogleAnalytics": false
+        },
+        "cookiePolicy": "lax",
+        "db": {
+            "username": "{{ hedgedoc_database_username }}",
+            "password": "{{ hedgedoc_database_password }}",
+            "database": "hedgedoc",
+            "host": "localhost",
+            "port": "5432",
+            "dialect": "postgres"
+        }
+    }
+}

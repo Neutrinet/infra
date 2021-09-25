@@ -1,0 +1,17 @@
+---
+- name: Installation de NodeJS
+  import_role:
+    name: nodejs
+  tags: ['nodejs']
+
+- name: Création de l'utilisateur
+  import_tasks: user.yml
+  tags: ['user']
+
+- name: Configuration de la base de données PostgreSQL
+  import_tasks: postgresql.yml
+  tags: ['postgres']
+
+- name: Installation de Hedgedoc
+  import_tasks: hedgedoc.yml
+  tags: ['hedgedoc']
