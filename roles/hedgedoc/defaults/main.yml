@@ -1,4 +1,7 @@
 hedgedoc_domain: doc.example.com
 hedgedoc_owner: "{{ hedgedoc_domain | replace('.', '-') }}"
+
 hedgedoc_database_username: "{{ hedgedoc_owner }}"
 hedgedoc_database_password: neutrinet
+
+hedgedoc_url_add_port: true
