@@ -1,0 +1,15 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Mise à jour du cache APT
+      apt:
+        update_cache: true
+
+  tasks:
+    - name: Installation de GnuPG
+      package:
+        name: gnupg
+        state: present
