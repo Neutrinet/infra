@@ -29,14 +29,17 @@
             "port": "5432",
             "dialect": "postgres"
         },
-        "allowAnonymous": true,
-        "allowFreeURL": true{% if hedgedoc_s3_enabled %},
+{% if hedgedoc_s3_enabled %}
+        "s3bucket": "hedgedoc",
+        "imageuploadtype": "minio",
         "minio" {
             "endpoint": "{{ hedgedoc_s3_host }}",
             "port": {{ hedgedoc_s3_port | int }},
             "accessKey": "{{ hedgedoc_s3_access_key }}",
             "secretKey": "{{ hedgedoc_s3_secret_key }}"
-        }{% endif %}
-
+        },
+{% endif %}
+        "allowAnonymous": true,
+        "allowFreeURL": true
     }
 }
