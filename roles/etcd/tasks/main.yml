@@ -24,6 +24,12 @@
     enabled: true
 
 - name: Installation des plugins Telegraf
-  import_role:
-    name: telegraf_plugin
+  template:
+    src: telegraf/etcd.conf.j2
+    dest: /etc/telegraf/telegraf.d/etcd.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: restart telegraf
   tags: ['telegraf_config']

@@ -1,3 +1,0 @@
-telegraf_plugin_name: example
-telegraf_plugin_template: telegraf/example.conf.j2
-telegraf_append_groups: []
