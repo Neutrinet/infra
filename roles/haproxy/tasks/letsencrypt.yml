@@ -49,7 +49,7 @@
     cmd: |
       /opt/letsencrypt/bin/certbot register \
       --non-interactive \
-      {% if letsencrypt.staging | default(true) %}--staging \{% endif %}
+      {% if letsencrypt_staging %}--staging \{% endif %}
       --email {{ mail_notification }} \
       --no-eff-email \
       --agree-tos
@@ -73,14 +73,12 @@
 
 - name: Création des certificats rsa par challenge gandi
   include_tasks: letsencrypt-gandi-rsa.yml
-  loop: "{{ letsencrypt.domains_gandi }}"
+  loop: "{{ letsencrypt_domains_gandi }}"
   loop_control:
     loop_var: domain
-  when: '"domains_gandi" in letsencrypt'
 
 - name: Création des certificats ecdsa par challenge gandi
   include_tasks: letsencrypt-gandi-ecdsa.yml
-  loop: "{{ letsencrypt.domains_gandi }}"
+  loop: "{{ letsencrypt_domains_gandi }}"
   loop_control:
     loop_var: domain
-  when: '"domains_gandi" in letsencrypt'
