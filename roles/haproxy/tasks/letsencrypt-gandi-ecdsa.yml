@@ -10,7 +10,7 @@
     cmd: |
       /opt/letsencrypt/bin/certbot certonly \
       --non-interactive \
-      {% if letsencrypt.staging | default(true) %}--staging \{% endif %}
+      {% if letsencrypt_staging %}--staging \{% endif %}
       --authenticator dns-gandi \
       --dns-gandi-credentials /etc/letsencrypt/gandi/gandi.ini \
       --key-type ecdsa \
