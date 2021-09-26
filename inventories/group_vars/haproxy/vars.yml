@@ -103,7 +103,7 @@ haproxy:
       - hedgedoc.patata.louise.neutri.net
     target_port: 3000
     healthcheck: true
-    healthcheck_url: "GET /status"
+    healthcheck_url: "HEAD /status"
 
 haproxy_redirect:
   - from: www.neutrinet.be
