@@ -55,3 +55,10 @@
     name: haproxy
     state: started
     enabled: true
+
+- name: Trigger haproxy handler
+  # We force haproxy to reload its config to ensure our config has been applied. 
+  # This forced reload is required on debian systems,
+  # because haproxy appears to be already started and enabled by apt, 
+  # and later in this role, telegraf expects our haproxy to be correctly configured.
+  meta: flush_handlers

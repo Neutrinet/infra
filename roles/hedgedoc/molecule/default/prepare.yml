@@ -15,4 +15,5 @@
 
   roles:
     - telegraf
+    - haproxy
     - postgres_standalone

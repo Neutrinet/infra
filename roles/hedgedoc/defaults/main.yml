@@ -4,8 +4,6 @@ hedgedoc_owner: "{{ hedgedoc_domain | replace('.', '-') }}"
 hedgedoc_database_username: "{{ hedgedoc_owner }}"
 hedgedoc_database_password: neutrinet
 
-hedgedoc_url_add_port: true
-
 hedgedoc_s3_enabled: false
 hedgedoc_s3_host: s3.example.com
 hedgedoc_s3_port: 443

@@ -1,7 +1,6 @@
 {
     "production": {
         "domain": "{{ hedgedoc_domain }}",
-        "urlAddPort": {{ hedgedoc_url_add_port | bool | lower }},
         "allowOrigins": ["localhost", "{{ hedgedoc_domain }}"],
         "loglevel": "info",
         "hsts": {

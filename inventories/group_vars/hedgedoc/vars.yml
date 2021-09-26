@@ -1,6 +1,5 @@
 hedgedoc_domain: doc.neutrinet.be
 hedgedoc_database_password: "{{ vault_hedgedoc_database_password }}"
-hedgedoc_url_add_port: false
 
 hedgedoc_s3_enabled: true
 hedgedoc_s3_host: s3.neutrinet.be
