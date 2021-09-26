@@ -6,13 +6,9 @@ prometheus_telegraf_hosts:
   - "{{ inventory_hostname }}"
   - vpn.neutri.net
 
-letsencrypt:
-  dns_gandi_api_key: "{{ vault_dns_gandi_api_key }}"
-  dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"
-  staging: false
-  domains_gandi:
-    - neutrinet.be
-    - htz.neutri.net
+letsencrypt_domains_gandi:
+  - neutrinet.be
+  - htz.neutri.net
 
 haproxy:
   - hostname: grafana.neutrinet.be
