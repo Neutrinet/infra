@@ -3,3 +3,8 @@
   service:
     name: etcd
     state: restarted
+
+- name: restart telegraf
+  service:
+    name: telegraf
+    state: restarted
