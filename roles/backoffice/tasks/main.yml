@@ -1,0 +1,61 @@
+---
+- name: Installation de Caddy2
+  import_role:
+    name: caddy_server
+  tags: ['caddy']
+
+- name: Configuration du site (caddy, etc.)
+  import_role:
+    name: web_app
+  vars:
+    web_app_domain: "{{ backoffice_domain }}"
+    web_app_caddy_template: caddy/backoffice.j2
+  tags: ['web_app']
+
+- name: Configuration de Caddy2 pour ffdnapi
+  template:
+    src: caddy/ffdnapi.j2
+    dest: "{{ caddy_vhosts_dir }}/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.conf"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: caddy validate --adapter caddyfile --config %s
+  notify: reload caddy
+
+- name: Création de la base de données PostgreSQL
+  community.postgresql.postgresql_db:
+    name: backoffice
+    state: present
+  become_user: postgres
+  tags: ['postgres']
+
+- name: Création de l'utilisateur PostgreSQL {{ backoffice_postgres_username }}
+  community.postgresql.postgresql_user:
+    db: backoffice
+    name: "{{ backoffice_postgres_username }}"
+    password: "{{ backoffice_postgres_password }}"
+    priv: ALL
+  become_user: postgres
+  no_log: true
+  tags: ['postgres']
+
+- name: Installation de pip2 et ses dépendances
+  package:
+    name:
+      - python-pip
+      - virtualenv
+      - libpq-dev
+    state: present
+
+- name: Installation de supervisord
+  package:
+    name: supervisor
+    state: present
+
+- name: Configuration de supervisord
+  template:
+    src: supervisor/backoffice.conf.j2
+    dest: /etc/supervisor/conf.d/backoffice.conf
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
