@@ -3,15 +3,6 @@
     name: git
     state: present
 
-- name: Recherche de la dernière version de Hedgedoc
-  uri:
-    url: https://api.github.com/repos/hedgedoc/hedgedoc/releases/latest
-  register: _hedgedoc_latest_version
-
-- name: Définition de la dernière version
-  set_fact:
-    hedgedoc_version: "{{ _hedgedoc_latest_version.json.tag_name }}"
-
 - name: Création du dossier de Hedgedoc
   file:
     path: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
