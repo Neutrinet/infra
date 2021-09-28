@@ -1,6 +1,6 @@
 - name: Vérification de la présence du fichier de configuration de Nextcloud
   stat:
-    path: "{{ nextcloud_config_file }}"
+    path: "{{ web_app_dist_dir }}/config/config.php"
   register: _nextcloud_config
 
 - name: Informations sur la version installée de Nextcloud

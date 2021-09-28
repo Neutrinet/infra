@@ -31,8 +31,8 @@
     web_app_php_fpm_enabled: true
   tags: ['web_app']
 
-- name: Installation de PostgreSQL
-  import_tasks: postgres/main.yml
+- name: Configuration de PostgreSQL
+  import_tasks: postgresql.yml
   tags: ['postgres']
 
 - name: Installation de Redis

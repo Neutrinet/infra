@@ -48,10 +48,10 @@
 - name: Installation de Nextcloud {{ nextcloud_version }}  # noqa no-changed-when
   command: >-
     {{ php_executable }} occ maintenance:install --no-interaction
-      --database {{ nextcloud_database_driver | quote }}
-      --database-name {{ nextcloud_database_name | quote }}
-      --database-host {{ nextcloud_database_host | quote }}
-      --database-port {{ nextcloud_database_port | quote }}
+      --database pgsql
+      --database-name nextcloud
+      --database-host localhost
+      --database-port 5432
       --database-user {{ nextcloud_database_username | quote }}
       --database-pass {{ nextcloud_database_password | quote }}
       --admin-user {{ nextcloud_admin_username | quote }}
