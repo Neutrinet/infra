@@ -8,5 +8,11 @@
       apt:
         update_cache: true
 
+    - name: Installation des ACL
+      package:
+        name: acl
+        state: present
+
   roles:
     - telegraf
+    - postgres_standalone

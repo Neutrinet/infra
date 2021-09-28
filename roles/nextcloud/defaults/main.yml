@@ -1,4 +1,4 @@
-nextcloud_domain: "{{ inventory_hostname }}.local"
+nextcloud_domain: files.example.com
 
 nextcloud_hsts_preload_enabled: false
 nextcloud_max_upload_size: 512MB
