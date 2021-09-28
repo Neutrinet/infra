@@ -16,7 +16,6 @@
       - gmp
       - imagick
       - intl
-      - json
       - pgsql
 
   tags: ['php_fpm']
