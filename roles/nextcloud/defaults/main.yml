@@ -20,19 +20,6 @@ nextcloud_import_file: "{{ web_app_dist_dir }}/config/import.json"
 nextcloud_database_username: nextcloud
 nextcloud_database_password: password
 
-nextcloud_redis_install_enabled: true
-nextcloud_redis_socket: /var/run/redis/redis-server.sock
-nextcloud_redis_host: "{{ nextcloud_redis_socket }}"
-nextcloud_redis_port: 0
-nextcloud_redis_dbindex: 0
-nextcloud_redis_password:
-nextcloud_redis_timeout: "1.5"
-
-nextcloud_memcache_namespace: \OC\Memcache\
-nextcloud_memcache_local: APCu
-nextcloud_memcache_distributed: Redis
-nextcloud_memcache_locking: Redis
-
 nextcloud_config:
   system:
     trusted_domains:
@@ -44,15 +31,8 @@ nextcloud_config:
     dbport: 5432
     dbuser: "{{ nextcloud_database_username }}"
     dbpassword: "{{ nextcloud_database_password }}"
-    memcache.local: "{{ nextcloud_memcache_namespace }}{{ nextcloud_memcache_local }}"
-    memcache.distributed: "{{ nextcloud_memcache_namespace }}{{ nextcloud_memcache_distributed }}"
-    memcache.locking: "{{ nextcloud_memcache_namespace }}{{ nextcloud_memcache_locking }}"
-    redis:
-      host: "{{ nextcloud_redis_host }}"
-      port: "{{ nextcloud_redis_port }}"
-      dbindex: "{{ nextcloud_redis_dbindex }}"
-      password: "{{ nextcloud_redis_password }}"
-      timeout: "{{ nextcloud_redis_timeout }}"
+    memcache.local: \OC\Memcache\APCu
+    memcache.distributed: \OC\Memcache\Memcached
 
 nextcloud_admin_email: nextcloud@example.com
 nextcloud_admin_username: admin

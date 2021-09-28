@@ -18,7 +18,6 @@
       - intl
       - json
       - pgsql
-      - redis
 
   tags: ['php_fpm']
 
@@ -34,10 +33,6 @@
 - name: Configuration de PostgreSQL
   import_tasks: postgresql.yml
   tags: ['postgres']
-
-- name: Installation de Redis
-  import_tasks: redis/main.yml
-  tags: ['redis']
 
 - name: Installation de Nextcloud
   import_tasks: nextcloud/main.yml
