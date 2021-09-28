@@ -19,9 +19,9 @@
 
 - name: Installation de Hedgedoc
   command:
-    cmd: bin/setup
+    cmd: npm install --production
     chdir: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
-    creates: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/config.json
+    creates: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/node_modules
   become_user: "{{ hedgedoc_owner }}"
 
 - name: Configuration de Hedgedoc
