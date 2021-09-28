@@ -26,7 +26,7 @@
     name: web_app
   vars:
     web_app_domain: "{{ nextcloud_domain }}"
-    web_app_caddy_template: "{{ nextcloud_template }}"
+    web_app_caddy_template: caddy/nextcloud.j2
     web_app_php_fpm_enabled: true
   tags: ['web_app']
 
@@ -34,6 +34,6 @@
   import_tasks: postgresql.yml
   tags: ['postgres']
 
-- name: Installation de Nextcloud
-  import_tasks: nextcloud/main.yml
+- name: Configuration de Nextcloud
+  import_tasks: nextcloud.yml
   tags: ['nextcloud']

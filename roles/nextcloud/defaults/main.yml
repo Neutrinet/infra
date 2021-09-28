@@ -1,20 +1,9 @@
 nextcloud_domain: "{{ inventory_hostname }}.local"
-nextcloud_template: caddy/nextcloud.j2
 
 nextcloud_hsts_preload_enabled: false
 nextcloud_max_upload_size: 512MB
 
-nextcloud_app_social_enabled: false
-nextcloud_app_user_webfinger_enabled: false
-
 nextcloud_version: latest-20
-nextcloud_upgrade_enabled: true
-nextcloud_gpg_public_key_url: https://nextcloud.com/nextcloud.asc
-nextcloud_checksum_algorithm: sha512
-nextcloud_install_url: https://download.nextcloud.com/server/releases/{{ nextcloud_version }}.tar.bz2
-nextcloud_src_dir: /usr/local/src/nextcloud-{{ nextcloud_version }}
-nextcloud_src_archive: "{{ nextcloud_src_dir }}/{{ nextcloud_install_url | basename }}"
-nextcloud_data_dir: "{{ web_app_dist_dir }}/data"
 nextcloud_import_file: "{{ web_app_dist_dir }}/config/import.json"
 
 nextcloud_database_username: nextcloud
@@ -25,7 +14,7 @@ nextcloud_config:
     trusted_domains:
       0: "{{ nextcloud_domain }}"
     overwrite.cli.url: "https://{{ nextcloud_domain }}"
-    datadirectory: "{{ nextcloud_data_dir }}"
+    datadirectory: "{{ web_app_dist_dir }}/data"
     dbname: nextcloud
     dbhost: localhost
     dbport: 5432
@@ -33,7 +22,3 @@ nextcloud_config:
     dbpassword: "{{ nextcloud_database_password }}"
     memcache.local: \OC\Memcache\APCu
     memcache.distributed: \OC\Memcache\Memcached
-
-nextcloud_admin_email: nextcloud@example.com
-nextcloud_admin_username: admin
-nextcloud_admin_password: password
