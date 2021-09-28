@@ -3,9 +3,6 @@ nextcloud_domain: files.example.com
 nextcloud_hsts_preload_enabled: false
 nextcloud_max_upload_size: 512MB
 
-nextcloud_version: latest-20
-nextcloud_import_file: "{{ web_app_dist_dir }}/config/import.json"
-
 nextcloud_database_username: nextcloud
 nextcloud_database_password: password
 
