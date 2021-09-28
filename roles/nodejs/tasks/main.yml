@@ -14,19 +14,3 @@
   package:
     name: nodejs
     state: present
-
-- name: Ajout de la clé GPG de Yarn dans APT
-  apt_key:
-    url: https://dl.yarnpkg.com/debian/pubkey.gpg
-    state: present
-
-- name: Ajout du dépôt APT Yarn
-  apt_repository:
-    repo: deb https://dl.yarnpkg.com/debian/ stable main
-    filename: yarn
-    state: present
-
-- name: Installation de Yarn
-  package:
-    name: yarn
-    state: present
