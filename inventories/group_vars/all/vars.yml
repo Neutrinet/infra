@@ -1,9 +1,5 @@
 mail_notification: hub-infra@neutrinet.be
 
-acme_enabled: true
-acme_account_email: "{{ mail_notification }}"
-acme_directory_url: https://acme-v02.api.letsencrypt.org/directory
-
 users:
   - name: tharyrok
     shell: /bin/zsh
