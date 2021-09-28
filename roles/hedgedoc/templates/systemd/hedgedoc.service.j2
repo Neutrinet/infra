@@ -9,7 +9,7 @@ Type=exec
 Environment=NODE_ENV=production
 Restart=always
 RestartSec=2s
-ExecStart=/usr/bin/yarn start --production
+ExecStart=/usr/bin/npm start --production
 CapabilityBoundingSet=
 NoNewPrivileges=true
 PrivateDevices=true
@@ -36,8 +36,6 @@ SystemCallFilter=@system-service
 User={{ hedgedoc_owner }}
 Group={{ hedgedoc_owner }}
 WorkingDirectory=/var/www/{{ hedgedoc_owner }}/dist
-
-# ReadWritePaths=/var/www/{{ hedgedoc_owner }}/.cache/yarn
 
 [Install]
 WantedBy=multi-user.target
