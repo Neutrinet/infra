@@ -9,7 +9,7 @@
   tags: ['user']
 
 - name: Configuration de la base de données PostgreSQL
-  import_tasks: postgresql.yml
+  import_tasks: postgresql/main.yml
   tags: ['postgres']
 
 - name: Installation de Hedgedoc

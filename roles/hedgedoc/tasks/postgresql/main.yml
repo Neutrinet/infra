@@ -1,0 +1,22 @@
+- name: Détection du serveur PostgreSQL primaire
+  import_tasks: postgresql/primary.yml
+  when: postgresql_cluster_hosts | length > 0
+
+- name: Création de la base de données PostgreSQL
+  community.postgresql.postgresql_db:
+    name: hedgedoc
+    state: present
+  become_user: postgres
+  delegate_to: "{{ postgresql_host | default(omit) }}"
+  tags: ['postgres']
+
+- name: Création de l'utilisateur PostgreSQL {{ hedgedoc_owner }}
+  community.postgresql.postgresql_user:
+    db: hedgedoc
+    name: "{{ hedgedoc_owner }}"
+    password: "{{ hedgedoc_postgresql_password }}"
+    priv: ALL
+  become_user: postgres
+  delegate_to: "{{ postgresql_host | default(omit) }}"
+  no_log: true
+  tags: ['postgres']
