@@ -1,0 +1,12 @@
+---
+# Déploiement de Hedgedoc
+- hosts: hedgedoc
+  become: true
+
+  pre_tasks:
+    - name: Update cache
+      apt:
+        update_cache: true
+
+  roles:
+    - hedgedoc
