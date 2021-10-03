@@ -98,6 +98,13 @@ haproxy:
     target_port: 80
     healthcheck: false
 
+  - hostname: doc.neutrinet.be
+    target:
+      - hedgedoc.patata.louise.neutri.net
+    target_port: 3000
+    healthcheck: true
+    healthcheck_url: "HEAD /status"
+
 haproxy_redirect:
   - from: www.neutrinet.be
     to: neutrinet.be

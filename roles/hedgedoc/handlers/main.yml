@@ -1,0 +1,8 @@
+- name: reload systemd
+  systemd:
+    daemon_reload: true
+
+- name: restart hedgedoc
+  service:
+    name: hedgedoc
+    state: restarted
