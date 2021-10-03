@@ -1,0 +1,46 @@
+{
+    "production": {
+        "domain": "{{ hedgedoc_domain }}",
+        "allowOrigins": ["localhost", "{{ hedgedoc_domain }}"],
+        "loglevel": "info",
+        "hsts": {
+            "enable": true,
+            "maxAgeSeconds": 31536000,
+            "includeSubdomains": true,
+            "preload": true
+        },
+        "csp": {
+            "enable": true,
+            "directives": {},
+            "upgradeInsecureRequests": "auto",
+            "addDefaults": true,
+            "addDisqus": false,
+            "addGoogleAnalytics": false,
+            "allowFraming": false,
+            "allowPDFEmbed": false
+        },
+        "cookiePolicy": "lax",
+        "db": {
+            "username": "{{ hedgedoc_database_username }}",
+            "password": {{ hedgedoc_database_password | to_json }},
+            "database": "hedgedoc",
+            "host": "localhost",
+            "port": "5432",
+            "dialect": "postgres"
+        },
+{% if hedgedoc_s3_enabled %}
+        "s3bucket": "hedgedoc",
+        "imageUploadType": "minio",
+        "minio": {
+            "endpoint": "{{ hedgedoc_s3_host }}",
+            "port": {{ hedgedoc_s3_port | int }},
+            "accessKey": "{{ hedgedoc_s3_access_key }}",
+            "secretKey": "{{ hedgedoc_s3_secret_key }}",
+            "secure": true
+        },
+{% endif %}
+        "allowAnonymous": true,
+        "allowFreeURL": true,
+        "email": false {# disable mail login and registrations #}
+    }
+}

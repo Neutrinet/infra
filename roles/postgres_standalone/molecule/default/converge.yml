@@ -3,7 +3,7 @@
   hosts: all
   become: true
   vars:
-    ansible_ssh_pipelining: yes
+    ansible_ssh_pipelining: true
 
   roles:
     - postgres_standalone

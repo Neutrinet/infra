@@ -1,0 +1,41 @@
+[Unit]
+Description=HedgeDoc - The best platform to write and share markdown.
+Documentation=https://docs.hedgedoc.org/
+After=network.target
+After=postgresql.service
+
+[Service]
+Type=exec
+Environment=NODE_ENV=production
+Restart=always
+RestartSec=2s
+ExecStart=/usr/bin/npm start --production
+CapabilityBoundingSet=
+NoNewPrivileges=true
+PrivateDevices=true
+RemoveIPC=true
+LockPersonality=true
+ProtectControlGroups=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=noaccess
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+
+# You may have to adjust these settings
+User={{ hedgedoc_owner }}
+Group={{ hedgedoc_owner }}
+WorkingDirectory=/var/www/{{ hedgedoc_owner }}/dist
+
+[Install]
+WantedBy=multi-user.target
