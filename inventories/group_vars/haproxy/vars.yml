@@ -1,9 +1,8 @@
-letsencrypt:
-  dns_gandi_api_key: "{{ vault_dns_gandi_api_key }}"
-  dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"
-  staging: false
-  domains_gandi:
-    - neutrinet.be
+letsencrypt_dns_gandi_api_key: "{{ vault_dns_gandi_api_key }}"
+letsencrypt_dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"
+letsencrypt_staging: false
+letsencrypt_domains_gandi:
+  - neutrinet.be
 
 haproxy:
   - hostname: neutrinet.be

@@ -2,6 +2,8 @@ telegraf_username: telegraf
 telegraf_password: neutrinet
 telegraf_prometheus_client_listen_address: localhost
 
+letsencrypt_domains_gandi: []
+haproxy_redirect: []
 haproxy:
   - hostname: "{{ ansible_fqdn }}"
     target:
