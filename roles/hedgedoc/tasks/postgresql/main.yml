@@ -7,7 +7,7 @@
     name: hedgedoc
     state: present
   become_user: postgres
-  delegate_to: "{{ postgresql_host | default(omit) }}"
+  delegate_to: "{{ postgresql_primary_host | default(omit) }}"
   tags: ['postgres']
 
 - name: Création de l'utilisateur PostgreSQL {{ hedgedoc_owner }}
@@ -17,6 +17,6 @@
     password: "{{ hedgedoc_postgresql_password }}"
     priv: ALL
   become_user: postgres
-  delegate_to: "{{ postgresql_host | default(omit) }}"
+  delegate_to: "{{ postgresql_primary_host | default(omit) }}"
   no_log: true
   tags: ['postgres']

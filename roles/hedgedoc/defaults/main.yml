@@ -3,6 +3,8 @@ hedgedoc_owner: "{{ hedgedoc_domain | replace('.', '-') }}"
 hedgedoc_version: 1.9.0
 
 postgresql_cluster_hosts: []
+postgresql_host: localhost
+
 hedgedoc_postgresql_password: neutrinet
 
 hedgedoc_s3_enabled: false

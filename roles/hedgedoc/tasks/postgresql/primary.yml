@@ -2,10 +2,10 @@
   uri:
     url: http://localhost:8008/primary
     status_code: [200, 503]
-  delegate_to: "{{ postgresql_host }}"
+  delegate_to: "{{ host }}"
   loop: "{{ postgresql_cluster_hosts }}"
   loop_control:
-    loop_var: postgresql_host
+    loop_var: host
   register: _postgresql_cluster_primary
 
 - name: Énumération des serveurs PostgreSQL primaires détectés
@@ -23,4 +23,4 @@
 
 - name: Définition du serveur PostgreSQL primaire
   set_fact:
-    postgresql_host: "{{ postgresql_primary_hosts | first }}"
+    postgresql_primary_host: "{{ postgresql_primary_hosts | first }}"

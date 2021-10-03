@@ -24,7 +24,7 @@
             "username": "{{ hedgedoc_owner }}",
             "password": {{ hedgedoc_postgresql_password | to_json }},
             "database": "hedgedoc",
-            "host": "localhost",
+            "host": "{{ postgresql_host }}",
             "port": "5432",
             "dialect": "postgres"
         },
