@@ -23,7 +23,7 @@
         "db": {
             "username": "{{ hedgedoc_owner }}",
             "password": {{ hedgedoc_postgresql_password | to_json }},
-            "database": "hedgedoc",
+            "database": "{{ hedgedoc_owner }}",
             "host": "{{ postgresql_host }}",
             "port": "5432",
             "dialect": "postgres"

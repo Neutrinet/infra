@@ -4,7 +4,7 @@
 
 - name: Création de la base de données PostgreSQL
   community.postgresql.postgresql_db:
-    name: hedgedoc
+    name: "{{ hedgedoc_owner }}"
     state: present
   become_user: postgres
   delegate_to: "{{ postgresql_primary_host | default(inventory_hostname) }}"
@@ -12,7 +12,7 @@
 
 - name: Création de l'utilisateur PostgreSQL {{ hedgedoc_owner }}
   community.postgresql.postgresql_user:
-    db: hedgedoc
+    db: "{{ hedgedoc_owner }}"
     name: "{{ hedgedoc_owner }}"
     password: "{{ hedgedoc_postgresql_password }}"
     priv: ALL
