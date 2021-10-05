@@ -15,3 +15,14 @@
 - name: Installation de Hedgedoc
   import_tasks: hedgedoc.yml
   tags: ['hedgedoc']
+
+- name: Installation des plugins Telegraf
+  template:
+    src: telegraf/hedgedoc.conf.j2
+    dest: /etc/telegraf/telegraf.d/{{ hedgedoc_owner }}.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: restart telegraf
+  tags: ['telegraf']
