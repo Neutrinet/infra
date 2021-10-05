@@ -1,4 +1,3 @@
 backoffice_domain: cube.example.com
 backoffice_ffdnapi_domain: ffdnapi.example.com
-backoffice_postgres_username: "{{ web_app_owner }}"
-backoffice_postgres_password: neutrinet
+backoffice_postgresql_password: neutrinet

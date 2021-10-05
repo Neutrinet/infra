@@ -1,4 +1,4 @@
 backoffice_domain: cube.neutrinet.be
 backoffice_ffdnapi_domain: ffdnapi.neutrinet.be
 
-backoffice_postgres_password: "{{ vault_backoffice_postgres_password }}"
+backoffice_postgresql_password: "{{ vault_backoffice_postgresql_password }}"
