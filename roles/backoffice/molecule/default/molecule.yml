@@ -10,7 +10,7 @@ platforms:
     cpu: 2
     memory: 512
     interfaces:
-      - network_name: prsuivate_network
+      - network_name: private_network
         type: dhcp
         auto_config: true
 provisioner:
