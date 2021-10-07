@@ -5,3 +5,5 @@ web_static_domains:
     template: caddy/wikijs.j2
   - name: realms-wiki.neutrinet.be
     template: caddy/realms-wiki.j2
+  - name: wiki.labriqueinter.net
+    template: caddy/dokuwiki.j2
