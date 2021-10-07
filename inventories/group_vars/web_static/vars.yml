@@ -2,8 +2,10 @@ web_static_domains:
   - name: mediawiki.neutrinet.be
     template: caddy/mediawiki.j2
   - name: wikijs.neutrinet.be
-    template: caddy/wikijs.j2
+    template: caddy/static.j2
   - name: realms-wiki.neutrinet.be
     template: caddy/realms-wiki.j2
   - name: wiki.labriqueinter.net
     template: caddy/dokuwiki.j2
+  - name: labriqueinter.net
+    template: caddy/static.j2
