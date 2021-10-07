@@ -5,6 +5,23 @@ http://{{ web_app_domain }} {
     encode gzip
     file_server
 
+    @question_mark {
+        expression {uri}.contains('?')
+    }
+    redir @question_mark {path}%3F{query} permanent
+
+    @javascript {
+        path /lib/exe/jquery.php*
+        path /lib/exe/js.php*
+    }
+    handle @javascript {
+        header Content-Type application/javascript
+    }
+
+    handle /lib/exe/css.php* {
+        header Content-Type text/css
+    }
+
     log {
         output file {{ web_app_caddy_log | to_json }}
     }
