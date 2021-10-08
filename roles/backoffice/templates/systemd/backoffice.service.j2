@@ -8,6 +8,8 @@ Type=simple
 Restart=always
 RestartSec=2s
 ExecStart={{ web_app_dist_dir }}/env/bin/gunicorn backoffice.wsgi:application -b '[::]:5005' --workers=2
+ExecReload = /bin/kill -s HUP $MAINPID
+ExecStop = /bin/kill -s TERM $MAINPID
 
 User={{ web_app_owner }}
 Group={{ web_app_owner }}
