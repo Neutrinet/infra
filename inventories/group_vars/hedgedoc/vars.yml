@@ -1,6 +1,5 @@
 hedgedoc_domain: doc.neutrinet.be
-postgresql_cluster_hosts: "{{ groups.postgresql }}"
-postgresql_host: haproxy-01.patata.louise.neutri.net
+
 hedgedoc_postgresql_password: "{{ vault_hedgedoc_postgresql_password }}"
 
 hedgedoc_s3_enabled: true

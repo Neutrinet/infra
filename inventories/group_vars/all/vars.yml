@@ -1,5 +1,8 @@
 mail_notification: hub-infra@neutrinet.be
 
+postgresql_cluster_hosts: "{{ groups.postgresql }}"
+postgresql_host: haproxy-01.patata.louise.neutri.net
+
 users:
   - name: tharyrok
     shell: /bin/zsh
