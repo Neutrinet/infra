@@ -13,6 +13,11 @@
         name: acl
         state: present
 
+    - name: Installation de Git
+      package:
+        name: git
+        state: present
+
   roles:
     - telegraf
     - postgres_standalone

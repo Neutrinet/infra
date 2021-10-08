@@ -1,3 +1,11 @@
 backoffice_domain: cube.example.com
 backoffice_ffdnapi_domain: ffdnapi.example.com
+
 backoffice_postgresql_password: neutrinet
+
+backoffice_secret_key: neutrinet
+
+backoffice_smtp_host: localhost
+backoffice_smtp_port: 25
+backoffice_smtp_username: ""
+backoffice_smtp_password: ""
