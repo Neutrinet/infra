@@ -1,6 +1,9 @@
 backoffice_domain: cube.example.com
 backoffice_ffdnapi_domain: ffdnapi.example.com
 
+postgresql_cluster_hosts: []
+postgresql_host: localhost
+
 backoffice_postgresql_password: neutrinet
 
 backoffice_secret_key: neutrinet
