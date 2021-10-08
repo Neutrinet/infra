@@ -1,1 +1,2 @@
 nextcloud_domain: files.neutrinet.be
+nextcloud_postgresql_password: "{{ vault_nextcloud_postgresql_password }}"
