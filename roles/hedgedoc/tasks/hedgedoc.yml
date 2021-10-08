@@ -51,8 +51,16 @@
     state: link
   notify: restart hedgedoc
 
-- name: Démarrage du serveur Hedgedoc
+- name: Activation de Hedgedoc au démarrage
   service:
     name: hedgedoc
     state: started
     enabled: true
+
+- name: Vérication que le serveur Hedgedoc est prêt
+  uri:
+    url: http://localhost:3000/status
+  register: _hedgedoc_server_status
+  retries: 10
+  delay: 3
+  until: _hedgedoc_server_status is success
