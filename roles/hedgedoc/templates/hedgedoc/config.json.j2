@@ -21,10 +21,10 @@
         },
         "cookiePolicy": "lax",
         "db": {
-            "username": "{{ hedgedoc_database_username }}",
-            "password": {{ hedgedoc_database_password | to_json }},
-            "database": "hedgedoc",
-            "host": "localhost",
+            "username": "{{ hedgedoc_owner }}",
+            "password": {{ hedgedoc_postgresql_password | to_json }},
+            "database": "{{ hedgedoc_owner }}",
+            "host": "{{ postgresql_host }}",
             "port": "5432",
             "dialect": "postgres"
         },
