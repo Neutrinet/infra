@@ -1,6 +1,6 @@
 web_static_domains:
   - name: wikijs.example.com
-    template: caddy/wikijs.j2
+    template: caddy/static.j2
   - name: mediawiki.example.com
     template: caddy/mediawiki.j2
   - name: realms-wiki.example.com
