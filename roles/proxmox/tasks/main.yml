@@ -1,0 +1,52 @@
+---
+- name: Installation de Ceph
+  import_role:
+    name: ceph
+  tags: ['ceph']
+
+- name: Ajout du dépôt APT proxmox
+  apt_repository:
+    repo: "deb http://download.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-no-subscription"
+    filename: pve-install-repo
+    state: present
+
+- name: Vérification si Proxmox est installé
+  stat:
+    path: /etc/pve
+  register: _proxmox_config_dir
+
+- name: Configuration de l'exporteur InfluxDB de Proxmox
+  copy:
+    src: status.cfg
+    dest: /etc/pve/status.cfg
+    owner: root
+    group: www-data
+    mode: "u=rw,g=r,o="
+
+- name: Ajout de l'utilisateur telegraf au sudoers
+  user:
+    name: telegraf
+    groups: disk
+    append: true
+  notify: restart telegraf
+  tags: ['telegraf_config']
+
+- name: Permission à l'utilisateur d'exécuter certaines commandes sudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^telegraf'
+    line: 'telegraf ALL=(ALL) NOPASSWD: /usr/sbin/smartctl, /usr/bin/ipmitool'
+    validate: 'visudo -cf %s'
+  tags: ['sudo']
+
+- name: Installation des plugins Telegraf
+  template:
+    src: telegraf/proxmox.conf.j2
+    dest: /etc/telegraf/telegraf.d/proxmox.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: restart telegraf
+  tags: ['telegraf_config']

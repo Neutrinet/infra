@@ -5,6 +5,9 @@ prometheus_federation_hosts:
 prometheus_telegraf_hosts:
   - "{{ inventory_hostname }}"
   - vpn.neutri.net
+  - topi.louise.neutri.net
+  - nam.louise.neutri.net
+  - bour.louise.neutri.net
 
 letsencrypt_domains_gandi:
   - neutrinet.be
