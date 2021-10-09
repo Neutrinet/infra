@@ -6,7 +6,7 @@
 - import_tasks: motd.yml
   tags: ['motd']
 
-- import_tasks: openssh.yml
+- import_tasks: openssh/main.yml
   tags: ['openssh']
 
 - import_tasks: tools.yml
