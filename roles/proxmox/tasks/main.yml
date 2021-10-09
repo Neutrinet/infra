@@ -10,18 +10,18 @@
     filename: pve-install-repo
     state: present
 
-- name: Vérification si Proxmox est installé
-  stat:
-    path: /etc/pve
-  register: _proxmox_config_dir
-
 - name: Configuration de l'exporteur InfluxDB de Proxmox
-  copy:
-    src: status.cfg
-    dest: /etc/pve/status.cfg
-    owner: root
-    group: www-data
-    mode: "u=rw,g=r,o="
+  # The copy module doesn't work because /etc/pve is a special device
+  # See also: https://github.com/ansible/ansible/issues/70535
+  # Although it didn't work even with unsafe_writes=true in Ansible 2.11.5
+  shell:
+    cmd: |
+      cat > /etc/pve/status.cfg << EOF
+      influxdb: InfluxDB
+      server 127.0.0.1
+      port 8089
+      EFO
+    creates: /etc/pve/status.cfg
 
 - name: Ajout de l'utilisateur telegraf au sudoers
   user:
