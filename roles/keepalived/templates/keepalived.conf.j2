@@ -34,6 +34,7 @@ vrrp_instance VI_1 {
   virtual_router_id {{ keepalived_virtual_router_id | int }}
   virtual_ipaddress {
     {{ keepalived_virtual_ipv4 }}
+    {{ keepalived_virtual_ipv6 }}
   }
 {% if keepalived_vrrp_scripts | length > 0 %}
   track_script {
