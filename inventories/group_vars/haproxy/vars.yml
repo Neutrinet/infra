@@ -116,3 +116,11 @@ haproxy_redirect:
     to: cube.neutrinet.be
   - from: vpn.neutrinet.be
     to: api.neutrinet.be
+
+keepalived_interface: ens18
+keepalived_primary_host: haproxy-01.patata.louise.neutri.net
+keepalived_virtual_ipv4: "10.0.11.10/24"
+keepalived_auth_password: "{{ vault_keepalived_auth_password }}"
+keepalived_vrrp_scripts:
+  - name: check_haproxy
+    cmd: /usr/bin/killall -0 haproxy
