@@ -24,4 +24,3 @@
 - name: Définition du serveur PostgreSQL primaire
   set_fact:
     postgresql_cluster_primary_host: "{{ postgresql_cluster_primary_hosts | first }}"
-    postgresql_db_user_become: ""
