@@ -1,0 +1,45 @@
+{{ ansible_managed | comment }}
+
+global_defs {
+  enable_script_security
+  script_user root
+}
+
+{% for script in keepalived_vrrp_scripts %}
+vrrp_script {{ script.name }} {
+  script {{ script.cmd | string | to_json }}
+  interval 2
+  weight 2
+}
+{% endfor %}
+
+vrrp_instance VI_1 {
+  interface {{ keepalived_interface }}
+
+{% if keepalived_primary_host == inventory_hostname %}
+  state MASTER
+  priority 101
+{% else %}
+  state BACKUP
+  priority 100
+{% endif %}
+
+  authentication {
+      auth_type PASS
+      # Only the first 8 characters are used.
+      auth_pass {{ keepalived_auth_password | string | to_json }}
+  }
+
+  advert_int 1
+  virtual_router_id {{ keepalived_virtual_router_id | int }}
+  virtual_ipaddress {
+    {{ keepalived_virtual_ipv4 }}
+  }
+{% if keepalived_vrrp_scripts | length > 0 %}
+  track_script {
+{% for script in keepalived_vrrp_scripts %}
+    {{ script.name }}
+{% endfor %}
+  }
+{% endif %}
+}
