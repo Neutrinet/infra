@@ -11,7 +11,7 @@ platforms:
     memory: 512
     interfaces:
       - network_name: private_network
-        ip: 172.29.129.2
+        ip: 172.29.129.21
         auto_config: true
   - name: buster-keepalived-02-molecule
     box: debian/buster64
@@ -19,7 +19,7 @@ platforms:
     memory: 512
     interfaces:
       - network_name: private_network
-        ip: 172.29.129.3
+        ip: 172.29.129.22
         auto_config: true
 provisioner:
   name: ansible

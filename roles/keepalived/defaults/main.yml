@@ -1,6 +1,7 @@
 keepalived_interface: eth1
 keepalived_primary_host: "{{ groups.all | first }}"
-keepalived_virtual_ipv4: "172.29.129.1/24"
+keepalived_virtual_ipv4: 172.29.129.20/32
+keepalived_virtual_ipv6: ""
 keepalived_virtual_router_id: 51
 keepalived_auth_password: password
 keepalived_vrrp_scripts: []
