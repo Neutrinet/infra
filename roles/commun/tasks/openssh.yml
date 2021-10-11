@@ -58,8 +58,15 @@
   when: ssh_obsolete_moduli.changed
   notify: restart ssh
 
-- name: Configuration du serveur OpenSSH pour {{ ansible_distribution_release }}
-  include_tasks: openssh/{{ ansible_distribution_release }}.yml
+- name: Copie du fichier de configuration du serveur OpenSSH
+  template:
+    src: sshd/sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: 'sshd -t -f %s'
+  notify: restart ssh
 
 - name: Activation du service SSH au démarrage
   service:

@@ -4,12 +4,17 @@
 # See the sshd_config(5) manpage for details
 # https://infosec.mozilla.org/guidelines/openssh.html
 
+
 # What ports, IPs and protocols we listen for
 Port 22
+# Use these options to restrict which interfaces/protocols sshd will bind to
+#ListenAddress ::
+#ListenAddress 0.0.0.0
 Protocol 2
-
 # HostKeys for protocol version 2
 HostKey /etc/ssh/ssh_host_rsa_key
+#HostKey /etc/ssh/ssh_host_dsa_key
+#HostKey /etc/ssh/ssh_host_ecdsa_key
 HostKey /etc/ssh/ssh_host_ed25519_key
 
 # Logging
@@ -42,6 +47,16 @@ ChallengeResponseAuthentication no
 
 # Change to no to disable tunnelled clear text passwords
 PasswordAuthentication no
+
+# Kerberos options
+#KerberosAuthentication no
+#KerberosGetAFSToken no
+#KerberosOrLocalPasswd yes
+#KerberosTicketCleanup yes
+
+# GSSAPI options
+#GSSAPIAuthentication no
+#GSSAPICleanupCredentials yes
 
 # Cipher selection
 KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
@@ -79,5 +94,5 @@ UsePAM {{ ssh_use_pam | ternary('yes','no') }}
 UseDNS no
 MaxAuthTries 1
 
-Match Group users
+Match group users
     MaxAuthTries 6
