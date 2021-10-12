@@ -13,7 +13,8 @@ vrrp_script {{ script.name }} {
 }
 {% endfor %}
 
-vrrp_instance VI_1 {
+{% if keepalived_virtual_ipv4 and keepalived_ipv4_addresses | length > 0 %}
+vrrp_instance VI_ipv4 {
   interface {{ keepalived_interface }}
   state BACKUP
   priority 100
@@ -23,13 +24,35 @@ vrrp_instance VI_1 {
 {% for ipv4 in keepalived_ipv4_addresses if ipv4 not in ansible_all_ipv4_addresses %}
     {{ ipv4 }}
 {% endfor %}
+  }
+  virtual_router_id {{ keepalived_virtual_router_id | int }}
+  virtual_ipaddress {
+    {{ keepalived_virtual_ipv4 }}
+  }
+{% if keepalived_vrrp_scripts | length > 0 %}
+  track_script {
+{% for script in keepalived_vrrp_scripts %}
+    {{ script.name }}
+{% endfor %}
+  }
+{% endif %}
+}
+{% endif %}
+
+{% if keepalived_virtual_ipv6 and keepalived_ipv6_addresses | length > 0 %}
+vrrp_instance VI_ipv6 {
+  interface {{ keepalived_interface }}
+  state BACKUP
+  priority 100
+  advert_int 1
+
+  unicast_peer {
 {% for ipv6 in keepalived_ipv6_addresses if ipv6 not in ansible_all_ipv6_addresses %}
     {{ ipv6 }}
 {% endfor %}
   }
   virtual_router_id {{ keepalived_virtual_router_id | int }}
   virtual_ipaddress {
-    {{ keepalived_virtual_ipv4 }}
     {{ keepalived_virtual_ipv6 }}
   }
 {% if keepalived_vrrp_scripts | length > 0 %}
@@ -40,3 +63,4 @@ vrrp_instance VI_1 {
   }
 {% endif %}
 }
+{% endif %}
