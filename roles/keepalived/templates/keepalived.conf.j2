@@ -17,8 +17,16 @@ vrrp_instance VI_1 {
   interface {{ keepalived_interface }}
   state BACKUP
   priority 100
-
   advert_int 1
+
+  unicast_peer {
+{% for ipv4 in keepalived_ipv4_addresses if ipv4 not in ansible_all_ipv4_addresses %}
+    {{ ipv4 }}
+{% endfor %}
+{% for ipv6 in keepalived_ipv6_addresses if ipv6 not in ansible_all_ipv6_addresses %}
+    {{ ipv6 }}
+{% endfor %}
+  }
   virtual_router_id {{ keepalived_virtual_router_id | int }}
   virtual_ipaddress {
     {{ keepalived_virtual_ipv4 }}
