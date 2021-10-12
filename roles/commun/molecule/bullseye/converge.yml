@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    # https://gitlab.domainepublic.net/Neutrinet/infra/-/issues/40
+    ssh_use_pam: true
+
+  roles:
+    - commun

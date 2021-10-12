@@ -5,7 +5,7 @@
   ansible.builtin.package:
     name:
       - zsh
-      - python-pygments
+      - python3-pygments
       - safe-rm
 
 - name: Copie des fichiers de configuration de zsh
