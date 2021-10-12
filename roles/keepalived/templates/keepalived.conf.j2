@@ -15,20 +15,8 @@ vrrp_script {{ script.name }} {
 
 vrrp_instance VI_1 {
   interface {{ keepalived_interface }}
-
-{% if keepalived_primary_host == inventory_hostname %}
-  state MASTER
-  priority 101
-{% else %}
   state BACKUP
   priority 100
-{% endif %}
-
-  authentication {
-      auth_type PASS
-      # Only the first 8 characters are used.
-      auth_pass {{ keepalived_auth_password | string | to_json }}
-  }
 
   advert_int 1
   virtual_router_id {{ keepalived_virtual_router_id | int }}
