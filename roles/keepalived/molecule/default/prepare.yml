@@ -7,6 +7,3 @@
     - name: Mise à jour du cache APT
       apt:
         update_cache: true
-
-  roles:
-    - telegraf

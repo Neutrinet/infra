@@ -1,0 +1,9 @@
+keepalived_interface: eth1
+keepalived_virtual_ipv4: 172.29.129.20/32
+keepalived_virtual_ipv6: ""
+keepalived_virtual_router_id: 51
+keepalived_vrrp_scripts: []
+keepalived_ipv4_addresses:
+  - 172.129.29.21
+  - 172.129.29.22
+keepalived_ipv6_addresses: []
