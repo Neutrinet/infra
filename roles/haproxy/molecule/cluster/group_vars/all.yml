@@ -1,8 +1,10 @@
 keepalived_vrrp_scripts:
   - name: check_haproxy
     cmd: /usr/bin/killall -0 haproxy
-keepalived_virtual_ipv4: 172.29.129.10/32
 keepalived_virtual_router_id: 42
-keepalived_ipv4_addresses:
-  - 172.29.129.11
-  - 172.29.129.12
+keepalived_instances:
+  - vip: 172.29.129.10/32
+    addresses:
+      - 172.29.129.11
+      - 172.29.129.12
+    type: ipv4

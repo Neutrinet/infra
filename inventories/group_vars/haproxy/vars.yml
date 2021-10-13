@@ -118,14 +118,18 @@ haproxy_redirect:
     to: api.neutrinet.be
 
 keepalived_interface: ens18
-keepalived_virtual_ipv4: 10.0.11.10/32
-keepalived_virtual_ipv6: 2001:913:1000:11::10/128
 keepalived_vrrp_scripts:
   - name: check_haproxy
     cmd: /usr/bin/killall -0 haproxy
-keepalived_ipv4_addresses:
-  - 10.0.11.11
-  - 10.0.11.12
-keepalived_ipv6_addresses:
-  - 2001:913:1000:11::11
-  - 2001:913:1000:11::12
+
+keepalived_instances:
+  - vip: 10.0.11.10/32
+    addresses:
+      - 10.0.11.11
+      - 10.0.11.12
+    type: ipv4
+  - vip: 2001:913:1000:11::10/128
+    addresses:
+      - 2001:913:1000:11::11
+      - 2001:913:1000:11::12
+    type: ipv6
