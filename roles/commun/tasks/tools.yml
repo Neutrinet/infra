@@ -25,4 +25,5 @@
       - dbus
       - safe-rm
       - bash-completion
+      - psmisc # provide killall
     state: present
