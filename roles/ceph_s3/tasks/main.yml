@@ -1,22 +1,5 @@
 ---
-- name: Ajout de la clé GPG de ceph proxmox dans APT
-  apt_key:
-    url: "{{ ceph_proxmox_gpg_key_url }}"
-    state: present
-
-- name: Ajout du dépôt APT ceph proxmox
-  apt_repository:
-    repo: "deb http://download.proxmox.com/debian/ceph-{{ ceph_proxmox_version }} {{ ansible_distribution_release }} main"
-    filename: proxmox-ceph
-    state: present
-
-- name: Installation des plugins Telegraf
-  template:
-    src: telegraf/ceph.conf.j2
-    dest: /etc/telegraf/telegraf.d/ceph.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  notify: restart telegraf
-  tags: ['telegraf_config']
+- name: Installation de Ceph
+  import_role:
+    name: ceph
+  tags: ['ceph']

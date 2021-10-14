@@ -17,6 +17,9 @@
     mode: "u=rwx,g=rx,o="
     state: directory
 
+- name: Trigger php-fpm handlers
+  meta: flush_handlers
+
 - name: Installation des plugins Telegraf
   template:
     src: telegraf/php-fpm.conf.j2

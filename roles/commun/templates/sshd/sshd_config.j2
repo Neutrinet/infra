@@ -25,7 +25,7 @@ LogLevel VERBOSE
 
 # Authentication:
 LoginGraceTime 2m
-PermitRootLogin {{ ssh_permit_root_login | ternary('no', 'without-password') }}
+PermitRootLogin {{ ssh_permit_root_login | ternary('without-password', 'no') }}
 StrictModes yes
 
 PubkeyAuthentication yes

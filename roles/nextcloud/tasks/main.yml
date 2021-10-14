@@ -16,9 +16,7 @@
       - gmp
       - imagick
       - intl
-      - json
       - pgsql
-      - redis
 
   tags: ['php_fpm']
 
@@ -27,18 +25,14 @@
     name: web_app
   vars:
     web_app_domain: "{{ nextcloud_domain }}"
-    web_app_caddy_template: "{{ nextcloud_template }}"
+    web_app_caddy_template: caddy/nextcloud.j2
     web_app_php_fpm_enabled: true
   tags: ['web_app']
 
-- name: Installation de PostgreSQL
-  import_tasks: postgres/main.yml
+- name: Configuration de PostgreSQL
+  import_tasks: postgresql.yml
   tags: ['postgres']
 
-- name: Installation de Redis
-  import_tasks: redis/main.yml
-  tags: ['redis']
-
-- name: Installation de Nextcloud
-  import_tasks: nextcloud/main.yml
+- name: Configuration de Nextcloud
+  import_tasks: nextcloud.yml
   tags: ['nextcloud']

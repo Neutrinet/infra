@@ -1,2 +1,0 @@
-ceph_proxmox_version: octopus
-ceph_proxmox_gpg_key_url: https://enterprise.proxmox.com/debian/proxmox-ve-release-6.x.gpg
