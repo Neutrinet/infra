@@ -1,0 +1,56 @@
+{{ ansible_managed | comment }}
+
+DEBUG = False
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = {{ backoffice_secret_key | string | to_json }}
+
+ALLOWED_HOSTS = ['{{ backoffice_domain }}', '{{ backoffice_ffdnapi_domain }}']
+
+STATIC_ROOT = "static_deploy/static"
+
+RAVEN_CONFIG = {}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '{{ web_app_owner }}',
+        'USER': '{{ web_app_owner }}',
+        'PASSWORD': '{{ backoffice_postgresql_password }}'
+    }
+}
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = '{{ backoffice_smtp_host }}'
+EMAIL_HOST_USER = {{ backoffice_smtp_username | string | to_json }}
+EMAIL_HOST_PASSWORD = {{ backoffice_smtp_password | string | to_json }}
+EMAIL_PORT = {{ backoffice_smtp_port | int }}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['console'],
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s '
+                      '%(process)d %(thread)d %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'WARNING',
+            'handlers': ['console'],
+            'propagate': True,
+        }
+    }
+}

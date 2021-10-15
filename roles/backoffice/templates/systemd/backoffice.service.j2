@@ -1,0 +1,46 @@
+[Unit]
+Description=Backoffice - Neutrinet's backoffice, handling cube orders, member listing, accounting and payments
+After=network.target
+After=postgresql.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=2s
+ExecStart={{ web_app_dist_dir }}/env/bin/gunicorn backoffice.wsgi:application -b localhost:5005 --workers=2
+ExecReload = /bin/kill -s HUP $MAINPID
+ExecStop = /bin/kill -s TERM $MAINPID
+
+User={{ web_app_owner }}
+Group={{ web_app_owner }}
+WorkingDirectory={{ web_app_dist_dir }}
+
+
+# Systemd hardening
+PrivateDevices=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+CapabilityBoundingSet=
+NoNewPrivileges=true
+RestrictNamespaces=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+PrivateTmp=true
+PrivateUsers=true
+RemoveIPC=true
+LockPersonality=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target
