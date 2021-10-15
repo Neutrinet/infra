@@ -1,28 +1,27 @@
 {{ ansible_managed | comment }}
 
 # [Member]
-ETCD_NAME="{{ ansible_facts['nodename'] }}"
-ETCD_DATA_DIR="{{ etcd['dir'] }}"
-{% if 'address' in ansible_facts['default_ipv6'] %}
-ETCD_LISTEN_PEER_URLS="http://[{{ ansible_facts['default_ipv6']['address'] }}]:2380"
-ETCD_LISTEN_CLIENT_URLS="http://[{{ ansible_facts['default_ipv6']['address'] }}]:2379,http://localhost:2379"
-{% elif 'address' in ansible_facts['default_ipv4'] %}
-ETCD_LISTEN_PEER_URLS="http://[{{ ansible_facts['default_ipv4']['address'] }}]:2380"
-ETCD_LISTEN_CLIENT_URLS="http://[{{ ansible_facts['default_ipv4']['address'] }}]:2379,http://localhost:2379"
+ETCD_NAME="{{ ansible_facts.nodename }}"
+ETCD_DATA_DIR="{{ etcd_data_dir }}"
+{% if 'ipv6' in etcd_current_member %}
+ETCD_LISTEN_PEER_URLS="http://[{{ etcd_current_member.ipv6 }}]:2380"
+ETCD_LISTEN_CLIENT_URLS="http://[{{ etcd_current_member.ipv6 }}]:2379,http://localhost:2379"
+{% elif 'ipv4' in etcd_current_member %}
+ETCD_LISTEN_PEER_URLS="http://{{ etcd_current_member.ipv4 }}:2380"
+ETCD_LISTEN_CLIENT_URLS="http://{{ etcd_current_member.ipv4 }}:2379,http://localhost:2379"
 {% endif %}
 
 # [Cluster]
-{% if 'address' in ansible_facts['default_ipv6'] %}
-ETCD_INITIAL_ADVERTISE_PEER_URLS="http://[{{ ansible_facts['default_ipv6']['address'] }}]:2380"
-ETCD_ADVERTISE_CLIENT_URLS="http://[{{ ansible_facts['default_ipv6']['address'] }}]:2379"
-{% elif 'address' in ansible_facts['default_ipv4'] %}
-ETCD_INITIAL_ADVERTISE_PEER_URLS="http://{{ ansible_facts['default_ipv4']['address'] }}:2380"
-ETCD_ADVERTISE_CLIENT_URLS="http://{{ ansible_facts['default_ipv4']['address'] }}:2379"
-{% endif %}
-{% if ipv6 in etcd['members'] %}
-ETCD_INITIAL_CLUSTER="{% for member in etcd['members'] %}{{ member['name'] }}=http://[{{ member['ipv6'] }}]:2380{% if not loop.last %},{% endif %}{% endfor %}"
-{% elif ipv4 in etcd['members'] %}
-ETCD_INITIAL_CLUSTER="{% for member in etcd['members'] %}{{ member['name'] }}=http://{{ member['ipv4'] }}:2380{% if not loop.last %},{% endif %}{% endfor %}"
+{% if 'ipv6' in etcd_current_member %}
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://[{{ etcd_current_member.ipv6 }}]:2380"
+ETCD_ADVERTISE_CLIENT_URLS="http://[{{ etcd_current_member.ipv6 }}]:2379"
+{# We assume all members of the cluster have an IPv6 like the current member #}
+ETCD_INITIAL_CLUSTER="{% for member in etcd_members %}{{ member.name }}=http://[{{ member.ipv6 }}]:2380{% if not loop.last %},{% endif %}{% endfor %}"
+{% elif 'ipv4' in etcd_current_member %}
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://{{ etcd_current_member.ipv4 }}:2380"
+ETCD_ADVERTISE_CLIENT_URLS="http://{{ etcd_current_member.ipv4 }}:2379"
+{# We assume all members of the cluster have an IPv4 like the current member #}
+ETCD_INITIAL_CLUSTER="{% for member in etcd_members %}{{ member.name }}=http://{{ member.ipv4 }}:2380{% if not loop.last %},{% endif %}{% endfor %}"
 {% endif %}
 ETCD_INITIAL_CLUSTER_STATE="new"
-ETCD_INITIAL_CLUSTER_TOKEN="{{ etcd['name'] }}"
+ETCD_INITIAL_CLUSTER_TOKEN="{{ etcd_name }}"

@@ -1,10 +1,9 @@
-etcd:
-  name: neutrinet-patroni
-  dir: "/var/lib/etcd/neutrinet-patroni"
-  members:
-    - name: "pgsql-01"
-      ipv6: "2001:913:1000:11::21"
-    - name: "pgsql-02"
-      ipv6: "2001:913:1000:11::22"
-    - name: "pgsql-03"
-      ipv6: "2001:913:1000:11::23"
+etcd_name: neutrinet-patroni
+etcd_data_dir: "/var/lib/etcd/neutrinet-patroni"
+etcd_members:
+  - name: "pgsql-01"
+    ipv6: "2001:913:1000:11::21"
+  - name: "pgsql-02"
+    ipv6: "2001:913:1000:11::22"
+  - name: "pgsql-03"
+    ipv6: "2001:913:1000:11::23"
