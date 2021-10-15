@@ -21,71 +21,16 @@
     mode: "u=rw,go=r"
     validate: caddy validate --adapter caddyfile --config %s
   notify: reload caddy
+  tags: ['caddy_config']
 
-- name: Création de la base de données PostgreSQL
-  community.postgresql.postgresql_db:
-    name: "{{ web_app_owner }}"
-    state: present
-  become_user: postgres
+- name: Configuration de la base de données PostgreSQL
+  import_role:
+    name: postgres_db
+  vars:
+    postgresql_db_name: "{{ web_app_owner }}"
+    postgresql_db_password: "{{ backoffice_postgresql_password }}"
   tags: ['postgres']
 
-- name: Création de l'utilisateur PostgreSQL {{ web_app_owner }}
-  community.postgresql.postgresql_user:
-    db: "{{ web_app_owner }}"
-    name: "{{ web_app_owner }}"
-    password: "{{ backoffice_postgresql_password }}"
-    priv: ALL
-  become_user: postgres
-  no_log: true
-  tags: ['postgres']
-
-- name: Installation de pip2 et ses dépendances
-  package:
-    name:
-      - python-pip
-      - virtualenv
-      - libpq-dev
-    state: present
-
-- name: Récupération du dépôt git de backoffice # noqa git-latest
-  git:
-    repo: https://gitlab.domainepublic.net/Neutrinet/backoffice.git
-    dest: "{{ web_app_dist_dir }}"
-    single_branch: true
-  become_user: "{{ web_app_owner }}"
-  notify: restart backoffice
-
-- name: Configuration de backoffice
-  template:
-    src: backoffice/settings_local.py.j2
-    dest: "{{ web_app_dist_dir }}/backoffice/settings_local.py"
-    owner: "{{ web_app_owner }}"
-    group: "{{ web_app_owner }}"
-    mode: "u=rw,g=r,o="
-  notify: restart backoffice
-
-- name: Création du virtualenv python
-  pip:
-    requirements: "{{ web_app_dist_dir }}/requirements.txt"
-    state: present
-    virtualenv: "{{ web_app_dist_dir }}/env"
-    virtualenv_python: python2
-  become_user: "{{ web_app_owner }}"
-  notify: restart backoffice
-
-- name: Configuration du service systemd
-  template:
-    src: systemd/backoffice.service.j2
-    dest: /etc/systemd/system/backoffice.service
-    owner: root
-    group: root
-    mode: "u=rw,go=r"
-  notify:
-    - reload systemd
-    - restart backoffice
-
-- name: Activation de Backoffice au démarrage
-  service:
-    name: backoffice
-    state: started
-    enabled: true
+- name: Installation de Backoffice
+  import_tasks: backoffice.yml
+  tags: ['backoffice']

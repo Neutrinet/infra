@@ -1,0 +1,3 @@
+postgresql_cluster_hosts: []
+postgresql_db_name: neutrinet
+postgresql_db_password: neutrinet
