@@ -1,7 +1,7 @@
 ---
 
 - name: Installation de etcd
-  apt:
+  package:
     name:
       - etcd
       - etcd-client
