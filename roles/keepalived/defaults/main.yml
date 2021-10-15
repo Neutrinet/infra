@@ -1,0 +1,9 @@
+keepalived_interface: eth1
+keepalived_virtual_router_id: 51
+keepalived_vrrp_scripts: []
+keepalived_instances:
+  - vip: 172.29.129.20/32
+    addresses:
+      - 172.29.129.21
+      - 172.29.129.22
+    type: ipv4

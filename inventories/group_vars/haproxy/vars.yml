@@ -116,3 +116,20 @@ haproxy_redirect:
     to: cube.neutrinet.be
   - from: vpn.neutrinet.be
     to: api.neutrinet.be
+
+keepalived_interface: ens18
+keepalived_vrrp_scripts:
+  - name: check_haproxy
+    cmd: /usr/bin/killall -0 haproxy
+
+keepalived_instances:
+  - vip: 10.0.11.10/32
+    addresses:
+      - 10.0.11.11
+      - 10.0.11.12
+    type: ipv4
+  - vip: 2001:913:1000:11::10/128
+    addresses:
+      - 2001:913:1000:11::11
+      - 2001:913:1000:11::12
+    type: ipv6

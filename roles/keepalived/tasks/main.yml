@@ -1,0 +1,21 @@
+---
+- name: Installation de Keepalived
+  package:
+    name: keepalived
+    state: present
+
+- name: Configuration de Keepalived
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o="
+    validate: keepalived -t -f %s
+  notify: reload keepalived
+
+- name: Activation de Keepalived au démarrage
+  service:
+    name: keepalived
+    state: started
+    enabled: true

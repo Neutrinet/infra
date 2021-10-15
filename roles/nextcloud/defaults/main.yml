@@ -1,64 +1,21 @@
-nextcloud_domain: "{{ inventory_hostname }}.local"
-nextcloud_template: caddy/nextcloud.j2
+nextcloud_domain: files.example.com
 
 nextcloud_hsts_preload_enabled: false
 nextcloud_max_upload_size: 512MB
 
-nextcloud_app_social_enabled: false
-nextcloud_app_user_webfinger_enabled: false
-
-nextcloud_version: latest-20
-nextcloud_upgrade_enabled: true
-nextcloud_gpg_public_key_url: https://nextcloud.com/nextcloud.asc
-nextcloud_checksum_algorithm: sha512
-nextcloud_install_url: https://download.nextcloud.com/server/releases/{{ nextcloud_version }}.tar.bz2
-nextcloud_src_dir: /usr/local/src/nextcloud-{{ nextcloud_version }}
-nextcloud_src_archive: "{{ nextcloud_src_dir }}/{{ nextcloud_install_url | basename }}"
-nextcloud_data_dir: "{{ web_app_dist_dir }}/data"
-nextcloud_import_file: "{{ web_app_dist_dir }}/config/import.json"
-
-nextcloud_postgres_install_enabled: true
-nextcloud_database_driver: pgsql
-nextcloud_database_name: nextcloud
-nextcloud_database_username: nextcloud
-nextcloud_database_password: password
-nextcloud_database_host: localhost
-nextcloud_database_port: 5432
-
-nextcloud_redis_install_enabled: true
-nextcloud_redis_socket: /var/run/redis/redis-server.sock
-nextcloud_redis_host: "{{ nextcloud_redis_socket }}"
-nextcloud_redis_port: 0
-nextcloud_redis_dbindex: 0
-nextcloud_redis_password:
-nextcloud_redis_timeout: "1.5"
-
-nextcloud_memcache_namespace: \OC\Memcache\
-nextcloud_memcache_local: APCu
-nextcloud_memcache_distributed: Redis
-nextcloud_memcache_locking: Redis
+postgresql_host: localhost
+nextcloud_postgresql_password: password
 
 nextcloud_config:
   system:
     trusted_domains:
       0: "{{ nextcloud_domain }}"
     overwrite.cli.url: "https://{{ nextcloud_domain }}"
-    datadirectory: "{{ nextcloud_data_dir }}"
-    dbname: "{{ nextcloud_database_name }}"
-    dbhost: "{{ nextcloud_database_host }}"
-    dbport: "{{ nextcloud_database_port }}"
-    dbuser: "{{ nextcloud_database_username }}"
-    dbpassword: "{{ nextcloud_database_password }}"
-    memcache.local: "{{ nextcloud_memcache_namespace }}{{ nextcloud_memcache_local }}"
-    memcache.distributed: "{{ nextcloud_memcache_namespace }}{{ nextcloud_memcache_distributed }}"
-    memcache.locking: "{{ nextcloud_memcache_namespace }}{{ nextcloud_memcache_locking }}"
-    redis:
-      host: "{{ nextcloud_redis_host }}"
-      port: "{{ nextcloud_redis_port }}"
-      dbindex: "{{ nextcloud_redis_dbindex }}"
-      password: "{{ nextcloud_redis_password }}"
-      timeout: "{{ nextcloud_redis_timeout }}"
-
-nextcloud_admin_email: nextcloud@example.com
-nextcloud_admin_username: admin
-nextcloud_admin_password: password
+    datadirectory: "{{ web_app_dist_dir }}/data"
+    dbname: "{{ web_app_owner }}"
+    dbhost: "{{ postgresql_host }}"
+    dbport: 5432
+    dbuser: "{{ web_app_owner }}"
+    dbpassword: "{{ nextcloud_postgresql_password }}"
+    memcache.local: \OC\Memcache\APCu
+    memcache.distributed: \OC\Memcache\Memcached

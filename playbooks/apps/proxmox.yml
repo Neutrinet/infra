@@ -1,0 +1,12 @@
+---
+# Déploiement des Proxmox
+- hosts: proxmox
+  become: true
+
+  pre_tasks:
+    - name: Update cache
+      apt:
+        update_cache: true
+
+  roles:
+    - proxmox
