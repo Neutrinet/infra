@@ -52,13 +52,16 @@ userlist {{ host.hostname | replace('.', '-') }}-credentials
 {% endfor %}
 
 frontend prometheus-frontend
-   bind localhost:8405
+   bind [::1]:8405
    option dontlog-normal
    http-request use-service prometheus-exporter if { path /metrics }
 
 frontend haproxy-frontend
-    bind :::80 v4v6
-    bind :::443 v4v6 ssl crt /etc/haproxy/ssl alpn h2,http/1.1 allow-0rtt
+{% for ip in haproxy_listen %}
+    bind {{ ip }}:80 v4v6
+    bind {{ ip }}:443 v4v6 ssl crt /etc/haproxy/ssl alpn h2,http/1.1 allow-0rtt
+{% endfor %}
+
     mode http
 
     http-response set-header Strict-Transport-Security max-age=63072000
