@@ -5,7 +5,7 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-patroni-molecule
+  - name: buster-postgres-patroni-molecule
     box: debian/buster64
     cpu: 2
     memory: 512

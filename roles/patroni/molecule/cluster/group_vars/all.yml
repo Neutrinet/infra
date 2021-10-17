@@ -1,7 +1,0 @@
-etcd_members:
-  - name: "buster-patroni-01-molecule"
-    ipv4: 172.29.129.41
-  - name: "buster-patroni-02-molecule"
-    ipv4: 172.29.129.42
-  - name: "buster-patroni-03-molecule"
-    ipv4: 172.29.129.43

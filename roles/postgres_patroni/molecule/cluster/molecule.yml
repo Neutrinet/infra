@@ -5,7 +5,7 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-patroni-01-molecule
+  - name: buster-postgres-patroni-01-molecule
     box: debian/buster64
     cpu: 2
     memory: 512
@@ -13,7 +13,7 @@ platforms:
       - network_name: private_network
         ip: 172.29.129.41
         auto_config: true
-  - name: buster-patroni-02-molecule
+  - name: buster-postgres-patroni-02-molecule
     box: debian/buster64
     cpu: 2
     memory: 512
@@ -21,7 +21,7 @@ platforms:
       - network_name: private_network
         ip: 172.29.129.42
         auto_config: true
-  - name: buster-patroni-03-molecule
+  - name: buster-postgres-patroni-03-molecule
     box: debian/buster64
     cpu: 2
     memory: 512

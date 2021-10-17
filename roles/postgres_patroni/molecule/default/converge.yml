@@ -4,4 +4,4 @@
   become: true
 
   roles:
-    - patroni
+    - postgres_patroni
