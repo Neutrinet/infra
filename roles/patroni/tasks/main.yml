@@ -17,9 +17,6 @@
     name: etcd
   tags: ['etcd']
 
-- name: Trigger etcd handlers
-  meta: flush_handlers
-
 - name: Installation de Patroni
   package:
     name: patroni
@@ -61,6 +58,16 @@
   when: _postgresql_patroni_health.json.role == 'master'
   no_log: true
   tags: ['telegraf_config']
+
+- name: Vérification que l'utilisateur {{ postgresql_monitoring_username }} existe sur les replicas
+  # It can take some time for the user creation to propagate to the replicas
+  community.postgresql.postgresql_info:
+    filter: roles
+  register: _postgresql_roles_info
+  retries: 3
+  delay: 1
+  until: postgresql_monitoring_username in _postgresql_roles_info.roles
+  when: _postgresql_patroni_health.json.role == 'replica'
 
 - name: Installation des plugins Telegraf
   template:
