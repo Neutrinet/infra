@@ -1,0 +1,25 @@
+- name: Détection du serveur PostgreSQL primaire
+  uri:
+    url: http://localhost:8008/health
+  delegate_to: "{{ host }}"
+  loop: "{{ postgresql_patroni_hosts }}"
+  loop_control:
+    loop_var: host
+  register: _postgresql_patroni_health
+
+- name: Énumération des serveurs PostgreSQL primaires détectés
+  set_fact:
+    postgresql_patroni_primary_hosts: >-
+      {{ _postgresql_patroni_health.results
+        | selectattr("role", "==", "master")
+        | map(attribute="host")
+        | list }}
+
+- name: Vérification qu'il n'y a qu'un seul serveur PostgreSQL primaire
+  assert:
+    that: postgresql_patroni_primary_hosts | length == 1
+    fail_msg: "Il ne peut y avoir qu'un seul serveur PostgreSQL primaire, trouvé {{ postgresql_patroni_primary_hosts | length }}"
+
+- name: Définition du serveur PostgreSQL primaire
+  set_fact:
+    postgresql_patroni_primary_host: "{{ postgresql_patroni_primary_hosts | first }}"

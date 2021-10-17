@@ -1,3 +1,10 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from Etcd
+  urls = ["http://localhost:8008/metrics"]
+  metric_version = 2
+
 [[inputs.postgresql]]
   address = "postgres://{{ postgresql_monitoring_username }}:{{ postgresql_monitoring_password }}@127.0.0.1/postgres"
   ignored_databases = ["template0", "template1"]

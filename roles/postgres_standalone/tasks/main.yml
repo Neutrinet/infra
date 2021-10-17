@@ -1,44 +1,16 @@
 ---
-# tasks file for postgres_standalone
-
-- name: Installation de GPG
-  package:
-    name:
-      - gpg
-      - gpg-agent
-      - dirmngr
-    state: present
-  tags: ['postgresql_standalone_install']
-
-- name: Ajout de la clé GPG de PostgreSQL
-  apt_key:
-    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
-    state: present
-  tags: ['postgresql_standalone_install']
-
-- name: Ajout du dépôt APT pour PostgreSQL
-  apt_repository:
-    repo: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
-    state: present
-    filename: postgresql
-  tags: ['postgresql_standalone_install']
-
 - name: Installation de PostgreSQL
-  package:
-    name:
-      - postgresql-{{ postgresql_standalone_major_version }}
-      - postgresql-client-{{ postgresql_standalone_major_version }}
-      - python3-psycopg2
-    state: present
-  tags: ['postgresql_standalone_install']
+  import_role:
+    name: postgres
+  tags: ['postgresql_install']
 
-- name: Création de l'utilisateur PostgreSQL "{{ postgresql_standalone_user_monitoring }}"
+- name: Création de l'utilisateur PostgreSQL "{{ postgresql_monitoring_username }}"
   community.postgresql.postgresql_user:
-    name: "{{ postgresql_standalone_user_monitoring }}"
-    password: "{{ postgresql_standalone_password_monitoring }}"
+    name: "{{ postgresql_monitoring_username }}"
+    password: "{{ postgresql_monitoring_password }}"
     groups:
       - pg_monitor
-  become_user: "{{ postgresql_standalone_user_become }}"
+  become_user: postgres
   no_log: true
   tags: ['telegraf_config']
 
@@ -55,7 +27,6 @@
 
 - name: Activation de PostgreSQL au démarrage
   service:
-    name: postgresql@{{ postgresql_standalone_major_version }}-{{ postgresql_standalone_default_cluster_name }}
-    state: started
+    name: postgresql@{{ postgresql_major_version }}-main
     enabled: true
   tags: ['postgresql_standalone_install']

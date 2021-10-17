@@ -1,5 +1,5 @@
 etcd_name: neutrinet-patroni
 etcd_data_dir: "/var/lib/etcd/neutrinet-patroni"
 etcd_members:
-  - name: "buster-etcd-molecule"
-    ipv6: "::1"
+  - name: "{{ inventory_hostname }}"
+    ipv4: "{{ ansible_default_ipv4.address }}"
