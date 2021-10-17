@@ -3,6 +3,8 @@ letsencrypt_dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"
 letsencrypt_staging: false
 letsencrypt_domains_gandi:
   - neutrinet.be
+  - labriqueinter.net
+  - internetcu.be
 
 haproxy:
   - hostname: neutrinet.be
@@ -105,6 +107,13 @@ haproxy:
     healthcheck: true
     healthcheck_url: "HEAD /status"
 
+  - hostname: wiki.labriqueinter.net
+    target:
+      - web-static.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: GET /healthcheck
+
 haproxy_redirect:
   - from: www.neutrinet.be
     to: neutrinet.be
@@ -116,6 +125,8 @@ haproxy_redirect:
     to: cube.neutrinet.be
   - from: vpn.neutrinet.be
     to: api.neutrinet.be
+  - from: wiki.internetcu.be
+    to: wiki.labriqueinter.net
 
 keepalived_interface: ens18
 keepalived_vrrp_scripts:
