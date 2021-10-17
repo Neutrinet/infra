@@ -7,7 +7,6 @@
 - name: Création de l'utilisateur PostgreSQL "{{ postgresql_monitoring_username }}"
   community.postgresql.postgresql_user:
     name: "{{ postgresql_monitoring_username }}"
-    password: "{{ postgresql_monitoring_password }}"
     groups:
       - pg_monitor
   become_user: postgres

@@ -53,7 +53,7 @@ postgresql:
   bin_dir: /usr/lib/postgresql/{{ postgresql_major_version }}/bin
   authentication:
     replication:
-      username: replicator
-      password: test
+      username: {{ postgresql_patroni_replication_username | string | to_json }}
+      password: {{ postgresql_patroni_replication_password | string | to_json }}
     superuser:
       username: postgres

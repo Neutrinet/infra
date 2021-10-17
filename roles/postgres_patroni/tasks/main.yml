@@ -26,9 +26,9 @@
   template:
     src: config.yml.j2
     dest: /etc/patroni/config.yml
-    owner: root
-    group: root
-    mode: "u=rw,go=r"
+    owner: postgres
+    group: postgres
+    mode: "u=rw,g=r,o="
     validate: patroni --validate-config %s
   vars:
     patroni_current_member: "{{ etcd_members | selectattr('name', '==', inventory_hostname) | first }}"
@@ -51,7 +51,6 @@
 - name: Création de l'utilisateur PostgreSQL "{{ postgresql_monitoring_username }}"
   community.postgresql.postgresql_user:
     name: "{{ postgresql_monitoring_username }}"
-    password: "{{ postgresql_monitoring_password }}"
     groups:
       - pg_monitor
   become_user: postgres

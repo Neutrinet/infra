@@ -2,4 +2,4 @@ postgresql_patroni_name: neutrinet-patroni
 
 postgresql_monitoring_username: telegraf
 postgresql_patroni_replication_username: replicator
-postgresql_patroni_replication_password: neutrinet
+postgresql_patroni_replication_password: "{{ vault_postgresql_patroni_replication_password }}"
