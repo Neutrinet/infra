@@ -4,9 +4,9 @@
     name: postgres
   tags: ['postgresql_install']
 
-- name: Création de l'utilisateur PostgreSQL "{{ postgresql_monitoring_username }}"
+- name: Création de l'utilisateur PostgreSQL telegraf
   community.postgresql.postgresql_user:
-    name: "{{ postgresql_monitoring_username }}"
+    name: telegraf
     groups:
       - pg_monitor
   become_user: postgres

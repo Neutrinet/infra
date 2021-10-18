@@ -6,5 +6,5 @@
   metric_version = 2
 
 [[inputs.postgresql]]
-  address = "user={{ postgresql_monitoring_username }} dbname=postgres"
+  address = "user=telegraf dbname=postgres"
   ignored_databases = ["template0", "template1"]
