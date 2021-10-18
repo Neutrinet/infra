@@ -58,16 +58,6 @@
   no_log: true
   tags: ['telegraf_config']
 
-- name: Vérification que l'utilisateur {{ postgresql_monitoring_username }} existe sur les replicas
-  # It can take some time for the user creation to propagate to the replicas
-  community.postgresql.postgresql_info:
-    filter: roles
-  register: _postgresql_roles_info
-  retries: 3
-  delay: 1
-  until: postgresql_monitoring_username in _postgresql_roles_info.roles
-  when: _postgresql_patroni_health.json.role == 'replica'
-
 - name: Installation des plugins Telegraf
   template:
     src: telegraf/patroni.conf.j2
@@ -75,6 +65,8 @@
     owner: telegraf
     group: telegraf
     mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
+    # We don't validate because PostgreSQL expects the user telegraf to connect to the database
+    # but the validation is made as root, so it doesn't work.
+    # validate: telegraf --config %s --test
   notify: restart telegraf
   tags: ['telegraf_config']

@@ -20,7 +20,9 @@
     owner: telegraf
     group: telegraf
     mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
+    # We don't validate because PostgreSQL expects the user telegraf to connect to the database
+    # but the validation is made as root, so it doesn't work.
+    # validate: telegraf --config %s --test
   notify: restart telegraf
   tags: ['telegraf_config']
 
