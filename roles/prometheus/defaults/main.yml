@@ -3,3 +3,4 @@ prometheus_federation_hosts:
 prometheus_telegraf_hosts: "{{ groups.all }}"
 prometheus_username: prometheus
 prometheus_password: neutrinet
+prometheus_storage_retention: 1y

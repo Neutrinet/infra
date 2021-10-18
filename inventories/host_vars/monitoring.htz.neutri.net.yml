@@ -8,6 +8,7 @@ prometheus_telegraf_hosts:
   - topi.louise.neutri.net
   - nam.louise.neutri.net
   - bour.louise.neutri.net
+prometheus_storage_retention: 1y
 
 letsencrypt_domains_gandi:
   - neutrinet.be
