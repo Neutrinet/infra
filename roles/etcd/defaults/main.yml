@@ -1,6 +1,5 @@
-etcd:
-  name: neutrinet-patroni
-  dir: "/var/lib/etcd/neutrinet-patroni"
-  members:
-    - name: "buster-etcd-molecule"
-      ipv6: "::1"
+etcd_name: neutrinet-patroni
+etcd_data_dir: "/var/lib/etcd/neutrinet-patroni"
+etcd_members:
+  - name: "buster-etcd-molecule"
+    ipv6: "::1"

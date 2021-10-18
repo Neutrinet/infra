@@ -1,7 +1,7 @@
 ---
 
 - name: Installation de etcd
-  apt:
+  package:
     name:
       - etcd
       - etcd-client
@@ -10,11 +10,13 @@
 
 - name: Config de etcd
   template:
-    dest: /etc/default/etcd
     src: etcd.j2
+    dest: /etc/default/etcd
     owner: root
     group: root
     mode: "u=rw,go=r"
+  vars:
+    etcd_current_member: "{{ etcd_members | map(attribute='name') | select('==', inventory_hostname) | first }}"
   notify: restart etcd
 
 - name: Activation de etcd au démarrage
