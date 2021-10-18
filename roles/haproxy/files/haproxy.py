@@ -44,7 +44,7 @@ source_chain = lineage + "/fullchain.pem"
 
 # HAproxy requires to combine the key and chain in one .pem file
 # Open a file descriptor to handle permissions. See https://stackoverflow.com/a/45368120
-deploy_fd = os.open(deploy_path, os.O_CREAT | os.O_WRONLY, 0o640)
+deploy_fd = os.open(deploy_path, os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o640)
 with os.fdopen(deploy_fd, "w") as deploy, \
         open(source_key, "r") as key, \
         open(source_chain, "r") as chain:
