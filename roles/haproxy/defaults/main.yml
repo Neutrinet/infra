@@ -32,3 +32,6 @@ haproxy:
 haproxy_redirect:
   - from: www.neutrinet.be
     to: neutrinet.be
+
+haproxy_postgresql:
+  - postgresql.example.com

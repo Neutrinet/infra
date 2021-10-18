@@ -4,6 +4,7 @@ telegraf_prometheus_client_listen_address: localhost
 
 letsencrypt_domains_gandi: []
 haproxy_redirect: []
+haproxy_postgresql: []
 haproxy:
   - hostname: "{{ ansible_fqdn }}"
     target:

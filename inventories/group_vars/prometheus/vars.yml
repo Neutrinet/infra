@@ -11,6 +11,7 @@ letsencrypt_staging: false
 letsencrypt_domains_gandi:
   - neutri.net
 
+haproxy_postgresql: []
 haproxy_redirect: []
 haproxy:
   - hostname: "{{ ansible_fqdn }}"
