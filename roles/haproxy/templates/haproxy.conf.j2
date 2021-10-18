@@ -101,7 +101,7 @@ listen postgresql-primary
     option httpchk
     http-check OPTIONS /read-write
     default-server on-marked-down shutdown-sessions
-{% for target in postgresql_patroni_hosts %}
+{% for target in haproxy_postgresql %}
     server {{ target | replace('.', '-') }} {{ target }}:5432 check port 8008
 {% endfor %}
 
@@ -110,7 +110,7 @@ listen postgresql-replica
     option httpchk
     http-check OPTIONS /read-only
     default-server on-marked-down shutdown-sessions
-{% for target in postgresql_patroni_hosts %}
+{% for target in haproxy_postgresql %}
     server {{ target | replace('.', '-') }} {{ target }}:5432 check port 8008
 {% endfor %}
 {% endif %}
