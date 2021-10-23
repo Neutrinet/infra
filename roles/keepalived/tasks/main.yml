@@ -22,9 +22,9 @@
     sysctl_set: true
     state: present
     reload: true
-    loop:
-      - ipv4
-      - ipv6
+  loop:
+    - ipv4
+    - ipv6
 
 - name: Activation de Keepalived au démarrage
   service:
