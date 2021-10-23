@@ -1,3 +1,8 @@
+- name: restart ceph-mgr
+  service:
+    name: ceph-mgr.target
+    state: restarted
+
 - name: restart telegraf
   service:
     name: telegraf
