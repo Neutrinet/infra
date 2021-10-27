@@ -129,9 +129,9 @@ haproxy_redirect:
     to: wiki.labriqueinter.net
 
 haproxy_postgresql:
-  - psql-01.patata.louise.neutri.net
-  - psql-02.patata.louise.neutri.net
-  - psql-03.patata.louise.neutri.net
+  - pgsql-01.patata.louise.neutri.net
+  - pgsql-02.patata.louise.neutri.net
+  - pgsql-03.patata.louise.neutri.net
 
 keepalived_interface: ens18
 keepalived_vrrp_scripts:

@@ -1,4 +1,6 @@
-- hosts: etcd
+---
+# Déploiement du cluster Patroni pour PostgreSQL
+- hosts: postgres_patroni
   become: true
 
   pre_tasks:
@@ -8,4 +10,4 @@
         cache_valid_time: 3600
 
   roles:
-    - etcd
+    - postgres_patroni
