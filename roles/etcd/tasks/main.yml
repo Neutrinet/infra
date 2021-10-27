@@ -7,7 +7,7 @@
     group: root
     mode: "u=rw,go=r"
   vars:
-    etcd_current_member: "{{ etcd_members | selectattr('name', '==', inventory_hostname) | first }}"
+    etcd_current_member: "{{ etcd_members | selectattr('name', '==', ansible_hostname) | first }}"
   notify: restart etcd
 
 - name: Installation de etcd

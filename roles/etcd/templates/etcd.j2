@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
 # [Member]
-ETCD_NAME="{{ ansible_facts.nodename }}"
+ETCD_NAME="{{ ansible_hostname }}"
 ETCD_DATA_DIR="{{ etcd_data_dir }}"
 {% if 'ipv6' in etcd_current_member %}
 ETCD_LISTEN_PEER_URLS="http://[{{ etcd_current_member.ipv6 }}]:2380"

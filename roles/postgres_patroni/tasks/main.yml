@@ -31,7 +31,7 @@
     mode: "u=rw,g=r,o="
     validate: patroni --validate-config %s
   vars:
-    patroni_current_member: "{{ etcd_members | selectattr('name', '==', inventory_hostname) | first }}"
+    patroni_current_member: "{{ etcd_members | selectattr('name', '==', ansible_hostname) | first }}"
   notify: reload patroni
 
 - name: Activation de Patroni au démarrage
