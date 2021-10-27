@@ -1,13 +1,4 @@
 ---
-
-- name: Installation de etcd
-  package:
-    name:
-      - etcd
-      - etcd-client
-      - etcd-server
-    state: present
-
 - name: Config de etcd
   template:
     src: etcd.j2
@@ -16,8 +7,16 @@
     group: root
     mode: "u=rw,go=r"
   vars:
-    etcd_current_member: "{{ etcd_members | map(attribute='name') | select('==', inventory_hostname) | first }}"
+    etcd_current_member: "{{ etcd_members | selectattr('name', '==', inventory_hostname) | first }}"
   notify: restart etcd
+
+- name: Installation de etcd
+  package:
+    name:
+      - etcd
+      - etcd-client
+      - etcd-server
+    state: present
 
 - name: Activation de etcd au démarrage
   service:

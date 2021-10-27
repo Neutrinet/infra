@@ -8,11 +8,6 @@
       apt:
         update_cache: true
 
-    - name: Installation des ACL
-      package:
-        name: acl
-        state: present
-
     - name: Installation de Git
       package:
         name: git

@@ -1,4 +1,3 @@
-
 - name: Installation de pip2 et ses dépendances
   package:
     name:
@@ -7,7 +6,7 @@
       - libpq-dev
     state: present
 
-- name: Récupération du dépôt git de backoffice # noqa git-latest
+- name: Récupération du dépôt git de backoffice  # noqa git-latest
   git:
     repo: https://gitlab.domainepublic.net/Neutrinet/backoffice.git
     dest: "{{ web_app_dist_dir }}"

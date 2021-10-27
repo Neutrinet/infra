@@ -1,0 +1,59 @@
+{{ ansible_managed | comment }}
+
+scope: "{{ postgresql_major_version }}-{{ postgresql_patroni_name }}"
+name: "{{ inventory_hostname }}"
+
+restapi:
+  listen: "[::]:8008"
+{% if 'ipv6' in patroni_current_member %}
+  connect_address: "[{{ patroni_current_member.ipv6 }}]:8008"
+{% elif 'ipv4' in patroni_current_member %}
+  connect_address: "{{ patroni_current_member.ipv4 }}:8008"
+{% endif %}
+
+etcd:
+  host: 127.0.0.1:2379
+  protocol: http
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    master_start_timeout: 300
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        wal_keep_segments: 100
+
+  initdb:
+    - encoding: UTF8
+    - data-checksums
+
+  pg_hba:
+    - host all all 0.0.0.0/0 md5
+{% for member in etcd_members %}
+{% if 'ipv6' in member %}
+    - host replication replicator {{ member.ipv6 }}/128 md5
+{% elif 'ipv4' in member %}
+    - host replication replicator {{ member.ipv4 }}/32 md5
+{% endif %}
+{% endfor %}
+
+postgresql:
+  listen: "*:5432"
+{% if 'ipv6' in patroni_current_member %}
+  connect_address: "[{{ patroni_current_member.ipv6 }}]:5432"
+{% elif 'ipv4' in patroni_current_member %}
+  connect_address: "{{ patroni_current_member.ipv4 }}:5432"
+{% endif %}
+  data_dir: /var/lib/postgresql/{{ postgresql_major_version }}-{{ postgresql_patroni_name }}
+  bin_dir: /usr/lib/postgresql/{{ postgresql_major_version }}/bin
+  authentication:
+    replication:
+      username: {{ postgresql_patroni_replication_username | string | to_json }}
+      password: {{ postgresql_patroni_replication_password | string | to_json }}
+    superuser:
+      username: postgres

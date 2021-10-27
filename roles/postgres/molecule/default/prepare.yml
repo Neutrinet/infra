@@ -8,12 +8,7 @@
       apt:
         update_cache: true
 
-    - name: Installation de Git
+    - name: Installation de GPG
       package:
-        name: git
+        name: gpg
         state: present
-
-  roles:
-    - telegraf
-    - haproxy
-    - postgres_standalone

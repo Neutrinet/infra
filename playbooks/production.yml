@@ -2,10 +2,10 @@
 
 - import_playbook: apps/debian_commun.yml
 - import_playbook: apps/haproxy.yml
+- import_playbook: apps/postgres_patroni.yml
 - import_playbook: apps/web_static.yml
 - import_playbook: apps/ceph_s3.yml
 - import_playbook: apps/grav.yml
 - import_playbook: apps/dokuwiki.yml
 - import_playbook: apps/probe.yml
 - import_playbook: apps/prometheus.yml
-- import_playbook: apps/etcd.yml

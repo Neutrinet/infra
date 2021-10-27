@@ -1,0 +1,40 @@
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+platforms:
+  - name: buster-postgres-patroni-01-molecule
+    box: debian/buster64
+    cpu: 2
+    memory: 512
+    interfaces:
+      - network_name: private_network
+        ip: 172.29.129.41
+        auto_config: true
+  - name: buster-postgres-patroni-02-molecule
+    box: debian/buster64
+    cpu: 2
+    memory: 512
+    interfaces:
+      - network_name: private_network
+        ip: 172.29.129.42
+        auto_config: true
+  - name: buster-postgres-patroni-03-molecule
+    box: debian/buster64
+    cpu: 2
+    memory: 512
+    interfaces:
+      - network_name: private_network
+        ip: 172.29.129.43
+        auto_config: true
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: /usr/bin/python3
+    ssh_connection:
+      pipelining: true
+verifier:
+  name: ansible

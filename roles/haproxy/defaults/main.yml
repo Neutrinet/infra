@@ -33,5 +33,7 @@ haproxy_redirect:
   - from: www.neutrinet.be
     to: neutrinet.be
 
+haproxy_postgresql:
+  - psql.neutrinet.be
 haproxy_listen:
   - "[::]"

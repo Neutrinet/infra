@@ -1,4 +1,5 @@
 haproxy_redirect: []
+haproxy_postgresql: []
 haproxy:
   - hostname: doc.example.com
     target:

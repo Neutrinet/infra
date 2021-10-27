@@ -1,3 +1,8 @@
+postgresql_patroni_name: neutrinet-patroni
+
+postgresql_patroni_replication_username: replicator
+postgresql_patroni_replication_password: "{{ vault_postgresql_patroni_replication_password }}"
+
 etcd_name: neutrinet-patroni
 etcd_data_dir: "/var/lib/etcd/neutrinet-patroni"
 etcd_members:

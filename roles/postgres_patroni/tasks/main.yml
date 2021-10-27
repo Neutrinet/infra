@@ -1,0 +1,72 @@
+---
+
+- name: Installation de PostgreSQL
+  import_role:
+    name: postgres
+  tags: ['postgresql']
+
+- name: Désactivation du serveur PostgreSQL par défaut
+  service:
+    name: postgresql
+    state: stopped
+    enabled: false
+  tags: ['postgresql']
+
+- name: Installation de Etcd
+  import_role:
+    name: etcd
+  tags: ['etcd']
+
+- name: Installation de Patroni
+  package:
+    name: patroni
+    state: present
+
+- name: Configuration de Patroni
+  template:
+    src: config.yml.j2
+    dest: /etc/patroni/config.yml
+    owner: postgres
+    group: postgres
+    mode: "u=rw,g=r,o="
+    validate: patroni --validate-config %s
+  vars:
+    patroni_current_member: "{{ etcd_members | selectattr('name', '==', inventory_hostname) | first }}"
+  notify: reload patroni
+
+- name: Activation de Patroni au démarrage
+  service:
+    name: patroni
+    state: started
+    enabled: true
+
+- name: Vérification que le cluster Patroni est prêt
+  uri:
+    url: http://localhost:8008/health
+  register: _postgresql_patroni_health
+  retries: 10
+  delay: 3
+  until: _postgresql_patroni_health is success
+
+- name: Création de l'utilisateur PostgreSQL telegraf
+  community.postgresql.postgresql_user:
+    name: telegraf
+    groups:
+      - pg_monitor
+  become_user: postgres
+  when: _postgresql_patroni_health.json.role == 'master'
+  no_log: true
+  tags: ['telegraf_config']
+
+- name: Installation des plugins Telegraf
+  template:
+    src: telegraf/patroni.conf.j2
+    dest: /etc/telegraf/telegraf.d/patroni.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    # We don't validate because PostgreSQL expects the user telegraf to connect to the database
+    # but the validation is made as root, so it doesn't work.
+    # validate: telegraf --config %s --test
+  notify: restart telegraf
+  tags: ['telegraf_config']

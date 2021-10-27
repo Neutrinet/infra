@@ -1,0 +1,4 @@
+postgresql_patroni_name: neutrinet-patroni
+
+postgresql_patroni_replication_username: replicator
+postgresql_patroni_replication_password: neutrinet
