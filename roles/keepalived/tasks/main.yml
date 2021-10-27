@@ -14,6 +14,18 @@
     validate: keepalived -t -f %s
   notify: reload keepalived
 
+- name: Autorisation écoute sur l'ip VIP
+  ansible.posix.sysctl:
+    name: "net.{{ item }}.ip_nonlocal_bind"
+    value: '1'
+    sysctl_file: /etc/sysctl.d/80-ip-nonlocal-bind.conf
+    sysctl_set: true
+    state: present
+    reload: true
+  loop:
+    - ipv4
+    - ipv6
+
 - name: Activation de Keepalived au démarrage
   service:
     name: keepalived

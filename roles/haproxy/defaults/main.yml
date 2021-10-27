@@ -35,3 +35,5 @@ haproxy_redirect:
 
 haproxy_postgresql:
   - psql.neutrinet.be
+haproxy_listen:
+  - "[::]"

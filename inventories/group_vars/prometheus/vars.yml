@@ -4,6 +4,7 @@ prometheus_username: prometheus
 prometheus_password: "{{ vault_prometheus_password }}"
 
 prometheus_federation_hosts: []
+prometheus_storage_retention: 2d
 
 letsencrypt_dns_gandi_api_key: "{{ vault_dns_gandi_api_key }}"
 letsencrypt_dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"
