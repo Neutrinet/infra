@@ -1,7 +1,13 @@
 postgresql_patroni_name: neutrinet-patroni
 
+postgresql_patroni_clients:
+  - "2001:913:1000:11::11/128"
+  - "2001:913:1000:11::12/128"
+
 postgresql_patroni_replication_username: replicator
 postgresql_patroni_replication_password: "{{ vault_postgresql_patroni_replication_password }}"
+postgresql_patroni_rewind_username: rewind
+postgresql_patroni_rewind_password: "{{ vault_postgresql_patroni_rewind_password }}"
 
 etcd_name: neutrinet-patroni
 etcd_data_dir: "/var/lib/etcd/neutrinet-patroni"

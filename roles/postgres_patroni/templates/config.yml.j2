@@ -10,6 +10,10 @@ restapi:
 {% elif 'ipv4' in patroni_current_member %}
   connect_address: "{{ patroni_current_member.ipv4 }}:8008"
 {% endif %}
+  allowlist:
+    - "127.0.0.1"
+    - "::1"
+  allowlist_include_members: true
 
 etcd:
   host: 127.0.0.1:2379
@@ -32,28 +36,50 @@ bootstrap:
     - encoding: UTF8
     - data-checksums
 
-  pg_hba:
-    - host all all 0.0.0.0/0 md5
-{% for member in etcd_members %}
-{% if 'ipv6' in member %}
-    - host replication replicator {{ member.ipv6 }}/128 md5
-{% elif 'ipv4' in member %}
-    - host replication replicator {{ member.ipv4 }}/32 md5
-{% endif %}
-{% endfor %}
-
 postgresql:
-  listen: "*:5432"
 {% if 'ipv6' in patroni_current_member %}
+  listen: "[::1,{{ patroni_current_member.ipv6 }}]:5432"
   connect_address: "[{{ patroni_current_member.ipv6 }}]:5432"
 {% elif 'ipv4' in patroni_current_member %}
+  listen: "127.0.0.1,{{ patroni_current_member.ipv4 }}:5432"
   connect_address: "{{ patroni_current_member.ipv4 }}:5432"
 {% endif %}
-  data_dir: /var/lib/postgresql/{{ postgresql_major_version }}-{{ postgresql_patroni_name }}
+  use_unix_socket: true
+
+  data_dir: /var/lib/postgresql/{{ postgresql_major_version }}/{{ postgresql_patroni_name }}
   bin_dir: /usr/lib/postgresql/{{ postgresql_major_version }}/bin
+  pgpass: /var/lib/postgresql/{{ postgresql_major_version }}-{{ postgresql_patroni_name }}.pgpass
+
   authentication:
     replication:
       username: {{ postgresql_patroni_replication_username | string | to_json }}
       password: {{ postgresql_patroni_replication_password | string | to_json }}
     superuser:
       username: postgres
+    rewind:
+      username: {{ postgresql_patroni_rewind_username | string | to_json }}
+      password: {{ postgresql_patroni_rewind_password | string | to_json }}
+
+  pg_hba:
+    - local all         all                     peer
+    - host  all         all        127.0.0.1/32 md5
+    - host  all         all        ::1/128      md5
+    - local replication all                     peer
+    - host  replication all        127.0.0.1/32 md5
+    - host  replication all        ::1/128      md5
+{% for client in postgresql_patroni_clients %}
+    - host  all         all        {{ client }} md5
+{% endfor %}
+{% for member in etcd_members %}
+{% if 'ipv6' in member %}
+    - host  replication replicator {{ member.ipv6 }}/128 md5
+{% elif 'ipv4' in member %}
+    - host  replication replicator {{ member.ipv4 }}/32 md5
+{% endif %}
+{% endfor %}
+
+  parameters:
+    unix_socket_directories: /var/run/postgresql/
+    logging_collector: 'on'
+    log_directory: /var/log/postgresql
+    log_filename: "postgresql-{{ postgresql_major_version }}-{{ postgresql_patroni_name }}.log"
