@@ -1,6 +1,6 @@
 mail_notification: hub-infra@neutrinet.be
 
-postgresql_patroni_hosts: "{{ groups.postgresql }}"
+postgresql_patroni_hosts: "{{ groups.postgres_patroni }}"
 postgresql_host: haproxy-00.patata.louise.neutri.net
 
 users:
