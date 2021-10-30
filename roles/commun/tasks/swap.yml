@@ -1,0 +1,10 @@
+---
+
+- name: Limite usage swap
+  ansible.posix.sysctl:
+    name: "vm.swappiness"
+    value: '10'
+    sysctl_file: /etc/sysctl.d/80-swap.conf
+    sysctl_set: true
+    state: present
+    reload: true

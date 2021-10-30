@@ -19,6 +19,29 @@
     name: ceph
     state: present
 
+- name: Activation de l'exporteur Prometheus de Ceph
+  command: ceph mgr module enable prometheus
+  changed_when: "'already enabled' not in _ceph_module_prometheus_enabled.stderr"
+  register: _ceph_module_prometheus_enabled
+
+- name: Récupération de la config de l'exporteur Prometheus
+  command: ceph config get mgr mgr/prometheus/server_addr
+  changed_when: false
+  register: _ceph_module_prometheus_config
+
+- name: Configuration de l'exporteur Prometheus
+  command: ceph config set mgr mgr/prometheus/server_addr localhost
+  when: _ceph_module_prometheus_config.stdout != 'localhost'
+
+- name: Vérification que l'exporteur Prometheus est prêt
+  uri:
+    url: http://localhost:9283/metrics
+    method: HEAD
+  register: _ceph_module_prometheus
+  retries: 10
+  delay: 2
+  until: _ceph_module_prometheus is success
+
 - name: Installation des plugins Telegraf
   template:
     src: telegraf/ceph.conf.j2
@@ -27,13 +50,5 @@
     group: telegraf
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
-  notify: restart telegraf
-  tags: ['telegraf_config']
-
-- name: Ajout de l'utilisateur telegraf au groupe ceph
-  user:
-    name: telegraf
-    groups: ceph
-    append: true
   notify: restart telegraf
   tags: ['telegraf_config']

@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from Ceph
+  urls = ["http://localhost:9283/metrics"]
+  metric_version = 2
