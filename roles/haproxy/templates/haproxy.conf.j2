@@ -101,6 +101,7 @@ backend {{ host.hostname | replace('.', '-') }}-backend
 {% if haproxy_postgresql | length > 0 %}
 listen postgresql-primary
     bind :::5432 v4v6
+    mode tcp
     option httpchk OPTIONS /read-write
     default-server on-marked-down shutdown-sessions
 {% for target in haproxy_postgresql %}
@@ -109,6 +110,7 @@ listen postgresql-primary
 
 listen postgresql-replica
     bind :::5433 v4v6
+    mode tcp
     option httpchk OPTIONS /read-only
     default-server on-marked-down shutdown-sessions
 {% for target in haproxy_postgresql %}

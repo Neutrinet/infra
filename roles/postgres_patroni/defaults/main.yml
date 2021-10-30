@@ -1,4 +1,9 @@
 postgresql_patroni_name: neutrinet-patroni
 
+postgresql_patroni_clients:
+  - 0.0.0.0/0
+
 postgresql_patroni_replication_username: replicator
 postgresql_patroni_replication_password: neutrinet
+postgresql_patroni_rewind_username: rewind
+postgresql_patroni_rewind_password: neutrinet
