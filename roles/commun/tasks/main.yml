@@ -24,6 +24,9 @@
 - import_tasks: time.yml
   tags: ['time']
 
+- import_tasks: swap.yml
+  tags: ['swap']
+
 - name: Installation de Telegraf
   import_role:
     name: telegraf
