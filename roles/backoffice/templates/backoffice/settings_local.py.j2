@@ -14,6 +14,7 @@ RAVEN_CONFIG = {}
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': '{{ postgresql_host }}',
         'NAME': '{{ web_app_owner }}',
         'USER': '{{ web_app_owner }}',
         'PASSWORD': '{{ backoffice_postgresql_password }}'

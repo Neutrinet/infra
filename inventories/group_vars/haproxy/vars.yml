@@ -44,7 +44,7 @@ haproxy:
 
   - hostname: cube.neutrinet.be
     target:
-      - web.patata.louise.neutri.net
+      - backoffice.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
     healthcheck_url: HEAD /
@@ -52,7 +52,7 @@ haproxy:
 
   - hostname: ffdnapi.neutrinet.be
     target:
-      - web.patata.louise.neutri.net
+      - backoffice.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
     healthcheck_url: HEAD /

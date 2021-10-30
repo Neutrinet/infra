@@ -4,6 +4,8 @@
       - python-pip
       - virtualenv
       - libpq-dev
+      - python-dev
+      - gcc
     state: present
 
 - name: Récupération du dépôt git de backoffice  # noqa git-latest
