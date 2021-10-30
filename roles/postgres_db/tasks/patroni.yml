@@ -11,7 +11,7 @@
   set_fact:
     postgresql_patroni_primary_hosts: >-
       {{ _postgresql_patroni_health.results
-        | selectattr("role", "==", "master")
+        | selectattr("json.role", "==", "master")
         | map(attribute="host")
         | list }}
 
