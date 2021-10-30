@@ -2,6 +2,11 @@
   import_tasks: patroni.yml
   when: postgresql_patroni_hosts | length > 0
 
+- name: Installation des ACL
+  package:
+    name: acl
+    state: present
+
 - name: Création de la base de données PostgreSQL
   community.postgresql.postgresql_db:
     name: "{{ postgresql_db_name }}"
