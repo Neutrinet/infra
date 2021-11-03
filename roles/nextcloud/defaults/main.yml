@@ -1,4 +1,5 @@
 nextcloud_domain: files.example.com
+nextcloud_trusted_proxies: []
 
 nextcloud_hsts_preload_enabled: false
 nextcloud_max_upload_size: 512MB
@@ -6,16 +7,8 @@ nextcloud_max_upload_size: 512MB
 postgresql_host: localhost
 nextcloud_postgresql_password: password
 
-nextcloud_config:
-  system:
-    trusted_domains:
-      0: "{{ nextcloud_domain }}"
-    overwrite.cli.url: "https://{{ nextcloud_domain }}"
-    datadirectory: "{{ web_app_dist_dir }}/data"
-    dbname: "{{ web_app_owner }}"
-    dbhost: "{{ postgresql_host }}"
-    dbport: 5432
-    dbuser: "{{ web_app_owner }}"
-    dbpassword: "{{ nextcloud_postgresql_password }}"
-    memcache.local: \OC\Memcache\APCu
-    memcache.distributed: \OC\Memcache\Memcached
+nextcloud_s3_enabled: false
+nextcloud_s3_host: s3.example.com
+nextcloud_s3_port: 443
+nextcloud_s3_access_key: ""
+nextclodu_s3_secret_key: ""
