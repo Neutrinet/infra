@@ -10,6 +10,7 @@
   vars:
     php_version: "8.0"
     php_extra_modules:
+      - apcu
       - bcmath
       - bz2
       - fileinfo
