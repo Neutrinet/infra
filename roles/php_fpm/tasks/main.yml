@@ -51,6 +51,17 @@
     state: present
   when: "'imagick' in php_extra_modules"
 
+- name: Activation de APCu pour php-cli
+  copy:
+    content: |
+      apc.enabled=1
+      apc.enable_cli=1
+    dest: /etc/php/{{ php_version }}/cli/conf.d/99-apcu.ini
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  when: "'apcu' in php_extra_modules"
+
 - name: Copie de la configuration OPCache
   template:
     src: opcache.ini.j2
