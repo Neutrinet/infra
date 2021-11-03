@@ -38,5 +38,5 @@
   tags: ['postgres']
 
 - name: Configuration de Nextcloud
-  import_tasks: nextcloud.yml
-  tags: ['nextcloud']
+  import_tasks: config.yml
+  tags: ['nextcloud_config']

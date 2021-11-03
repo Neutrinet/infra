@@ -1,8 +1,8 @@
 - name: Copie de la configuration de Nextcloud
-  copy:
-    content: "{{ nextcloud_config | to_json }}"
-    dest: "{{ web_app_dist_dir }}/import.json"
+  template:
+    src: "nextcloud/config.json.j2"
+    dest: "{{ web_app_home_dir }}/import.json"
     owner: "{{ web_app_owner }}"
     group: "{{ web_app_group }}"
     mode: "u=rw,g=r,o="
-  register: _nextcloud_import
+  notify: config nextcloud
