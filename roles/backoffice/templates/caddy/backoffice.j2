@@ -8,7 +8,11 @@ http://{{ backoffice_domain }} {
         file_server
     }
 
-    reverse_proxy localhost:5005
+    reverse_proxy localhost:5005 {
+        transport http {
+            response_header_timeout 2m
+        }
+    }
 
     log {
         output file {{ web_app_caddy_log | to_json }}
