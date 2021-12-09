@@ -1,0 +1,7 @@
+alertmanager_smtp_host: mail.neutri.net
+alertmanager_smtp_port: 587
+alertmanager_smtp_require_tls: true
+alertmanager_smtp_from: alertmanager@neutrinet.be
+alertmanager_smtp_to: alertmanager@neutrinet.be
+alertmanager_smtp_username: alertmanager@neutrinet.be
+alertmanager_smtp_password: "{{ vault_alertmanager_smtp_password }}"
