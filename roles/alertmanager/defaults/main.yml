@@ -5,3 +5,16 @@ alertmanager_smtp_from: alertmanager@example.com
 alertmanager_smtp_to: root@localhost
 alertmanager_smtp_username: ""
 alertmanager_smtp_password: ""
+
+alertmanager_matrix_username: "neutribot-test"
+alertmanager_matrix_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          34383335643538646530393665623666306662346530303532383566616535343338353266373233
+          3035303838326636336539653333613561643565633064660a663334633836313835356133383266
+          39663636363633343634343231373334343064333230333239333430376633313362376531333164
+          6630346434653362370a636435353564363861363138663262353963623162346537313139616132
+          34396536303537613833633534633330386631303561373130313237303936633363326630316237
+          3866626638383930336339626361313565336334616665636536
+alertmanager_matrix_host: matrix.domainepublic.net
+alertmanager_matrix_room: "!wjECRmYYmDbBJcebBt:matrix.domainepublic.net"
+alertmanager_matrix_webhook_url: http://localhost:4050/services/hooks/YWxlcnRtYW5hZ2VyX3NlcnZpY2U
