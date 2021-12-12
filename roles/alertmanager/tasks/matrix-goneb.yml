@@ -114,8 +114,8 @@
   notify: restart matrix-goneb
 
 - name: Configuration du service systemd
-  template:
-    src: systemd/matrix-goneb.service.j2
+  copy:
+    src: systemd/matrix-goneb.service
     dest: /etc/systemd/system/matrix-goneb.service
     owner: root
     group: root
