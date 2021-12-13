@@ -26,7 +26,7 @@ services:
     UserID: "@{{ alertmanager_matrix_username }}:{{ alertmanager_matrix_host }}"
     Config: {}
 
-  - ID: "alertmanager_service"
+  - ID: "{{ alertmanager_matrix_service }}"
     Type: "alertmanager"
     UserID: "@{{ alertmanager_matrix_username }}:{{ alertmanager_matrix_host }}"
     Config:
@@ -34,48 +34,41 @@ services:
       # `/services/hooks/<base64 encoded service ID>`
       # Where in this case "service ID" is "alertmanager_service"
       # Make sure your BASE_URL can be accessed by the Alertmanager instance!
-      webhook_url: "http://localhost:4050/services/hooks/{{ 'alertmanager_service' | b64encode | trim('=') }}"
+      webhook_url: {{ alertmanager_matrix_webhook_url }}
       # Each room will get the notification with the alert rendered with the given template
       rooms:
         "{{ alertmanager_matrix_room }}":
 {% raw %}
           text_template: >-
             {{ range .Alerts -}}
-              {{ if eq .Status "firing" }}
+              {{ if eq .Status "firing" -}}
                 {{ $severity := index .Labels "severity" }}
-                {{ if eq $severity "critical" }}
+                {{- if eq $severity "critical" -}}
                   [🔥 CRITICAL]
-                {{ else if eq $severity "warning" }}
+                {{- else if eq $severity "warning" -}}
                   [⚠️ WARNING]
-                {{ else }}
+                {{- else -}}
                   [🔔️ {{ $severity }}]
-                {{ end }}
-              {{ else }}
+                {{- end -}}
+              {{ else -}}
                 [✅ RESOLVED]
-              {{ end }}
-              {{ index .Labels "alertname" }}: {{ index .Annotations "description" }}
-            {{ end -}}
+              {{- end }} {{ index .Labels "alertname" }}: {{ index .Annotations "description" }}
+            {{- end }}
           html_template: >-
             {{ range .Alerts -}}
-              {{ if eq .Status "firing" }}
+              {{ if eq .Status "firing" -}}
                 {{ $severity := index .Labels "severity" }}
-                {{ if eq $severity "critical" }}
+                {{- if eq $severity "critical" -}}
                   <font color='#dc3545'><b>[🔥 CRITICAL]</b></font>
-                {{ else if eq $severity "warning" }}
+                {{- else if eq $severity "warning" -}}
                   <font color='#ffc107'><b>[⚠️ WARNING]</b></font>
-                {{ else }}
+                {{- else -}}
                   <b>[🔔️ {{ $severity }}]</b>
-                {{ end }}
-              {{ else }}
+                {{- end -}}
+              {{ else -}}
                 <font color='#33cc33'><b>[✅ RESOLVED]</b></font>
-              {{ end }}
-              <a href="{{ .GeneratorURL }}">{{ index .Labels "alertname" }}</a> at
-              {{ if .Labels.host }}
-                {{ index .Labels "host" }}
-              {{ else }}
-                {{ index .Labels "instance" }}
-              {{ end }} ({{ index .Labels "job" }})<br/>
-              {{ index .Annotations "description" }}<br />
-            {{ end -}}
+              {{- end }} <a href="{{ .GeneratorURL }}">{{ index .Labels "alertname" }}</a> ({{ index .Labels "job" }})<br/>
+              {{- index .Annotations "description" }}
+            {{- end }}
 {% endraw %}
           msg_type: "m.text"  # Must be either `m.text` or `m.notice`

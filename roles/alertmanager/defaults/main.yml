@@ -17,3 +17,4 @@ alertmanager_matrix_password: !vault |
           3866626638383930336339626361313565336334616665636536
 alertmanager_matrix_host: matrix.domainepublic.net
 alertmanager_matrix_room: "!wjECRmYYmDbBJcebBt:matrix.domainepublic.net"
+alertmanager_matrix_service: alertmanager_service
