@@ -34,7 +34,7 @@ services:
       # `/services/hooks/<base64 encoded service ID>`
       # Where in this case "service ID" is "alertmanager_service"
       # Make sure your BASE_URL can be accessed by the Alertmanager instance!
-      webhook_url: "{{ alertmanager_matrix_webhook_url }}"
+      webhook_url: "http://localhost:4050/services/hooks/{{ 'alertmanager_service' | b64encode | trim('=') }}"
       # Each room will get the notification with the alert rendered with the given template
       rooms:
         "{{ alertmanager_matrix_room }}":
