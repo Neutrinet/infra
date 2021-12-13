@@ -39,7 +39,43 @@ services:
       rooms:
         "{{ alertmanager_matrix_room }}":
 {% raw %}
-          text_template: "{{range .Alerts -}} [{{ .Status }}] {{index .Labels \"alertname\" }}: {{index .Annotations \"description\"}} {{ end -}}"
-          html_template: "{{range .Alerts -}}  {{ $severity := index .Labels \"severity\" }}    {{ if eq .Status \"firing\" }}      {{ if eq $severity \"critical\"}}        <font color='red'><b>[FIRING - CRITICAL]</b></font>      {{ else if eq $severity \"warning\"}}        <font color='orange'><b>[FIRING - WARNING]</b></font>      {{ else }}        <b>[FIRING - {{ $severity }}]</b>      {{ end }}    {{ else }}      <font color='green'><b>[RESOLVED]</b></font>    {{ end }}  {{ index .Labels \"alertname\"}} : {{ index .Annotations \"description\"}}   <a href=\"{{ .GeneratorURL }}\">source</a><br/>{{end -}}"
-          msg_type: "m.text"  # Must be either `m.text` or `m.notice`
+          text_template: >-
+            {{ range .Alerts -}}
+              {{ if eq .Status "firing" }}
+                {{ $severity := index .Labels "severity" }}
+                {{ if eq $severity "critical" }}
+                  [🔥 CRITICAL]
+                {{ else if eq $severity "warning" }}
+                  [⚠️ WARNING]
+                {{ else }}
+                  [🔔️ {{ $severity }}]
+                {{ end }}
+              {{ else }}
+                [✅ RESOLVED]
+              {{ end }}
+              {{ index .Labels "alertname" }}: {{ index .Annotations "description" }}
+            {{ end -}}
+          html_template: >-
+            {{ range .Alerts -}}
+              {{ if eq .Status "firing" }}
+                {{ $severity := index .Labels "severity" }}
+                {{ if eq $severity "critical" }}
+                  <font color='#dc3545'><b>[🔥 CRITICAL]</b></font>
+                {{ else if eq $severity "warning" }}
+                  <font color='#ffc107'><b>[⚠️ WARNING]</b></font>
+                {{ else }}
+                  <b>[🔔️ {{ $severity }}]</b>
+                {{ end }}
+              {{ else }}
+                <font color='#33cc33'><b>[✅ RESOLVED]</b></font>
+              {{ end }}
+              <a href="{{ .GeneratorURL }}">{{ index .Labels "alertname" }}</a> at
+              {{ if .Labels.host }}
+                {{ index .Labels "host" }}
+              {{ else }}
+                {{ index .Labels "instance" }}
+              {{ end }} ({{ index .Labels "job" }})<br/>
+              {{ index .Annotations "description" }}<br />
+            {{ end -}}
 {% endraw %}
+          msg_type: "m.text"  # Must be either `m.text` or `m.notice`
