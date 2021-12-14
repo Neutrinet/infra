@@ -18,12 +18,12 @@ groups:
         labels:
           severity: critical
         annotations:
-          description: 'Device {{ $labels.device }} mounted on "{{ $labels.path }}" has low disk space (value = {{ humanize $value }}%)'
+          description: 'Device {{ $labels.device }} mounted on "{{ $labels.path }}" has disk usage > 90% (value = {{ humanize $value }}%)'
           summary: 'Disk usage is at {{ humanize $value }}%'
 
       - alert: Disk Full Next Week
         for: 1h
-        expr: disk_used_percent > 80 and on (instance, host, device) (predict_linear(disk_used_percent[2d], 7 * 24 * 3600)) > 100
+        expr: disk_used_percent > 80 and on (instance, host, device) predict_linear(disk_used_percent[2d], 7 * 24 * 3600) > 100
         labels:
           severity: critical
         annotations:
