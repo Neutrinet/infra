@@ -7,7 +7,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          description: 'Instance is down'
+          description: 'Instance {{ $labels.instance }} is down'
           summary: 'Instance is down'
 
   - name: Disk Usage
@@ -18,37 +18,37 @@ groups:
         labels:
           severity: critical
         annotations:
-          description: 'Device {{ $labels.device }} mounted on "{{ $labels.path }}" has low disk space (value = {{ humanize $value }}%)'
+          description: 'Device {{ $labels.device }} mounted on "{{ $labels.path }}" has disk usage > 90% (value = {{ humanize $value }}%)'
           summary: 'Disk usage is at {{ humanize $value }}%'
 
       - alert: Disk Full Next Week
         for: 1h
-        expr: predict_linear(disk_used_percent[2d], 7*24*3600) > 100
+        expr: disk_used_percent > 80 and on (instance, host, device) predict_linear(disk_used_percent[2d], 7 * 24 * 3600) > 100
         labels:
           severity: critical
         annotations:
-          description: 'Based on disk usage from last 2 days, device {{ $labels.device }} mounted on "{{ $labels.path }}" will be full within the week'
-          summary: 'Disk full within the week'
+          description: "Based on disk usage from last 2 days, the {{ $labels.host }} host's device {{ $labels.device }} mounted on "{{ $labels.path }}" will be full within the week (current = {{ humanize $value }}%)"
+          summary: 'Disk full within the week (current = {{ humanize $value }}%)'
 
   - name: Memory Usage
     rules:
       - alert: High Memory Usage
         for: 15m
-        expr: mem_used_percent > 80
+        expr: mem_used_percent > 90
         labels:
           severity: critical
         annotations:
-          description: 'Memory usage is higher than 80%.'
+          description: 'Memory usage is higher than 90% (value = {{ humanize $value }}%)'
           summary: 'Memory usage is at {{ humanize $value }}%'
 
       - alert: Memory Full Next Week
         for: 1h
-        expr: predict_linear(mem_used_percent[2d], 7*24*3600) > 100
+        expr: mem_used_percent > 80 and on (instance, host) predict_linear(mem_used_percent[2d], 7*24*3600) > 100
         labels:
           severity: critical
         annotations:
-          description: 'Based on memory usage from last 2 days, the host will be out of memory within the week'
-          summary: 'Memory full within the week'
+          description: 'Based on memory usage from last 2 days, the host {{ $labels.host }} will be out of memory within the week (current = {{ humanize $value }}%)'
+          summary: 'Memory full within the week (current = {{ humanize $value }}%)'
 
   - name: CPU Usage
     rules:
@@ -58,5 +58,5 @@ groups:
         labels:
           severity: critical
         annotations:
-          description: 'CPU usage is higher than 90%'
+          description: 'CPU usage is higher than 90% (value = {{ humanize $value }}%)'
           summary: 'CPU usage is at {{ humanize $value }}%'
