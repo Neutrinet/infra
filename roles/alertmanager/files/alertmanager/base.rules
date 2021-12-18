@@ -27,7 +27,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          description: "Based on disk usage from last 2 days, the {{ $labels.host }} host's device {{ $labels.device }} mounted on "{{ $labels.path }}" will be full within the week (current = {{ humanize $value }}%)"
+          description: "Based on disk usage from last 2 days, the {{ $labels.host }} host's device {{ $labels.device }} mounted on \"{{ $labels.path }}\" will be full within the week (current = {{ humanize $value }}%)"
           summary: 'Disk full within the week (current = {{ humanize $value }}%)'
 
   - name: Memory Usage
