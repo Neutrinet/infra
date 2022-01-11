@@ -12,8 +12,8 @@ ExecStop = /bin/kill -s TERM $MAINPID
 
 User=matrix-goneb
 Group=matrix-goneb
-WorkingDirectory=/var/www/matrix-goneb/dist
-ReadWritePaths=/var/www/matrix-goneb/dist/db
+WorkingDirectory=/opt/matrix-goneb/dist
+ReadWritePaths=/opt/matrix-goneb/dist/db
 Environment=BIND_ADDRESS=localhost:4050 DATABASE_TYPE=sqlite3 DATABASE_URL=db/go-neb.db?_busy_timeout=5000 BASE_URL=http://localhost:4050 CONFIG_FILE=config.yml
 
 # Systemd hardening

@@ -5,18 +5,10 @@
     go_version: "1.17.5"
   tags: ['go']
 
-- name: Création du dossier /var/www
-  file:
-    path: /var/www
-    owner: root
-    group: root
-    mode: "u=rwx,go=rx"
-    state: directory
-
 - name: Création de l'utilisateur matrix-goneb
   user:
     name: matrix-goneb
-    home: /var/www/matrix-goneb
+    home: /opt/matrix-goneb
     shell: /sbin/nologin
     system: true
     state: present
@@ -29,9 +21,9 @@
     mode: "u=rwx,go=rx"
     state: directory
   loop:
-    - /var/www/matrix-goneb/src
-    - /var/www/matrix-goneb/dist
-    - /var/www/matrix-goneb/dist/db
+    - /opt/matrix-goneb/src
+    - /opt/matrix-goneb/dist
+    - /opt/matrix-goneb/dist/db
   loop_control:
     loop_var: matrix_goneb_dir
 
@@ -39,7 +31,7 @@
   git:
     repo: https://github.com/matrix-org/go-neb.git
     version: master
-    dest: /var/www/matrix-goneb/src
+    dest: /opt/matrix-goneb/src
     single_branch: true
     update: true
   become_user: matrix-goneb
@@ -56,13 +48,13 @@
 - name: Compilation de matrix-goneb # noqa no-handler
   command:
     cmd: "go{{ go_version }} build github.com/matrix-org/go-neb"
-    chdir: /var/www/matrix-goneb/src
+    chdir: /opt/matrix-goneb/src
   become_user: matrix-goneb
   when: _alertmanager_matrix_goneb_repo is changed
 
 - name: Création du lien symbolique pour le binaire matrix-goneb
   file:
-    src: /var/www/matrix-goneb/src/go-neb
+    src: /opt/matrix-goneb/src/go-neb
     dest: /usr/local/bin/matrix-goneb
     owner: matrix-goneb
     group: matrix-goneb
@@ -80,15 +72,15 @@
       password: "{{ alertmanager_matrix_password }}"
       type: m.login.password
     body_format: json
-    creates: /var/www/matrix-goneb/matrix-session.secret
-    dest: /var/www/matrix-goneb/matrix-session.secret
+    creates: /opt/matrix-goneb/matrix-session.secret
+    dest: /opt/matrix-goneb/matrix-session.secret
     owner: matrix-goneb
     group: matrix-goneb
     mode: "u=rw,go="
 
 - name: Récupération des infos de connexion
   slurp:
-    src: /var/www/matrix-goneb/matrix-session.secret
+    src: /opt/matrix-goneb/matrix-session.secret
   register: _alertmanager_matrix_session_encoded
 
 - name: Définition du token et device de l'utilisateur Matrix
@@ -107,7 +99,7 @@
 - name: Configuration de matrix-goneb
   template:
     src: matrix-goneb/config.yml.j2
-    dest: /var/www/matrix-goneb/dist/config.yml
+    dest: /opt/matrix-goneb/dist/config.yml
     owner: matrix-goneb
     group: matrix-goneb
     mode: "u=rw,g=r,o="
