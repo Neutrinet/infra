@@ -18,7 +18,7 @@
     path: /etc/sudoers
     state: present
     regexp: '^webhook'
-    line: 'webhook ALL=({{ webhook_config | selectattr("become_user", "defined") | map(attribute="become_user") | join(",") }}) NOPASSWD: /opt/webhook/scripts/{{ webhook_scripts | map("basename") | join(", ") }}'
+    line: 'webhook ALL=({{ webhook_config | selectattr("become_user", "defined") | map(attribute="become_user") | join(",") }}) NOPASSWD: {% for script in webhook_scripts %}/opt/webhook/scripts/{{ script | basename }}{% if not loop.last %}, {% endif %}{% endfor %}'
     validate: 'visudo -cf %s'
   tags: ['sudo']
 
