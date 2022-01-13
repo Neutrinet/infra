@@ -4,7 +4,7 @@ webhook_config:
     become_user: labriqueinter-net
     script: pull.sh
     working_dir: /var/www/labriqueinter-net/dist
-    token: "{{ vault_webhook_github_pull_token }}"
+    token: "{{ vault_webhook_github_pull_labriqueinter_net_token }}"
 
 webhook_scripts:
   - webhook/scripts/pull.sh
