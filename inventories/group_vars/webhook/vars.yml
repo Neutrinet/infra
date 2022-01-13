@@ -1,5 +1,5 @@
 webhook_config:
-  - name: github-pull
+  - name: github-pull-labriqueinter-net
     type: github
     become_user: labriqueinter-net
     script: pull.sh
