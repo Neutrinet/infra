@@ -1,0 +1,16 @@
+webhook_config:
+  - name: github-pull
+    become_user: github
+    script: pull.sh
+    working_dir: /var/www/github
+    type: github
+    token: github-secret
+  - name: gitlab-pull
+    become_user: gitlab
+    script: pull.sh
+    working_dir: /var/www/gitlab
+    type: gitlab
+    token: gitlab-secret
+
+webhook_scripts:
+  - webhook/scripts/pull.sh

@@ -1,0 +1,87 @@
+---
+- name: Installation de webhook
+  package:
+    name: webhook
+    state: present
+
+- name: Création de l'utilisateur webhook
+  user:
+    name: webhook
+    home: /opt/webhook
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: Permission à l'utilisateur webhook d'exécuter les scripts en tant que d'autres utilisateurs
+  # Required in order to pull the commits as the user who owns the web application
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^webhook'
+    line: 'webhook ALL=({{ webhook_config | selectattr("become_user", "defined") | map(attribute="become_user") | join(",") }}) NOPASSWD: /opt/webhook/scripts/{{ webhook_scripts | map("basename") | join(", ") }}'
+    validate: 'visudo -cf %s'
+  tags: ['sudo']
+
+- name: Création du dossier de configuration
+  file:
+    path: /etc/webhook
+    state: directory
+    owner: webhook
+    group: webhook
+    mode: "u=rwx,g=rx,o="
+
+- name: Création du dossier des scripts
+  file:
+    path: /opt/webhook/scripts
+    state: directory
+    owner: webhook
+    group: webhook
+    mode: "u=rwx,go=rx"
+
+- name: Copie des scripts
+  copy:
+    src: "{{ script }}"
+    dest: /opt/webhook/scripts/{{ script | basename }}
+    owner: webhook
+    group: webhook
+    mode: "u=rwx,go=rx"
+  loop: "{{ webhook_scripts }}"
+  loop_control:
+    loop_var: script
+
+- name: Configuration des webhooks
+  template:
+    src: webhook/config.yml.j2
+    dest: /etc/webhook/{{ webhook.name }}.yml
+    owner: webhook
+    group: webhook
+    mode: "u=rw,g=r,o="
+  loop: "{{ webhook_config }}"
+  loop_control:
+    loop_var: webhook
+    label: "{{ webhook.name }}"
+  notify: reload webhook
+
+- name: Configuration du webhook pour le health check
+  # The webhook server supports health endpoint only from v2.6.10+
+  # Debian buster provides webhook v2.6.9, so we have to wait for bullseye...
+  # Meanwhile, a workaround is to create a dummy hook that always succeed.
+  # See also https://github.com/adnanh/webhook/pull/283
+  copy:
+    src: webhook/health.yml
+    dest: /etc/webhook/health.yml
+    owner: webhook
+    group: webhook
+    mode: "u=rw,g=r,o="
+  notify: reload webhook
+
+- name: Configuration du service systemd
+  template:
+    src: systemd/webhook.service.j2
+    dest: /etc/systemd/system/webhook.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart webhook

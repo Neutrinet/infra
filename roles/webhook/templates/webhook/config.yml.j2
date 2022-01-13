@@ -1,0 +1,35 @@
+- id: "{{ webhook.name }}"
+  execute-command: "/opt/webhook/scripts/{{ webhook.script | basename }}"
+  include-command-output-in-response: true
+  command-working-directory: "{{ webhook.working_dir }}"
+  trigger-rule-mismatch-http-response-code: 401
+  trigger-rule:
+{% if webhook.type == "github" %}
+    and:
+      - match:
+          type: payload-hash-sha256
+          secret: {{ webhook.token | string | to_json }}
+          parameter:
+            source: header
+            name: X-Hub-Signature-256
+      - match:
+          type: value
+          value: push
+          parameter:
+            source: header
+            name: X-GitHub-Event
+{% elif webhook.type == "gitlab" %}
+    and:
+      - match:
+        type: value
+        value: {{ webhook.token | string | to_json }}
+        parameter:
+          source: header
+          name: X-Gitlab-Token
+      - match:
+        type: value
+        value: Push Hook
+        parameter:
+          source: header
+          name: X-Gitlab-Event
+{% endif %}

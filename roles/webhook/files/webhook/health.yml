@@ -1,0 +1,2 @@
+- id: "health"
+  execute-command: "true"

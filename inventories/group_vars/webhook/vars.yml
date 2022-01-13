@@ -1,0 +1,10 @@
+webhook_config:
+  - name: github-pull
+    type: github
+    become_user: labriqueinter-net
+    script: pull.sh
+    working_dir: /var/www/labriqueinter-net/dist
+    token: "{{ vault_webhook_github_pull_token }}"
+
+webhook_scripts:
+  - webhook/scripts/pull.sh
