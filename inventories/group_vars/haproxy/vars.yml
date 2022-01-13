@@ -118,7 +118,7 @@ haproxy:
     target:
       - web-static.patata.louise.neutri.net
     target_port: 9000
-    healthcheck: false
+    healthcheck: true
     healthcheck_url: GET /hooks/health
 
 haproxy_redirect:
