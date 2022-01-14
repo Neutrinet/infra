@@ -13,3 +13,23 @@
       package:
         name: git
         state: present
+
+    - name: Installation des ACL
+      package:
+        name: acl
+        state: present
+
+    - name: Création de l'utilisateur webhook
+      user:
+        name: webhook
+        home: /var/www/webhook
+        shell: /sbin/nologin
+        system: true
+        state: present
+    
+    - name: Récupération du dépôt git de webhook
+      git:
+        repo: https://github.com/adnanh/webhook.git
+        dest: /var/www/webhook/dist
+        single_branch: true
+      become_user: webhook

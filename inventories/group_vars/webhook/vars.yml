@@ -1,10 +1,7 @@
-webhook_config:
-  - name: github-pull-labriqueinter-net
-    type: github
-    become_user: labriqueinter-net
-    script: pull.sh
-    working_dir: /var/www/labriqueinter-net/dist
-    token: "{{ vault_webhook_github_pull_labriqueinter_net_token }}"
-
-webhook_scripts:
-  - webhook/scripts/pull.sh
+webhook_name: github-pull-labriqueinter-net
+webhook_owner: labriqueinter-net
+webhook_group: "{{ webhook_owner }}"
+webhook_script: webhook/scripts/pull.sh
+webhook_working_dir: /var/www/labriqueinter-net/dist
+webhook_token: "{{ vault_webhook_github_pull_labriqueinter_net_token }}"
+webhook_type: github

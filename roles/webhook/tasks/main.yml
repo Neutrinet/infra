@@ -4,74 +4,36 @@
     name: webhook
     state: present
 
-- name: Création de l'utilisateur webhook
-  user:
-    name: webhook
-    home: /opt/webhook
-    shell: /sbin/nologin
-    system: true
-    state: present
-
-- name: Permission à l'utilisateur webhook d'exécuter les scripts en tant que d'autres utilisateurs
-  # Required in order to pull the commits as the user who owns the web application
-  lineinfile:
-    path: /etc/sudoers
-    state: present
-    regexp: '^webhook'
-    line: 'webhook ALL=({{ webhook_config | selectattr("become_user", "defined") | map(attribute="become_user") | join(",") }}) NOPASSWD: {% for script in webhook_scripts %}/opt/webhook/scripts/{{ script | basename }}{% if not loop.last %}, {% endif %}{% endfor %}'
-    validate: 'visudo -cf %s'
-  tags: ['sudo']
-
 - name: Création du dossier de configuration
   file:
     path: /etc/webhook
     state: directory
-    owner: webhook
-    group: webhook
+    owner: "{{ webhook_owner }}"
+    group: "{{ webhook_group }}"
     mode: "u=rwx,g=rx,o="
 
 - name: Création du dossier des scripts
   file:
-    path: /opt/webhook/scripts
+    path: /etc/webhook/scripts
     state: directory
-    owner: webhook
-    group: webhook
+    owner: "{{ webhook_owner }}"
+    group: "{{ webhook_group }}"
     mode: "u=rwx,go=rx"
 
-- name: Copie des scripts
+- name: Copie du script exécuté par le webhook
   copy:
-    src: "{{ script }}"
-    dest: /opt/webhook/scripts/{{ script | basename }}
-    owner: webhook
-    group: webhook
+    src: "{{ webhook_script }}"
+    dest: /etc/webhook/scripts/{{ webhook_script | basename }}
+    owner: "{{ webhook_owner }}"
+    group: "{{ webhook_group }}"
     mode: "u=rwx,go=rx"
-  loop: "{{ webhook_scripts }}"
-  loop_control:
-    loop_var: script
 
-- name: Configuration des webhooks
+- name: Configuration du webhook
   template:
     src: webhook/config.yml.j2
-    dest: /etc/webhook/{{ webhook.name }}.yml
-    owner: webhook
-    group: webhook
-    mode: "u=rw,g=r,o="
-  loop: "{{ webhook_config }}"
-  loop_control:
-    loop_var: webhook
-    label: "{{ webhook.name }}"
-  notify: reload webhook
-
-- name: Configuration du webhook pour le health check
-  # The webhook server supports health endpoint only from v2.6.10+
-  # Debian buster provides webhook v2.6.9, so we have to wait for bullseye...
-  # Meanwhile, a workaround is to create a dummy hook that always succeed.
-  # See also https://github.com/adnanh/webhook/pull/283
-  copy:
-    src: webhook/health.yml
-    dest: /etc/webhook/health.yml
-    owner: webhook
-    group: webhook
+    dest: /etc/webhook/config.yml
+    owner: "{{ webhook_owner }}"
+    group: "{{ webhook_group }}"
     mode: "u=rw,g=r,o="
   notify: reload webhook
 

@@ -7,18 +7,16 @@ After=network.target
 Type=simple
 Restart=always
 RestartSec=2s
-ExecStart=/usr/bin/webhook --verbose --port 9000 --hooks /etc/webhook/health.yml {% for webhook in webhook_config %}--hooks /etc/webhook/{{ webhook.name }}.yml {% endfor %}
+ExecStart=/usr/bin/webhook --verbose --port 9000 --hooks /etc/webhook/config.yml
 
 ExecReload = /bin/kill -s USR1 $MAINPID
 ExecStop = /bin/kill -s TERM $MAINPID
 
-User=webhook
-Group=webhook
+User={{ webhook_owner }}
+Group={{ webhook_group }}
 
 # Systemd hardening
-{% for webhook in webhook_config %}
-ReadWritePaths={{ webhook.working_dir }}
-{% endfor %}
+ReadWritePaths={{ webhook_working_dir }}
 
 PrivateDevices=true
 ProtectControlGroups=true
