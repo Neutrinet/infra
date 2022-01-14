@@ -63,3 +63,7 @@
     mode: "u=rw,go=r"
     validate: promtool check rules %s
   notify: reload prometheus
+
+- name: Installation de matrix-goneb
+  import_tasks: matrix-goneb.yml
+  tags: ['matrix_goneb']
