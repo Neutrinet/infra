@@ -4,5 +4,6 @@ webhook_group: "{{ webhook_owner }}"
 webhook_script: webhook/scripts/pull.sh
 webhook_working_dir: /var/www/webhook/dist
 webhook_token: github-secret
+webhook_git_ref: refs/heads/main
 # Valid types are: github, gitlab
 webhook_type: github
