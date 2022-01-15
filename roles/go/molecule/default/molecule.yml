@@ -5,20 +5,15 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-alertmanager-molecule
+  - name: buster-go-molecule
     box: debian/buster64
     cpu: 2
-    memory: 1024
-    interfaces:
-      - network_name: private_network
-        type: dhcp
-        auto_config: true
+    memory: 512
 provisioner:
   name: ansible
   config_options:
     defaults:
       interpreter_python: /usr/bin/python3
-      vault_password_file: "${MOLECULE_PROJECT_DIRECTORY}/../../vault.key"
     ssh_connection:
       pipelining: true
 verifier:

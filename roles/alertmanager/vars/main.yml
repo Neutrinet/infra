@@ -1,0 +1,1 @@
+alertmanager_matrix_webhook_url: http://localhost:4050/services/hooks/{{ alertmanager_matrix_service | b64encode | trim('=') }}
