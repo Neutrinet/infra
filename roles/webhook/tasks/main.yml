@@ -1,0 +1,49 @@
+---
+- name: Installation de webhook
+  package:
+    name: webhook
+    state: present
+
+- name: Création du dossier de configuration
+  file:
+    path: /etc/webhook
+    state: directory
+    owner: "{{ webhook_owner }}"
+    group: "{{ webhook_group }}"
+    mode: "u=rwx,g=rx,o="
+
+- name: Création du dossier des scripts
+  file:
+    path: /etc/webhook/scripts
+    state: directory
+    owner: "{{ webhook_owner }}"
+    group: "{{ webhook_group }}"
+    mode: "u=rwx,go=rx"
+
+- name: Copie du script exécuté par le webhook
+  copy:
+    src: "{{ webhook_script }}"
+    dest: /etc/webhook/scripts/{{ webhook_script | basename }}
+    owner: "{{ webhook_owner }}"
+    group: "{{ webhook_group }}"
+    mode: "u=rwx,go=rx"
+
+- name: Configuration du webhook
+  template:
+    src: webhook/config.yml.j2
+    dest: /etc/webhook/config.yml
+    owner: "{{ webhook_owner }}"
+    group: "{{ webhook_group }}"
+    mode: "u=rw,g=r,o="
+  notify: reload webhook
+
+- name: Configuration du service systemd
+  template:
+    src: systemd/webhook.service.j2
+    dest: /etc/systemd/system/webhook.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart webhook

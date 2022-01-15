@@ -114,6 +114,13 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
 
+  - hostname: sync.labriqueinter.net
+    target:
+      - web-static.patata.louise.neutri.net
+    target_port: 9000
+    healthcheck: true
+    healthcheck_url: GET /hooks/health
+
 haproxy_redirect:
   - from: www.neutrinet.be
     to: neutrinet.be

@@ -4,6 +4,7 @@
 - import_playbook: apps/haproxy.yml
 - import_playbook: apps/postgres_patroni.yml
 - import_playbook: apps/web_static.yml
+- import_playbook: apps/webhook.yml
 - import_playbook: apps/ceph_s3.yml
 - import_playbook: apps/hedgedoc.yml
 - import_playbook: apps/backoffice.yml

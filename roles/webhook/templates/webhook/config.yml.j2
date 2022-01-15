@@ -1,0 +1,50 @@
+{{ ansible_managed | comment }}
+
+# The webhook server supports health endpoint only from v2.6.10+
+# Debian buster provides webhook v2.6.9, so we have to wait for bullseye...
+# Meanwhile, a workaround is to create a dummy hook that always succeed.
+# See also https://github.com/adnanh/webhook/pull/283
+- id: "health"
+  execute-command: "true"
+
+- id: "{{ webhook_name }}"
+  execute-command: "/etc/webhook/scripts/{{ webhook_script | basename }}"
+  include-command-output-in-response: true
+  command-working-directory: "{{ webhook_working_dir }}"
+  trigger-rule-mismatch-http-response-code: 401
+  trigger-rule:
+    and:
+      - match:
+          type: value
+          value: "{{ webhook_git_ref }}"
+          parameter:
+            source: payload
+            name: ref
+{% if webhook_type == "github" %}
+      - match:
+          type: payload-hash-sha256
+          secret: {{ webhook_token | string | to_json }}
+          parameter:
+            source: header
+            name: X-Hub-Signature-256
+      - match:
+          type: value
+          value: push
+          parameter:
+            source: header
+            name: X-GitHub-Event
+{% elif webhook_type == "gitlab" %}
+    and:
+      - match:
+        type: value
+        value: {{ webhook_token | string | to_json }}
+        parameter:
+          source: header
+          name: X-Gitlab-Token
+      - match:
+        type: value
+        value: Push Hook
+        parameter:
+          source: header
+          name: X-Gitlab-Event
+{% endif %}
