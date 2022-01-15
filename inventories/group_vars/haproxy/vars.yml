@@ -114,6 +114,20 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
 
+  - hostname: labriqueinter.net
+    target:
+      - web-static.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: GET /healthcheck
+
+  - hostname: internetcu.be
+    target:
+      - web-static.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: GET /healthcheck
+
   - hostname: sync.labriqueinter.net
     target:
       - web-static.patata.louise.neutri.net
@@ -134,6 +148,10 @@ haproxy_redirect:
     to: api.neutrinet.be
   - from: wiki.internetcu.be
     to: wiki.labriqueinter.net
+  - from: www.labriqueinter.net
+    to: labriqueinter.net
+  - from: www.internetcu.be
+    to: internetcu.be
 
 haproxy_postgresql:
   - pgsql-01.patata.louise.neutri.net
