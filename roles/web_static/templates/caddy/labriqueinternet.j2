@@ -1,6 +1,8 @@
 {{ ansible_managed | comment }}
 
-http://{{ web_app_domain }} {
+{% for domain in [web_app_domain] + web_app_alt_domains %}
+http://{{ domain }}{% if not loop.last %}, {% endif %}
+{% endfor %} {
     root * {{ web_app_dist_dir | to_json }}
     encode gzip
 

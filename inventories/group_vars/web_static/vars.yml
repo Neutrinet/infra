@@ -8,4 +8,6 @@ web_static_domains:
   - name: wiki.labriqueinter.net
     template: caddy/dokuwiki.j2
   - name: labriqueinter.net
+    alt_domains:
+      - internetcu.be
     template: caddy/labriqueinternet.j2
