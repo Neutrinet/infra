@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+
+http://{{ web_app_domain }} {
+    root * {{ web_app_dist_dir | to_json }}
+    encode gzip
+
+    @browse {
+        path /video*
+        path /files*
+        path /hypercube*
+    }
+    handle @browse {
+        file_server browse
+    }
+    handle {
+        file_server
+    }
+
+    log {
+        output file {{ web_app_caddy_log | to_json }}
+    }
+}
