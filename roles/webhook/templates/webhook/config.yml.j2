@@ -13,38 +13,35 @@
   command-working-directory: "{{ webhook_working_dir }}"
   trigger-rule-mismatch-http-response-code: 401
   trigger-rule:
+    # signature ok AND (event == ping OR (event == push AND ref == correct branch))
     and:
-      - match:
-          type: value
-          value: "{{ webhook_git_ref }}"
-          parameter:
-            source: payload
-            name: ref
-{% if webhook_type == "github" %}
+      # Always check Github signature before doing anything
       - match:
           type: payload-hash-sha256
           secret: {{ webhook_token | string | to_json }}
           parameter:
             source: header
             name: X-Hub-Signature-256
-      - match:
-          type: value
-          value: push
-          parameter:
-            source: header
-            name: X-GitHub-Event
-{% elif webhook_type == "gitlab" %}
-    and:
-      - match:
-        type: value
-        value: {{ webhook_token | string | to_json }}
-        parameter:
-          source: header
-          name: X-Gitlab-Token
-      - match:
-        type: value
-        value: Push Hook
-        parameter:
-          source: header
-          name: X-Gitlab-Event
-{% endif %}
+      - or:
+          # Either accept ping or push events
+          - match:
+              type: value
+              value: ping
+              parameter:
+                source: header
+                name: X-GitHub-Event
+          # If it's a push event...
+          - and:
+              - match:
+                  type: value
+                  value: push
+                  parameter:
+                    source: header
+                    name: X-GitHub-Event
+              # Check also that the webhook is run against the correct branch or tag
+              - match:
+                  type: value
+                  value: "{{ webhook_git_ref }}"
+                  parameter:
+                    source: payload
+                    name: ref
