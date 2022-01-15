@@ -9,12 +9,8 @@ http://{{ web_app_domain }} {
         path /files*
         path /hypercube*
     }
-    handle @browse {
-        file_server browse
-    }
-    handle {
-        file_server
-    }
+    file_server @browse browse
+    file_server
 
     log {
         output file {{ web_app_caddy_log | to_json }}
