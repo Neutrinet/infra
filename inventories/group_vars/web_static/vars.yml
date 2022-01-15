@@ -10,4 +10,5 @@ web_static_domains:
   - name: labriqueinter.net
     alt_domains:
       - internetcu.be
+      - cfacile.labriqueinter.net
     template: caddy/labriqueinternet.j2
