@@ -57,6 +57,9 @@
     state: started
     enabled: true
 
+- name: Trigger Hedgedoc handlers
+  meta: flush_handlers
+
 - name: Vérication que le serveur Hedgedoc est prêt
   uri:
     url: http://localhost:3000/status
