@@ -5,3 +5,7 @@ web_static_domains:
     template: caddy/mediawiki.j2
   - name: realms-wiki.example.com
     template: caddy/realms-wiki.j2
+  - name: brique.example.com
+    alt_domains:
+      - cube.example.com
+    template: caddy/labriqueinternet.j2

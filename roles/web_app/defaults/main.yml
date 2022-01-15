@@ -1,4 +1,5 @@
 web_app_domain: example.com
+web_app_alt_domains: []
 web_app_owner: "{{ web_app_domain | replace('.', '-') }}"
 web_app_group: "{{ web_app_owner }}"
 web_app_www_dir: /var/www
