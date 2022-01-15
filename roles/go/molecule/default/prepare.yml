@@ -7,4 +7,3 @@
     - name: Mise à jour du cache APT
       apt:
         update_cache: true
-        cache_valid_time: 3600
