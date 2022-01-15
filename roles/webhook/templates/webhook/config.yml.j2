@@ -13,7 +13,7 @@
   command-working-directory: "{{ webhook_working_dir }}"
   trigger-rule-mismatch-http-response-code: 401
   trigger-rule:
-    and:      
+    and:
       - match:
           type: value
           value: "{{ webhook_git_ref }}"
