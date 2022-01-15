@@ -1,4 +1,4 @@
-webhook_name: github-pull-labriqueinter-net
+webhook_name: github-pull
 webhook_owner: labriqueinter-net
 webhook_group: "{{ webhook_owner }}"
 webhook_script: webhook/scripts/pull.sh
