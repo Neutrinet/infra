@@ -12,6 +12,15 @@ http://{{ domain }}{% if not loop.last %}, {% endif %}
         path /hypercube*
     }
     file_server @browse browse
+
+    @cfacile {
+        path /
+        host cfacile.{{ web_app_domain }}
+    }
+    file_server @cfacile {
+        index cfacile.html
+    }
+
     file_server
 
     log {
