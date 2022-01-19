@@ -1,0 +1,4 @@
+mattermost_domain: chat.neutrinet.be
+mattermost_version: 5.38.2
+
+mattermost_postgresql_password: "{{ vault_mattermost_postgresql_password }}"

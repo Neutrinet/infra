@@ -1,0 +1,7 @@
+mattermost_domain: chat.example.com
+mattermost_owner: "{{ mattermost_domain | replace('.', '-') }}"
+mattermost_version: 5.38.2
+
+postgresql_host: localhost
+
+mattermost_postgresql_password: neutrinet

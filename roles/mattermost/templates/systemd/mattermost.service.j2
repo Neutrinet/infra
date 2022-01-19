@@ -1,0 +1,23 @@
+[Unit]
+Description=Mattermost
+After=network.target
+{% if postgresql_patroni_hosts | length == 0 %}
+After=postgresql.service
+BindsTo=postgresql.service
+{% endif %}
+
+[Service]
+Type=simple
+ExecStart=/var/www/{{ mattermost_owner }}/dist/bin/mattermost
+Restart=always
+RestartSec=10
+# mattermost is stupid and will return 0 on *error* in addition to on success
+# exit, so let's consider that it should never stop itself
+SuccessExitStatus=
+KillMode=mixed
+WorkingDirectory=/var/www/{{ mattermost_owner }}/dist
+User={{ mattermost_owner }}
+Group={{ mattermost_owner }}
+
+[Install]
+WantedBy=multi-user.target
