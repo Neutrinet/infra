@@ -1,0 +1,13 @@
+- name: reload systemd
+  systemd:
+    daemon_reload: true
+
+- name: restart mattermost
+  service:
+    name: mattermost
+    state: restarted
+
+- name: restart telegraf
+  service:
+    name: telegraf
+    state: restarted
