@@ -72,14 +72,28 @@
     pattern: '^mattermost-[0-9]+\.[0-9]+\.[0-9]+$'
   register: _mattermost_installed_dirs
 
+- name: Récupération de la liste des archives
+  find:
+    path: /usr/local/src
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^mattermost-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _mattermost_archives
+
 - name: Récupération de la plus ancienne version et de la version courante
   set_fact:
+    mattermost_oldest_archive: "{{ mattermost_sorted_archives | first }}"
     mattermost_oldest_install_dir: "{{ mattermost_sorted_install_dirs | first }}"
     mattermost_oldest_version: "{{ mattermost_sorted_versions | first }}"
     mattermost_current_version: |-
       {{ _mattermost_current_install_dir.stat.lnk_source | default('0.0.0')
         | replace(mattermost_install_prefix, '') }}
   vars:
+    mattermost_sorted_archives: |-
+      {{ _mattermost_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
     mattermost_sorted_install_dirs: |-
       {{ _mattermost_installed_dirs.files
         | map(attribute='path')
@@ -170,3 +184,9 @@
     state: absent
     path: "{{ mattermost_oldest_install_dir }}"
   when: _mattermost_installed_dirs.files | length > 5
+
+- name: Suppression de la plus ancienne archive
+  file:
+    state: absent
+    path: "{{ mattermost_oldest_archive }}"
+  when: _mattermost_archives.files | length > 5
