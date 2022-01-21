@@ -60,26 +60,44 @@
 - name: Vérification si Mattermost est déjà installé
   stat:
     path: /var/www/{{ mattermost_owner }}/dist
-    follow: true
-  register: _mattermost_current_install_path
+    follow: false
+  register: _mattermost_current_install_dir
 
-- name: Récupération de la version installée de Mattermost
-  command:
-    cmd: bin/mattermost version --skip-server-start
-    chdir: /var/www/{{ mattermost_owner }}/dist
-  changed_when: false
-  register: _mattermost_current_version
-  when:
-    - _mattermost_current_install_path.stat.exists
-    - _mattermost_current_install_path.stat.isdir
+- name: Récupération de la liste des dossiers d'installation
+  find:
+    path: /var/www/{{ mattermost_owner }}
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^mattermost-[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _mattermost_installed_dirs
 
-- name: Vérification si Mattermost doit être mis à jour
+- name: Récupération de la plus ancienne version et de la version courante
   set_fact:
-    mattermost_update: |-
-      {{ _mattermost_current_version is not skipped
-        and mattermost_version not in _mattermost_current_version.stdout }}
+    mattermost_oldest_install_dir: "{{ mattermost_sorted_install_dirs | first }}"
+    mattermost_oldest_version: "{{ mattermost_sorted_versions | first }}"
+    mattermost_current_version: |-
+      {{ _mattermost_current_install_dir.stat.lnk_source | default('0.0.0')
+        | replace(mattermost_install_prefix, '') }}
+  vars:
+    mattermost_sorted_install_dirs: |-
+      {{ _mattermost_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    mattermost_sorted_versions: |-
+      {{ mattermost_sorted_install_dirs
+        | map('replace', mattermost_install_prefix, '')
+        | list }}
+    mattermost_install_prefix: /var/www/{{ mattermost_owner }}/mattermost-
+
+- name: Vérification que la nouvelle version est plus récente que la version courante
+  assert:
+    that: mattermost_version is version(mattermost_current_version, '>=')
+    msg: "Mattermost v{{ mattermost_version }} < v{{ mattermost_current_version }} (current)!!!"
+    quiet: true
 
 - name: Copie des dossiers de l'installation existante
+  # This must be run only for updates, not for a fresh install.
   synchronize:
     src: /var/www/{{ mattermost_owner }}/dist/{{ directory }}/
     dest: /var/www/{{ mattermost_owner }}/mattermost-{{ mattermost_version }}/{{ directory }}/
@@ -94,7 +112,11 @@
     - client/plugins
   loop_control:
     loop_var: directory
-  when: mattermost_update
+  when:
+    - _mattermost_current_install_dir.stat.exists
+    - _mattermost_current_install_dir.stat.islnk
+    # We ensured in the previous task that the new version isn't older than current version
+    - mattermost_version != mattermost_current_version
 
 - name: Création du lien symbolique vers la dernière version de Mattermost
   file:
@@ -143,24 +165,7 @@
   delay: 3
   until: _mattermost_server_ping is success
 
-- name: Récupération de la liste des dossiers d'installation
-  find:
-    path: /var/www/{{ mattermost_owner }}
-    file_type: directory
-    use_regex: true
-    recurse: false
-    pattern: '^mattermost-[0-9]+\.[0-9]+\.[0-9]+$'
-  register: _mattermost_installed_dirs
-
-- name: Tri des dossiers d'installation par version
-  set_fact:
-    mattermost_oldest_install_dir: |-
-      {{ _mattermost_installed_dirs.files
-        | map(attribute='path')
-        | community.general.version_sort
-        | first }}
-
-- name: Suppression de la plus ancienne installation ({{ mattermost_oldest_install_dir }})
+- name: Suppression de la plus ancienne version (v{{ mattermost_oldest_version }})
   file:
     state: absent
     path: "{{ mattermost_oldest_install_dir }}"
