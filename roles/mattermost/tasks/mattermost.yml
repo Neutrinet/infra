@@ -142,3 +142,26 @@
   retries: 10
   delay: 3
   until: _mattermost_server_ping is success
+
+- name: Récupération de la liste des dossiers d'installation
+  find:
+    path: /var/www/{{ mattermost_owner }}
+    file_type: directory
+    use_regex: true
+    recursive: false
+    pattern: '^mattermost-[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _mattermost_installed_dirs
+
+- name: Tri des dossiers d'installation par version
+  set_fact:
+    mattermost_oldest_version: |-
+      {{ _mattermost_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort
+        | first }}
+
+- name: Suppression de la plus ancienne installation (v{{ mattermost_oldest_version }})
+  file:
+    state: absent
+    path: "{{ mattermost_oldest_version }}"
+  when: _mattermost_installed_dirs.files | length > 5
