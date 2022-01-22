@@ -14,3 +14,7 @@
 - name: Installation de Mattermost
   import_tasks: mattermost.yml
   tags: ['mattermost']
+
+- name: Installation de Matterbridge
+  import_tasks: matterbridge.yml
+  tags: ['matterbridge']

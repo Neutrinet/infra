@@ -5,3 +5,12 @@ mattermost_version: 5.38.2
 postgresql_host: localhost
 
 mattermost_postgresql_password: neutrinet
+
+matterbridge_version: 1.23.2
+matterbridge_mattermost_username: neutribot
+matterbridge_mattermost_password: neutrinet
+matterbridge_mattermost_team: neutrinet
+matterbridge_mattermost_channel: irc
+matterbridge_irc_username: neutribot
+matterbridge_irc_password: neutrinet
+matterbridge_irc_channel: '#neutrinet'

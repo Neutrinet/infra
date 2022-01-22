@@ -1,0 +1,79 @@
+- name: Création de l'utilisateur matterbridge
+  user:
+    name: matterbridge
+    home: /etc/matterbridge
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: Téléchargement du binaire Matterbridge v{{ matterbridge_version }}
+  get_url:
+    url: https://github.com/42wim/matterbridge/releases/download/v{{ matterbridge_version }}/matterbridge-{{ matterbridge_version }}-linux-64bit
+    dest: /opt/matterbridge-{{ matterbridge_version }}
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    checksum: "sha256:https://github.com/42wim/matterbridge/releases/download/v{{ matterbridge_version }}/checksums.txt"
+
+- name: Création du lien symbolique pour le binaire matterbridge
+  file:
+    src: /opt/matterbridge-{{ matterbridge_version }}
+    dest: /usr/local/bin/matterbridge
+    state: link
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+  notify: restart matterbridge
+
+- name: Création du dossier de configuration de Matterbridge
+  file:
+    path: /etc/matterbridge
+    state: directory
+    owner: matterbridge
+    group: matterbridge
+    mode: "u=rwx,g=rx,o="
+
+- name: Configuration de Matterbridge
+  template:
+    src: matterbridge/config.toml.j2
+    dest: /etc/matterbridge/config.toml
+    owner: matterbridge
+    group: matterbridge
+    mode: "u=rw,g=r,o="
+  notify: restart matterbridge
+
+- name: Configuration du service systemd
+  template:
+    src: systemd/matterbridge.service.j2
+    dest: /etc/systemd/system/matterbridge.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart matterbridge
+
+- name: Activation de Matterbridge au démarrage
+  service:
+    name: matterbridge
+    state: started
+    enabled: true
+
+- name: Récupération de la liste des binaires
+  find:
+    path: /opt
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^matterbridge-[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _matterbridge_binaries
+
+- name: Suppression des anciens binaires
+  file:
+    path: "{{ binary.path }}"
+    state: absent
+  loop: "{{ _matterbridge_binaries.files }}"
+  loop_control:
+    loop_var: binary
+    label: "{{ binary.path }}"
+  when: binary.path != '/opt/matterbridge-' + matterbridge_version

@@ -1,0 +1,19 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Matterbridge
+After=network.target
+After=mattermost.service
+Requires=mattermost.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/matterbridge --conf /etc/matterbridge/config.toml
+Restart=always
+RestartSec=10
+WorkingDirectory=/etc/matterbridge
+User=matterbridge
+Group=matterbridge
+
+[Install]
+WantedBy=multi-user.target
