@@ -2,6 +2,7 @@
 
 [general]
 RemoteNickFormat="{PROTOCOL} <{NICK}> "
+IgnoreFailureOnStart={{ matterbridge_ignore_failure | bool | lower }}
 
 [irc]
     [irc.libera]
@@ -18,6 +19,7 @@ RemoteNickFormat="{PROTOCOL} <{NICK}> "
 [mattermost]
     [mattermost.neutrinet]
     Server="localhost:8065"
+    NoTLS=true
     Team="{{ matterbridge_mattermost_team }}"
     Login="{{ matterbridge_mattermost_username }}"
     Password={{ matterbridge_mattermost_password | string | to_json }}

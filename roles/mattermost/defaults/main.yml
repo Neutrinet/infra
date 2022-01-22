@@ -7,6 +7,9 @@ postgresql_host: localhost
 mattermost_postgresql_password: neutrinet
 
 matterbridge_version: 1.23.2
+# Ignore failing bridge on startup. Useful for testing purposes.
+# After running the playbook, consider checking the logs to see if any bridge is failing
+matterbridge_ignore_failure: true
 matterbridge_mattermost_username: neutribot
 matterbridge_mattermost_password: neutrinet
 matterbridge_mattermost_team: neutrinet
