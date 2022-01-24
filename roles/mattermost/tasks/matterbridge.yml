@@ -6,10 +6,18 @@
     system: true
     state: present
 
+- name: Création du dossier d'installation de Matterbridge
+  file:
+    path: /opt/matterbridge
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
 - name: Téléchargement du binaire Matterbridge v{{ matterbridge_version }}
   get_url:
     url: https://github.com/42wim/matterbridge/releases/download/v{{ matterbridge_version }}/matterbridge-{{ matterbridge_version }}-linux-64bit
-    dest: /opt/matterbridge-{{ matterbridge_version }}
+    dest: /opt/matterbridge/{{ matterbridge_version }}
     owner: root
     group: root
     mode: "u=rwx,go=rx"
@@ -17,7 +25,7 @@
 
 - name: Création du lien symbolique pour le binaire matterbridge
   file:
-    src: /opt/matterbridge-{{ matterbridge_version }}
+    src: /opt/matterbridge/{{ matterbridge_version }}
     dest: /usr/local/bin/matterbridge
     state: link
     owner: root
@@ -61,11 +69,11 @@
 
 - name: Récupération de la liste des binaires
   find:
-    path: /opt
+    path: /opt/matterbridge
     file_type: file
     use_regex: true
     recurse: false
-    pattern: '^matterbridge-[0-9]+\.[0-9]+\.[0-9]+$'
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
   register: _matterbridge_binaries
 
 - name: Suppression des anciens binaires
@@ -78,4 +86,4 @@
     label: "{{ binary.path }}"
   when: matterbridge_old_version != matterbridge_version
   vars:
-    matterbridge_old_version: "{{ binary.path | replace('/opt/matterbridge-', '') }}"
+    matterbridge_old_version: "{{ binary.path | replace('/opt/matterbridge/', '') }}"
