@@ -53,7 +53,7 @@ services:
               {{ else -}}
                 [✅ RESOLVED]
               {{- end }} {{ index .Labels "alertname" }}: {{ index .Annotations "description" }}
-            {{- end }}
+            {{ end }}
           html_template: >-
             {{ range .Alerts -}}
               {{ if eq .Status "firing" -}}
@@ -68,7 +68,7 @@ services:
               {{ else -}}
                 <font color='#33cc33'><b>[✅ RESOLVED]</b></font>
               {{- end }} <a href="{{ .GeneratorURL }}">{{ index .Labels "alertname" }}</a> ({{ index .Labels "job" }})<br/>
-              {{- index .Annotations "description" }}
-            {{- end }}
+              {{- index .Annotations "description" }}<br/>
+            {{ end }}
 {% endraw %}
           msg_type: "m.text"  # Must be either `m.text` or `m.notice`
