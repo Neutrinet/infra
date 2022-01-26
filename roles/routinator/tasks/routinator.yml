@@ -1,0 +1,65 @@
+---
+- name: Installation des rsync
+  package:
+    name: rsync
+    state: present
+  tags: ['routinator_install']
+
+- name: Installation des ACL
+  package:
+    name: acl
+    state: present
+
+- name: Ajout de la clé GPG de NLnet Labs
+  apt_key:
+    url: https://packages.nlnetlabs.nl/aptkey.asc
+    state: present
+  tags: ['routinator_install']
+
+- name: Ajout du dépôt APT pour routinator
+  apt_repository:
+    repo: deb https://packages.nlnetlabs.nl/linux/debian {{ ansible_distribution_release }} main
+    state: present
+    filename: routinator
+  tags: ['routinator_install']
+
+- name: Installation de routinator
+  package:
+    name: routinator
+    state: present
+  tags: ['routinator_install']
+
+- name: Configuration de routinator
+  template:
+    src: routinator.conf.j2
+    dest: /etc/routinator/routinator.conf
+    owner: routinator
+    group: routinator
+    mode: "u=rw,g=r,o="
+    validate: routinator --config %s config
+  notify: restart routinator
+  tags: ['routinator_config']
+
+- name: Ajout exeption Neutrinet pour routinator
+  copy:
+    src: exceptions.json
+    dest: /etc/routinator/exceptions.json
+    owner: routinator
+    group: routinator
+    mode: "u=rw,g=r,o="
+  notify: restart routinator
+  tags: ['routinator_config']
+
+- name: Inisialisation de routinator
+  command:
+    cmd: /usr/bin/routinator --config /etc/routinator/routinator.conf init --accept-arin-rpa
+    creates: /var/lib/routinator/rpki-cache
+    chdir: /var/lib/routinator
+  become_user: routinator
+
+
+- name: Activation du service routinator au démarage
+  service:
+    name: routinator
+    state: started
+    enabled: true

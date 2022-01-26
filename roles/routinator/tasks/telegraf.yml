@@ -1,0 +1,22 @@
+
+# cela peut prendre maximum 20 minutes
+- name: Attendre que routinator soit operationel
+  uri:
+    url: "http://localhost:8323/metrics"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 40
+  delay: 30
+  tags: ['telegraf_config']
+
+- name: Installation des plugins Telegraf
+  template:
+    src: telegraf/routinator.conf.j2
+    dest: /etc/telegraf/telegraf.d/routinator.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: restart telegraf
+  tags: ['telegraf_config']
