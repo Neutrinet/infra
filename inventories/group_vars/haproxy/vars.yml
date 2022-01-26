@@ -66,10 +66,10 @@ haproxy:
 
   - hostname: user.neutrinet.be
     target:
-      - web.patata.louise.neutri.net
+      - web-static.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
-    healthcheck_url: HEAD /
+    healthcheck_url: GET /healthcheck
 
   - hostname: wiki.neutrinet.be
     target:
