@@ -9,3 +9,5 @@ web_static_domains:
     alt_domains:
       - cube.example.com
     template: caddy/labriqueinternet.j2
+  - name: user.example.com
+    template: caddy/static.j2
