@@ -9,6 +9,7 @@
   package:
     name: acl
     state: present
+  tags: ['routinator_install']
 
 - name: Ajout de la clé GPG de NLnet Labs
   apt_key:
