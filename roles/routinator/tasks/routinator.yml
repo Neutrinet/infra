@@ -57,10 +57,11 @@
     creates: /var/lib/routinator/rpki-cache
     chdir: /var/lib/routinator
   become_user: routinator
-
+  tags: ['routinator_config']
 
 - name: Activation du service routinator au démarage
   service:
     name: routinator
     state: started
     enabled: true
+  tags: ['routinator_config']
