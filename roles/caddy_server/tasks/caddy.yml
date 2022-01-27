@@ -25,7 +25,7 @@
 
 - name: Copie du fichier de config principal
   template:
-    src: Caddyfile.j2
+    src: caddy/Caddyfile.j2
     dest: "{{ caddy_config_dir }}/Caddyfile"
     owner: root
     group: root
@@ -35,7 +35,7 @@
 
 - name: Copie de la config du healthcheck
   template:
-    src: healthcheck.Caddyfile.j2
+    src: caddy/healthcheck.j2
     dest: "{{ caddy_vhosts_dir }}/healthcheck.conf"
     owner: root
     group: root
