@@ -7,7 +7,7 @@
     name: mattermost
     state: restarted
 
-- name: restart telegraf
+- name: restart matterbridge
   service:
-    name: telegraf
+    name: matterbridge
     state: restarted

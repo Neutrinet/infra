@@ -1,0 +1,44 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Matterbridge
+After=network.target
+After=mattermost.service
+Requires=mattermost.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/matterbridge --conf /etc/matterbridge/config.toml
+Restart=always
+RestartSec=10
+WorkingDirectory=/etc/matterbridge
+User=matterbridge
+Group=matterbridge
+
+# Systemd hardening
+PrivateDevices=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+CapabilityBoundingSet=
+NoNewPrivileges=true
+RestrictNamespaces=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+PrivateTmp=true
+PrivateUsers=true
+RemoveIPC=true
+LockPersonality=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target

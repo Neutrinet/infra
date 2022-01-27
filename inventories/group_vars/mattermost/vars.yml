@@ -1,4 +1,13 @@
 mattermost_domain: chat.neutrinet.be
 mattermost_version: 5.38.2
-
 mattermost_postgresql_password: "{{ vault_mattermost_postgresql_password }}"
+
+matterbridge_version: 1.23.2
+matterbridge_ignore_failure: false
+matterbridge_mattermost_username: neutribot
+matterbridge_mattermost_password: "{{ vault_matterbridge_mattermost_password }}"
+matterbridge_mattermost_team: neutrinet
+matterbridge_mattermost_channel: irc
+matterbridge_irc_username: neutrinet-bot
+matterbridge_irc_password: "{{ vault_matterbridge_irc_password }}"
+matterbridge_irc_channel: '#neutrinet'

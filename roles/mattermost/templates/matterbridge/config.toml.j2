@@ -1,0 +1,39 @@
+{{ ansible_managed | comment }}
+
+[general]
+RemoteNickFormat="{PROTOCOL} <{NICK}> "
+IgnoreFailureOnStart={{ matterbridge_ignore_failure | bool | lower }}
+
+[irc]
+    [irc.libera]
+    Server="irc.libera.chat:6697"
+    Nick="{{ matterbridge_irc_username }}"
+    PrefixMessagesWithNick=true
+    UseTLS=true
+    UseSASL=true
+    NickServNick="{{ matterbridge_irc_username }}"
+    Password={{ matterbridge_irc_password | string | to_json }}
+    NickServPassword={{ matterbridge_irc_password | string | to_json }}
+    RemoteNickFormat="<{NICK}> "
+
+[mattermost]
+    [mattermost.neutrinet]
+    Server="localhost:8065"
+    NoTLS=true
+    Team="{{ matterbridge_mattermost_team }}"
+    Login="{{ matterbridge_mattermost_username }}"
+    Password={{ matterbridge_mattermost_password | string | to_json }}
+    PrefixMessagesWithNick=true
+
+[[gateway]]
+name="Passerelle"
+enable=true
+    [[gateway.inout]]
+    account="irc.libera"
+    channel="{{ matterbridge_irc_channel }}"
+    PrefixMessagesWithNick=true
+
+    [[gateway.inout]]
+    account="mattermost.neutrinet"
+    channel="{{ matterbridge_mattermost_channel }}"
+    PrefixMessagesWithNick=true
