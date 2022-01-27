@@ -62,7 +62,7 @@ haproxy:
       - nextcloud.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
-    healthcheck_url: HEAD /
+    healthcheck_url: GET /healthcheck
 
   - hostname: user.neutrinet.be
     target:
