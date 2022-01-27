@@ -83,6 +83,7 @@ backend {{ host.hostname | replace('.', '-') }}-backend
     mode http
 {% if "healthcheck_url" in host and host.healthcheck_url %}
     option httpchk {{ host.healthcheck_url }}
+    http-check send hdr Host {{ host.hostname }}
 {% endif %}
     option forwardfor
     option http-server-close

@@ -1,8 +1,9 @@
-http://{{ inventory_hostname }} {
+:80 {
     respond * 404
     respond /healthcheck 200
 
     log {
         output file {{ caddy_healthcheck_log | to_json }}
+        level ERROR
     }
 }
