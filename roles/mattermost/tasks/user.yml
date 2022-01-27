@@ -1,0 +1,15 @@
+- name: Création du dossier /var/www
+  file:
+    path: /var/www
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Création de l'utilisateur {{ mattermost_owner }}
+  user:
+    name: "{{ mattermost_owner }}"
+    home: /var/www/{{ mattermost_owner }}
+    shell: /sbin/nologin
+    system: true
+    state: present
