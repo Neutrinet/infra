@@ -1,10 +1,4 @@
 ---
-- name: Installation des rsync
-  package:
-    name: rsync
-    state: present
-  tags: ['routinator_install']
-
 - name: Installation des ACL
   package:
     name: acl
