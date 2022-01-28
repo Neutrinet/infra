@@ -35,7 +35,7 @@
   notify: restart routinator
   tags: ['routinator_config']
 
-- name: Ajout exeption Neutrinet pour routinator
+- name: Ajout exception Neutrinet pour routinator
   copy:
     src: exceptions.json
     dest: /etc/routinator/exceptions.json
@@ -45,7 +45,7 @@
   notify: restart routinator
   tags: ['routinator_config']
 
-- name: Inisialisation de routinator
+- name: Initialisation de routinator
   command:
     cmd: /usr/bin/routinator --config /etc/routinator/routinator.conf init --accept-arin-rpa
     creates: /var/lib/routinator/rpki-cache
