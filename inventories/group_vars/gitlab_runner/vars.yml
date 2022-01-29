@@ -1,0 +1,3 @@
+gitlab_runner_api_url: https://gitlab.domainepublic.net
+gitlab_runner_api_token: "{{ vault_gitlab_runner_api_token }}"
+gitlab_runner_registration_token: "{{ vault_gitlab_runner_registration_token }}"

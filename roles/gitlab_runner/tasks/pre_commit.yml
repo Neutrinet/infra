@@ -1,0 +1,32 @@
+- name: Création du dossier de compilation de l'image docker neutrinet/pre-commit
+  file:
+    path: /opt/neutrinet/pre-commit
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: Copie du Dockerfile pour l'image docker neutrinet/pre-commit
+  copy:
+    src: pre-commit/Dockerfile
+    dest: /opt/neutrinet/pre-commit
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: Compilation de l'image docker neutrinet/pre-commit
+  docker_image:
+    name: neutrinet/pre-commit:1.0.1
+    build:
+      path: /opt/neutrinet/pre-commit
+      pull: true
+    source: build
+
+- name: Création d'un cron job pour compiler l'image docker neutrinet/pre-commit
+  cron:
+    name: docker-build-pre-commit
+    cron_file: docker-build
+    state: present
+    special_time: hourly
+    user: root
+    job: docker build --pull --quiet -t neutrinet/pre-commit:1.0.1 /opt/neturinet/pre-commit > /dev/null
