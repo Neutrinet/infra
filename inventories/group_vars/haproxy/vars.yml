@@ -37,7 +37,7 @@ haproxy:
 
   - hostname: chat.neutrinet.be
     target:
-      - web.patata.louise.neutri.net
+      - mattermost.patata.louise.neutri.net
     target_port: 8065
     healthcheck: true
     healthcheck_url: GET /api/v4/system/ping
