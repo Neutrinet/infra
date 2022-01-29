@@ -1,0 +1,8 @@
+- name: Lecture du token de Gitlab runner
+  slurp:
+    src: "/etc/gitlab-runner/token.secret"
+  register: _gitlab_runner_token
+
+- name: Définition du token de Gitlab runner
+  set_fact:
+    gitlab_runner_token: "{{ _gitlab_runner_token.content | b64decode }}"
