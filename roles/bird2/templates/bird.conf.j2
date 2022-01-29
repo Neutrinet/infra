@@ -1,0 +1,27 @@
+log syslog all;
+timeformat protocol iso long;
+debug protocols { states };
+
+define my_krt_prefsrc_v6 = {{ bird_local_ipv6 }};
+define my_krt_prefsrc_v4 = {{ bird_local_ipv4 }};
+
+define rpki_routinator_1 = 2001:913:1000:20::1;
+define rpki_routinator_2 = 2001:913:1000:20::2;
+
+define my_asn = 204059;
+define my_prefix_v4 = [80.67.181.0/24, 80.67.191.0/24];
+define my_prefix_v6 = [2001:913:1000::/36];
+define filter_my_prefix_v4 = [80.67.181.0/24+, 80.67.191.0/24+];
+define filter_my_prefix_v6 = [2001:913:1000::/36+];
+define my_asn_downstream = [0];
+
+define ddos_telia_protection = false;
+
+router id my_krt_prefsrc_v4;
+
+roa4 table roa_v4;
+roa6 table roa_v6;
+
+include "/etc/bird/conf.d/*.conf";
+include "/etc/bird/peers/upstreams/*.conf";
+include "/etc/bird/peers/downstreams/*.conf";

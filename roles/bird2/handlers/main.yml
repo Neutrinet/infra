@@ -1,0 +1,4 @@
+- name: reload bird
+  service:
+    name: bird
+    state: reloaded
