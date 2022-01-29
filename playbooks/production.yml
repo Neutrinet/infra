@@ -14,4 +14,3 @@
 - import_playbook: apps/probe.yml
 - import_playbook: apps/prometheus.yml
 - import_playbook: apps/alertmanager.yml
-- import_playbook: apps/gitlab_runner.yml
