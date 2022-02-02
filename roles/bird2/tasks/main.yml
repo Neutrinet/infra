@@ -1,5 +1,5 @@
 - import_tasks: bird2.yml
   tags: ['bird2']
 
-#- import_tasks: peers.yml
-#  tags: ['bird2_peers']
+- import_tasks: peers.yml
+  tags: ['bird2_peers']

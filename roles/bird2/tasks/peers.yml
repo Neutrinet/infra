@@ -1,0 +1,29 @@
+- name: Ajout des sessions upstream
+  template:
+    src: peer.conf.j2
+    dest: "/etc/bird/peers/upstreams/{{ peer.location | lower }}_{{ peer.asn }}_{{ peer.description | lower  | replace(' ', '_') }}.conf"
+    owner: bird
+    group: bird
+    mode: "u=rw,go="
+    validate: birdc 'configure check "%s"'
+  notify: reload bird
+  loop: "{{ bird_peers_upstreams }}"
+  loop_control:
+    loop_var: peer
+    label: "[{{ peer.location }}] {{ peer.description }} {{ peer.asn }}"
+  tags: ['bird2_peers']
+
+- name: Ajout des sessions downstream
+  template:
+    src: peer.conf.j2
+    dest: "/etc/bird/peers/downstreams/{{ peer.location | lower }}_{{ peer.asn }}_{{ peer.description | lower  | replace(' ', '_') }}.conf"
+    owner: bird
+    group: bird
+    mode: "u=rw,go="
+    validate: birdc 'configure check "%s"'
+  notify: reload bird
+  loop: "{{ bird_peers_downstreams }}"
+  loop_control:
+    loop_var: peer
+    label: "[{{ peer.location }}] {{ peer.description }} {{ peer.asn }}"
+  tags: ['bird2_peers']

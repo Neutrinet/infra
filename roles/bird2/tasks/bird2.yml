@@ -1,4 +1,3 @@
-
 - name: Installation de Bird2
   package:
     name: bird2
@@ -11,7 +10,7 @@
     recurse: true
     owner: bird
     group: bird
-    mode: "u=rwx,go=rx"
+    mode: "u=rwx,go="
   with_items:
     - conf.d
     - peers/downstreams
@@ -23,7 +22,8 @@
     dest: "/etc/bird/conf.d/{{ item }}"
     owner: bird
     group: bird
-    mode: "u=rw,go=r"
+    mode: "u=rw,go="
+    validate: birdc 'configure check "%s"'
   notify: reload bird
   with_items:
     - 00_bgp_filter.conf
@@ -44,7 +44,7 @@
     dest: "/etc/bird/bird.conf"
     owner: bird
     group: bird
-    mode: "u=rw,go=r"
+    mode: "u=rw,go="
     validate: birdc 'configure check "%s"'
   notify: reload bird
 

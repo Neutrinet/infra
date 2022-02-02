@@ -1,0 +1,28 @@
+{% if 'ipv4' in peer %}
+protocol bgp {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv4.type | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_v4 {
+	neighbor {{ peer.ipv4.ip }} as {{ peer.asn }};
+	local as my_asn;
+
+	description "[{{ peer.location }}] {{ peer.ipv4.type }} | {{ peer.description }} ({{ peer.asn }})";
+
+	ipv4 {
+		import where bgp_import(4, {{ peer.asn }}, "{{ peer.ipv4.type }}", "{{ peer.location }}");
+		export where bgp_export(4, {{ peer.asn }}, "{{ peer.ipv4.type }}", "{{ peer.location }}");
+		next hop self;
+	};
+}
+{% endif %}
+{% if 'ipv6' in peer %}
+protocol bgp {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv6.type  | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_v6 {
+	neighbor {{ peer.ipv6.ip }} as {{ peer.asn }};
+	local as my_asn;
+
+	description "[{{ peer.location }}] {{ peer.ipv6.type }} | {{ peer.description }} ({{ peer.asn }})";
+
+	ipv6 {
+		import where bgp_import(6, {{ peer.asn }}, "{{ peer.ipv6.type }}", "{{ peer.location }}");
+		export where bgp_export(6, {{ peer.asn }}, "{{ peer.ipv6.type }}", "{{ peer.location }}");
+		next hop self;
+	};
+}
+{% endif %}
