@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+rtr-listen = ["{{ routinator_listen_rtr }}"]
+http-listen = ["[::1]:8323"]
+
+repository-dir = "/var/lib/routinator/rpki-cache"
+tal-dir = "/var/lib/routinator/tals"
+exceptions = ["/etc/routinator/exceptions.json"]
