@@ -1,0 +1,30 @@
+{
+    "slurmVersion": 1,
+    "validationOutputFilters": {
+      "prefixFilters": [],
+      "bgpsecFilters": []
+    },
+    "locallyAddedAssertions": {
+      "prefixAssertions": [
+        {
+          "asn": 204059,
+          "prefix": "2001:913:1000::/36",
+          "maxPrefixLength": 128,
+          "comment": "Neutrinet allow minimal ip"
+        },
+        {
+          "asn": 204059,
+          "prefix": "80.67.181.0/24",
+          "maxPrefixLength": 32,
+          "comment": "Neutrinet allow minimal ip"
+        },
+        {
+          "asn": 204059,
+          "prefix": "80.67.191.0/24",
+          "maxPrefixLength": 32,
+          "comment": "Neutrinet allow minimal ip"
+        }
+      ],
+      "bgpsecAssertions": []
+    }
+}

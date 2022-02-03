@@ -1,0 +1,5 @@
+- import_tasks: routinator.yml
+  tags: ['routinator']
+
+- import_tasks: telegraf.yml
+  tags: ['telegraf_config']
