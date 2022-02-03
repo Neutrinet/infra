@@ -1,0 +1,9 @@
+- name: restart routinator
+  service:
+    name: routinator
+    state: restarted
+
+- name: restart telegraf
+  service:
+    name: telegraf
+    state: restarted
