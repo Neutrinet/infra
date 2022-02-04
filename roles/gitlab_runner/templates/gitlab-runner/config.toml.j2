@@ -8,6 +8,7 @@ listen_address = "localhost:9252"
 [session_server]
   session_timeout = 1800
 
+{% if gitlab_runner_token %}
 [[runners]]
   name = "{{ inventory_hostname }}"
   url = "{{ gitlab_runner_api_url }}"
@@ -26,3 +27,4 @@ listen_address = "localhost:9252"
     shm_size = 0
     pull_policy = "if-not-present"
     output_limit = 32768
+{% endif %}

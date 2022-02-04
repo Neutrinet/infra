@@ -14,34 +14,6 @@
     name: gitlab-runner
     state: present
 
-- name: Installation des dépendances python
-  package:
-    name: python3-gitlab
-    state: present
-
-- name: Enregistrement auprès de l'instance Gitlab {{ gitlab_runner_api_url }}
-  gitlab_runner:
-    name: "{{ inventory_hostname }}"
-    api_url: "{{ gitlab_runner_api_url }}"
-    api_token: "{{ gitlab_runner_api_token }}"
-    registration_token: "{{ gitlab_runner_registration_token }}"
-    state: present
-    owned: true
-    active: true
-    access_level: not_protected
-  register: _gitlab_runner_registered
-  tags: ['gitlab_runner_register']
-
-- name: Sauvegarde du token de Gitlab runner
-  import_tasks: token/write.yml
-  when: _gitlab_runner_registered.runner.token is defined
-  tags: ['gitlab_runner_register']
-
-- name: Lecture du token de Gitlab runner
-  import_tasks: token/read.yml
-  when: _gitlab_runner_registered.runner.token is not defined
-  tags: ['gitlab_runner_register']
-
 - name: Configuration de Gitlab Runner
   template:
     src: gitlab-runner/config.toml.j2
@@ -50,13 +22,18 @@
     group: root
     mode: "u=rw,go="
   notify: restart gitlab-runner
-  tags: ['gitlab_runner_register']
+  tags: ['gitlab_runner_config']
 
 - name: Activation de Gitlab Runner au démarrage
   service:
     name: gitlab-runner
     state: started
     enabled: true
+
+- name: Trigger handlers
+  # We need to restart gitlab-runner to apply the new config
+  # and expose the metrics for telegraf
+  meta: flush_handlers
 
 - name: Installation des plugins Telegraf
   template:
