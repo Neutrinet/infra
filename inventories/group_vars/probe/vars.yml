@@ -1,3 +1,5 @@
+zammad_monitoring_token: "{{ vault_zammad_monitoring_token }}"
+
 probe_http_urls:
   - name: https://neutrinet.be
     url: https://neutrinet.be/en
@@ -5,6 +7,11 @@ probe_http_urls:
   - url: https://mediawiki.neutrinet.be
   - url: https://wikijs.neutrinet.be
   - url: https://realms-wiki.neutrinet.be
+  - url: https://wiki.labriqueinter.net
+  - url: https://labriqueinter.net
+  - url: https://internetcu.be
+  - name: https://sync.labriqueinter.net
+    url: https://sync.labriqueinter.net/hooks/health
   - name: https://chat.neutrinet.be
     url: https://chat.neutrinet.be/api/v4/system/ping?get_server_status=1
     body: '"database_status":"OK","filestore_status":"OK","status":"OK"'
@@ -13,14 +20,20 @@ probe_http_urls:
     body: '"website": "http://neutrinet.be"'
   - name: https://files.neutrinet.be
     url: https://files.neutrinet.be/status.php
-    body: '"productname":"Neutrinet"'
+    body: '"productname":"Nextcloud"'
   - url: https://user.neutrinet.be
   - url: https://api.neutrinet.be
   - url: https://wiki.neutrinet.be
   - name: https://meta.neutrinet.be
     url: https://meta.neutrinet.be/srv/status
     body: ^ok$
+  - name: https://doc.neutrinet.be
+    url: https://doc.neutrinet.be/status
   - url: https://s3.neutrinet.be
+  - url: https://librenms.neutrinet.be
+  - name: https://support.neutrinet.be
+    url: https://support.neutrinet.be/api/v1/monitoring/health_check?token={{ zammad_monitoring_token }}
+    body: '"healthy":true'
 
 probe_ping_hosts:
   - "80.67.181.1"
