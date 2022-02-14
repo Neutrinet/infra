@@ -25,7 +25,7 @@ groups:
         for: 1h
         expr: disk_used_percent > 80 and on (instance, host, device) predict_linear(disk_used_percent[2d], 7 * 24 * 3600) > 100
         labels:
-          severity: critical
+          severity: warning
         annotations:
           description: "Based on disk usage from last 2 days, the {{ $labels.host }} host's device {{ $labels.device }} mounted on \"{{ $labels.path }}\" will be full within the week (current = {{ humanize $value }}%)"
           summary: 'Disk full within the week (current = {{ humanize $value }}%)'
@@ -45,7 +45,7 @@ groups:
         for: 1h
         expr: mem_used_percent > 80 and on (instance, host) predict_linear(mem_used_percent[2d], 7*24*3600) > 100
         labels:
-          severity: critical
+          severity: warning
         annotations:
           description: 'Based on memory usage from last 2 days, the host {{ $labels.host }} will be out of memory within the week (current = {{ humanize $value }}%)'
           summary: 'Memory full within the week (current = {{ humanize $value }}%)'
@@ -56,7 +56,7 @@ groups:
         for: 15m
         expr: 100 * system_load5 / system_n_cpus > 90
         labels:
-          severity: critical
+          severity: warning
         annotations:
           description: 'CPU usage is higher than 90% (value = {{ humanize $value }}%)'
           summary: 'CPU usage is at {{ humanize $value }}%'
