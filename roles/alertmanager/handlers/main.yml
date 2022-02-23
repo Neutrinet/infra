@@ -4,7 +4,7 @@
 
 - name: restart alertmanager
   service:
-    name: prometheus-alertmanager
+    name: alertmanager
     state: restarted
 
 - name: restart matrix-goneb
@@ -19,5 +19,5 @@
 
 - name: reload alertmanager
   service:
-    name: prometheus-alertmanager
+    name: alertmanager
     state: reloaded

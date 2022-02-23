@@ -1,0 +1,7 @@
+- name: Création de l'utilisateur pour Alertmanager
+  user:
+    name: alertmanager
+    home: /opt/alertmanager
+    shell: /sbin/nologin
+    system: true
+    state: present

@@ -1,68 +1,14 @@
-- name: Installation d'Alertmanager
-  package:
-    name: prometheus-alertmanager
-    state: present
+- import_tasks: user.yml
+  tags: ['user']
 
-- name: Configuration de l'environnement d'Alertmanager
-  template:
-    src: alertmanager/alertmanager.env.j2
-    dest: /etc/default/prometheus-alertmanager
-    owner: root
-    group: root
-    mode: "u=rw,g=r,o=r"
-  notify: restart alertmanager
+- import_tasks: alertmanager.yml
+  tags: ['alertmanager']
 
-- name: Configuration du template des notifications mail
-  copy:
-    src: alertmanager/email.tmpl
-    dest: /etc/prometheus/alertmanager_templates/email.tmpl
-    owner: root
-    group: root
-    mode: "u=rw,go=r"
-  notify: reload alertmanager
+- import_tasks: cleanup.yml
+  tags: ['cleanup']
 
-- name: Configuration d'Alertmanager
-  template:
-    src: alertmanager/alertmanager.yml.j2
-    dest: /etc/prometheus/alertmanager.yml
-    owner: prometheus
-    group: prometheus
-    mode: "u=rw,g=r,o="
-    validate: amtool check-config %s
-  notify: reload alertmanager
-
-- name: Activation d'Alertmanager au démarrage
-  service:
-    name: prometheus-alertmanager
-    state: started
-    enabled: true
-
-- name: Ajout du job alertmanager dans Prometheus
-  copy:
-    src: prometheus/alertmanager.yml
-    dest: /etc/prometheus/conf.d/alertmanager.yml
-    owner: prometheus
-    group: prometheus
-    mode: "u=rw,go=r"
-  notify: reload prometheus
-
-- name: Création du dossier des alertes
-  file:
-    path: /etc/prometheus/rules.d
-    owner: prometheus
-    group: prometheus
-    mode: "u=rwx,g=rx,o="
-    state: directory
-
-- name: Copie des alertes de base
-  copy:
-    src: alertmanager/base.rules
-    dest: /etc/prometheus/rules.d/base.rules
-    owner: root
-    group: root
-    mode: "u=rw,go=r"
-    validate: promtool check rules %s
-  notify: reload prometheus
+- import_tasks: rules.yml
+  tags: ['rules']
 
 - name: Installation de matrix-goneb
   import_tasks: matrix-goneb.yml
