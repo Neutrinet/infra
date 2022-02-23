@@ -1,3 +1,5 @@
+alertmanager_version: 0.23.0
+
 alertmanager_smtp_host: mail.neutri.net
 alertmanager_smtp_port: 587
 alertmanager_smtp_require_tls: true
