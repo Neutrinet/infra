@@ -1,4 +1,3 @@
-
 - name: Création des dossiers de Prometheus
   file:
     path: "{{ prometheus_dir }}"
