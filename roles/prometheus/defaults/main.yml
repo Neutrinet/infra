@@ -1,3 +1,4 @@
+prometheus_version: 2.33.3
 prometheus_federation_hosts:
   - prometheus.example.com
 prometheus_telegraf_hosts: "{{ groups.all }}"

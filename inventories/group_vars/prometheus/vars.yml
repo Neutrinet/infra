@@ -1,5 +1,7 @@
 telegraf_prometheus_client_listen_address: localhost
 
+prometheus_version: 2.33.3
+
 prometheus_username: prometheus
 prometheus_password: "{{ vault_prometheus_password }}"
 

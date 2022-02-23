@@ -1,0 +1,44 @@
+- name: Récupération de la liste des dossiers d'installation
+  find:
+    path: /opt/prometheus
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _prometheus_installed_dirs
+
+- name: Récupération de la liste des archives
+  find:
+    path: /usr/local/src/prometheus
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _prometheus_archives
+
+- name: Récupération de la plus ancienne version et de la version courante
+  set_fact:
+    prometheus_oldest_archive: "{{ prometheus_sorted_archives | first }}"
+    prometheus_oldest_install_dir: "{{ prometheus_sorted_install_dirs | first }}"
+    prometheus_oldest_version: "{{ prometheus_sorted_install_dirs | first | basename }}"
+  vars:
+    prometheus_sorted_archives: |-
+      {{ _prometheus_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    prometheus_sorted_install_dirs: |-
+      {{ _prometheus_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: Suppression de la plus ancienne version (v{{ prometheus_oldest_version }})
+  file:
+    state: absent
+    path: "{{ prometheus_oldest_install_dir }}"
+  when: _prometheus_installed_dirs.files | length > 5
+
+- name: Suppression de la plus ancienne archive
+  file:
+    state: absent
+    path: "{{ prometheus_oldest_archive }}"
+  when: _prometheus_archives.files | length > 5
