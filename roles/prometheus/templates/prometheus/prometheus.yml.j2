@@ -13,6 +13,21 @@ global:
   external_labels:
     monitor: {{ ansible_fqdn }}
 
+remote_write:
+  - url: "{{ prometheus_remote_write_url }}"
+{% if not prometheus_promscale_enabled %}
+{# Unless we write to localhost, we need to authenticate to push metrics to remote storage #}
+    basic_auth:
+      username: {{ prometheus_promscale_username | to_json }}
+      password: {{ prometheus_promscale_password | string | to_json }}
+{% endif %}
+
+{% if prometheus_promscale_enabled %}
+remote_read:
+  - url: "http://localhost:9201/read"
+    read_recent: true
+{% endif %}
+
 # Alertmanager configuration
 alerting:
   alertmanagers:
@@ -38,26 +53,13 @@ scrape_configs:
       - targets:
           - localhost:9090
 
-{% for host in prometheus_federation_hosts %}
-  # Grab federation metrics from Prometheus instance {{ host }}
-  - job_name: federation-{{ host | replace('.', '-') }}
-    honor_labels: true
-    metrics_path: /federate
-    params:
-      'match[]':
-        - '{job="prometheus"}'
-        - '{job=~"telegraf-.*"}'
-{% if hostvars[host].prometheus_username is defined and hostvars[host].prometheus_password is defined %}
-    basic_auth:
-      username: {{ hostvars[host].prometheus_username | to_json }}
-      password: {{ hostvars[host].prometheus_password | string | to_json }}
-{% endif %}
-    scheme: https
+{% if prometheus_promscale_enabled %}
+  # Grab metrics about promscale
+  - job_name: promscale
     static_configs:
       - targets:
-          - "{{ host }}"
-
-{% endfor %}
+          - localhost:9201
+{% endif %}
 
 {% for host in prometheus_telegraf_hosts %}
   # Grab telegraf metrics from {{ host }}

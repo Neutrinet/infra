@@ -5,8 +5,12 @@ prometheus_version: 2.33.3
 prometheus_username: prometheus
 prometheus_password: "{{ vault_prometheus_password }}"
 
-prometheus_federation_hosts: []
-prometheus_storage_retention: 2d
+prometheus_promscale_enabled: false
+prometheus_promscale_username: promscale
+prometheus_promscale_password: "{{ vault_prometheus_promscale_password }}"
+prometheus_remote_write_url: https://promscale.neutrinet.be/write
+
+prometheus_storage_retention: 1w
 
 letsencrypt_dns_gandi_api_key: "{{ vault_dns_gandi_api_key }}"
 letsencrypt_dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"

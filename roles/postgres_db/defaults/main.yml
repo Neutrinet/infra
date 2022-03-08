@@ -1,3 +1,5 @@
 postgresql_patroni_hosts: []
 postgresql_db_name: neutrinet
 postgresql_db_password: neutrinet
+postgresql_db_role_attributes: ""
+postgresql_db_change_owner: false

@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+
+db.host: localhost
+db.name: "{{ promscale_postgresql_database  }}"
+db.user: "{{ promscale_postgresql_database }}"
+db.password: {{ promscale_postgresql_password | to_json }}
+web.listen-address: localhost:9201

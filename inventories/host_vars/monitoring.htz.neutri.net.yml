@@ -1,14 +1,14 @@
-prometheus_federation_hosts:
-  - probe-01.first.neutri.net
-  - probe-02.ovh.neutri.net
-  - man.patata.louise.neutri.net
 prometheus_telegraf_hosts:
   - "{{ inventory_hostname }}"
   - vpn.neutri.net
   - topi.louise.neutri.net
   - nam.louise.neutri.net
   - bour.louise.neutri.net
-prometheus_storage_retention: 90d
+
+prometheus_promscale_enabled: true
+prometheus_remote_write_url: https://localhost:9201/write
+
+prometheus_storage_retention: 1y
 
 letsencrypt_domains_gandi:
   - neutrinet.be
@@ -29,6 +29,14 @@ haproxy:
     healthcheck_url: GET /-/healthy
     username: "{{ prometheus_username }}"
     password: "{{ prometheus_password }}"
+  - hostname: promscale.neutrinet.be
+    target:
+      - 127.0.0.1
+    target_port: 9201
+    healthcheck: true
+    healthcheck_url: GET /healthz
+    username: "{{ prometheus_promscale_username }}"
+    password: "{{ prometheus_promscale_password }}"
 
 probe_http_certs:
   - https://neutrinet.be:443

@@ -2,16 +2,13 @@
   import_tasks: user.yml
   tags: ['user']
 
-- name: Installation de Promscale
-  import_role:
-    name: promscale
-  vars:
-    promscale_postgresql_database: prometheus
-  tags: ['promscale']
+- name: Installation de TimescaleDB
+  import_tasks: timescaledb.yml
+  tags: ['timescaledb']
 
-- name: Installation de Prometheus
-  import_tasks: prometheus.yml
-  tags: ['prometheus']
+- name: Installation de Promscale
+  import_tasks: promscale.yml
+  tags: ['promscale']
 
 - name: Nettoyage des anciennes versions
   import_tasks: cleanup.yml
