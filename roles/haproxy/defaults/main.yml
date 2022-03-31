@@ -28,6 +28,14 @@ haproxy:
     healthcheck: false
     # username: admin
     # password: neutrinet
+    deny_paths:
+      - /metrics
+      - /forbidden
+  - hostname: example.com
+    target:
+      - 127.0.0.1
+    target_port: 8080
+    healthcheck: false
 
 haproxy_redirect:
   - from: www.neutrinet.be

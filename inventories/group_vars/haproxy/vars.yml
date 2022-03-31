@@ -104,6 +104,8 @@ haproxy:
     target:
       - hedgedoc.patata.louise.neutri.net
     target_port: 3000
+    deny_paths:
+      - /metrics
     healthcheck: true
     healthcheck_url: "HEAD /status"
 

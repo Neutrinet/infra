@@ -7,3 +7,5 @@ haproxy:
     target_port: 3000
     healthcheck: true
     healthcheck_url: "HEAD /status"
+    deny_paths:
+      - /metrics
