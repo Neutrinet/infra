@@ -29,4 +29,4 @@
     state: present
     special_time: hourly
     user: root
-    job: docker build --pull --quiet -t neutrinet/pre-commit:1.0.1 /opt/neturinet/pre-commit > /dev/null
+    job: docker build --pull --quiet -t neutrinet/pre-commit:1.0.1 /opt/neutrinet/pre-commit > /dev/null
