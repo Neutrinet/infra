@@ -14,11 +14,17 @@ http://{{ domain }}{% if not loop.last %}, {% endif %}
     file_server @browse browse
 
     @cfacile {
-        path /
         host cfacile.{{ web_app_domain }}
     }
     file_server @cfacile {
         index cfacile.html
+    }
+
+    @english {
+        host internetcu.be
+    }
+    file_server @english {
+        index en.html
     }
 
     file_server
