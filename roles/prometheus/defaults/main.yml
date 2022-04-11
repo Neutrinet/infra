@@ -1,4 +1,3 @@
-
 prometheus_version: 2.33.3
 prometheus_telegraf_hosts: "{{ groups.all }}"
 prometheus_username: prometheus
