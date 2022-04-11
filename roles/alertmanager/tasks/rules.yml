@@ -1,0 +1,17 @@
+- name: Création du dossier des alertes
+  file:
+    path: /etc/prometheus/rules.d
+    owner: prometheus
+    group: prometheus
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Copie des alertes de base
+  copy:
+    src: alertmanager/base.rules
+    dest: /etc/prometheus/rules.d/base.rules
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: promtool check rules %s
+  notify: reload prometheus

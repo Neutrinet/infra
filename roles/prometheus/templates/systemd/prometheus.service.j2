@@ -1,0 +1,47 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Prometheus
+After=network.target
+
+[Service]
+Type=simple
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/prometheus \
+  --storage.tsdb.path=/var/lib/prometheus \
+  --storage.tsdb.retention.time={{ prometheus_storage_retention }} \
+  --web.listen-address='localhost:9090' \
+  --config.file=/etc/prometheus/prometheus.yml
+Restart=always
+
+# Systemd hardening
+ReadWritePaths=/var/lib/prometheus
+
+CapabilityBoundingSet=
+LimitNOFILE=65000
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+PrivateUsers=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=noaccess
+ProtectSystem=strict
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target

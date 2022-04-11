@@ -1,0 +1,89 @@
+- name: Création des dossiers de Prometheus
+  file:
+    path: "{{ prometheus_dir }}"
+    owner: prometheus
+    group: prometheus
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/prometheus
+    - /opt/prometheus/{{ prometheus_version }}
+    - /etc/prometheus
+    - /var/lib/prometheus
+  loop_control:
+    loop_var: prometheus_dir
+
+- name: Création du dossier des archives Prometheus
+  file:
+    path: /usr/local/src/prometheus
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive Prometheus v{{ prometheus_version }}
+  get_url:
+    url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
+    dest: /usr/local/src/prometheus/{{ prometheus_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/sha256sums.txt"
+
+- name: Décompression de l'archive
+  unarchive:
+    src: /usr/local/src/prometheus/{{ prometheus_version }}.tar.gz
+    dest: /opt/prometheus/{{ prometheus_version }}
+    creates: /opt/prometheus/{{ prometheus_version }}/prometheus
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: prometheus
+    group: prometheus
+
+- name: Création du lien symbolique pour les binaires de Prometheus
+  file:
+    src: /opt/prometheus/{{ prometheus_version }}/{{ prometheus_bin }}
+    dest: /usr/local/bin/{{ prometheus_bin }}
+    state: link
+  loop:
+    - prometheus
+    - promtool
+  loop_control:
+    loop_var: prometheus_bin
+  notify: restart prometheus
+
+- name: Configuration de Prometheus
+  template:
+    src: prometheus/prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    owner: prometheus
+    group: prometheus
+    mode: "u=rw,g=r,o="
+    validate: promtool check config %s
+  notify: reload prometheus
+
+- name: Création du répertoire des jobs
+  file:
+    path: /etc/prometheus/conf.d
+    owner: prometheus
+    group: prometheus
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Configuration du service systemd
+  template:
+    src: systemd/prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart prometheus
+
+- name: Activation de Prometheus au démarrage
+  service:
+    name: prometheus
+    state: started
+    enabled: true
