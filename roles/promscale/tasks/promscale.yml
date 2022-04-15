@@ -68,6 +68,12 @@
   become_user: promscale
   when: not timescaledb_initialized
 
+- name: Configuration de la durée de rétention
+  postgresql_query:
+    db: "{{ promscale_postgresql_database }}"
+    query: select set_default_retention_period('{{ promscale_retention }}');
+  become_user: postgres
+
 - name: Activation de l'extension Promscale
   postgresql_ext:
     name: promscale
@@ -83,7 +89,6 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
     - restart promscale
 
 - name: Activation de Promscale au démarrage

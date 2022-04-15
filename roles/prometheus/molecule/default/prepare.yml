@@ -10,3 +10,4 @@
 
   roles:
     - telegraf
+    - postgres_standalone

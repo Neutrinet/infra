@@ -8,7 +8,7 @@ platforms:
   - name: buster-prometheus-molecule
     box: debian/buster64
     cpu: 2
-    memory: 512
+    memory: 2048
     interfaces:
       - network_name: private_network
         type: dhcp

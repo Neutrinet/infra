@@ -8,4 +8,4 @@ prometheus_promscale_username: promscale
 prometheus_promscale_password: neutrinet
 prometheus_remote_write_url: http://localhost:9201/write
 
-prometheus_storage_retention: "{{ prometheus_promscale_enabled | ternary('1y', '1w') }}"
+prometheus_storage_retention: 1w

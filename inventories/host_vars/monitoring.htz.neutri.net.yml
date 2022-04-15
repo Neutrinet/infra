@@ -8,7 +8,7 @@ prometheus_telegraf_hosts:
 prometheus_promscale_enabled: true
 prometheus_remote_write_url: https://localhost:9201/write
 
-prometheus_storage_retention: 1y
+prometheus_storage_retention: 1w
 
 letsencrypt_domains_gandi:
   - neutrinet.be

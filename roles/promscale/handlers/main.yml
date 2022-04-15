@@ -1,13 +1,10 @@
-- name: reload systemd
-  systemd:
-    daemon_reload: true
-
 - name: restart postgresql
   service:
     name: postgresql
     state: restarted
 
 - name: restart promscale
-  service:
+  systemd:
     name: promscale
+    daemon_reload: true
     state: restarted
