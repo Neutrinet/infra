@@ -1,6 +1,7 @@
 telegraf_prometheus_client_listen_address: localhost
 
 prometheus_version: 2.33.3
+prometheus_telegraf_hosts: "{{ groups.all }}"
 
 prometheus_username: prometheus
 prometheus_password: "{{ vault_prometheus_password }}"
@@ -9,8 +10,12 @@ prometheus_promscale_enabled: false
 prometheus_promscale_username: promscale
 prometheus_promscale_password: "{{ vault_prometheus_promscale_password }}"
 prometheus_remote_write_url: https://promscale.neutrinet.be/write
-
 prometheus_storage_retention: 1w
+
+promscale_version: 0.10.0
+promscale_extension_version: 0.3.2
+promscale_retention: 1y
+promscale_postgresql_password: "{{ vault_promscale_postgresql_password }}"
 
 letsencrypt_dns_gandi_api_key: "{{ vault_dns_gandi_api_key }}"
 letsencrypt_dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"
