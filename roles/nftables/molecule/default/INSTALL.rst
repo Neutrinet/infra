@@ -6,7 +6,7 @@ Requirements
 ============
 
 * Vagrant
-* Virtualbox, Parallels, VMware Fusion, VMware Workstation or VMware Desktop
+* Virtualbox
 
 Install
 =======

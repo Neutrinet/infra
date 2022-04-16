@@ -5,8 +5,8 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-grav-molecule
-    box: debian/buster64
+  - name: bullseye-grav-molecule
+    box: debian/bullseye64
     cpu: 2
     memory: 512
     interfaces:

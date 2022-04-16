@@ -5,8 +5,8 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-alertmanager-molecule
-    box: debian/buster64
+  - name: bullseye-alertmanager-molecule
+    box: debian/bullseye64
     cpu: 2
     memory: 1024
     interfaces:
