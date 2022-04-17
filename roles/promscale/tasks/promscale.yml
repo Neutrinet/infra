@@ -69,6 +69,8 @@
   when: not timescaledb_initialized
 
 - name: Configuration de la durée de rétention
+  # Note: Due to the SELECT query, we don't get any information when the
+  # retention period is modified. In that sense, this task isn't idempotent.
   postgresql_query:
     db: "{{ promscale_postgresql_database }}"
     query: select prom_api.set_default_retention_period('{{ promscale_retention }}');
