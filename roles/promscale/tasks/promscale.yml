@@ -71,7 +71,7 @@
 - name: Configuration de la durée de rétention
   postgresql_query:
     db: "{{ promscale_postgresql_database }}"
-    query: select set_default_retention_period('{{ promscale_retention }}');
+    query: select prom_api.set_default_retention_period('{{ promscale_retention }}');
   become_user: postgres
 
 - name: Activation de l'extension Promscale

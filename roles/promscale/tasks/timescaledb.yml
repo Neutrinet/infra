@@ -16,7 +16,7 @@
 
 - name: Optimisation de PostgreSQL pour TimescaleDB
   command:
-    cmd: timescaledb-tune --yes
+    cmd: timescaledb-tune --yes --memory={{ timescaledb_memory_limit }} --cpus={{ timescaledb_cpu_limit }}
   register: _timescaledb_tuned
   changed_when: "'updated' in _timescaledb_tuned.stderr"
   notify: restart postgresql

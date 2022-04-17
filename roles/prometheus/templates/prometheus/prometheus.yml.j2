@@ -21,6 +21,15 @@ remote_write:
       username: {{ prometheus_promscale_username | to_json }}
       password: {{ prometheus_promscale_password | string | to_json }}
 {% endif %}
+    remote_timeout: 30s
+    queue_config:
+      capacity: 10000
+      max_samples_per_send: 3000
+      batch_send_deadline: 10s
+      min_shards: 4
+      max_shards: 200
+      min_backoff: 100ms
+      max_backoff: 10s
 
 {% if prometheus_promscale_enabled %}
 remote_read:

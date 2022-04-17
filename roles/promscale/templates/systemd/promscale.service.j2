@@ -11,7 +11,7 @@ Type=simple
 User=promscale
 Group=promscale
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart=/usr/local/bin/promscale --config /etc/promscale/config.yml
+ExecStart=/usr/local/bin/promscale --config /etc/promscale/config.yml --cache.memory-target {{ promscale_memory_limit }}
 Restart=always
 WorkingDirectory=/etc/promscale
 
