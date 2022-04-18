@@ -1,0 +1,44 @@
+bird_local_ipv4: "80.67.181.18"
+bird_local_ipv6: "2001:0913:1000:20::62"
+bird_routinator_1: "2001:0913:1000:20::61"
+bird_routinator_2: "2001:0913:1000:20::62"
+
+bird_peers_upstreams:
+  - asn: 204059
+    description: "Edge 01"
+    location: "internal"
+    ipv4:
+      type_export: core
+      type_import: core
+      ip: 10.0.20.61
+    ipv6:
+      type_export: core
+      type_import: core
+      ip: 2001:0913:1000:20::61
+
+  - asn: 204059
+    description: "Edge 02"
+    location: "internal"
+    ipv4:
+      type_export: core
+      type_import: core
+      ip: 10.0.20.62
+    ipv6:
+      type_export: core
+      type_import: core
+      ip: 2001:0913:1000:20::62
+
+  - asn: 204059
+    description: "Core 02"
+    location: "internal"
+    ipv4:
+      type_export: edge
+      type_import: edge
+      ip: 10.0.20.62
+    ipv6:
+      type_export: edge
+      type_import: edge
+      ip: 2001:0913:1000:20::62
+
+
+bird_peers_downstreams: []

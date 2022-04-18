@@ -1,28 +1,342 @@
-{% if 'ipv4' in peer %}
-protocol bgp {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv4.type | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_v4 {
-	neighbor {{ peer.ipv4.ip }} as {{ peer.asn }};
-	local as my_asn;
+{% if "ipv4" in peer %}
+filter {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv4.type_import | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_import_v4 {
+{% if peer.asn != 6696 and (peer.ipv4.type_import == "transit" or peer.ipv4.type_import == "peering" or peer.ipv4.type_import == "route-server") %}
+   if ddos_telia_protection then reject;
+{% endif %}
 
-	description "[{{ peer.location }}] {{ peer.ipv4.type }} | {{ peer.description }} ({{ peer.asn }})";
+{% if peer.ipv4.type_import == "transit" or peer.ipv4.type_import == "route-server" or peer.ipv4.type_import == "peering" %}
+   bgp_large_community.delete([(my_asn, 0, *)]);
 
-	ipv4 {
-		import where bgp_import(4, {{ peer.asn }}, "{{ peer.ipv4.type }}", "{{ peer.location }}");
-		export where bgp_export(4, {{ peer.asn }}, "{{ peer.ipv4.type }}", "{{ peer.location }}");
-		next hop self;
-	};
+   if reject_bogon_asns("import", "{{ peer.location }}")           then reject;
+   if reject_long_aspaths("import", "{{ peer.location }}")         then reject;
+   if reject_v4_bogon_prefixes("import", "{{ peer.location }}")    then reject;
+   if reject_v4_small_prefixes("import", "{{ peer.location }}")    then reject;
+   if reject_v4_default_route("import", "{{ peer.location }}")     then reject;
+   if reject_v4_invalid_rpki("import", "{{ peer.location }}")      then reject;
+
+   bgp_large_community.add((my_asn, {{ peer.asn }}, bgp_community_calcul("{{ peer.ipv4.type_import }}", "{{ peer.location }}")));
+   bgp_large_community.add((my_asn, 0, 10));
+
+{% if peer.ipv4.type_import == "transit" %}
+   bgp_local_pref = 101;
+{% elif  peer.ipv4.type_import == "peering" %}
+   bgp_local_pref = 150;
+{% elif  peer.ipv4.type_import == "route-server" %}
+   bgp_local_pref = 151;
+{% endif %}
+
+   accept;
+{% elif  peer.ipv4.type_import == "direct_connect" %}
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+
+   reject;
+{% elif  peer.ipv4.type_import == "full_view" %}
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+
+   if (bgp_large_community ~ [(my_asn, 0, 10)]) then {
+      if reject_bogon_asns("import", "{{ peer.location }}")           then reject;
+      if reject_long_aspaths("import", "{{ peer.location }}")         then reject;
+      if reject_v4_bogon_prefixes("import", "{{ peer.location }}")    then reject;
+      if reject_v4_small_prefixes("import", "{{ peer.location }}")    then reject;
+      if reject_v4_default_route("import", "{{ peer.location }}")     then reject;
+      if reject_v4_invalid_rpki("import", "{{ peer.location }}")      then reject;
+
+      accept;
+   }
+
+   reject;
+{% elif  peer.ipv4.type_import == "direct_network" %}
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+
+   if (bgp_large_community ~ [(my_asn, 0, 20)]) then {
+      if reject_bogon_asns("import", "{{ peer.location }}")           then reject;
+      if reject_long_aspaths("import", "{{ peer.location }}")         then reject;
+      if reject_v4_bogon_prefixes("import", "{{ peer.location }}")    then reject;
+      if reject_v4_small_prefixes("import", "{{ peer.location }}")    then reject;
+      if reject_v4_default_route("import", "{{ peer.location }}")     then reject;
+      if reject_v4_invalid_rpki("import", "{{ peer.location }}")      then reject;
+
+      accept;
+   }
+
+   reject;
+{% endif %}
+}
+
+filter {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv4.type_export | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_export_v4 {
+{% if peer.asn != 6696 and (peer.ipv4.type_import == "transit" or peer.ipv4.type_import == "peering" or peer.ipv4.type_import == "route-server") %}
+
+   if ddos_telia_protection then reject;
+{% endif %}
+
+{% if peer.ipv4.type_export == "transit" or peer.ipv4.type_import == "route-server" or peer.ipv4.type_import == "peering" %}
+   bgp_large_community.delete([(my_asn, 0, *)]);
+
+   if (bgp_large_community ~ [(my_asn, 0, 20)] || proto = "neutrinet_v4") then {
+      if reject_bogon_asns("export", "{{ peer.location }}")           then reject;
+      if reject_long_aspaths("export", "{{ peer.location }}")         then reject;
+      if reject_v4_bogon_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v4_small_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v4_default_route("export", "{{ peer.location }}")     then reject;
+      if bgp_large_community ~ [(my_asn, 0, 20)] && reject_v4_invalid_rpki("export", "{{ peer.location }}") then reject;
+   }
+   else reject;
+
+   bgp_large_community.add((my_asn, {{ peer.asn }}, bgp_community_calcul("{{ peer.ipv4.type_import }}", "{{ peer.location }}")));
+
+{% if peer.asn == 5406 or peer.asn == 35137 %}
+   bgp_community.add((0, 6696));
+   bgp_community.add((0, 6939));
+{% endif %}
+{% if peer.asn == 6696 %}
+   if ddos_telia_protection then bgp_community.add((6696, 777));
+{% endif %}
+
+   accept;
+{% elif  peer.ipv4.type_export == "direct_connect" %}
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+   if source = RTS_DEVICE then {
+      bgp_large_community.add((my_asn, 0, 50));
+      bgp_local_pref = 190;
+
+      accept;
+   }
+
+   reject;
+{% elif  peer.ipv4.type_export == "full_view" %}
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+   if source = RTS_DEVICE then {
+      bgp_large_community.add((my_asn, 0, 50));
+      bgp_local_pref = 190;
+
+      accept;
+   }
+   if (bgp_large_community ~ [(my_asn, 0, 10)]) then {
+      if reject_bogon_asns("export", "{{ peer.location }}")           then reject;
+      if reject_long_aspaths("export", "{{ peer.location }}")         then reject;
+      if reject_v4_bogon_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v4_small_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v4_default_route("export", "{{ peer.location }}")     then reject;
+      if reject_v4_invalid_rpki("export", "{{ peer.location }}")      then reject;
+
+      accept;
+   }
+
+   reject;
+{% elif  peer.ipv4.type_export == "direct_network" %}
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+   if source = RTS_DEVICE then {
+      bgp_large_community.add((my_asn, 0, 50));
+      bgp_local_pref = 190;
+
+      accept;
+   }
+
+   if (bgp_large_community ~ [(my_asn, 0, 20)]) then {
+      if reject_bogon_asns("export", "{{ peer.location }}")           then reject;
+      if reject_long_aspaths("export", "{{ peer.location }}")         then reject;
+      if reject_v4_bogon_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v4_small_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v4_default_route("export", "{{ peer.location }}")     then reject;
+      if reject_v4_invalid_rpki("export", "{{ peer.location }}")      then reject;
+
+      accept;
+   }
+
+   reject;
+{% endif %}
+}
+
+
+protocol bgp {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_v4 {
+   neighbor {{ peer.ipv4.ip }} as {{ peer.asn }};
+   local as my_asn;
+{% if "password" in peer.ipv4 %}
+   password "{{ peer.ipv4.password }}";
+{% endif %}
+   description "[{{ peer.location }}] {{ peer.description }} ({{ peer.asn }})";
+
+   default bgp_local_pref 100;
+
+   ipv4 {
+      import filter {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv4.type_import | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_import_v4;
+      export filter {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv4.type_export | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_export_v4;
+
+      next hop self;
+   };
 }
 {% endif %}
-{% if 'ipv6' in peer %}
-protocol bgp {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv6.type  | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_v6 {
-	neighbor {{ peer.ipv6.ip }} as {{ peer.asn }};
-	local as my_asn;
 
-	description "[{{ peer.location }}] {{ peer.ipv6.type }} | {{ peer.description }} ({{ peer.asn }})";
+{% if "ipv6" in peer %}
+filter {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv6.type_import | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_import_v6 {
+{% if peer.asn != 6696 and (peer.ipv6.type_import == "transit" or peer.ipv6.type_import == "peering" or peer.ipv6.type_import == "route-server") %}
+   if ddos_telia_protection then reject;
+{% endif %}
 
-	ipv6 {
-		import where bgp_import(6, {{ peer.asn }}, "{{ peer.ipv6.type }}", "{{ peer.location }}");
-		export where bgp_export(6, {{ peer.asn }}, "{{ peer.ipv6.type }}", "{{ peer.location }}");
-		next hop self;
-	};
+{% if peer.ipv6.type_import == "transit" or peer.ipv6.type_import == "route-server" or peer.ipv6.type_import == "peering" %}
+   bgp_large_community.delete([(my_asn, 0, *)]);
+
+   if reject_bogon_asns("import", "{{ peer.location }}")           then reject;
+   if reject_long_aspaths("import", "{{ peer.location }}")         then reject;
+   if reject_v6_bogon_prefixes("import", "{{ peer.location }}")    then reject;
+   if reject_v6_small_prefixes("import", "{{ peer.location }}")    then reject;
+   if reject_v6_default_route("import", "{{ peer.location }}")     then reject;
+   if reject_v6_invalid_rpki("import", "{{ peer.location }}")      then reject;
+
+   bgp_large_community.add((my_asn, {{ peer.asn }}, bgp_community_calcul("{{ peer.ipv6.type_import }}", "{{ peer.location }}")));
+   bgp_large_community.add((my_asn, 0, 10));
+
+{% if peer.ipv6.type_import == "transit" %}
+   bgp_local_pref = 101;
+{% elif  peer.ipv6.type_import == "peering" %}
+   bgp_local_pref = 150;
+{% elif  peer.ipv6.type_import == "route-server" %}
+   bgp_local_pref = 151;
+{% endif %}
+
+   accept;
+{% elif  peer.ipv6.type_import == "direct_connect" %}
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then {
+      accept;
+   }
+
+   reject;
+{% elif  peer.ipv6.type_import == "full_view" %}
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+
+   if (bgp_large_community ~ [(my_asn, 0, 10)]) then {
+      if reject_bogon_asns("import", "{{ peer.location }}")           then reject;
+      if reject_long_aspaths("import", "{{ peer.location }}")         then reject;
+      if reject_v6_bogon_prefixes("import", "{{ peer.location }}")    then reject;
+      if reject_v6_small_prefixes("import", "{{ peer.location }}")    then reject;
+      if reject_v6_default_route("import", "{{ peer.location }}")     then reject;
+      if reject_v6_invalid_rpki("import", "{{ peer.location }}")      then reject;
+      accept;
+   }
+
+   reject;
+{% elif  peer.ipv6.type_import == "direct_network" %}
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+
+   if (bgp_large_community ~ [(my_asn, 0, 20)]) then {
+      if reject_bogon_asns("import", "{{ peer.location }}")           then reject;
+      if reject_long_aspaths("import", "{{ peer.location }}")         then reject;
+      if reject_v6_bogon_prefixes("import", "{{ peer.location }}")    then reject;
+      if reject_v6_small_prefixes("import", "{{ peer.location }}")    then reject;
+      if reject_v6_default_route("import", "{{ peer.location }}")     then reject;
+      if reject_v6_invalid_rpki("import", "{{ peer.location }}")      then reject;
+      accept;
+   }
+
+   reject;
+{% endif %}
+}
+
+filter {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv6.type_export | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_export_v6 {
+{% if peer.asn != 6696 and (peer.ipv6.type_import == "transit" or peer.ipv6.type_import == "peering" or peer.ipv6.type_import == "route-server") %}
+   if ddos_telia_protection then reject;
+{% endif %}
+
+{% if peer.ipv6.type_export == "transit" or peer.ipv6.type_import == "route-server" or peer.ipv6.type_import == "peering" %}
+   bgp_large_community.delete([(my_asn, 0, *)]);
+
+   if (bgp_large_community ~ [(my_asn, 0, 20)] || proto = "neutrinet_v6") then {
+      if reject_bogon_asns("export", "{{ peer.location }}")           then reject;
+      if reject_long_aspaths("export", "{{ peer.location }}")         then reject;
+      if reject_v6_bogon_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v6_small_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v6_default_route("export", "{{ peer.location }}")     then reject;
+      if bgp_large_community ~ [(my_asn, 0, 20)] && reject_v6_invalid_rpki("export", "{{ peer.location }}")      then reject;
+   }
+   else reject;
+
+   bgp_large_community.add((my_asn, {{ peer.asn }}, bgp_community_calcul("{{ peer.ipv6.type_import }}", "{{ peer.location }}")));
+
+
+{% if peer.asn == 5406 or peer.asn == 35137 %}
+   bgp_community.add((0, 6696));
+   bgp_community.add((0, 6939));
+{% endif %}
+{% if peer.asn == 6696 %}
+   if ddos_telia_protection then bgp_community.add((6696, 777));
+{% endif %}
+
+   accept;
+{% elif  peer.ipv6.type_export == "direct_connect" %}
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+   if source = RTS_DEVICE then {
+      bgp_large_community.add((my_asn, 0, 50));
+      bgp_local_pref = 190;
+
+      accept;
+   }
+
+   reject;
+{% elif  peer.ipv6.type_export == "full_view" %}
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+   if source = RTS_DEVICE then {
+      bgp_large_community.add((my_asn, 0, 50));
+      bgp_local_pref = 190;
+
+      accept;
+   }
+   if (bgp_large_community ~ [(my_asn, 0, 10)]) then {
+      if reject_bogon_asns("export", "{{ peer.location }}")           then reject;
+      if reject_long_aspaths("export", "{{ peer.location }}")         then reject;
+      if reject_v6_bogon_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v6_small_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v6_default_route("export", "{{ peer.location }}")     then reject;
+      if reject_v6_invalid_rpki("export", "{{ peer.location }}")      then reject;
+
+      accept;
+   }
+
+   reject;
+{% elif  peer.ipv6.type_export == "direct_network" %}
+   if (bgp_large_community ~ [(my_asn, 0, 51)]) then accept;
+   if source = RTS_DEVICE then {
+      bgp_large_community.add((my_asn, 0, 50));
+      bgp_local_pref = 190;
+
+      accept;
+   }
+   if (bgp_large_community ~ [(my_asn, 0, 20)]) then {
+      if reject_bogon_asns("export", "{{ peer.location }}")           then reject;
+      if reject_long_aspaths("export", "{{ peer.location }}")         then reject;
+      if reject_v6_bogon_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v6_small_prefixes("export", "{{ peer.location }}")    then reject;
+      if reject_v6_default_route("export", "{{ peer.location }}")     then reject;
+      if reject_v6_invalid_rpki("export", "{{ peer.location }}")      then reject;
+
+      accept;
+   }
+
+   reject;
+{% endif %}
+}
+
+
+protocol bgp {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_v6 {
+   neighbor {{ peer.ipv6.ip }} as {{ peer.asn }};
+   local as my_asn;
+{% if "password" in peer.ipv6 %}
+   password "{{ peer.ipv6.password }}";
+{% endif %}
+   description "[{{ peer.location }}] {{ peer.description }} ({{ peer.asn }})";
+
+   default bgp_local_pref 100;
+
+   ipv6 {
+      import filter {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv6.type_import | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_import_v6;
+      export filter {{ peer.location | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.ipv6.type_export | lower  | replace(' ', '_') | replace('-', '_') }}_{{ peer.description | lower  | replace(' ', '_') | replace('-', '_') }}_export_v6;
+
+      next hop self;
+   };
 }
 {% endif %}

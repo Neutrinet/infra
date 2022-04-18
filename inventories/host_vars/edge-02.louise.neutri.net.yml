@@ -1,3 +1,197 @@
 sshguard_whitelist:
   - '2001:0913:1000:0010::61/128'
   - '2001:0913:1000:0010::62/128'
+
+routinator_listen_rtr: "[2001:0913:1000:20::62]:3323"
+
+cymru_password_v4: "jx4hwBjdZd"
+cymru_password_v6: "P682sUOTKb"
+cymru_ip_v4: "38.229.50.81"
+cymru_ip_v6: "2604:8800:50::38:229:50:81"
+
+bird_local_ipv4: "80.67.181.2"
+bird_local_ipv6: "2001:913:1000:100::2"
+bird_routinator_1: "2001:913:1000:20::61"
+bird_routinator_2: "2001:913:1000:20::62"
+
+bird_peers_upstreams:
+  - asn: 6696
+    description: "Verixi"
+    location: "private"
+    ipv4:
+      type_export: transit
+      type_import: transit
+      ip: 62.112.29.90
+    ipv6:
+      type_export: transit
+      type_import: transit
+      ip: 2a00:1528:3201:5::25
+
+  - asn: 35137
+    description: "BelgiumIX 01"
+    location: "belgiumix"
+    ipv4:
+      type_export: route-server
+      type_import: route-server
+      ip: 185.1.127.2
+      password: jaTqsjV5
+    ipv6:
+      type_export: route-server
+      type_import: route-server
+      ip: 2001:7f8:d2::2
+      password: jaTqsjV5
+
+  - asn: 35137
+    description: "BelgiumIX 02"
+    location: "belgiumix"
+    ipv4:
+      type_export: route-server
+      type_import: route-server
+      ip: 185.1.127.3
+      password: jaTqsjV5
+    ipv6:
+      type_export: route-server
+      type_import: route-server
+      ip: 2001:7f8:d2::3
+      password: jaTqsjV5
+
+  - asn: 6939
+    description: "Hurricane Electric"
+    location: "belgiumix"
+    ipv4:
+      type_export: peering
+      type_import: peering
+      ip: 185.1.127.23
+    ipv6:
+      type_export: transit
+      type_import: transit
+      ip: 2001:7f8:d2::23
+
+  - asn: 13335
+    description: "CloudFlare"
+    location: "belgiumix"
+    ipv4:
+      type_export: peering
+      type_import: peering
+      ip: 185.1.127.13
+    ipv6:
+      type_export: peering
+      type_import: peering
+      ip: 2001:7f8:d2::13
+
+  - asn: 16276
+    description: "OVHcloud"
+    location: "belgiumix"
+    ipv4:
+      type_export: peering
+      type_import: peering
+      ip: 185.1.127.25
+    ipv6:
+      type_export: peering
+      type_import: peering
+      ip: 2001:7f8:d2::25
+
+  - asn: 48408
+    description: Localitel
+    ipv4:
+      ip: 185.1.127.6
+      type_export: peering
+      type_import: peering
+    ipv6:
+      ip: 2001:7f8:d2::6
+      type_export: peering
+      type_import: peering
+    location: belgiumix
+
+  - asn: 59943
+    description: LEVEL27
+    ipv4:
+      ip: 185.1.127.8
+      type_export: peering
+      type_import: peering
+    ipv6:
+      ip: 2001:7f8:d2::8
+      type_export: peering
+      type_import: peering
+    location: belgiumix
+
+  - asn: 47688
+    description: Fastic
+    ipv4:
+      ip: 185.1.127.20
+      type_export: peering
+      type_import: peering
+    ipv6:
+      ip: 2001:7f8:d2::20
+      type_export: peering
+      type_import: peering
+    location: belgiumix
+
+
+bird_peers_downstreams:
+  - asn: 204059
+    description: "Edge 01"
+    location: "internal"
+    ipv4:
+      type_export: direct_connect
+      type_import: direct_connect
+      ip: 10.0.20.61
+    ipv6:
+      type_export: direct_connect
+      type_import: direct_connect
+      ip: 2001:0913:1000:20::61
+  - asn: 204059
+    description: "Core 01"
+    location: "internal"
+    ipv4:
+      type_export: full_view
+      type_import: direct_connect
+      ip: 10.0.20.71
+    ipv6:
+      type_export: full_view
+      type_import: direct_connect
+      ip: 2001:0913:1000:20::71
+  - asn: 204059
+    description: "Core 02"
+    location: "internal"
+    ipv4:
+      type_export: full_view
+      type_import: direct_connect
+      ip: 10.0.20.72
+    ipv6:
+      type_export: full_view
+      type_import: direct_connect
+      ip: 2001:0913:1000:20::72
+  - asn: 204059
+    description: "Core 03"
+    location: "internal"
+    ipv4:
+      type_export: full_view
+      type_import: direct_connect
+      ip: 10.0.20.73
+    ipv6:
+      type_export: full_view
+      type_import: direct_connect
+      ip: 2001:0913:1000:20::73
+  - asn: 204059
+    description: "Core 04"
+    location: "internal"
+    ipv4:
+      type_export: full_view
+      type_import: direct_connect
+      ip: 10.0.20.74
+    ipv6:
+      type_export: full_view
+      type_import: direct_connect
+      ip: 2001:0913:1000:20::74
+  - asn: 204059
+    description: "ISPNG"
+    location: "internal"
+    ipv4:
+      type_export: full_view
+      type_import: direct_connect
+      ip: 10.0.20.102
+    ipv6:
+      type_export: full_view
+      type_import: direct_connect
+      ip: 2001:0913:1000:20::102

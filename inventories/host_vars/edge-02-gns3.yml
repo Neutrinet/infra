@@ -1,0 +1,77 @@
+bird_local_ipv4: "80.67.181.2"
+bird_local_ipv6: "2001:913:1000:100::2"
+bird_routinator_1: "2001:913:1000:100::1"
+bird_routinator_2: "2001:913:1000:100::2"
+routinator_listen_rtr: "[2001:913:1000:100::2]:3323"
+
+bird_peers_upstreams:
+  - asn: 6696
+    description: "Verixi"
+    location: "private"
+    ipv4:
+      type_export: transit
+      type_import: transit
+      ip: 62.112.29.90
+    ipv6:
+      type_export: transit
+      type_import: transit
+      ip: 2a00:1528:3201:5::25
+
+  - asn: 35137
+    description: "BelgiumIX"
+    location: "belgiumix"
+    ipv4:
+      type_export: route-server
+      type_import: route-server
+      ip: 185.1.127.2
+    ipv6:
+      type_export: route-server
+      type_import: route-server
+      ip: 2001:7f8:d2::2
+
+  - asn: 6939
+    description: "Hurricane Electric"
+    location: "belgiumix"
+    ipv4:
+      type_export: peering
+      type_import: peering
+      ip: 185.1.127.23
+    ipv6:
+      type_export: transit
+      type_import: transit
+      ip: 2001:7f8:d2::23
+
+bird_peers_downstreams:
+  - asn: 204059
+    description: "Edge 01"
+    location: "internal"
+    ipv4:
+      type_export: edge
+      type_import: edge
+      ip: 10.0.20.61
+    ipv6:
+      type_export: edge
+      type_import: edge
+      ip: 2001:0913:1000:20::61
+  - asn: 204059
+    description: "Core 01"
+    location: "internal"
+    ipv4:
+      type_export: core
+      type_import: core
+      ip: 10.0.20.71
+    ipv6:
+      type_export: core
+      type_import: core
+      ip: 2001:0913:1000:20::71
+  - asn: 204059
+    description: "Core 02"
+    location: "internal"
+    ipv4:
+      type_export: core
+      type_import: core
+      ip: 10.0.20.72
+    ipv6:
+      type_export: core
+      type_import: core
+      ip: 2001:0913:1000:20::72

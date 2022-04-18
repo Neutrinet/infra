@@ -5,7 +5,6 @@
     owner: bird
     group: bird
     mode: "u=rw,go="
-    validate: birdc 'configure check "%s"'
   notify: reload bird
   loop: "{{ bird_peers_upstreams }}"
   loop_control:
@@ -20,10 +19,29 @@
     owner: bird
     group: bird
     mode: "u=rw,go="
-    validate: birdc 'configure check "%s"'
   notify: reload bird
   loop: "{{ bird_peers_downstreams }}"
   loop_control:
     loop_var: peer
     label: "[{{ peer.location }}] {{ peer.description }} {{ peer.asn }}"
+  tags: ['bird2_peers']
+#
+#- name: Ajout des sessions cymru
+#  template:
+#    src: cymru.conf.j2
+#    dest: "/etc/bird/peers/upstreams/cymru.conf"
+#    owner: bird
+#    group: bird
+#    mode: "u=rw,go="
+#  notify: reload bird
+#  tags: ['bird2_peers']
+#
+- name: Ajout de la source kernel
+  copy:
+    src: kernel.conf
+    dest: "/etc/bird/peers/downstreams/kernel.conf"
+    owner: bird
+    group: bird
+    mode: "u=rw,go="
+  notify: reload bird
   tags: ['bird2_peers']

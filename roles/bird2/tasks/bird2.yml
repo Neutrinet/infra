@@ -7,12 +7,12 @@
   file:
     path: "/etc/bird/{{ item }}"
     state: directory
-    recurse: true
     owner: bird
     group: bird
     mode: "u=rwx,go="
   with_items:
     - conf.d
+    - peers
     - peers/downstreams
     - peers/upstreams
 
@@ -23,7 +23,6 @@
     owner: bird
     group: bird
     mode: "u=rw,go="
-    validate: birdc 'configure check "%s"'
   notify: reload bird
   with_items:
     - 00_bgp_filter.conf
@@ -31,12 +30,11 @@
     - 00_bgp_filter_v6.conf
     - 00_bgp_match_v4.conf
     - 00_bgp_match_v6.conf
+    - 05_bgp_community_calcul.conf
     - 10_device.conf
     - 10_direct.conf
     - 10_static.conf
     - 20_bgp_rpki.conf
-    - 90_bgp_function_export.conf
-    - 90_bgp_function_import.conf
 
 - name: Genéré le fichier de configuration de base
   template:
@@ -45,7 +43,6 @@
     owner: bird
     group: bird
     mode: "u=rw,go="
-    validate: birdc 'configure check "%s"'
   notify: reload bird
 
 - name: Activation de bird au démarrage

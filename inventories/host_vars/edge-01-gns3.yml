@@ -1,0 +1,54 @@
+bird_local_ipv4: "80.67.181.1"
+bird_local_ipv6: "2001:913:1000:100::1"
+bird_routinator_1: "2001:913:1000:100::1"
+bird_routinator_2: "2001:913:1000:100::2"
+routinator_listen_rtr: "[2001:913:1000:100::1]:3323"
+
+bird_peers_upstreams:
+  - asn: 6696
+    description: "Verixi"
+    location: "private"
+    ipv4:
+      type_export: transit
+      type_import: transit
+      ip: 62.112.29.66
+    ipv6:
+      type_export: transit
+      type_import: transit
+      ip: 2a00:1528:3201:5::21
+
+  - asn: 5406
+    description: "BNIX"
+    location: "bnix"
+    ipv4:
+      type_export: route-server
+      type_import: route-server
+      ip: 194.53.172.2
+    ipv6:
+      type_export: route-server
+      type_import: route-server
+      ip: 2001:7f8:26::a500:5406:2
+
+bird_peers_downstreams:
+  - asn: 204059
+    description: "Edge 02"
+    location: "internal"
+    ipv4:
+      type_export: edge
+      type_import: edge
+      ip: 10.0.20.62
+    ipv6:
+      type_export: edge
+      type_import: edge
+      ip: 2001:0913:1000:20::62
+  - asn: 204059
+    description: "Core 01"
+    location: "internal"
+    ipv4:
+      type_export: core
+      type_import: core
+      ip: 10.0.20.71
+    ipv6:
+      type_export: core
+      type_import: core
+      ip: 2001:0913:1000:20::71

@@ -1,0 +1,8 @@
+---
+# Création de bird2
+- hosts: bird2
+  become: true
+
+
+  roles:
+    - bird2

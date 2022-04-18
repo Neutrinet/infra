@@ -1,0 +1,38 @@
+filter cymru_bogons_import
+{
+    if (bgp_community ~ [(65332, 888)]) then {
+        bgp_large_community.add((my_asn, 0, 666));
+
+        dest = RTD_BLACKHOLE;
+        bgp_local_pref = 900;
+        accept;
+    }
+    reject;
+}
+
+protocol bgp bogons_cymru_v4 {
+    description "Cymru Bogons";
+    multihop 255;
+    password "{{ cymru_password_v4 }}";
+    local as my_asn;
+    neighbor {{ cymru_ip_v4 }} as 65332;
+    source address {{ bird_local_ipv4 }};
+    ipv4 {
+        import filter cymru_bogons_import;
+        export none;
+    };
+}
+
+
+protocol bgp bogons_cymru_v6 {
+    description "Cymru Bogons RS1 v6";
+    multihop 255;
+    password "{{ cymru_password_v6 }}";
+    local as my_asn;
+    neighbor {{ cymru_ip_v6 }} as 65332;
+    source address {{ bird_local_ipv6 }};
+    ipv6 {
+        import filter cymru_bogons_import;
+        export none;
+    };
+}

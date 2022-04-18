@@ -1,0 +1,12 @@
+---
+# Déploiement des haproxy
+- hosts: keepalived
+  become: true
+
+  pre_tasks:
+    - name: Mise à jour du cache APT
+      apt:
+        update_cache: true
+
+  roles:
+    - keepalived

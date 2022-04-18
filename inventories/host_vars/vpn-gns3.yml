@@ -1,0 +1,19 @@
+bird_local_ipv4: "80.67.181.129"
+bird_local_ipv6: "2001:913:1fff:ff00::1"
+bird_routinator_1: "2001:913:1000:100::1"
+bird_routinator_2: "2001:913:1000:100::2"
+
+bird_peers_upstreams:
+  - asn: 204059
+    description: "Core 01"
+    location: "internal"
+    ipv4:
+      type_export: core
+      type_import: none
+      ip: 80.67.181.18
+    ipv6:
+      type_export: core
+      type_import: none
+      ip: 2001:913:1000:200::18
+
+bird_peers_downstreams: []
