@@ -8,13 +8,13 @@ prometheus_telegraf_hosts:
 prometheus_promscale_enabled: true
 prometheus_remote_write_url: https://localhost:9201/write
 
-promscale_memory_limit: 1GB
-timescaledb_memory_limit: 2GB
-timescaledb_cpu_limit: 2
+promscale_memory_limit: 4GB
+timescaledb_memory_limit: 4GB
+timescaledb_cpu_limit: 4
 
 letsencrypt_domains_gandi:
   - neutrinet.be
-  - htz.neutri.net
+  - ovh.neutri.net
 
 haproxy:
   - hostname: grafana.neutrinet.be

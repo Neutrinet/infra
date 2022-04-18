@@ -5,4 +5,4 @@ db.name: "{{ promscale_postgresql_database  }}"
 db.user: "{{ promscale_postgresql_database }}"
 db.password: {{ promscale_postgresql_password | to_json }}
 web.listen-address: localhost:9201
-cache.memory-target: {{ promscale_memory_limit }}
+cache.memory-target: {{ promscale_memory_limit | human_to_bytes }}
