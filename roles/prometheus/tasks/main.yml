@@ -2,13 +2,6 @@
   import_tasks: user.yml
   tags: ['user']
 
-- name: Installation de Promscale
-  import_role:
-    name: promscale
-  vars:
-    promscale_postgresql_database: prometheus
-  tags: ['promscale']
-
 - name: Installation de Prometheus
   import_tasks: prometheus.yml
   tags: ['prometheus']

@@ -7,6 +7,10 @@ prometheus_telegraf_hosts:
 
 prometheus_promscale_enabled: true
 prometheus_remote_write_url: https://localhost:9201/write
+promscale_postgresql_database: prometheus
+
+postgresql_patroni_hosts: []
+postgresql_host: "{{ inventory_hostname }}"
 
 promscale_memory_limit: 4GB
 timescaledb_memory_limit: 4GB
@@ -23,14 +27,6 @@ haproxy:
     target_port: 3000
     healthcheck: true
     healthcheck_url: GET /api/health
-  - hostname: "{{ ansible_fqdn }}"
-    target:
-      - 127.0.0.1
-    target_port: 9090
-    healthcheck: true
-    healthcheck_url: GET /-/healthy
-    username: "{{ prometheus_username }}"
-    password: "{{ prometheus_password }}"
   - hostname: promscale.neutrinet.be
     target:
       - 127.0.0.1
@@ -48,6 +44,6 @@ probe_http_certs:
   - https://grafana.neutrinet.be:443
   - https://support.neutrinet.be:443
   - https://mail.neutri.net:443
-  - https://monitoring.htz.neutri.net:443
+  - https://promscale.htz.neutri.net:443
   - https://probe-01.first.neutri.net:443
   - https://probe-02.ovh.neutri.net:443
