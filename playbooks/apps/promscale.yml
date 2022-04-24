@@ -1,6 +1,6 @@
 ---
 # Déploiement de Prometheus
-- hosts: prometheus
+- hosts: promscale
   become: true
 
   pre_tasks:
@@ -9,4 +9,5 @@
         update_cache: true
 
   roles:
-    - prometheus
+    - promscale
+    - haproxy

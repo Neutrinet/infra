@@ -1,27 +1,21 @@
 {{ ansible_managed | comment }}
 
 [Unit]
-Description=Prometheus
+Description=TimescaleDB Promscale
+Documentation=https://github.com/timescale/promscale
 After=network.target
+After=postgresql.target
 
 [Service]
 Type=simple
-User=prometheus
-Group=prometheus
+User=promscale
+Group=promscale
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart=/usr/local/bin/prometheus \
-  --storage.tsdb.path={{ prometheus_storage_path }} \
-  --storage.tsdb.retention.time={{ prometheus_storage_retention }} \
-  --web.listen-address='localhost:9090' \
-{% if prometheus_promscale_enabled %}
-  --web.enable-remote-write-receiver \
-{% endif %}
-  --config.file=/etc/prometheus/prometheus.yml
+ExecStart=/usr/local/bin/promscale --config /etc/promscale/config.yml
 Restart=always
+WorkingDirectory=/etc/promscale
 
 # Systemd hardening
-ReadWritePaths={{ prometheus_storage_path }}
-
 CapabilityBoundingSet=
 LimitNOFILE=65000
 LockPersonality=true

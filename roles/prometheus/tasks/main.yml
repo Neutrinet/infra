@@ -1,8 +1,11 @@
-- import_tasks: user.yml
+- name: Création de l'utilisateur
+  import_tasks: user.yml
   tags: ['user']
 
-- import_tasks: prometheus.yml
+- name: Installation de Prometheus
+  import_tasks: prometheus.yml
   tags: ['prometheus']
 
-- import_tasks: cleanup.yml
+- name: Nettoyage des anciennes versions
+  import_tasks: cleanup.yml
   tags: ['cleanup']
