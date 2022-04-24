@@ -9,3 +9,4 @@ prometheus_promscale_password: neutrinet
 prometheus_remote_write_url: http://localhost:9201/write
 
 prometheus_storage_retention: 1w
+prometheus_storage_path: /var/lib/prometheus

@@ -6,7 +6,8 @@ prometheus_telegraf_hosts:
   - bour.louise.neutri.net
 
 prometheus_promscale_enabled: true
-prometheus_remote_write_url: https://localhost:9201/write
+prometheus_remote_write_url: http://localhost:9201/write
+prometheus_storage_path: /media/data/prometheus
 promscale_postgresql_database: prometheus
 
 postgresql_patroni_hosts: []
@@ -27,12 +28,12 @@ haproxy:
     target_port: 3000
     healthcheck: true
     healthcheck_url: GET /api/health
-  - hostname: promscale.neutrinet.be
+  - hostname: prometheus.neutrinet.be
     target:
       - 127.0.0.1
-    target_port: 9201
+    target_port: 9090
     healthcheck: true
-    healthcheck_url: GET /healthz
+    healthcheck_url: GET /-/healthy
     username: "{{ prometheus_promscale_username }}"
     password: "{{ prometheus_promscale_password }}"
 
