@@ -6,6 +6,7 @@ workflow:
 
 variables:
   PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
+  FF_USE_FASTZIP: "true"
 
 stages:
   - quality
