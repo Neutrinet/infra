@@ -1,13 +1,5 @@
 alertmanager_version: 0.23.0
 
-alertmanager_smtp_host: mail.neutri.net
-alertmanager_smtp_port: 587
-alertmanager_smtp_require_tls: true
-alertmanager_smtp_from: alertmanager@neutrinet.be
-alertmanager_smtp_to: alertmanager@neutrinet.be
-alertmanager_smtp_username: alertmanager@neutrinet.be
-alertmanager_smtp_password: "{{ vault_alertmanager_smtp_password }}"
-
 alertmanager_matrix_username: "neutribot"
 alertmanager_matrix_password: "{{ vault_alertmanager_matrix_password }}"
 alertmanager_matrix_host: matrix.domainepublic.net
