@@ -26,6 +26,7 @@ groups:
         expr: disk_used_percent > 80 and on (instance, host, device) predict_linear(disk_used_percent[2d], 7 * 24 * 3600) > 100
         labels:
           severity: warning
+          frequency: daily
         annotations:
           description: "Based on disk usage from last 2 days, the {{ $labels.host }} host's device {{ $labels.device }} mounted on \"{{ $labels.path }}\" will be full within the week (current = {{ humanize $value }}%)"
           summary: 'Disk full within the week (current = {{ humanize $value }}%)'
@@ -46,6 +47,7 @@ groups:
         expr: mem_used_percent > 80 and on (instance, host) predict_linear(mem_used_percent[2d], 7*24*3600) > 100
         labels:
           severity: warning
+          frequency: daily
         annotations:
           description: 'Based on memory usage from last 2 days, the host {{ $labels.host }} will be out of memory within the week (current = {{ humanize $value }}%)'
           summary: 'Memory full within the week (current = {{ humanize $value }}%)'
@@ -60,3 +62,15 @@ groups:
         annotations:
           description: 'CPU usage is higher than 90% (value = {{ humanize $value }}%)'
           summary: 'CPU usage is at {{ humanize $value }}%'
+
+  - name: Certificates
+    rules:
+      - alert: Certificate Expires Next Month
+        for: 5m
+        expr: x509_cert_expiry{organization=""} / 86400 < 30
+        labels:
+          severity: critical
+          frequency: daily
+        annotations:
+          description: 'Certificate for domain {{ $labels.common_name }} on host {{ $labels.host }} will expire in {{ $value }} days'
+          summary: 'Certificate for domain {{ $labels.common_name }} will expire within the month'
