@@ -98,3 +98,12 @@
     name: promscale
     state: started
     enabled: true
+
+- name: Ajout du job promscale dans Prometheus
+  copy:
+    src: prometheus/prometheus.yml
+    dest: /etc/prometheus/conf.d/prometheus.yml
+    owner: prometheus
+    group: prometheus
+    mode: "u=rw,go=r"
+  notify: reload prometheus

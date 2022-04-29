@@ -1,6 +1,6 @@
 ---
-# Déploiement des haproxy
-- hosts: haproxy
+# Déploiement des keepalived
+- hosts: keepalived
   become: true
 
   pre_tasks:
@@ -9,4 +9,4 @@
         update_cache: true
 
   roles:
-    - haproxy
+    - keepalived

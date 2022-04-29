@@ -8,3 +8,8 @@
     name: promscale
     daemon_reload: true
     state: restarted
+
+- name: reload prometheus
+  service:
+    name: prometheus
+    state: reloaded
