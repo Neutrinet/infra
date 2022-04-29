@@ -17,7 +17,7 @@ probe_http_urls:
     body: '"database_status":"OK","filestore_status":"OK","status":"OK"'
   - url: https://cube.neutrinet.be
   - url: https://ffdnapi.neutrinet.be/isp.json
-    body: '"website": "http://neutrinet.be"'
+    body: '"website": "https://neutrinet.be"'
   - name: https://files.neutrinet.be
     url: https://files.neutrinet.be/status.php
     body: '"productname":"Nextcloud"'
