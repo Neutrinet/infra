@@ -6,5 +6,3 @@ probe_http_certs:
   - https://grafana.neutrinet.be:443
   - https://support.neutrinet.be:443
   - https://mail.neutri.net:443
-  - https://probe-01.first.neutri.net:443
-  - https://probe-02.ovh.neutri.net:443
