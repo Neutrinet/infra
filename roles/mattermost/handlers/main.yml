@@ -1,13 +1,11 @@
-- name: reload systemd
-  systemd:
-    daemon_reload: true
-
 - name: restart mattermost
-  service:
+  systemd:
     name: mattermost
+    daemon_reload: true
     state: restarted
 
 - name: restart matterbridge
-  service:
+  systemd:
     name: matterbridge
+    daemon_reload: true
     state: restarted

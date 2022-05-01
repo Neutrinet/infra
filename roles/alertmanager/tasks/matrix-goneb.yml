@@ -41,8 +41,6 @@
 - name: Installation des dépendences de matrix-goneb
   apt:
     name: libolm-dev
-    # See https://github.com/matrix-org/go-neb/issues/338#issuecomment-707989819
-    default_release: "{{ (ansible_distribution_release == 'buster') | ternary('buster-backports',omit) }}"
     state: present
 
 - name: Compilation de matrix-goneb # noqa no-handler

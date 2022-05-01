@@ -5,8 +5,8 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-gitlab-runner-molecule
-    box: debian/buster64
+  - name: bullseye-gitlab-runner-molecule
+    box: debian/bullseye64
     cpu: 2
     memory: 1024
     interfaces:

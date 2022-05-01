@@ -5,8 +5,8 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-telegraf-molecule
-    box: debian/buster64
+  - name: bullseye-telegraf-molecule
+    box: debian/bullseye64
     cpu: 2
     memory: 512
 provisioner:

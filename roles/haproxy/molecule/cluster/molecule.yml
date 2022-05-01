@@ -5,16 +5,16 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-haproxy-01-molecule
-    box: debian/buster64
+  - name: bullseye-haproxy-01-molecule
+    box: debian/bullseye64
     cpu: 2
     memory: 512
     interfaces:
       - network_name: private_network
         ip: 172.29.129.11
         auto_config: true
-  - name: buster-haproxy-02-molecule
-    box: debian/buster64
+  - name: bullseye-haproxy-02-molecule
+    box: debian/bullseye64
     cpu: 2
     memory: 512
     interfaces:
