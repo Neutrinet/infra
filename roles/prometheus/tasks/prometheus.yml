@@ -79,7 +79,6 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
     - restart prometheus
 
 - name: Activation de Prometheus au démarrage

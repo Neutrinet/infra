@@ -1,0 +1,51 @@
+- name: Ajout de la clé GPG de TimescaleDB dans APT
+  apt_key:
+    url: https://packagecloud.io/timescale/timescaledb/gpgkey
+    state: present
+
+- name: Ajout du dépôt APT TimescaleDB
+  apt_repository:
+    repo: deb https://packagecloud.io/timescale/timescaledb/debian {{ ansible_distribution_release | lower }} main
+    filename: caddy-stable
+    state: present
+
+- name: Installation de TimescaleDB
+  package:
+    name: timescaledb-2-postgresql-{{ postgresql_major_version }}
+    state: present
+
+- name: Optimisation de PostgreSQL pour TimescaleDB
+  command:
+    cmd: timescaledb-tune --yes --memory={{ timescaledb_memory_limit }} --cpus={{ timescaledb_cpu_limit }}
+  register: _timescaledb_tuned
+  changed_when: "'updated' in _timescaledb_tuned.stderr"
+  notify: restart postgresql
+
+- name: Désactivation de la télémétrie de TimescaleDB
+  lineinfile:
+    dest: /etc/postgresql/{{ postgresql_major_version }}/main/postgresql.conf
+    insertafter: '^timescaledb\.'
+    regex: '^timescaledb\.telemetry_level'
+    line: timescaledb.telemetry_level = off
+  notify: restart postgresql
+
+- name: Trigger PostgreSQL handler
+  # We need to restart postgresql to apply the timescaledb extension
+  meta: flush_handlers
+
+- name: Configuration de la base de données PostgreSQL
+  import_role:
+    name: postgres_db
+  vars:
+    postgresql_db_name: "{{ promscale_postgresql_database }}"
+    postgresql_db_password: "{{ promscale_postgresql_password }}"
+    postgresql_db_role_attributes: CREATEROLE
+    postgresql_db_change_owner: true
+  tags: ['postgres']
+
+- name: Activation de l'extension TimescaleDB
+  postgresql_ext:
+    name: timescaledb
+    db: "{{ promscale_postgresql_database }}"
+    state: present
+  become_user: postgres

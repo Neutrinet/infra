@@ -7,7 +7,7 @@
     name: acl
     state: present
 
-- name: Création de la base de données PostgreSQL
+- name: Création de la base de données PostgreSQL {{ postgresql_db_name }}
   community.postgresql.postgresql_db:
     name: "{{ postgresql_db_name }}"
     state: present
@@ -20,6 +20,16 @@
     name: "{{ postgresql_db_name }}"
     password: "{{ postgresql_db_password }}"
     priv: ALL
+    role_attr_flags: "{{ postgresql_db_role_attributes }}"
   become_user: postgres
   delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
   no_log: true
+
+- name: Changement du propriétaire de la base de données
+  community.postgresql.postgresql_db:
+    db: "{{ postgresql_db_name }}"
+    owner: "{{ postgresql_db_name }}"
+    state: present
+  become_user: postgres
+  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
+  when: postgresql_db_change_owner

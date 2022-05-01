@@ -1,7 +1,12 @@
 prometheus_version: 2.33.3
-prometheus_federation_hosts:
-  - prometheus.example.com
 prometheus_telegraf_hosts: "{{ groups.all }}"
 prometheus_username: prometheus
 prometheus_password: neutrinet
-prometheus_storage_retention: 1y
+
+prometheus_promscale_enabled: true
+prometheus_promscale_username: promscale
+prometheus_promscale_password: neutrinet
+prometheus_remote_write_url: http://localhost:9201/write
+
+prometheus_storage_retention: 1w
+prometheus_storage_path: /var/lib/prometheus

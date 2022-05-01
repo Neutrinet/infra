@@ -54,15 +54,6 @@
     loop_var: alertmanager_bin
   notify: restart alertmanager
 
-- name: Configuration du template des notifications mail
-  copy:
-    src: alertmanager/email.tmpl
-    dest: /etc/alertmanager/templates/email.tmpl
-    owner: alertmanager
-    group: alertmanager
-    mode: "u=rw,go=r"
-  notify: reload alertmanager
-
 - name: Configuration d'Alertmanager
   template:
     src: alertmanager/alertmanager.yml.j2

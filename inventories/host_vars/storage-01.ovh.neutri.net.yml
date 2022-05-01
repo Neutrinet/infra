@@ -6,15 +6,20 @@ prometheus_telegraf_hosts:
   - bour.louise.neutri.net
 
 prometheus_promscale_enabled: true
-prometheus_remote_write_url: https://localhost:9201/write
+prometheus_remote_write_url: http://localhost:9201/write
+prometheus_storage_path: /media/data/prometheus
+promscale_postgresql_database: prometheus
 
-promscale_memory_limit: 1GB
-timescaledb_memory_limit: 2GB
-timescaledb_cpu_limit: 2
+postgresql_patroni_hosts: []
+postgresql_host: "{{ inventory_hostname }}"
+
+promscale_memory_limit: 4GB
+timescaledb_memory_limit: 4GB
+timescaledb_cpu_limit: 4
 
 letsencrypt_domains_gandi:
   - neutrinet.be
-  - htz.neutri.net
+  - ovh.neutri.net
 
 haproxy:
   - hostname: grafana.neutrinet.be
@@ -23,20 +28,12 @@ haproxy:
     target_port: 3000
     healthcheck: true
     healthcheck_url: GET /api/health
-  - hostname: "{{ ansible_fqdn }}"
+  - hostname: prometheus.neutrinet.be
     target:
       - 127.0.0.1
     target_port: 9090
     healthcheck: true
     healthcheck_url: GET /-/healthy
-    username: "{{ prometheus_username }}"
-    password: "{{ prometheus_password }}"
-  - hostname: promscale.neutrinet.be
-    target:
-      - 127.0.0.1
-    target_port: 9201
-    healthcheck: true
-    healthcheck_url: GET /healthz
     username: "{{ prometheus_promscale_username }}"
     password: "{{ prometheus_promscale_password }}"
 
@@ -48,6 +45,6 @@ probe_http_certs:
   - https://grafana.neutrinet.be:443
   - https://support.neutrinet.be:443
   - https://mail.neutri.net:443
-  - https://monitoring.htz.neutri.net:443
+  - https://promscale.htz.neutri.net:443
   - https://probe-01.first.neutri.net:443
   - https://probe-02.ovh.neutri.net:443
