@@ -58,7 +58,6 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
     - restart matterbridge
 
 - name: Activation de Matterbridge au démarrage

@@ -5,7 +5,7 @@
 
 - name: Téléchargement de la clé publique GPG de Mattermost
   uri:
-    url: https://keybase.io/mattermost/pgp_keys.asc
+    url: https://deb.packages.mattermost.com/pubkey.gpg
     return_content: true
   register: _mattermost_gpg_public_key_downloaded
 
@@ -159,7 +159,6 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
     - restart mattermost
 
 - name: Activation de Mattermost au démarrage
