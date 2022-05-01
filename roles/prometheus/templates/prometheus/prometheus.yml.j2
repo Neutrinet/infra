@@ -13,14 +13,12 @@ global:
   external_labels:
     monitor: {{ ansible_fqdn }}
 
+{% if prometheus_remote_write_url %}
 remote_write:
   - url: "{{ prometheus_remote_write_url }}"
-{% if not prometheus_promscale_enabled %}
-{# Unless we write to localhost, we need to authenticate to push metrics to remote storage #}
     basic_auth:
-      username: {{ prometheus_promscale_username | to_json }}
-      password: {{ prometheus_promscale_password | string | to_json }}
-{% endif %}
+      username: "{{ prometheus_username }}"
+      password: {{ prometheus_password | string | to_json }}
     remote_timeout: 30s
     queue_config:
       capacity: 10000
@@ -30,10 +28,11 @@ remote_write:
       max_shards: 200
       min_backoff: 100ms
       max_backoff: 10s
+{% endif %}
 
-{% if prometheus_promscale_enabled %}
+{% if prometheus_remote_read_url %}
 remote_read:
-  - url: "http://localhost:9201/read"
+  - url: "{{ prometheus_remote_read_url }}"
     read_recent: true
 {% endif %}
 
@@ -61,14 +60,6 @@ scrape_configs:
     static_configs:
       - targets:
           - localhost:9090
-
-{% if prometheus_promscale_enabled %}
-  # Grab metrics about promscale
-  - job_name: promscale
-    static_configs:
-      - targets:
-          - localhost:9201
-{% endif %}
 
 {% for host in prometheus_telegraf_hosts %}
   # Grab telegraf metrics from {{ host }}

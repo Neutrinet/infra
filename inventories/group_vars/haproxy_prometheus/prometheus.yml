@@ -1,0 +1,11 @@
+prometheus_telegraf_hosts:
+  - "{{ inventory_hostname }}"
+  - vpn.neutri.net
+  - topi.louise.neutri.net
+  - nam.louise.neutri.net
+  - bour.louise.neutri.net
+
+prometheus_remote_write_url: ""
+prometheus_remote_read_url: ""
+
+prometheus_storage_retention: 180d
