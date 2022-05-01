@@ -5,8 +5,8 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: bullseye-backoffice-molecule
-    box: debian/bullseye64
+  - name: buster-backoffice-molecule
+    box: debian/buster64
     cpu: 2
     memory: 512
     interfaces:
