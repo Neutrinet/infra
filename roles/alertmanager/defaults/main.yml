@@ -12,3 +12,5 @@ alertmanager_matrix_password: !vault |
 alertmanager_matrix_host: matrix.domainepublic.net
 alertmanager_matrix_room: "!wjECRmYYmDbBJcebBt:matrix.domainepublic.net"
 alertmanager_matrix_service: alertmanager_service
+
+alertmanager_prometheus_remote_hosts: "{{ groups.all }}"
