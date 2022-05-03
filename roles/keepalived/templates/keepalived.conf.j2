@@ -20,6 +20,8 @@ vrrp_instance VI_{{ instance.type }} {
   priority 100
   advert_int 1
 
+  unicast_src_ip {{ lookup('vars', 'ansible_default_' + instance.type).address }}
+
   unicast_peer {
 {% for ip in instance.addresses if ip not in lookup('vars', 'ansible_all_' + instance.type + '_addresses') %}
     {{ ip }}
