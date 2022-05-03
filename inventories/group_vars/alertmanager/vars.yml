@@ -4,3 +4,5 @@ alertmanager_matrix_username: "neutribot"
 alertmanager_matrix_password: "{{ vault_alertmanager_matrix_password }}"
 alertmanager_matrix_host: matrix.domainepublic.net
 alertmanager_matrix_room: "!RwsRwTYSutAOiujkCC:matrix.domainepublic.net"
+
+alertmanager_prometheus_remote_hosts: "{{ groups.prometheus }}"

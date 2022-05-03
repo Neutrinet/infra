@@ -7,8 +7,8 @@
     state: directory
 
 - name: Copie des alertes de base
-  copy:
-    src: alertmanager/base.rules
+  template:
+    src: rules/base.rules.j2
     dest: /etc/prometheus/rules.d/base.rules
     owner: root
     group: root
