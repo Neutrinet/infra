@@ -1,7 +1,7 @@
 webhook_name: github-pull
 webhook_owner: labriqueinter-net
 webhook_group: "{{ webhook_owner }}"
-webhook_network_interface: ens18
+webhook_listen_ip: '[2001:913:1000:11::101]'
 webhook_script: webhook/scripts/pull.sh
 webhook_working_dir: /var/www/labriqueinter-net/dist
 webhook_token: "{{ vault_webhook_token }}"
