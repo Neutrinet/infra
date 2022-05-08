@@ -7,7 +7,7 @@ After=network.target
 Type=simple
 Restart=always
 RestartSec=2s
-ExecStart=/usr/bin/webhook --verbose --port 9000 --hooks /etc/webhook/config.yml
+ExecStart=/usr/bin/webhook --verbose --ip {{ lookup('vars', 'ansible_' + webhook_network_interface).ipv4.address }} --port 9000 --hooks /etc/webhook/config.yml
 
 ExecReload = /bin/kill -s USR1 $MAINPID
 ExecStop = /bin/kill -s TERM $MAINPID

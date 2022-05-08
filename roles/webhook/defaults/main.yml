@@ -1,6 +1,7 @@
 webhook_name: github-pull-webhook
 webhook_owner: webhook
 webhook_group: "{{ webhook_owner }}"
+webhook_network_interface: eth1
 webhook_script: webhook/scripts/pull.sh
 webhook_working_dir: /var/www/webhook/dist
 webhook_token: github-secret
