@@ -72,11 +72,13 @@ postgresql:
 {% endfor %}
 {% for member in etcd_members %}
 {% if 'ipv6' in member %}
-    - host  replication replicator {{ member.ipv6 }}/128 md5
-    - host  all         rewind     {{ member.ipv6 }}/128 md5
+    - host  replication {{ postgresql_patroni_replication_username }} {{ member.ipv6 }}/128 md5
+    - host  all         {{ postgresql_patroni_replication_username }} {{ member.ipv6 }}/128 md5
+    - host  all         {{ postgresql_patroni_rewind_username }}     {{ member.ipv6 }}/128 md5
 {% elif 'ipv4' in member %}
-    - host  replication replicator {{ member.ipv4 }}/32 md5
-    - host  all         rewind     {{ member.ipv4 }}/32 md5
+    - host  replication {{ postgresql_patroni_replication_username }} {{ member.ipv4 }}/32 md5
+    - host  all         {{ postgresql_patroni_replication_username }} {{ member.ipv4 }}/32 md5
+    - host  all         {{ postgresql_patroni_rewind_username }}     {{ member.ipv4 }}/32 md5
 {% endif %}
 {% endfor %}
 
