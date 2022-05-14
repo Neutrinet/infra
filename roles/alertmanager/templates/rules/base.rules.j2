@@ -85,7 +85,7 @@ groups:
     rules:
       - alert: Certificate Expires Next Month
         for: 5m
-        expr: x509_cert_expiry{organization=""} / 86400 < 30
+        expr: round(x509_cert_expiry{organization=""} / 86400) < 30
         labels:
           severity: critical
           frequency: daily
