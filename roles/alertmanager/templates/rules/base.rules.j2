@@ -90,5 +90,5 @@ groups:
           severity: critical
           frequency: daily
         annotations:
-          description: 'Certificate for domain {{ $labels.common_name }} on host {{ $labels.host }} will expire in {{ $value }} days'
+          description: 'Certificate for domain {{ $labels.common_name }} on host {{ $labels.host }} will expire in {{ $value }} days (source: {{ $labels.source }})'
           summary: 'Certificate for domain {{ $labels.common_name }} will expire within the month'
