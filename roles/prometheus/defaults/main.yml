@@ -1,4 +1,5 @@
 prometheus_version: 2.33.3
+prometheus_url: "https://{{ ansible_fqdn }}"
 prometheus_telegraf_hosts: "{{ groups.all }}"
 prometheus_username: prometheus
 prometheus_password: neutrinet

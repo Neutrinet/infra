@@ -1,3 +1,4 @@
+prometheus_url: "https://prometheus.neutrinet.be"
 prometheus_telegraf_hosts:
   - "{{ inventory_hostname }}"
   - vpn.neutri.net

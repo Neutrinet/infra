@@ -1,6 +1,7 @@
 telegraf_prometheus_client_listen_address: localhost
 
 prometheus_version: 2.33.3
+prometheus_url: "http://{{ ansible_fqdn }}"
 prometheus_telegraf_hosts: "{{ groups.all }}"
 
 prometheus_username: prometheus
