@@ -1,6 +1,7 @@
 ---
 
 - import_playbook: apps/debian_commun.yml
+- import_playbook: apps/borgmatic.yml
 - import_playbook: apps/keepalived.yml
 - import_playbook: apps/haproxy.yml
 - import_playbook: apps/postgres_patroni.yml

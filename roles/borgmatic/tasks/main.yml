@@ -1,0 +1,74 @@
+---
+- name: Installation de Borg et Borgmatic
+  package:
+    name:
+      - borgbackup
+      - borgmatic
+    state: present
+
+- name: Création du dossier pour le client SSH
+  file:
+    path: /root/.ssh
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,go=
+
+- name: Configuration des repos Borg
+  include_tasks:
+    file: repo.yml
+  loop: "{{ borgmatic_repositories }}"
+  loop_control:
+    loop_var: repo
+    label: "{{ repo.host }}"
+
+- name: Création du dossier de config Borgmatic
+  file:
+    path: /etc/borgmatic
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=
+
+- name: Configuration de Borgmatic
+  template:
+    src: borgmatic/config.yml.j2
+    dest: /etc/borgmatic/config.yaml
+    owner: root
+    group: root
+    mode: u=rw,go=
+
+- name: Initialisation de Borgmatic
+  command: borgmatic init -e {{ borgmatic_encryption_mode }}
+  changed_when: _borgmatic_init.stderr
+  register: _borgmatic_init
+
+- name: Création d'un cron job pour créer un backup chaque jour
+  cron:
+    name: borgmatic-create
+    cron_file: borgmatic
+    state: present
+    minute: 0
+    hour: 3
+    user: root
+    job: sleep $((RANDOM \% 3600)) && borgmatic create prune
+
+- name: Création d'un cron job pour vérifier les backups chaque semaine
+  cron:
+    name: borgmatic-check
+    cron_file: borgmatic
+    state: present
+    minute: 0
+    hour: 2
+    weekday: 0
+    user: root
+    job: borgmatic check
+
+- name: Définition de la variable d'environnement SHELL pour les cron jobs
+  cron:
+    name: SHELL
+    cron_file: borgmatic
+    state: present
+    user: root
+    env: true
+    value: /bin/bash

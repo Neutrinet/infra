@@ -1,0 +1,6 @@
+borgmatic_repositories:
+  - host: storage-01.htz.neutri.net
+    path: /media/backups
+    user: backup-borg
+borgmatic_encryption_passphrase: "{{ vault_borgmatic_encryption_passphrase }}"
+borgmatic_encryption_mode: keyfile
