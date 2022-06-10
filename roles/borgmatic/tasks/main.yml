@@ -1,10 +1,31 @@
 ---
-- name: Installation de Borg et Borgmatic
+- name: Installation de Borg
   package:
-    name:
-      - borgbackup
-      - borgmatic
+    name: borgbackup
     state: present
+
+- name: Création du dossier d'install de Borgmatic
+  file:
+    path: /opt/borgmatic
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,go=rx
+
+- name: Installation des dépendances python
+  ansible.builtin.package:
+    name:
+      - python3-virtualenv
+      - virtualenv
+    state: present
+
+- name: Installation de Borgmatic  # noqa package-latest
+  pip:
+    name: borgmatic
+    state: latest
+    virtualenv: /opt/borgmatic
+    virtualenv_python: python3
+    chdir: /opt/borgmatic
 
 - name: Création du dossier pour le client SSH
   file:
@@ -22,26 +43,37 @@
     loop_var: repo
     label: "{{ repo.host }}"
 
-- name: Création du dossier de config Borgmatic
+- name: Création des dossiers de config de Borgmatic
   file:
-    path: /etc/borgmatic
+    path: "{{ config_dir }}"
     state: directory
     owner: root
     group: root
     mode: u=rwx,g=rx,o=
+  loop:
+    - /etc/borgmatic
+    - /etc/borgmatic.d
+  loop_control:
+    loop_var: config_dir
 
-- name: Configuration de Borgmatic
+- name: Configuration du template des backups Borgmatic
   template:
-    src: borgmatic/config.yml.j2
-    dest: /etc/borgmatic/config.yaml
+    src: borgmatic/template.yml.j2
+    dest: /etc/borgmatic/template.yml
     owner: root
     group: root
     mode: u=rw,go=
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
 
-- name: Initialisation de Borgmatic
-  command: borgmatic init -e {{ borgmatic_encryption_mode }}
-  changed_when: _borgmatic_init.stderr
-  register: _borgmatic_init
+- name: Configuration commune des backups Borgmatic
+  template:
+    src: borgmatic/common.yml.j2
+    dest: /etc/borgmatic.d/common.yml
+    owner: root
+    group: root
+    mode: u=rw,go=
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  notify: init borgmatic
 
 - name: Création d'un cron job pour créer un backup chaque jour
   cron:

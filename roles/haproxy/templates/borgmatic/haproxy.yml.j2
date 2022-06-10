@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/haproxy"
+    - "/etc/letsencrypt"
+    - "/opt/letsencrypt"
+
+storage:
+  archive_name_format: haproxy_{hostname}-{now}
+
+retention:
+  prefix: haproxy_
+
+consistency:
+  prefix: haproxy_

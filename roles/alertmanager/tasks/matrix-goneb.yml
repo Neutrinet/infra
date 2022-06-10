@@ -43,7 +43,7 @@
     name: libolm-dev
     state: present
 
-- name: Compilation de matrix-goneb # noqa no-handler
+- name: Compilation de matrix-goneb  # noqa no-handler
   command:
     cmd: "go{{ go_version }} build github.com/matrix-org/go-neb"
     chdir: /opt/matrix-goneb/src

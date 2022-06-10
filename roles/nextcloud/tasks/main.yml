@@ -40,3 +40,13 @@
 - name: Configuration de Nextcloud
   import_tasks: config.yml
   tags: ['nextcloud_config']
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/nextcloud.yml.j2
+    dest: /etc/borgmatic.d/nextcloud-{{ web_app_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

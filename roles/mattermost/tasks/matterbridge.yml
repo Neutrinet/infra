@@ -86,3 +86,13 @@
   when: matterbridge_old_version != matterbridge_version
   vars:
     matterbridge_old_version: "{{ binary.path | replace('/opt/matterbridge/', '') }}"
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/matterbridge.yml.j2
+    dest: /etc/borgmatic.d/matterbridge.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

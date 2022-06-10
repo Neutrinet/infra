@@ -15,4 +15,5 @@
 
   roles:
     - telegraf
+    - borgmatic
     - postgres_standalone

@@ -9,7 +9,7 @@
     - /opt/prometheus
     - /opt/prometheus/{{ prometheus_version }}
     - /etc/prometheus
-    - /var/lib/prometheus
+    - "{{ prometheus_storage_path }}"
   loop_control:
     loop_var: prometheus_dir
 

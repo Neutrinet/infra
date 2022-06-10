@@ -1,0 +1,21 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/opt/alertmanager/{{ alertmanager_version }}"
+    - "/etc/alertmanager"
+    - "/var/lib/alertmanager"
+    - "/etc/systemd/system/alertmanager.service"
+    - "/etc/prometheus/conf.d/alertmanager.yml"
+    - "/etc/prometheus/rules.d"
+
+storage:
+  archive_name_format: alertmanager_{hostname}-{now}
+
+retention:
+  prefix: alertmanager_
+
+consistency:
+  prefix: alertmanager_
