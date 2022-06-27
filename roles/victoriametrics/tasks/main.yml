@@ -1,0 +1,11 @@
+- name: Création de l'utilisateur
+  import_tasks: user.yml
+  tags: ['user']
+
+- name: Installation de VictoriaMetrics
+  import_tasks: victoriametrics.yml
+  tags: ['victoriametrics']
+
+#- name: Nettoyage des anciennes versions
+#  import_tasks: cleanup.yml
+#  tags: ['cleanup']

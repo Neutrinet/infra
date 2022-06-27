@@ -1,0 +1,44 @@
+- name: Récupération de la liste des dossiers d'installation
+  find:
+    path: /opt/victoriametrics
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _victoriametrics_installed_dirs
+
+- name: Récupération de la liste des archives
+  find:
+    path: /usr/local/src/victoriametrics
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _victoriametrics_archives
+
+- name: Récupération de la plus ancienne version et de la version courante
+  set_fact:
+    victoriametrics_oldest_archive: "{{ victoriametrics_sorted_archives | first }}"
+    victoriametrics_oldest_install_dir: "{{ victoriametrics_sorted_install_dirs | first }}"
+    victoriametrics_oldest_version: "{{ victoriametrics_sorted_install_dirs | first | basename }}"
+  vars:
+    victoriametrics_sorted_archives: |-
+      {{ _victoriametrics_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    victoriametrics_sorted_install_dirs: |-
+      {{ _victoriametrics_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: Suppression de la plus ancienne version (v{{ victoriametrics_oldest_version }})
+  file:
+    state: absent
+    path: "{{ victoriametrics_oldest_install_dir }}"
+  when: _victoriametrics_installed_dirs.files | length > 5
+
+- name: Suppression de la plus ancienne archive
+  file:
+    state: absent
+    path: "{{ victoriametrics_oldest_archive }}"
+  when: _victoriametrics_archives.files | length > 5

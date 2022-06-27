@@ -1,0 +1,16 @@
+victoriametrics_version: 1.78.0
+victoriametrics_telegraf_hosts: "{{ groups.all }}"
+victoriametrics_username: victoriametrics
+victoriametrics_password: neutrinet
+victoriametrics_memory_limit: 512MB
+
+victoriametrics_alter_enable: true
+victoriametrics_alter_memory_limit: 512MB
+victoriametrics_alter_datasource: "http://localhost:8428"
+victoriametrics_alter_notifier: "http://localhost:9093"
+
+victoriametrics_remote_write_url: ""
+victoriametrics_remote_read_url: ""
+
+victoriametrics_storage_retention: 1w
+victoriametrics_storage_path: /var/lib/victoriametrics
