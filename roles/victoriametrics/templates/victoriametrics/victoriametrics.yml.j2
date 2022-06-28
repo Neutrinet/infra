@@ -48,7 +48,7 @@ scrape_configs:
       - targets:
           - localhost:8428
 
-{% if victoriametrics_alter_enable%}
+{% if victoriametrics_alert_enable%}
   # Grab metrics about victoriametrics itself
   - job_name: victoriametrics-alert
     static_configs:

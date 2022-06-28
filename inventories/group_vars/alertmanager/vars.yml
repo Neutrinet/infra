@@ -6,4 +6,4 @@ alertmanager_matrix_host: matrix.domainepublic.net
 alertmanager_matrix_room: "!RwsRwTYSutAOiujkCC:matrix.domainepublic.net"
 
 alertmanager_victoriametrics_remote_hosts: "{{ groups.victoriametrics }}"
-victoriametrics_alter_enable: true
+victoriametrics_alert_enable: true

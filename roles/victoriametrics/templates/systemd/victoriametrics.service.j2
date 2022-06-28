@@ -19,7 +19,7 @@ ExecStart=/usr/local/bin/victoria-metrics \
   -memory.allowedBytes={{victoriametrics_memory_limit | human_to_bytes }} \
   -promscrape.config=/etc/victoriametrics/victoriametrics.yml \
   -storageDataPath={{ victoriametrics_storage_path }} \
-{% if victoriametrics_alter_enable %}
+{% if victoriametrics_alert_enable %}
   -vmalert.proxyURL http://vmalert:8880 \
 {% endif %}
   -retentionPeriod={{ victoriametrics_storage_retention }}

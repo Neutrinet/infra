@@ -16,12 +16,12 @@ ExecReload=/bin/kill -s SIGHUP $MAINPID
 ExecStop=/bin/kill -s SIGTERM $MAINPID
 ExecStart=/usr/local/bin/vmalert \
   -enableTCP6 \
-  -memory.allowedBytes={{ victoriametrics_alter_memory_limit | human_to_bytes }} \
+  -memory.allowedBytes={{ victoriametrics_alert_memory_limit | human_to_bytes }} \
   -rule="/etc/victoriametrics/rules.d/*.yml" \
-  -datasource.url={{ victoriametrics_alter_datasource }} \
-  -remoteWrite.url={{ victoriametrics_alter_datasource }} \
-  -remoteRead.url={{ victoriametrics_alter_datasource }} \
-  -notifier.url={{ victoriametrics_alter_notifier }}
+  -datasource.url={{ victoriametrics_alert_datasource }} \
+  -remoteWrite.url={{ victoriametrics_alert_datasource }} \
+  -remoteRead.url={{ victoriametrics_alert_datasource }} \
+  -notifier.url={{ victoriametrics_alert_notifier }}
 
 # Systemd hardening
 ReadWritePaths=

@@ -90,7 +90,7 @@
     mode: "u=rwx,go=rx"
     state: directory
 
-- name: Création du répertoire des rules alter
+- name: Création du répertoire des rules alert
   file:
     path: /etc/victoriametrics/rules.d
     owner: victoriametrics
@@ -115,7 +115,7 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
-  when: victoriametrics_alter_enable
+  when: victoriametrics_alert_enable
   notify:
     - restart victoriametrics-alert
 
@@ -130,4 +130,4 @@
     name: victoriametrics-alert
     state: started
     enabled: true
-  when: victoriametrics_alter_enable
+  when: victoriametrics_alert_enable
