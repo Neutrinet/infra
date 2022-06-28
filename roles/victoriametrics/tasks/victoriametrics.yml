@@ -9,7 +9,7 @@
     - /opt/victoriametrics
     - /opt/victoriametrics/{{ victoriametrics_version }}
     - /etc/victoriametrics
-    - {{ victoriametrics_storage_path }}
+    - "{{ victoriametrics_storage_path }}"
   loop_control:
     loop_var: victoriametrics_dir
 
