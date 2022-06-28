@@ -3,7 +3,7 @@
     name: grafana-server
     state: restarted
 
-- name: reload prometheus
+- name: reload victoriametrics
   service:
-    name: prometheus
+    name: victoriametrics
     state: reloaded
