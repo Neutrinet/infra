@@ -4,7 +4,7 @@ victoriametrics_username: victoriametrics
 victoriametrics_password: neutrinet
 victoriametrics_memory_limit: 512MB
 
-victoriametrics_alter_enable: true
+victoriametrics_alter_enable: false
 victoriametrics_alter_memory_limit: 512MB
 victoriametrics_alter_datasource: "http://localhost:8428"
 victoriametrics_alter_notifier: "http://localhost:9093"

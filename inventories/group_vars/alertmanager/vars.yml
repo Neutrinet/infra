@@ -1,8 +1,9 @@
-alertmanager_version: 0.23.0
+alertmanager_version: 0.24.0
 
 alertmanager_matrix_username: "neutribot"
 alertmanager_matrix_password: "{{ vault_alertmanager_matrix_password }}"
 alertmanager_matrix_host: matrix.domainepublic.net
 alertmanager_matrix_room: "!RwsRwTYSutAOiujkCC:matrix.domainepublic.net"
 
-alertmanager_prometheus_remote_hosts: "{{ groups.prometheus }}"
+alertmanager_victoriametrics_remote_hosts: "{{ groups.victoriametrics }}"
+victoriametrics_alter_enable: true
