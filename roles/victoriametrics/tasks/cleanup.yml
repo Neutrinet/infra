@@ -16,14 +16,28 @@
     pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
   register: _victoriametrics_archives
 
+- name: Récupération de la liste des archives des outils
+  find:
+    path: /usr/local/src/victoriametrics
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^tools\-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _victoriametrics_tools_archives
+
 - name: Récupération de la plus ancienne version et de la version courante
   set_fact:
     victoriametrics_oldest_archive: "{{ victoriametrics_sorted_archives | first }}"
+    victoriametrics_tools_oldest_archive: "{{ victoriametrics_tools_sorted_archives | first }}"
     victoriametrics_oldest_install_dir: "{{ victoriametrics_sorted_install_dirs | first }}"
     victoriametrics_oldest_version: "{{ victoriametrics_sorted_install_dirs | first | basename }}"
   vars:
     victoriametrics_sorted_archives: |-
       {{ _victoriametrics_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    victoriametrics_tools_oldest_archive: |-
+      {{ _victoriametrics_tools_archives.files
         | map(attribute='path')
         | community.general.version_sort }}
     victoriametrics_sorted_install_dirs: |-
@@ -42,3 +56,9 @@
     state: absent
     path: "{{ victoriametrics_oldest_archive }}"
   when: _victoriametrics_archives.files | length > 5
+
+- name: Suppression de la plus ancienne archive des outis
+  file:
+    state: absent
+    path: "{{ victoriametrics_tools_oldest_archive }}"
+  when: _victoriametrics_tools_archives.files | length > 5
