@@ -9,7 +9,7 @@
     - /opt/victoriametrics
     - /opt/victoriametrics/{{ victoriametrics_version }}
     - /etc/victoriametrics
-    - /var/lib/victoriametrics
+    - {{ victoriametrics_alert_datasource }}
   loop_control:
     loop_var: victoriametrics_dir
 
