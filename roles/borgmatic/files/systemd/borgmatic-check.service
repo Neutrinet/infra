@@ -19,4 +19,4 @@ Restart=no
 # doesn't support this (pre-240 or so), you may have to remove this option.
 LogRateLimitIntervalSec=0
 
-ExecStart=systemd-inhibit --who="borgmatic" --why="Prevent interrupting scheduled backup" borgmatic --syslog-verbosity 1 check
+ExecStart=systemd-inhibit --who="borgmatic" --why="Prevent interrupting scheduled backup" /opt/borgmatic/bin/borgmatic --syslog-verbosity 1 check
