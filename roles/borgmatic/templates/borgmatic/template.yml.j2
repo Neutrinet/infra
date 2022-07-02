@@ -7,7 +7,7 @@ location:
     - {{ repo.host }}:{{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}
 {% endfor %}
 storage:
-  compression: zlib,7
+  compression: zstd
   encryption_passphrase: {{ borgmatic_encryption_passphrase | string | to_json }}
 retention:
   keep_daily: 7

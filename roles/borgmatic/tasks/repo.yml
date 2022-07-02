@@ -22,6 +22,7 @@
   authorized_key:
     user: "{{ repo.user }}"
     key: "{{ _borgmatic_ssh_public_key.content | b64decode }}"
+    key_options: command="borg serve --restrict-to-path {{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}",restrict
   delegate_to: "{{ repo.host }}"
   run_once: true
 

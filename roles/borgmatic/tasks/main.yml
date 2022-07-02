@@ -75,32 +75,29 @@
     validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
   notify: init borgmatic
 
-- name: Création d'un cron job pour créer un backup chaque jour
-  cron:
-    name: borgmatic-create
-    cron_file: borgmatic
-    state: present
-    minute: 0
-    hour: 3
-    user: root
-    job: sleep $((RANDOM \% 3600)) && borgmatic create prune
+- name: Création d'un timer pour créer et vérifier les backups périodiquement
+  copy:
+    src: systemd/{{ systemd_unit }}
+    dest: /etc/systemd/system/{{ systemd_unit }}
+    owner: root
+    group: root
+    mode: u=rw,go=r
+  loop:
+    - borgmatic.timer
+    - borgmatic.service
+    - borgmatic-check.timer
+    - borgmatic-check.service
+  loop_control:
+    loop_var: systemd_unit
+  notify: reload systemd
 
-- name: Création d'un cron job pour vérifier les backups chaque semaine
-  cron:
-    name: borgmatic-check
-    cron_file: borgmatic
-    state: present
-    minute: 0
-    hour: 2
-    weekday: 0
-    user: root
-    job: borgmatic check
-
-- name: Définition de la variable d'environnement SHELL pour les cron jobs
-  cron:
-    name: SHELL
-    cron_file: borgmatic
-    state: present
-    user: root
-    env: true
-    value: /bin/bash
+- name: Activation du timer borgmatic
+  service:
+    name: "{{ systemd_unit }}.timer"
+    state: started
+    enabled: true
+  loop:
+    - borgmatic
+    - borgmatic-check
+  loop_control:
+    loop_var: systemd_unit

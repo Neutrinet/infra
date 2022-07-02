@@ -2,3 +2,7 @@
   command: /opt/borgmatic/bin/borgmatic init -e keyfile
   changed_when: _borgmatic_init.stderr
   register: _borgmatic_init
+
+- name: reload systemd
+  systemd:
+    daemon_reload: true

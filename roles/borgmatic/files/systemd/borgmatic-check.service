@@ -1,0 +1,22 @@
+[Unit]
+Description="Check borgmatic backup"
+Wants=network-online.target
+After=network-online.target
+ConditionACPower=true
+
+[Service]
+Type=oneshot
+
+# Lower CPU and I/O priority.
+Nice=19
+CPUSchedulingPolicy=batch
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+IOWeight=100
+
+Restart=no
+# Prevent rate limiting of borgmatic log events. If you are using an older version of systemd that
+# doesn't support this (pre-240 or so), you may have to remove this option.
+LogRateLimitIntervalSec=0
+
+ExecStart=systemd-inhibit --who="borgmatic" --why="Prevent interrupting scheduled backup" borgmatic --syslog-verbosity 1 check
