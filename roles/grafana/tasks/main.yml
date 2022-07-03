@@ -29,14 +29,14 @@
     state: started
     enabled: true
 
-- name: Ajout du job grafana dans Prometheus
+- name: Ajout du job grafana dans VictoriaMetrics
   copy:
-    src: prometheus/grafana.yml
-    dest: /etc/prometheus/conf.d/grafana.yml
-    owner: prometheus
-    group: prometheus
+    src: victoriametrics/grafana.yml
+    dest: /etc/victoriametrics/conf.d/grafana.yml
+    owner: victoriametrics
+    group: victoriametrics
     mode: "u=rw,go=r"
-  notify: reload prometheus
+  notify: reload victoriametrics
 
 - name: Vérification du mot de passe admin
   uri:

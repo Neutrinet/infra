@@ -1,0 +1,7 @@
+- name: Création de l'utilisateur VictoriaMetrics
+  user:
+    name: victoriametrics
+    home: /opt/victoriametrics
+    shell: /sbin/nologin
+    system: true
+    state: present

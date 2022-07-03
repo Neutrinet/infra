@@ -81,11 +81,11 @@
     state: started
     enabled: true
 
-- name: Ajout du job alertmanager dans Prometheus
+- name: Ajout du job alertmanager dans VictoriaMetrics
   copy:
-    src: prometheus/alertmanager.yml
-    dest: /etc/prometheus/conf.d/alertmanager.yml
-    owner: prometheus
-    group: prometheus
+    src: victoriametrics/alertmanager.yml
+    dest: /etc/victoriametrics/conf.d/alertmanager.yml
+    owner: victoriametrics
+    group: victoriametrics
     mode: "u=rw,go=r"
-  notify: reload prometheus
+  notify: reload victoriametrics

@@ -1,17 +1,8 @@
-- name: Création du dossier des alertes
-  file:
-    path: /etc/prometheus/rules.d
-    owner: prometheus
-    group: prometheus
-    mode: "u=rwx,g=rx,o="
-    state: directory
-
 - name: Copie des alertes de base
   template:
-    src: rules/base.rules.j2
-    dest: /etc/prometheus/rules.d/base.rules
+    src: rules/base.yml.j2
+    dest: /etc/victoriametrics/rules.d/base.yml
     owner: root
     group: root
     mode: "u=rw,go=r"
-    validate: promtool check rules %s
-  notify: reload prometheus
+  notify: reload victoriametrics-alert
