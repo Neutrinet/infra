@@ -36,7 +36,7 @@
       {{ _victoriametrics_archives.files
         | map(attribute='path')
         | community.general.version_sort }}
-    victoriametrics_tools_oldest_archive: |-
+    victoriametrics_tools_sorted_archive: |-
       {{ _victoriametrics_tools_archives.files
         | map(attribute='path')
         | community.general.version_sort }}
