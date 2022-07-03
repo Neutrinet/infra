@@ -1,0 +1,115 @@
+- name: Création des dossiers de VictoriaMetrics
+  file:
+    path: "{{ victoriametrics_dir }}"
+    owner: victoriametrics
+    group: victoriametrics
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/victoriametrics
+    - /opt/victoriametrics/{{ victoriametrics_version }}
+    - /etc/victoriametrics
+    - "{{ victoriametrics_storage_path }}"
+  loop_control:
+    loop_var: victoriametrics_dir
+
+- name: Création du dossier des archives VictoriaMetrics
+  file:
+    path: /usr/local/src/victoriametrics
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive VictoriaMetrics v{{ victoriametrics_version }}
+  get_url:
+    url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v{{ victoriametrics_version }}/victoria-metrics-amd64-v{{ victoriametrics_version }}.tar.gz
+    dest: /usr/local/src/victoriametrics/{{ victoriametrics_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: Téléchargement de l'archive des outils de VictoriaMetrics v{{ victoriametrics_version }}
+  get_url:
+    url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v{{ victoriametrics_version }}/vmutils-amd64-v{{ victoriametrics_version }}.tar.gz
+    dest: /usr/local/src/victoriametrics/tools-{{ victoriametrics_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: Décompression de l'archive VictoriaMetrics
+  unarchive:
+    src: /usr/local/src/victoriametrics/{{ victoriametrics_version }}.tar.gz
+    dest: /opt/victoriametrics/{{ victoriametrics_version }}
+    creates: /opt/victoriametrics/{{ victoriametrics_version }}/victoria-metrics-prod
+    remote_src: true
+    owner: victoriametrics
+    group: victoriametrics
+
+- name: Décompression de l'archive des outils de VictoriaMetrics
+  unarchive:
+    src: /usr/local/src/victoriametrics/tools-{{ victoriametrics_version }}.tar.gz
+    dest: /opt/victoriametrics/{{ victoriametrics_version }}
+    creates: /opt/victoriametrics/{{ victoriametrics_version }}/vmalert-prod
+    remote_src: true
+    owner: victoriametrics
+    group: victoriametrics
+
+- name: Création du lien symbolique pour les binaires de VictoriaMetrics
+  file:
+    src: /opt/victoriametrics/{{ victoriametrics_version }}/{{ victoriametrics_bin }}
+    dest: /usr/local/bin/{{ victoriametrics_bin | replace('-prod', '') }}
+    state: link
+  loop:
+    - victoria-metrics-prod
+    - vmagent-prod
+    - vmalert-prod
+    - vmauth-prod
+    - vmbackup-prod
+    - vmctl-prod
+    - vmrestore-prod
+  loop_control:
+    loop_var: victoriametrics_bin
+  notify: restart victoriametrics
+
+- name: Configuration de VictoriaMetrics
+  template:
+    src: victoriametrics/victoriametrics.yml.j2
+    dest: /etc/victoriametrics/victoriametrics.yml
+    owner: victoriametrics
+    group: victoriametrics
+    mode: "u=rw,g=r,o="
+    validate: victoria-metrics -dryRun -promscrape.config=%s
+  notify: reload victoriametrics
+
+- name: Création du répertoire des jobs
+  file:
+    path: /etc/victoriametrics/conf.d
+    owner: victoriametrics
+    group: victoriametrics
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Création du répertoire des rules alert
+  file:
+    path: /etc/victoriametrics/rules.d
+    owner: victoriametrics
+    group: victoriametrics
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Configuration du service systemd
+  template:
+    src: systemd/victoriametrics.service.j2
+    dest: /etc/systemd/system/victoriametrics.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - restart victoriametrics
+
+- name: Activation de victoriametrics au démarrage
+  service:
+    name: victoriametrics
+    state: started
+    enabled: true

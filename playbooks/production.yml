@@ -13,6 +13,6 @@
 - import_playbook: apps/grav.yml
 - import_playbook: apps/dokuwiki.yml
 - import_playbook: apps/probe.yml
-- import_playbook: apps/prometheus.yml
+- import_playbook: apps/victoriametrics.yml
 - import_playbook: apps/alertmanager.yml
 - import_playbook: apps/gitlab_runner.yml
