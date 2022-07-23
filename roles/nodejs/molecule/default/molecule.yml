@@ -5,8 +5,8 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: buster-nodejs-molecule
-    box: debian/buster64
+  - name: bullseye-nodejs-molecule
+    box: debian/bullseye64
     cpu: 2
     memory: 512
     interfaces:

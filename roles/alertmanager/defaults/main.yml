@@ -1,10 +1,4 @@
-alertmanager_smtp_host: localhost
-alertmanager_smtp_port: 25
-alertmanager_smtp_require_tls: false
-alertmanager_smtp_from: alertmanager@example.com
-alertmanager_smtp_to: root@localhost
-alertmanager_smtp_username: ""
-alertmanager_smtp_password: ""
+alertmanager_version: 0.23.0
 
 alertmanager_matrix_username: "neutribot-test"
 alertmanager_matrix_password: !vault |
@@ -18,3 +12,5 @@ alertmanager_matrix_password: !vault |
 alertmanager_matrix_host: matrix.domainepublic.net
 alertmanager_matrix_room: "!wjECRmYYmDbBJcebBt:matrix.domainepublic.net"
 alertmanager_matrix_service: alertmanager_service
+
+alertmanager_prometheus_remote_hosts: "{{ groups.all }}"

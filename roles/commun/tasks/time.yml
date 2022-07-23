@@ -17,6 +17,13 @@
     state: absent
   tags: ['ntp']
 
+- name: Installation de systemd-timesyncd
+  package:
+    name: systemd-timesyncd
+    state: present
+  when: ansible_distribution_release == 'bullseye'
+  tags: ['ntp']
+
 - name: Activation de systemd-timesyncd au démarrage
   service:
     name: systemd-timesyncd

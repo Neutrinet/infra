@@ -1,0 +1,91 @@
+- name: Création des dossiers d'Alertmanager
+  file:
+    path: "{{ alertmanager_dir }}"
+    owner: alertmanager
+    group: alertmanager
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/alertamanager
+    - /opt/alertmanager/{{ alertmanager_version }}
+    - /etc/alertmanager
+    - /etc/alertmanager/templates
+    - /var/lib/alertmanager
+  loop_control:
+    loop_var: alertmanager_dir
+
+- name: Création du dossier des archives d'Alertmanager
+  file:
+    path: /usr/local/src/alertmanager
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive d'Alertmanager v{{ alertmanager_version }}
+  get_url:
+    url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
+    dest: /usr/local/src/alertmanager/{{ alertmanager_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/sha256sums.txt"
+
+- name: Décompression de l'archive
+  unarchive:
+    src: /usr/local/src/alertmanager/{{ alertmanager_version }}.tar.gz
+    dest: /opt/alertmanager/{{ alertmanager_version }}
+    creates: /opt/alertmanager/{{ alertmanager_version }}/alertmanager
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: alertmanager
+    group: alertmanager
+
+- name: Création du lien symbolique pour les binaires d'Alertmanager
+  file:
+    src: /opt/alertmanager/{{ alertmanager_version }}/{{ alertmanager_bin }}
+    dest: /usr/local/bin/{{ alertmanager_bin }}
+    state: link
+  loop:
+    - alertmanager
+    - amtool
+  loop_control:
+    loop_var: alertmanager_bin
+  notify: restart alertmanager
+
+- name: Configuration d'Alertmanager
+  template:
+    src: alertmanager/alertmanager.yml.j2
+    dest: /etc/alertmanager/alertmanager.yml
+    owner: alertmanager
+    group: alertmanager
+    mode: "u=rw,g=r,o="
+    validate: amtool check-config %s
+  notify: reload alertmanager
+
+- name: Configuration du service systemd
+  template:
+    src: systemd/alertmanager.service.j2
+    dest: /etc/systemd/system/alertmanager.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart alertmanager
+
+- name: Activation d'Alertmanager au démarrage
+  service:
+    name: alertmanager
+    state: started
+    enabled: true
+
+- name: Ajout du job alertmanager dans VictoriaMetrics
+  copy:
+    src: victoriametrics/alertmanager.yml
+    dest: /etc/victoriametrics/conf.d/alertmanager.yml
+    owner: victoriametrics
+    group: victoriametrics
+    mode: "u=rw,go=r"
+  notify: reload victoriametrics

@@ -1,0 +1,44 @@
+- name: Récupération de la liste des dossiers d'installation
+  find:
+    path: /opt/alertmanager
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _alertmanager_installed_dirs
+
+- name: Récupération de la liste des archives
+  find:
+    path: /usr/local/src/alertmanager
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _alertmanager_archives
+
+- name: Récupération de la plus ancienne version et de la version courante
+  set_fact:
+    alertmanager_oldest_archive: "{{ alertmanager_sorted_archives | first }}"
+    alertmanager_oldest_install_dir: "{{ alertmanager_sorted_install_dirs | first }}"
+    alertmanager_oldest_version: "{{ alertmanager_sorted_install_dirs | first | basename }}"
+  vars:
+    alertmanager_sorted_archives: |-
+      {{ _alertmanager_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    alertmanager_sorted_install_dirs: |-
+      {{ _alertmanager_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: Suppression de la plus ancienne version (v{{ alertmanager_oldest_version }})
+  file:
+    state: absent
+    path: "{{ alertmanager_oldest_install_dir }}"
+  when: _alertmanager_installed_dirs.files | length > 5
+
+- name: Suppression de la plus ancienne archive
+  file:
+    state: absent
+    path: "{{ alertmanager_oldest_archive }}"
+  when: _alertmanager_archives.files | length > 5

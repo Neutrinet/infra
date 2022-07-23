@@ -1,7 +1,7 @@
 etcd_members:
-  - name: "buster-etcd-01-molecule"
+  - name: "bullseye-etcd-01-molecule"
     ipv4: 172.29.129.31
-  - name: "buster-etcd-02-molecule"
+  - name: "bullseye-etcd-02-molecule"
     ipv4: 172.29.129.32
-  - name: "buster-etcd-03-molecule"
+  - name: "bullseye-etcd-03-molecule"
     ipv4: 172.29.129.33

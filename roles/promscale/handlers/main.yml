@@ -1,0 +1,15 @@
+- name: restart postgresql
+  service:
+    name: postgresql
+    state: restarted
+
+- name: restart promscale
+  systemd:
+    name: promscale
+    daemon_reload: true
+    state: restarted
+
+- name: reload prometheus
+  service:
+    name: prometheus
+    state: reloaded

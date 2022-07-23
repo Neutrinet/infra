@@ -1,7 +1,7 @@
 etcd_members:
-  - name: "buster-postgres-patroni-01-molecule"
+  - name: "bullseye-postgres-patroni-01-molecule"
     ipv4: 172.29.129.41
-  - name: "buster-postgres-patroni-02-molecule"
+  - name: "bullseye-postgres-patroni-02-molecule"
     ipv4: 172.29.129.42
-  - name: "buster-postgres-patroni-03-molecule"
+  - name: "bullseye-postgres-patroni-03-molecule"
     ipv4: 172.29.129.43

@@ -1,0 +1,16 @@
+victoriametrics_telegraf_hosts:
+  - "{{ inventory_hostname }}"
+  - vpn.neutri.net
+  - topi.louise.neutri.net
+  - nam.louise.neutri.net
+  - bour.louise.neutri.net
+  - bicarbonate.louise.neutri.net
+  - vinaigre.louise.neutri.net
+  - bigoudi.louise.neutri.net
+  - edge-01.louise.neutri.net
+  - edge-02.louise.neutri.net
+
+victoriametrics_remote_write_url: ""
+victoriametrics_remote_read_url: ""
+
+victoriametrics_storage_retention: 3y

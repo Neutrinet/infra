@@ -20,4 +20,4 @@
 
   roles:
     - telegraf
-    - prometheus
+    - victoriametrics

@@ -1,12 +1,12 @@
 mattermost_domain: chat.example.com
 mattermost_owner: "{{ mattermost_domain | replace('.', '-') }}"
-mattermost_version: 5.38.2
+mattermost_version: 6.3.8
 
 postgresql_host: localhost
 
 mattermost_postgresql_password: neutrinet
 
-matterbridge_version: 1.23.2
+matterbridge_version: 1.25.0
 # Ignore failing bridge on startup. Useful for testing purposes.
 # After running the playbook, consider checking the logs to see if any bridge is failing
 matterbridge_ignore_failure: true

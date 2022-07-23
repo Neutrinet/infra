@@ -1,0 +1,47 @@
+- name: Ajout de la clé GPG de Docker dans APT
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Ajout du dépôt APT Docker
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release | lower }} stable
+    filename: docker
+    state: present
+
+- name: Installation de Docker
+  package:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+
+- name: Installation des dépendances python
+  package:
+    name: python3-docker
+    state: present
+
+- name: Configuration de Docker
+  copy:
+    src: docker/daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify: restart docker
+
+- name: Activation de Docker au démarrage
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Création d'un cron job pour nettoyer les images docker chaque semaine
+  cron:
+    name: docker-prune
+    cron_file: docker-prune
+    state: present
+    special_time: weekly
+    user: root
+    job: docker system prune -af --filter "until=$((30*24))h" > /dev/null

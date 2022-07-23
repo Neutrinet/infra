@@ -2,19 +2,9 @@
 
 # See https://prometheus.io/docs/alerting/configuration/ for documentation.
 
-global:
-  # The smarthost and SMTP sender used for mail notifications.
-  smtp_smarthost: {{ alertmanager_smtp_host }}:{{ alertmanager_smtp_port }}
-  smtp_require_tls: {{ alertmanager_smtp_require_tls | bool | lower }}
-  smtp_from: {{ alertmanager_smtp_from }}
-{% if alertmanager_smtp_username and alertmanager_smtp_password %}
-  smtp_auth_username: {{ alertmanager_smtp_username | to_json }}
-  smtp_auth_password: {{ alertmanager_smtp_password | string | to_json }}
-{% endif %}
-
 # The directory from which notification templates are read.
 templates:
-  - /etc/prometheus/alertmanager_templates/*.tmpl
+  - /etc/alertmanager/templates/*.tmpl
 
 # The root route on which each incoming alert enters.
 route:
@@ -46,13 +36,14 @@ route:
 
   # The child route trees.
   routes:
+    - matchers:
+        - frequency = daily
+      repeat_interval: 1d
+      receiver: default-receiver
     - receiver: default-receiver
 
 receivers:
   - name: default-receiver
-    email_configs:
-      - to: {{ alertmanager_smtp_to }}
-        send_resolved: true
     webhook_configs:
       - url: {{ alertmanager_matrix_webhook_url }}
         send_resolved: true

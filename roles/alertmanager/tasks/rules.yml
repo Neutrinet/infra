@@ -1,0 +1,8 @@
+- name: Copie des alertes de base
+  template:
+    src: rules/base.yml.j2
+    dest: /etc/victoriametrics/rules.d/base.yml
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify: reload victoriametrics-alert

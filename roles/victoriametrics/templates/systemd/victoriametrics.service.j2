@@ -1,0 +1,56 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=VictoriaMetrics
+After=network.target
+
+[Service]
+Type=simple
+StartLimitBurst=5
+StartLimitInterval=0
+Restart=on-failure
+RestartSec=1
+User=victoriametrics
+Group=victoriametrics
+ExecReload=/bin/kill -s SIGHUP $MAINPID
+ExecStop=/bin/kill -s SIGTERM $MAINPID
+ExecStart=/usr/local/bin/victoria-metrics \
+  -enableTCP6 \
+  -memory.allowedBytes={{victoriametrics_memory_limit | human_to_bytes }} \
+  -promscrape.config=/etc/victoriametrics/victoriametrics.yml \
+  -storageDataPath={{ victoriametrics_storage_path }} \
+{% if victoriametrics_alert_enable %}
+  -vmalert.proxyURL http://localhost:8880 \
+{% endif %}
+  -retentionPeriod={{ victoriametrics_storage_retention }}
+
+# Systemd hardening
+ReadWritePaths={{ victoriametrics_storage_path }}
+
+CapabilityBoundingSet=
+LimitNOFILE=65536
+LimitNPROC=32000
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+PrivateUsers=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=noaccess
+ProtectSystem=strict
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target

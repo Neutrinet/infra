@@ -17,6 +17,11 @@
     owner: "{{ hedgedoc_owner }}"
     group: "{{ hedgedoc_owner }}"
 
+- name: Installation des dépendences
+  package:
+    name: make
+    state: present
+
 - name: Installation de Hedgedoc
   command:
     cmd: npm install --production

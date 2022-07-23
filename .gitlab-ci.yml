@@ -6,12 +6,13 @@ workflow:
 
 variables:
   PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
+  FF_USE_FASTZIP: "true"
 
 stages:
   - quality
 
 linting:
-  image: neutrinet/pre-commit:1.0.0
+  image: neutrinet/pre-commit:1.0.1
   stage: quality
   script:
     - pre-commit run --all-files

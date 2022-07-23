@@ -1,0 +1,109 @@
+- name: Création du dossier d'installation de Promscale
+  file:
+    path: /opt/promscale
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Téléchargement du binaire de Promscale v{{ promscale_version }}
+  get_url:
+    url: https://github.com/timescale/promscale/releases/download/{{ promscale_version }}/promscale_{{ promscale_version }}_Linux_x86_64
+    dest: /opt/promscale/{{ promscale_version }}
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    checksum: "sha256:https://github.com/timescale/promscale/releases/download/{{ promscale_version }}/checksums.txt"
+
+- name: Création du lien symbolique pour le binaire promscale
+  file:
+    src: /opt/promscale/{{ promscale_version }}
+    dest: /usr/local/bin/promscale
+    state: link
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: Installation de l'extension Promscale v{{ promscale_extension_version }} pour PostgreSQL
+  apt:
+    deb: https://github.com/timescale/promscale_extension/releases/download/{{ promscale_extension_version }}/promscale_extension-{{ promscale_extension_version }}.pg{{ postgresql_major_version }}.x86_64.deb
+    state: present
+
+- name: Création du dossier de configuration de Promscale
+  file:
+    path: /etc/promscale
+    owner: promscale
+    group: promscale
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Configuration de Promscale
+  template:
+    src: promscale/config.yml.j2
+    dest: /etc/promscale/config.yml
+    owner: promscale
+    group: promscale
+    mode: "u=rw,g=r,o="
+  no_log: true
+  notify: restart promscale
+
+- name: Vérification si la base de données est initialisée
+  postgresql_query:
+    db: "{{ promscale_postgresql_database }}"
+    # ou alors vérifier que l'extension promscale est installée ? puisque cette étape n'est là que pour ça…
+    query: select exists (select from pg_tables where schemaname = 'public' and tablename = 'prom_installation_info');
+  become_user: postgres
+  register: _timescaledb_check_init
+
+- name: Définition de l'état d'initialisation de la base de données
+  set_fact:
+    timescaledb_initialized: "{{ timescaledb_check_init_query_result.exists }}"
+  vars:
+    timescaledb_check_init_query_result: "{{ _timescaledb_check_init.query_result | first }}"
+
+- name: Initialisation de la base de données de Promscale
+  command:
+    cmd: promscale --startup.only --startup.install-extensions false
+    chdir: /etc/promscale
+  become_user: promscale
+  when: not timescaledb_initialized
+
+- name: Configuration de la durée de rétention
+  # Note: Due to the SELECT query, we don't get any information when the
+  # retention period is modified. In that sense, this task isn't idempotent.
+  postgresql_query:
+    db: "{{ promscale_postgresql_database }}"
+    query: select prom_api.set_default_retention_period('{{ promscale_retention }}');
+  become_user: postgres
+
+- name: Activation de l'extension Promscale
+  postgresql_ext:
+    name: promscale
+    db: "{{ promscale_postgresql_database }}"
+    state: present
+  become_user: postgres
+
+- name: Configuration du service systemd
+  template:
+    src: systemd/promscale.service.j2
+    dest: /etc/systemd/system/promscale.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - restart promscale
+
+- name: Activation de Promscale au démarrage
+  service:
+    name: promscale
+    state: started
+    enabled: true
+
+- name: Ajout du job promscale dans Prometheus
+  copy:
+    src: prometheus/prometheus.yml
+    dest: /etc/prometheus/conf.d/prometheus.yml
+    owner: prometheus
+    group: prometheus
+    mode: "u=rw,go=r"
+  notify: reload prometheus

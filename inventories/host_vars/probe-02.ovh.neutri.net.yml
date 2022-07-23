@@ -1,5 +1,0 @@
-prometheus_telegraf_hosts:
-  - "{{ inventory_hostname }}"
-
-letsencrypt_domains_gandi:
-  - ovh.neutri.net

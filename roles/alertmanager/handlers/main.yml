@@ -4,7 +4,7 @@
 
 - name: restart alertmanager
   service:
-    name: prometheus-alertmanager
+    name: alertmanager
     state: restarted
 
 - name: restart matrix-goneb
@@ -12,12 +12,17 @@
     name: matrix-goneb
     state: restarted
 
-- name: reload prometheus
+- name: reload victoriametrics
   service:
-    name: prometheus
+    name: victoriametrics
+    state: reloaded
+
+- name: reload victoriametrics-alert
+  service:
+    name: victoriametrics-alert
     state: reloaded
 
 - name: reload alertmanager
   service:
-    name: prometheus-alertmanager
+    name: alertmanager
     state: reloaded

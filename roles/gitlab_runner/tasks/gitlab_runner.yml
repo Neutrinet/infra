@@ -1,0 +1,47 @@
+- name: Ajout de la clé GPG de Gitlab Runner dans APT
+  apt_key:
+    url: https://packages.gitlab.com/runner/gitlab-runner/gpgkey
+    state: present
+
+- name: Ajout du dépôt APT Gitlab Runner
+  apt_repository:
+    repo: deb https://packages.gitlab.com/runner/gitlab-runner/debian/ {{ ansible_distribution_release | lower }} main
+    filename: gitlab-runner
+    state: present
+
+- name: Installation de Gitlab Runner
+  package:
+    name: gitlab-runner
+    state: present
+
+- name: Configuration de Gitlab Runner
+  template:
+    src: gitlab-runner/config.toml.j2
+    dest: /etc/gitlab-runner/config.toml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+  notify: restart gitlab-runner
+  tags: ['gitlab_runner_config']
+
+- name: Activation de Gitlab Runner au démarrage
+  service:
+    name: gitlab-runner
+    state: started
+    enabled: true
+
+- name: Trigger handlers
+  # We need to restart gitlab-runner to apply the new config
+  # and expose the metrics for telegraf
+  meta: flush_handlers
+
+- name: Installation des plugins Telegraf
+  template:
+    src: telegraf/gitlab-runner.conf.j2
+    dest: /etc/telegraf/telegraf.d/gitlab-runner.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: restart telegraf
+  tags: ['telegraf_config']

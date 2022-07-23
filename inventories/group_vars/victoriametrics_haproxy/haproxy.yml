@@ -1,0 +1,24 @@
+letsencrypt_domains_gandi:
+  - neutrinet.be
+
+haproxy:
+  - hostname: grafana.neutrinet.be
+    target:
+      - 127.0.0.1
+    target_port: 3000
+    healthcheck: true
+    healthcheck_url: GET /api/health
+  - hostname: victoriametrics.neutrinet.be
+    target:
+      - 127.0.0.1
+    target_port: 8428
+    healthcheck: true
+    healthcheck_url: GET /-/healthy
+    username: "{{ victoriametrics_username }}"
+    password: "{{ victoriametrics_password }}"
+
+haproxy_redirect: []
+haproxy_postgresql: []
+
+haproxy_listen:
+  - "[::]"
