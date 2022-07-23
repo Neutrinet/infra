@@ -6,7 +6,7 @@ groups:
     rules:
       - alert: Instance Down
         for: 5m
-        expr: up == 0
+        expr: absent(system_uptime{}) == 1
         labels:
           severity: critical
         annotations:

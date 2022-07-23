@@ -12,23 +12,6 @@ global:
   external_labels:
     monitor: {{ ansible_fqdn }}
 
-{% if victoriametrics_remote_write_url %}
-remote_write:
-  - url: "{{ victoriametrics_remote_write_url }}"
-    basic_auth:
-      username: "{{ victoriametrics_username }}"
-      password: {{ victoriametrics_password | string | to_json }}
-    remote_timeout: 30s
-    queue_config:
-      capacity: 10000
-      max_samples_per_send: 3000
-      batch_send_deadline: 10s
-      min_shards: 4
-      max_shards: 200
-      min_backoff: 100ms
-      max_backoff: 10s
-{% endif %}
-
 {% if victoriametrics_remote_read_url %}
 remote_read:
   - url: "{{ victoriametrics_remote_read_url }}"
@@ -56,16 +39,3 @@ scrape_configs:
           - localhost:8880
 
 {% endif %}
-{% for host in victoriametrics_telegraf_hosts %}
-  # Grab telegraf metrics from {{ host }}
-  - job_name: telegraf-{{ host | replace('.', '-') }}
-{% if hostvars[host].telegraf_username is defined and hostvars[host].telegraf_password is defined %}
-    basic_auth:
-      username: {{ hostvars[host].telegraf_username | to_json }}
-      password: {{ hostvars[host].telegraf_password | string | to_json }}
-{% endif %}
-    static_configs:
-      - targets:
-          - "{{ (host != inventory_hostname) | ternary(host, 'localhost') }}:9273"
-
-{% endfor %}
