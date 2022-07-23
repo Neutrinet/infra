@@ -32,10 +32,14 @@
     name: telegraf
   tags: ['telegraf']
 
-- import_tasks: serial.yml serial_number=0
+- import_tasks: serial.yml
+  vars:
+    serial_number: 0
   tags: ['serial']
   when: ansible_virtualization_type == 'kvm' || ansible_product_name == 'YL-SKUL6' || ansible_product_name == 'PowerEdge R620'
 
-- import_tasks: serial.yml serial_number=1
+- import_tasks: serial.yml
+  vars:
+    serial_number: 1
   tags: ['serial']
   when: ansible_product_name == 'ProLiant DL360e Gen8'
