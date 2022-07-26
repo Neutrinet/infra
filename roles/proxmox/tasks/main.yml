@@ -4,6 +4,11 @@
     name: ceph
   tags: ['ceph']
 
+
+- name: Installation de ipmitool
+  ansible.builtin.package:
+    name: ipmitool
+
 - name: Ajout du dépôt APT proxmox
   apt_repository:
     repo: "deb http://download.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-no-subscription"
