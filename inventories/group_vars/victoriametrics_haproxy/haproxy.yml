@@ -8,16 +8,14 @@ haproxy:
     target_port: 3000
     healthcheck: true
     healthcheck_url: GET /api/health
-  - hostname: prometheus.neutrinet.be
+  - hostname: victoriametrics.neutrinet.be
     target:
       - 127.0.0.1
-    target_port: 9090
+    target_port: 8428
     healthcheck: true
     healthcheck_url: GET /-/healthy
-    username: "{{ prometheus_username }}"
-    password: "{{ prometheus_password }}"
-    deny_paths:
-      - /api/v1/admin
+    username: "{{ victoriametrics_username }}"
+    password: "{{ victoriametrics_password }}"
 
 haproxy_redirect: []
 haproxy_postgresql: []

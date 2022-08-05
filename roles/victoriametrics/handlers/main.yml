@@ -1,0 +1,21 @@
+- name: restart victoriametrics
+  systemd:
+    name: victoriametrics
+    daemon_reload: true
+    state: restarted
+
+- name: reload victoriametrics
+  service:
+    name: victoriametrics
+    state: reloaded
+
+- name: restart victoriametrics-alert
+  systemd:
+    name: victoriametrics-alert
+    daemon_reload: true
+    state: restarted
+
+- name: reload victoriametrics-alert
+  service:
+    name: victoriametrics-alert
+    state: reloaded

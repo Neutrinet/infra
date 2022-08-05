@@ -12,9 +12,14 @@
     name: matrix-goneb
     state: restarted
 
-- name: reload prometheus
+- name: reload victoriametrics
   service:
-    name: prometheus
+    name: victoriametrics
+    state: reloaded
+
+- name: reload victoriametrics-alert
+  service:
+    name: victoriametrics-alert
     state: reloaded
 
 - name: reload alertmanager

@@ -20,5 +20,4 @@
 
   roles:
     - telegraf
-    - borgmatic
-    - prometheus
+    - victoriametrics
