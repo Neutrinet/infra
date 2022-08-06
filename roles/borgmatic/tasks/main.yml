@@ -16,6 +16,7 @@
   ansible.builtin.package:
     name:
       - python3-virtualenv
+      - python3-llfuse
       - virtualenv
     state: present
 

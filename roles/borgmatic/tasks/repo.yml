@@ -12,6 +12,7 @@
 - name: Création de l'utilisateur {{ repo.user }} sur le serveur de backup {{ repo.host }}
   user:
     name: "{{ repo.user }}"
+    password: '*'
     home: "{{ repo.path }}"
     shell: /bin/bash
     state: present
