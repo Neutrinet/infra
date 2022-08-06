@@ -2,9 +2,10 @@
 Description="Check borgmatic backup"
 
 [Timer]
-OnCalendar= Sun *-*-* 04:00:00
+OnActiveSec=5d
+OnUnitActiveSec=5d
 RandomizedDelaySec=1h
-Persistent=false
+Persistent=true
 
 [Install]
 WantedBy=timers.target
