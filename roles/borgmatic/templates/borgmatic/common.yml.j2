@@ -1,0 +1,14 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/apt"
+    - "/etc/motd"
+    - "/etc/ssh"
+    - "/etc/zsh"
+    - "/etc/sudoers"
+    - "/etc/telegraf"
+    - "/etc/default/grub"
+    - "/etc/sysctl.d"

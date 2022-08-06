@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/caddy/conf.d/{{ web_app_owner }}.conf"
+    - "/etc/caddy/conf.d/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.conf"
+    - "{{ web_app_dist_dir }}"
+    - "/etc/systemd/system/backoffice.service"
+
+storage:
+  archive_name_format: backoffice-{{ web_app_owner }}_{hostname}-{now}
+
+retention:
+  prefix: backoffice-{{ web_app_owner }}_
+
+consistency:
+  prefix: backoffice-{{ web_app_owner }}_
+
+hooks:
+  postgresql_databases:
+    - name: "{{ postgresql_db_name }}"
+      username: "{{ postgresql_db_name }}"
+      password: {{ postgresql_db_password | string | to_json }}
+      hostname: "{{ postgresql_host }}"

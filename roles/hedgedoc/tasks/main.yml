@@ -30,3 +30,13 @@
     validate: telegraf --config %s --test
   notify: restart telegraf
   tags: ['telegraf']
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/hedgedoc.yml.j2
+    dest: /etc/borgmatic.d/hedgedoc-{{ hedgedoc_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

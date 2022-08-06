@@ -32,6 +32,11 @@
     name: telegraf
   tags: ['telegraf']
 
+- name: Installation de Borgmatic
+  import_role:
+    name: borgmatic
+  tags: ['borgmatic']
+
 - import_tasks: serial.yml
   tags: ['serial']
   when: ansible_virtualization_type == 'kvm'

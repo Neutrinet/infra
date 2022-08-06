@@ -1,5 +1,4 @@
 ---
-
 - name: Installation de PostgreSQL
   import_role:
     name: postgres
@@ -70,3 +69,13 @@
     # validate: telegraf --config %s --test
   notify: restart telegraf
   tags: ['telegraf_config']
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/patroni.yml.j2
+    dest: /etc/borgmatic.d/patroni.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

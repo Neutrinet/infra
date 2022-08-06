@@ -13,3 +13,18 @@
 - name: Installation de matrix-goneb
   import_tasks: matrix-goneb.yml
   tags: ['matrix_goneb']
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/{{ config }}.yml.j2
+    dest: /etc/borgmatic.d/{{ config }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  loop:
+    - alertmanager
+    - matrix-goneb
+  loop_control:
+    loop_var: config
+  tags: ['borgmatic_config']

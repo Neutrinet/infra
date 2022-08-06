@@ -34,3 +34,13 @@
 - name: Installation de Backoffice
   import_tasks: backoffice.yml
   tags: ['backoffice']
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/backoffice.yml.j2
+    dest: /etc/borgmatic.d/backoffice-{{ web_app_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

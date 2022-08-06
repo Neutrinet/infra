@@ -1,0 +1,25 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/var/www/{{ mattermost_owner }}/dist"
+    - "/var/www/{{ mattermost_owner }}/mattermost-{{ mattermost_version }}"
+    - "/etc/systemd/system/mattermost.service"
+
+storage:
+  archive_name_format: mattermost-{{ mattermost_owner }}_{hostname}-{now}
+
+retention:
+  prefix: mattermost-{{ mattermost_owner }}_
+
+consistency:
+  prefix: mattermost-{{ mattermost_owner }}_
+
+hooks:
+  postgresql_databases:
+    - name: "{{ postgresql_db_name }}"
+      username: "{{ postgresql_db_name }}"
+      password: {{ postgresql_db_password | string | to_json }}
+      hostname: "{{ postgresql_host }}"
