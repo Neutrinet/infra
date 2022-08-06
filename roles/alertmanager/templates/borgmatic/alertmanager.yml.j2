@@ -8,8 +8,8 @@ location:
     - "/etc/alertmanager"
     - "/var/lib/alertmanager"
     - "/etc/systemd/system/alertmanager.service"
-    - "/etc/prometheus/conf.d/alertmanager.yml"
-    - "/etc/prometheus/rules.d"
+    - "/etc/victoriametrics/conf.d/alertmanager.yml"
+    - "/etc/victoriametrics/rules.d"
 
 storage:
   archive_name_format: alertmanager_{hostname}-{now}

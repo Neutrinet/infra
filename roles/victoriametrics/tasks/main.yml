@@ -8,9 +8,18 @@
 
 - name: Installation de VictoriaMetrics-alert
   import_tasks: alert.yml
-  when: victoriametrics_alert_enable
   tags: ['victoriametrics-alert']
 
 - name: Nettoyage des anciennes versions
   import_tasks: cleanup.yml
   tags: ['cleanup']
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/victoriametrics.yml.j2
+    dest: /etc/borgmatic.d/victoriametrics.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

@@ -20,7 +20,7 @@
 
 
 [[outputs.influxdb]]
-  urls = ["{{ victoriametrics_remote_write_url }}"]
+  urls = ["{{ victoriametrics_url }}"]
 
   ## Use HTTP Basic Authentication.
   username = {{ victoriametrics_username | string | to_json }}

@@ -2,8 +2,6 @@ probe_http_urls:
   - url: https://example.com
     body: 'Example Domain'
     method: GET
-  - name: https://prometheus.example.com
-    url: http://localhost:9090
 
 probe_http_certs: []
 

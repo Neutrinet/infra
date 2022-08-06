@@ -12,12 +12,6 @@ global:
   external_labels:
     monitor: {{ ansible_fqdn }}
 
-{% if victoriametrics_remote_read_url %}
-remote_read:
-  - url: "{{ victoriametrics_remote_read_url }}"
-    read_recent: true
-{% endif %}
-
 # A list of scrape configurations.
 scrape_configs:
   - job_name: extra-config # This is a default value, it is mandatory.
@@ -31,11 +25,8 @@ scrape_configs:
       - targets:
           - localhost:8428
 
-{% if victoriametrics_alert_enable%}
-  # Grab metrics about victoriametrics itself
+  # Grab metrics about victoriametrics-alert
   - job_name: victoriametrics-alert
     static_configs:
       - targets:
           - localhost:8880
-
-{% endif %}

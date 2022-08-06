@@ -13,21 +13,6 @@ groups:
           description: 'Instance {{ $labels.instance }} is down'
           summary: 'Instance is down'
 
-{% if alertmanager_prometheus_remote_hosts %}
-      - alert: Prometheus Down
-        for: 5m
-        expr: |
-{%   for host in alertmanager_prometheus_remote_hosts if host != inventory_hostname %}
-          absent(up{job="prometheus",monitor="{{{ host }}}"}){% if not loop.last %} OR {% endif %}
-
-{%   endfor %}
-        labels:
-          severity: critical
-        annotations:
-          description: 'Prometheus instance {{ $labels.monitor }} is down'
-          summary: 'Prometheus is down'
-{% endif %}
-
   - name: Disk Usage
     rules:
       - alert: Low Disk Space
