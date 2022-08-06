@@ -1,0 +1,16 @@
+{{ ansible_managed | comment }}
+
+location:
+  source_directories: []
+  repositories:
+{% for repo in borgmatic_repositories %}
+    - {{ repo.host }}:{{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}
+{% endfor %}
+storage:
+  compression: zstd
+  encryption_passphrase: {{ borgmatic_encryption_passphrase | string | to_json }}
+retention:
+  keep_daily: 7
+  keep_monthly: 6
+  keep_weekly: 4
+  keep_hourly: 8

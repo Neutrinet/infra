@@ -47,3 +47,13 @@
   notify:
     - reload systemd
     - restart webhook
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/webhook.yml.j2
+    dest: /etc/borgmatic.d/webhook.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

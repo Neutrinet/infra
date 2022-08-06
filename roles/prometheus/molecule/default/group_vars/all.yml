@@ -14,3 +14,5 @@ haproxy:
     healthcheck_url: GET /-/healthy
     username: "{{ prometheus_username }}"
     password: "{{ prometheus_password }}"
+    deny_paths:
+      - /api/v1/admin

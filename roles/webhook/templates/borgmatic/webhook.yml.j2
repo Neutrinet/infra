@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/webhook"
+    - "/etc/systemd/system/webhook.service"
+
+storage:
+  archive_name_format: webhook_{hostname}-{now}
+
+retention:
+  prefix: webhook_
+
+consistency:
+  prefix: webhook_

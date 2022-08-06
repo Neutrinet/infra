@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/var/lib/grafana"
+    - "/etc/grafana"
+
+storage:
+  archive_name_format: grafana_{hostname}-{now}
+
+retention:
+  prefix: grafana_
+
+consistency:
+  prefix: grafana_

@@ -10,4 +10,5 @@
 
   roles:
     - telegraf
+    - borgmatic
     - prometheus

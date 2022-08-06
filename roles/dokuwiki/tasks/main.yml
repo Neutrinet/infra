@@ -21,3 +21,13 @@
     web_app_caddy_template: caddy/dokuwiki.j2
     web_app_php_fpm_enabled: true
   tags: ['web_app']
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/dokuwiki.yml.j2
+    dest: /etc/borgmatic.d/dokuwiki-{{ web_app_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

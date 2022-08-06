@@ -17,6 +17,7 @@ ExecStart=/usr/local/bin/prometheus \
 {# If we did NOT provide a remote write url, that means we are the receiver #}
   --web.enable-remote-write-receiver \
 {% endif %}
+  --web.enable-admin-api \
   --config.file=/etc/prometheus/prometheus.yml
 Restart=always
 

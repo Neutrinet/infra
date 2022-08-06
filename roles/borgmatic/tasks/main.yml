@@ -1,0 +1,104 @@
+---
+- name: Installation de Borg
+  package:
+    name: borgbackup
+    state: present
+
+- name: Création du dossier d'install de Borgmatic
+  file:
+    path: /opt/borgmatic
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,go=rx
+
+- name: Installation des dépendances python
+  ansible.builtin.package:
+    name:
+      - python3-virtualenv
+      - python3-llfuse
+      - virtualenv
+    state: present
+
+- name: Installation de Borgmatic  # noqa package-latest
+  pip:
+    name: borgmatic
+    state: latest
+    virtualenv: /opt/borgmatic
+    virtualenv_python: python3
+    chdir: /opt/borgmatic
+
+- name: Création du dossier pour le client SSH
+  file:
+    path: /root/.ssh
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,go=
+
+- name: Configuration des repos Borg
+  include_tasks:
+    file: repo.yml
+  loop: "{{ borgmatic_repositories }}"
+  loop_control:
+    loop_var: repo
+    label: "{{ repo.host }}"
+
+- name: Création des dossiers de config de Borgmatic
+  file:
+    path: "{{ config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=
+  loop:
+    - /etc/borgmatic
+    - /etc/borgmatic.d
+  loop_control:
+    loop_var: config_dir
+
+- name: Configuration du template des backups Borgmatic
+  template:
+    src: borgmatic/template.yml.j2
+    dest: /etc/borgmatic/template.yml
+    owner: root
+    group: root
+    mode: u=rw,go=
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+
+- name: Configuration commune des backups Borgmatic
+  template:
+    src: borgmatic/common.yml.j2
+    dest: /etc/borgmatic.d/common.yml
+    owner: root
+    group: root
+    mode: u=rw,go=
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  notify: init borgmatic
+
+- name: Création d'un timer pour créer et vérifier les backups périodiquement
+  copy:
+    src: systemd/{{ systemd_unit }}
+    dest: /etc/systemd/system/{{ systemd_unit }}
+    owner: root
+    group: root
+    mode: u=rw,go=r
+  loop:
+    - borgmatic.timer
+    - borgmatic.service
+    - borgmatic-check.timer
+    - borgmatic-check.service
+  loop_control:
+    loop_var: systemd_unit
+  notify: reload systemd
+
+- name: Activation du timer borgmatic
+  service:
+    name: "{{ systemd_unit }}.timer"
+    state: started
+    enabled: true
+  loop:
+    - borgmatic
+    - borgmatic-check
+  loop_control:
+    loop_var: systemd_unit

@@ -23,3 +23,13 @@
     append: true
   notify: restart telegraf
   tags: ['telegraf_config']
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/haproxy.yml.j2
+    dest: /etc/borgmatic.d/haproxy.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

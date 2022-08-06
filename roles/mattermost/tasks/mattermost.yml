@@ -189,3 +189,13 @@
     state: absent
     path: "{{ mattermost_oldest_archive }}"
   when: _mattermost_archives.files | length > 5
+
+- name: Configuration des backups Borgmatic
+  template:
+    src: borgmatic/mattermost.yml.j2
+    dest: /etc/borgmatic.d/mattermost-{{ mattermost_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']
