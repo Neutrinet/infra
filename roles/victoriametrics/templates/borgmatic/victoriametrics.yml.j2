@@ -12,9 +12,9 @@ location:
 
 hooks:
   before_backup:
-    - curl --fail -X POST http://localhost:8428/snapshot/create || exit 75
+    - curl --fail --silent -X POST http://localhost:8428/snapshot/create || exit 75
   after_backup:
-    - rm -rf {{ victoriametrics_storage_path }}/snapshots/*
+    - curl --fail --silent -X POST http://localhost:8428/snapshot/delete_all
 
 storage:
   archive_name_format: victoriametrics_{hostname}-{now}
