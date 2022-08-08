@@ -46,6 +46,6 @@ users:
     keys:
       - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPjigU9KeN4e973Lhbp39RvifzkC0uVZjTefD8wXtNDE celo@smeagol"
 
+victoriametrics_url: https://victoriametrics.neutrinet.be
 victoriametrics_username: victoriametrics
 victoriametrics_password: "{{ vault_victoriametrics_password }}"
-victoriametrics_remote_write_url: https://victoriametrics.neutrinet.be/

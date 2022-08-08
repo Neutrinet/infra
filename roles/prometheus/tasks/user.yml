@@ -1,7 +1,0 @@
-- name: Création de l'utilisateur prometheus
-  user:
-    name: prometheus
-    home: /opt/prometheus
-    shell: /sbin/nologin
-    system: true
-    state: present

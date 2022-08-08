@@ -1,5 +1,0 @@
-# Grab metrics about promscale
-- targets:
-    - localhost:9201
-  labels:
-    job: promscale

@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/opt/victoriametrics/{{ victoriametrics_version }}"
+    - "/etc/victoriametrics"
+    - "{{ victoriametrics_storage_path }}/snapshots"
+    - "/etc/systemd/system/victoriametrics.service"
+    - "/etc/systemd/system/victoriametrics-alert.service"
+
+hooks:
+  before_backup:
+    - curl --fail --silent -X POST http://localhost:8428/snapshot/create || exit 75
+  after_backup:
+    - curl --fail --silent -X POST http://localhost:8428/snapshot/delete_all
+
+storage:
+  archive_name_format: victoriametrics_{hostname}-{now}
+
+retention:
+  prefix: victoriametrics_
+
+consistency:
+  prefix: victoriametrics_
