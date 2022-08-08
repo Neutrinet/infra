@@ -1,10 +1,10 @@
 ---
 
-- name: Enable serial ttyS0
+- name: Enable serial ttyS{{ serial_number  }}
   lineinfile:
     path: "/etc/default/grub"
     regexp: 'GRUB_CMDLINE_LINUX_DEFAULT="(.*)"'
-    line: 'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS0,115200n8 console=tty0 quiet"'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS{{ serial_number  }},115200n8 console=tty0 quiet"'
   notify: update grub
 
 - name: Clean option grub
@@ -14,10 +14,18 @@
     line: 'GRUB_CMDLINE_LINUX=""'
   notify: update grub
 
-- name: Enable serial and console in grub
+- name: Enable serial and console input grub
   lineinfile:
     path: "/etc/default/grub"
-    line: 'GRUB_TERMINAL="serial console"'
+    line: 'GRUB_TERMINAL_INPUT="console serial"'
+    mode: "u=rw,go=r"
+    create: true
+  notify: update grub
+
+- name: Enable serial and console output grub
+  lineinfile:
+    path: "/etc/default/grub"
+    line: 'GRUB_TERMINAL_OUTPUT="gfxterm serial"'
     mode: "u=rw,go=r"
     create: true
   notify: update grub
@@ -25,7 +33,7 @@
 - name: Config serial speed in grub
   lineinfile:
     path: "/etc/default/grub"
-    line: 'GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"'
+    line: 'GRUB_SERIAL_COMMAND="serial --speed=115200 --unit={{ serial_number  }} --word=8 --parity=no --stop=1"'
     mode: "u=rw,go=r"
     create: true
   notify: update grub
