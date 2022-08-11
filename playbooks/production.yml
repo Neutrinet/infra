@@ -9,6 +9,7 @@
 - import_playbook: apps/ceph_s3.yml
 - import_playbook: apps/hedgedoc.yml
 - import_playbook: apps/mattermost.yml
+- import_playbook: apps/nextcloud.yml
 - import_playbook: apps/backoffice.yml
 - import_playbook: apps/grav.yml
 - import_playbook: apps/dokuwiki.yml
