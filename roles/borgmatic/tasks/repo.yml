@@ -25,7 +25,7 @@
     key: "{{ _borgmatic_ssh_public_key.content | b64decode }}"
     key_options: command="borg serve --restrict-to-path {{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}",restrict
   delegate_to: "{{ repo.host }}"
-  run_once: true
+  throttle: 1
 
 - name: Création du dossier des données sur le serveur de backup {{ repo.host }}
   file:
@@ -35,7 +35,6 @@
     group: "{{ repo.user }}"
     mode: u=rwx,go=
   delegate_to: "{{ repo.host }}"
-  run_once: true
 
 - name: Configuration du client SSH pour le serveur de backup {{ repo.host }}
   blockinfile:
@@ -55,12 +54,20 @@
 - name: Scan de la clé publique du serveur de backup {{ repo.host }}
   command: ssh-keyscan -H {{ repo.host }}
   changed_when: false
+  loop:
+    - "{{ repo.host }}"
+    - "{{ hostvars[repo.host].ansible_default_ipv6.address }}"
   register: _borgmatic_ssh_keyscan
+  run_once: true
 
 - name: Ajout de {{ repo.host }} dans la liste des serveurs connus
   known_hosts:
     name: "{{ repo.host }}"
-    key: "{{ _borgmatic_ssh_keyscan.stdout }}"
+    key: "{{ ssh_keyscan.stdout }}"
     path: /root/.ssh/known_hosts
     hash_host: true
     state: present
+  loop: "{{ _borgmatic_ssh_keyscan.results }}"
+  loop_control:
+    loop_var: ssh_keyscan
+    label: "{{ ssh_keyscan.item }}"

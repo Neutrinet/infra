@@ -2,6 +2,19 @@
   import_tasks: patroni.yml
   when: postgresql_patroni_hosts | length > 0
 
+- name: Ajout de la clé GPG de PostgreSQL dans APT
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+  when: ansible_distribution_release == 'buster'
+
+- name: Installation du repo PostgreSQL
+  apt_repository:
+    repo: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
+    filename: postgresql
+    state: present
+  when: ansible_distribution_release == 'buster'
+
 - name: Installation des dépendences
   package:
     name:
