@@ -1,28 +1,33 @@
 - name: reload systemd
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
 
 - name: restart alertmanager
-  service:
+  ansible.builtin.service:
     name: alertmanager
     state: restarted
 
 - name: restart matrix-goneb
-  service:
+  ansible.builtin.service:
     name: matrix-goneb
     state: restarted
 
+- name: restart matrix-alertbot
+  ansible.builtin.service:
+    name: matrix-alertbot
+    state: restarted
+
 - name: reload victoriametrics
-  service:
+  ansible.builtin.service:
     name: victoriametrics
     state: reloaded
 
 - name: reload victoriametrics-alert
-  service:
+  ansible.builtin.service:
     name: victoriametrics-alert
     state: reloaded
 
 - name: reload alertmanager
-  service:
+  ansible.builtin.service:
     name: alertmanager
     state: reloaded

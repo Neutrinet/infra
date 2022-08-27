@@ -1,12 +1,12 @@
 - name: Installation de Go
-  import_role:
+  ansible.builtin.import_role:
     name: go
   vars:
     go_version: "1.17.5"
   tags: ['go']
 
 - name: Création de l'utilisateur matrix-goneb
-  user:
+  ansible.builtin.user:
     name: matrix-goneb
     home: /opt/matrix-goneb
     shell: /sbin/nologin
@@ -14,7 +14,7 @@
     state: present
 
 - name: Création des dossiers pour matrix-goneb
-  file:
+  ansible.builtin.file:
     path: "{{ matrix_goneb_dir }}"
     owner: matrix-goneb
     group: matrix-goneb
@@ -28,7 +28,7 @@
     loop_var: matrix_goneb_dir
 
 - name: Récupération du dépôt git de matrix-goneb
-  git:
+  ansible.builtin.git:
     repo: https://github.com/matrix-org/go-neb.git
     version: master
     dest: /opt/matrix-goneb/src
@@ -39,19 +39,19 @@
   notify: restart matrix-goneb
 
 - name: Installation des dépendences de matrix-goneb
-  apt:
+  ansible.builtin.package:
     name: libolm-dev
     state: present
 
 - name: Compilation de matrix-goneb  # noqa no-handler
-  command:
+  ansible.builtin.command:
     cmd: "go{{ go_version }} build github.com/matrix-org/go-neb"
     chdir: /opt/matrix-goneb/src
   become_user: matrix-goneb
   when: _alertmanager_matrix_goneb_repo is changed
 
 - name: Création du lien symbolique pour le binaire matrix-goneb
-  file:
+  ansible.builtin.file:
     src: /opt/matrix-goneb/src/go-neb
     dest: /usr/local/bin/matrix-goneb
     owner: matrix-goneb
@@ -60,7 +60,7 @@
     state: link
 
 - name: Connexion de l'utilisateur Matrix
-  uri:
+  ansible.builtin.uri:
     url: https://{{ alertmanager_matrix_host }}/_matrix/client/r0/login
     method: POST
     body:
@@ -77,25 +77,25 @@
     mode: "u=rw,go="
 
 - name: Récupération des infos de connexion
-  slurp:
+  ansible.builtin.slurp:
     src: /opt/matrix-goneb/matrix-session.secret
   register: _alertmanager_matrix_session_encoded
 
 - name: Définition du token et device de l'utilisateur Matrix
-  set_fact:
+  ansible.builtin.set_fact:
     alertmanager_matrix_token: "{{ _alertmanager_matrix_session.access_token }}"
     alertmanager_matrix_device: "{{ _alertmanager_matrix_session.device_id }}"
   vars:
     _alertmanager_matrix_session: "{{ _alertmanager_matrix_session_encoded.content | b64decode | from_json }}"
 
 - name: Vérification de la connexion
-  uri:
+  ansible.builtin.uri:
     url: https://{{ alertmanager_matrix_host }}/_matrix/client/r0/devices/{{ alertmanager_matrix_device }}
     headers:
       Authorization: Bearer {{ alertmanager_matrix_token }}
 
 - name: Configuration de matrix-goneb
-  template:
+  ansible.builtin.template:
     src: matrix-goneb/config.yml.j2
     dest: /opt/matrix-goneb/dist/config.yml
     owner: matrix-goneb
@@ -104,7 +104,7 @@
   notify: restart matrix-goneb
 
 - name: Configuration du service systemd
-  copy:
+  ansible.builtin.copy:
     src: systemd/matrix-goneb.service
     dest: /etc/systemd/system/matrix-goneb.service
     owner: root
@@ -115,7 +115,7 @@
     - restart matrix-goneb
 
 - name: Activation de matrix-goneb au démarrage
-  service:
+  ansible.builtin.service:
     name: matrix-goneb
     state: started
     enabled: true

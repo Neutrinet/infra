@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/matrix-alertbot"
+    - "/var/lib/matrix-alertbot"
+    - "/etc/systemd/system/matrix-alertbot.service"
+
+storage:
+  archive_name_format: matrix-alertbot_{hostname}-{now}
+
+retention:
+  prefix: matrix-alertbot_
+
+consistency:
+  prefix: matrix-alertbot_
