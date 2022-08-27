@@ -24,16 +24,17 @@
 
 - name: Installation des dépendences de matrix-alertbot
   ansible.builtin.package:
-    name: libolm
+    name: libolm3
     state: present
 
 - name: Installation de matrix-alertbot  # noqa package-latest
   ansible.builtin.pip:
-    name: matrix-alertbot
+    name: matrix-alertbot[e2e]
     virtualenv: /opt/matrix-alertbot
     virtualenv_python: python3
     state: "latest"
     chdir: /opt/matrix-alertbot
+  notify: restart matrix-alertbot
 
 - name: Création du lien symbolique pour le binaire matrix-alertbot
   ansible.builtin.file:

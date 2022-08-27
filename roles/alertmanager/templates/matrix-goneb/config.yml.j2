@@ -12,8 +12,8 @@
 
 clients:
   - UserID: "@{{ alertmanager_matrix_username }}:{{ alertmanager_matrix_host }}"
-    AccessToken: "{{ alertmanager_matrix_token }}"
-    DeviceID: "{{ alertmanager_matrix_device }}"
+    AccessToken: "{{ alertmanager_matrix_goneb_token }}"
+    DeviceID: "{{ alertmanager_matrix_goneb_device }}"
     HomeserverURL: "https://{{ alertmanager_matrix_host }}"
     Sync: true
     AutoJoinRooms: true
@@ -26,7 +26,7 @@ services:
     UserID: "@{{ alertmanager_matrix_username }}:{{ alertmanager_matrix_host }}"
     Config: {}
 
-  - ID: "{{ alertmanager_matrix_service }}"
+  - ID: "{{ alertmanager_matrix_goneb_service }}"
     Type: "alertmanager"
     UserID: "@{{ alertmanager_matrix_username }}:{{ alertmanager_matrix_host }}"
     Config:
@@ -37,7 +37,7 @@ services:
       webhook_url: {{ alertmanager_matrix_goneb_webhook_url }}
       # Each room will get the notification with the alert rendered with the given template
       rooms:
-        "{{ alertmanager_matrix_room }}":
+        "{{ alertmanager_matrix_goneb_room }}":
 {% raw %}
           text_template: >-
             {{ range .Alerts -}}

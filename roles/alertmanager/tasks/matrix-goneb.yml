@@ -83,16 +83,16 @@
 
 - name: Définition du token et device de l'utilisateur Matrix
   ansible.builtin.set_fact:
-    alertmanager_matrix_token: "{{ _alertmanager_matrix_session.access_token }}"
-    alertmanager_matrix_device: "{{ _alertmanager_matrix_session.device_id }}"
+    alertmanager_matrix_goneb_token: "{{ _alertmanager_matrix_session.access_token }}"
+    alertmanager_matrix_goneb_device: "{{ _alertmanager_matrix_session.device_id }}"
   vars:
     _alertmanager_matrix_session: "{{ _alertmanager_matrix_session_encoded.content | b64decode | from_json }}"
 
 - name: Vérification de la connexion
   ansible.builtin.uri:
-    url: https://{{ alertmanager_matrix_host }}/_matrix/client/r0/devices/{{ alertmanager_matrix_device }}
+    url: https://{{ alertmanager_matrix_host }}/_matrix/client/r0/devices/{{ alertmanager_matrix_goneb_device }}
     headers:
-      Authorization: Bearer {{ alertmanager_matrix_token }}
+      Authorization: Bearer {{ alertmanager_matrix_goneb_token }}
 
 - name: Configuration de matrix-goneb
   ansible.builtin.template:

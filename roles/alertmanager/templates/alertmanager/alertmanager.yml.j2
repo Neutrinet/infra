@@ -47,5 +47,5 @@ receivers:
     webhook_configs:
       - url: {{ alertmanager_matrix_goneb_webhook_url }}
         send_resolved: true
-      - url: http://localhost:4060/alerts/{{ alertmanager_matrix_room }}
+      - url: http://localhost:4060/alerts/{{ alertmanager_matrix_alertbot_room }}
         send_resolved: true

@@ -1,5 +1,5 @@
 # Grab metrics about alertmanager
 - targets:
-    - /var/run/matrix-alertbot.socket
+    - localhost:4060
   labels:
     job: matrix-alertbot
