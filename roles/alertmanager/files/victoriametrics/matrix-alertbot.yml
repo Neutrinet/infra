@@ -1,0 +1,5 @@
+# Grab metrics about alertmanager
+- targets:
+    - localhost:4060
+  labels:
+    job: matrix-alertbot

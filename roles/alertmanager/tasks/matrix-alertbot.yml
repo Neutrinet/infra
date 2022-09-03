@@ -1,0 +1,81 @@
+- name: Création de l'utilisateur matrix-alertbot
+  ansible.builtin.user:
+    name: matrix-alertbot
+    home: /opt/matrix-alertbot
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: Création du dossier de stockage de matrix-alertbot
+  ansible.builtin.file:
+    path: /var/lib/matrix-alertbot
+    owner: matrix-alertbot
+    group: matrix-alertbot
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Création du dossier de config de matrix-alertbot
+  ansible.builtin.file:
+    path: /etc/matrix-alertbot
+    owner: matrix-alertbot
+    group: matrix-alertbot
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Installation des dépendences de matrix-alertbot
+  ansible.builtin.package:
+    name: libolm3
+    state: present
+
+- name: Installation de matrix-alertbot  # noqa package-latest
+  ansible.builtin.pip:
+    name: matrix-alertbot[e2e]
+    virtualenv: /opt/matrix-alertbot
+    virtualenv_python: python3
+    state: "latest"
+    chdir: /opt/matrix-alertbot
+  notify: restart matrix-alertbot
+
+- name: Création du lien symbolique pour le binaire matrix-alertbot
+  ansible.builtin.file:
+    src: /opt/matrix-alertbot/bin/matrix-alertbot
+    dest: /usr/local/bin/matrix-alertbot
+    owner: matrix-alertbot
+    group: matrix-alertbot
+    mode: "u=rwx,go=rx"
+    state: link
+
+- name: Configuration de matrix-alertbot
+  ansible.builtin.template:
+    src: matrix-alertbot/config.yml.j2
+    dest: /etc/matrix-alertbot/config.yml
+    owner: matrix-alertbot
+    group: matrix-alertbot
+    mode: "u=rw,g=r,o="
+  notify: restart matrix-alertbot
+
+- name: Configuration du service systemd
+  ansible.builtin.copy:
+    src: systemd/matrix-alertbot.service
+    dest: /etc/systemd/system/matrix-alertbot.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart matrix-alertbot
+
+- name: Activation de matrix-alertbot au démarrage
+  ansible.builtin.service:
+    name: matrix-alertbot
+    state: started
+    enabled: true
+
+- name: Ajout du job matrix-alertbot dans VictoriaMetrics
+  ansible.builtin.copy:
+    src: victoriametrics/matrix-alertbot.yml
+    dest: /etc/victoriametrics/conf.d/matrix-alertbot.yml
+    owner: victoriametrics
+    group: victoriametrics
+    mode: "u=rw,go=r"
+  notify: reload victoriametrics

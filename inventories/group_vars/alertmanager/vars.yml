@@ -3,4 +3,9 @@ alertmanager_version: 0.24.0
 alertmanager_matrix_username: "neutribot"
 alertmanager_matrix_password: "{{ vault_alertmanager_matrix_password }}"
 alertmanager_matrix_host: matrix.domainepublic.net
-alertmanager_matrix_room: "!RwsRwTYSutAOiujkCC:matrix.domainepublic.net"
+
+alertmanager_matrix_goneb_room: "!RwsRwTYSutAOiujkCC:matrix.domainepublic.net"
+
+alertmanager_matrix_alertbot_token: "{{ vault_alertmanager_matrix_alertbot_token }}"
+alertmanager_matrix_alertbot_device_id: MBXYHRXJZD
+alertmanager_matrix_alertbot_room: "!sUVhsVlYJDsUWgPbeW:chat.batato.be"

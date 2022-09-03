@@ -1,5 +1,5 @@
 - name: Copie des alertes de base
-  template:
+  ansible.builtin.template:
     src: rules/base.yml.j2
     dest: /etc/victoriametrics/rules.d/base.yml
     owner: root
