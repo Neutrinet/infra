@@ -24,7 +24,7 @@ LogLevel VERBOSE
 
 
 # Authentication:
-LoginGraceTime 2m
+LoginGraceTime 60
 PermitRootLogin {{ ssh_permit_root_login | ternary('without-password', 'no') }}
 StrictModes yes
 
