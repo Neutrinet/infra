@@ -4,13 +4,13 @@
   dc = {{ datacenter_name | to_json }}
 
   ## Prometehus compatibility
-  job = "telegraf-{{ ansible_fqdn | replace('.', '-') }}"
-  instance = "{{ ansible_fqdn }}"
-  monitor = "{{ ansible_fqdn }}"
+  job = "telegraf-{{ inventory_hostname | replace('.', '-') }}"
+  instance = "{{ inventory_hostname }}"
+  monitor = "{{ inventory_hostname }}"
 
 [agent]
   ## Override default hostname, if empty use os.Hostname()
-  hostname = "{{ ansible_fqdn }}"
+  hostname = "{{ inventory_hostname }}"
   interval = "15s"
 
 

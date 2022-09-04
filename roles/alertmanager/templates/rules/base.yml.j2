@@ -6,11 +6,15 @@ groups:
     rules:
       - alert: Instance Down
         for: 5m
-        expr: absent(system_uptime{}) == 1
+        expr: |-
+{% for host in groups.all %}
+          absent(system_uptime{host="{{{ host }}}"}) == 1{% if not loop.last %} OR {% endif %}
+
+{% endfor %}
         labels:
           severity: critical
         annotations:
-          description: 'Instance {{ $labels.instance }} is down'
+          description: 'Instance {{ $labels.host }} is down'
           summary: 'Instance is down'
 
   - name: Disk Usage
