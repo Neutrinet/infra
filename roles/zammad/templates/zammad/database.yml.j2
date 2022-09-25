@@ -1,0 +1,20 @@
+{{ ansible_managed | comment }}
+
+production:
+  # For details on connection pooling, see Rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: 50
+  timeout: 5000
+  encoding: utf8
+
+  ##### postgresql config #####
+
+  adapter: postgresql
+  username: "{{ zammad_owner }}"
+  password: {{ zammad_postgresql_password | string | to_json }}
+
+  # If the database server is not on localhost, you can set hostname and port:
+  host: "{{ postgresql_host }}"
+  port: 5432
+
+  database: "{{ zammad_owner }}"

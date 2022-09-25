@@ -1,0 +1,5 @@
+zammad_domain: support.neutrinet.be
+zammad_owner: "{{ zammad_domain | replace('.', '-') }}"
+
+zammad_postgresql_password: "{{ vault_zammad_postgresql_password }}"
+zammad_elasticsearch_memory_limit: 2g
