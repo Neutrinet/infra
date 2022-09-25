@@ -1,0 +1,42 @@
+---
+- name: Configuration de la base de données PostgreSQL
+  ansible.builtin.import_role:
+    name: postgres_db
+  vars:
+    postgresql_db_name: "{{ zammad_owner }}"
+    postgresql_db_password: "{{ zammad_postgresql_password }}"
+  tags: ['postgres']
+
+- name: Installation de ElasticSearch
+  ansible.builtin.import_tasks: elasticsearch.yml
+  tags: ['elasticsearch']
+
+- name: Installation de Zammad
+  ansible.builtin.import_tasks: zammad.yml
+  tags: ['zammad']
+
+- name: Installation de Caddy2
+  ansible.builtin.import_role:
+    name: caddy_server
+  tags: ['caddy']
+
+- name: Configuration de Caddy2
+  ansible.builtin.template:
+    src: caddy/zammad.conf.j2
+    dest: /etc/caddy/conf.d/{{ zammad_owner }}.conf
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: caddy validate --adapter caddyfile --config %s
+  notify: reload caddy
+  tags: ['caddy_config']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/zammad.yml.j2
+    dest: /etc/borgmatic.d/zammad-{{ zammad_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']
