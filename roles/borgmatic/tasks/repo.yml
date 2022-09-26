@@ -51,23 +51,28 @@
       PreferredAuthentications publickey,password
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ repo.host }}"
 
+- name: Récupération des adresses IP du serveur de backup {{ repo.host }}
+  command: hostname -I
+  changed_when: false
+  delegate_to: "{{ repo.host }}"
+  run_once: true
+  register: _borgmatic_repo_host_lookup
+
 - name: Scan de la clé publique du serveur de backup {{ repo.host }}
   command: ssh-keyscan -H {{ repo.host }}
   changed_when: false
-  loop:
-    - "{{ repo.host }}"
-    - "{{ hostvars[repo.host].ansible_default_ipv6.address }}"
-  register: _borgmatic_ssh_keyscan
+  register: _borgmatic_repo_host_ssh_keyscan
   run_once: true
 
 - name: Ajout de {{ repo.host }} dans la liste des serveurs connus
   known_hosts:
-    name: "{{ repo.host }}"
-    key: "{{ ssh_keyscan.stdout }}"
+    name: "{{ item }}"
+    key: "{{ _borgmatic_repo_host_ssh_keyscan.stdout }}"
     path: /root/.ssh/known_hosts
     hash_host: true
     state: present
-  loop: "{{ _borgmatic_ssh_keyscan.results }}"
-  loop_control:
-    loop_var: ssh_keyscan
-    label: "{{ ssh_keyscan.item }}"
+  loop:
+    - "{{ repo.host }}"
+    - "{{ repo_host_address }}"
+  vars:
+    repo_host_address: "{{ _borgmatic_repo_host_lookup.stdout.split(' ') | first }}"
