@@ -18,14 +18,18 @@
 #                            OUTPUT PLUGINS                                   #
 ###############################################################################
 
-
+{% if victoriametrics_url is defined %}
 [[outputs.influxdb]]
   urls = ["{{ victoriametrics_url }}"]
 
   ## Use HTTP Basic Authentication.
   username = {{ victoriametrics_username | string | to_json }}
   password = {{ victoriametrics_password | string | to_json }}
-
+{% else %}
+[[outputs.prometheus_client]]
+  listen = "localhost:9273"
+  metric_version = 2
+{% endif %}
 
 ###############################################################################
 #                            INPUT PLUGINS                                    #
