@@ -52,7 +52,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ repo.host }}"
 
 - name: Récupération des adresses IP du serveur de backup {{ repo.host }}
-  command: hostname -I
+  command: hostname -i
   changed_when: false
   delegate_to: "{{ repo.host }}"
   run_once: true
@@ -64,9 +64,9 @@
   register: _borgmatic_repo_host_ssh_keyscan
   run_once: true
 
-- name: Ajout de {{ repo.host }} dans la liste des serveurs connus
+- name: Ajout de {{ repo.host }} et de son IP dans la liste des serveurs connus
   known_hosts:
-    name: "{{ item }}"
+    name: "{{ target }}"
     key: "{{ _borgmatic_repo_host_ssh_keyscan.stdout }}"
     path: /root/.ssh/known_hosts
     hash_host: true
@@ -74,5 +74,7 @@
   loop:
     - "{{ repo.host }}"
     - "{{ repo_host_address }}"
+  loop_control:
+    loop_var: target
   vars:
     repo_host_address: "{{ _borgmatic_repo_host_lookup.stdout.split(' ') | first }}"
