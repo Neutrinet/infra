@@ -1,6 +1,6 @@
 ---
 - name: Config de etcd
-  template:
+  ansible.builtin.template:
     src: etcd.j2
     dest: /etc/default/etcd
     owner: root
@@ -11,7 +11,7 @@
   notify: restart etcd
 
 - name: Installation de etcd
-  package:
+  ansible.builtin.package:
     name:
       - etcd
       - etcd-client
@@ -19,13 +19,13 @@
     state: present
 
 - name: Activation de etcd au démarrage
-  service:
+  ansible.builtin.service:
     name: etcd
     state: started
     enabled: true
 
 - name: Installation des plugins Telegraf
-  template:
+  ansible.builtin.template:
     src: telegraf/etcd.conf.j2
     dest: /etc/telegraf/telegraf.d/etcd.conf
     owner: telegraf

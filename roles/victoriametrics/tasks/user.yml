@@ -1,5 +1,5 @@
 - name: Création de l'utilisateur VictoriaMetrics
-  user:
+  ansible.builtin.user:
     name: victoriametrics
     home: /opt/victoriametrics
     shell: /sbin/nologin

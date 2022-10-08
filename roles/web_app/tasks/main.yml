@@ -1,10 +1,13 @@
----
-- import_tasks: user.yml
+- name: Création de l'utilisateur de l'application web
+  ansible.builtin.import_tasks: user.yml
   tags: ['web_app_user']
-- import_tasks: config.yml
+- name: Création des dossiers de l'application web
+  ansible.builtin.import_tasks: config.yml
   tags: ['web_app_config']
-- import_tasks: php-fpm.yml
+- name: Configuration de php-fpm
+  ansible.builtin.import_tasks: php-fpm.yml
   when: web_app_php_fpm_enabled
   tags: ['php_fpm_config']
-- import_tasks: caddy.yml
+- name: Configuration de Caddy2
+  ansible.builtin.import_tasks: caddy.yml
   tags: ['caddy_config']

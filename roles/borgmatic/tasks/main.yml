@@ -1,11 +1,11 @@
 ---
 - name: Installation de Borg
-  package:
+  ansible.builtin.package:
     name: borgbackup
     state: present
 
 - name: Création du dossier d'install de Borgmatic
-  file:
+  ansible.builtin.file:
     path: /opt/borgmatic
     state: directory
     owner: root
@@ -21,7 +21,7 @@
     state: present
 
 - name: Installation de Borgmatic  # noqa package-latest
-  pip:
+  ansible.builtin.pip:
     name: borgmatic
     state: latest
     virtualenv: /opt/borgmatic
@@ -29,7 +29,7 @@
     chdir: /opt/borgmatic
 
 - name: Création du dossier pour le client SSH
-  file:
+  ansible.builtin.file:
     path: /root/.ssh
     state: directory
     owner: root
@@ -37,7 +37,7 @@
     mode: u=rwx,go=
 
 - name: Configuration des repos Borg
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: repo.yml
   loop: "{{ borgmatic_repositories }}"
   loop_control:
@@ -45,7 +45,7 @@
     label: "{{ repo.host }}"
 
 - name: Création des dossiers de config de Borgmatic
-  file:
+  ansible.builtin.file:
     path: "{{ config_dir }}"
     state: directory
     owner: root
@@ -58,7 +58,7 @@
     loop_var: config_dir
 
 - name: Configuration du template des backups Borgmatic
-  template:
+  ansible.builtin.template:
     src: borgmatic/template.yml.j2
     dest: /etc/borgmatic/template.yml
     owner: root
@@ -67,7 +67,7 @@
     validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
 
 - name: Configuration commune des backups Borgmatic
-  template:
+  ansible.builtin.template:
     src: borgmatic/common.yml.j2
     dest: /etc/borgmatic.d/common.yml
     owner: root
@@ -77,7 +77,7 @@
   notify: init borgmatic
 
 - name: Création d'un timer pour créer et vérifier les backups périodiquement
-  copy:
+  ansible.builtin.copy:
     src: systemd/{{ systemd_unit }}
     dest: /etc/systemd/system/{{ systemd_unit }}
     owner: root
@@ -93,7 +93,7 @@
   notify: reload systemd
 
 - name: Activation du timer borgmatic
-  service:
+  ansible.builtin.service:
     name: "{{ systemd_unit }}.timer"
     state: started
     enabled: true

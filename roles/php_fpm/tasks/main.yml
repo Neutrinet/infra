@@ -1,23 +1,23 @@
 - name: Ajout de la clé GPG de Sury dans APT
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://packages.sury.org/php/apt.gpg
     state: present
 
 - name: Ajout du dépôt Sury
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://packages.sury.org/php/ {{ ansible_distribution_release }} main
     filename: sury-php
     state: present
 
 - name: Installation de PHP et PHP-FPM
-  package:
+  ansible.builtin.package:
     name:
       - "{{ php_executable }}"
       - "{{ php_fpm_executable }}"
     state: present
 
 - name: Installation des modules PHP par défaut
-  package:
+  ansible.builtin.package:
     name: "{{ php_module }}"
     state: present
   loop:
@@ -35,7 +35,7 @@
     php_module: "{{ php_executable }}-{{ module_name }}"
 
 - name: Installation des modules PHP additionnels
-  package:
+  ansible.builtin.package:
     name: "{{ php_module }}"
     state: present
   loop: "{{ php_extra_modules }}"
@@ -46,13 +46,13 @@
     php_module: "{{ php_executable }}-{{ module_name }}"
 
 - name: Installation de imagemagick
-  package:
+  ansible.builtin.package:
     name: imagemagick
     state: present
   when: "'imagick' in php_extra_modules"
 
 - name: Activation de APCu pour php-cli
-  copy:
+  ansible.builtin.copy:
     content: |
       apc.enabled=1
       apc.enable_cli=1
@@ -63,7 +63,7 @@
   when: "'apcu' in php_extra_modules"
 
 - name: Copie de la configuration OPCache
-  template:
+  ansible.builtin.template:
     src: opcache.ini.j2
     dest: "{{ php_fpm_config_dir }}/conf.d/99-opcache.ini"
     owner: root
@@ -74,7 +74,7 @@
   tags: ['php_config']
 
 - name: Activation de {{ php_fpm_executable }} au démarrage
-  service:
+  ansible.builtin.service:
     name: "{{ php_fpm_executable }}"
     state: started
     enabled: true

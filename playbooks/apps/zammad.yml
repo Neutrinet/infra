@@ -1,6 +1,6 @@
 ---
-# Création de zammad
-- hosts: zammad
+- name: Déploiement de Zammad
+  hosts: zammad
   become: true
 
   pre_tasks:

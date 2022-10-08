@@ -5,5 +5,5 @@
 
   pre_tasks:
     - name: Mise à jour du cache APT
-      apt:
+      ansible.builtin.apt:
         update_cache: true

@@ -1,7 +1,7 @@
 ---
 # c'est joli
 - name: Copie du fichier de bienvenue du serveur
-  template:
+  ansible.builtin.template:
     src: motd.j2
     dest: /etc/motd
     owner: root

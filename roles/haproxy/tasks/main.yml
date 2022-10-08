@@ -1,12 +1,14 @@
 ---
-
-- import_tasks: haproxy.yml
+- name: Installation de HAProxy
+  ansible.builtin.import_tasks: haproxy.yml
   tags: ['haproxy']
-- import_tasks: letsencrypt.yml
+
+- name: Installation des certificats Let's Encrypt
+  ansible.builtin.import_tasks: letsencrypt.yml
   tags: ['letsencrypt']
 
 - name: Installation des plugins Telegraf
-  template:
+  ansible.builtin.template:
     src: telegraf/haproxy.conf.j2
     dest: /etc/telegraf/telegraf.d/haproxy.conf
     owner: telegraf
@@ -17,7 +19,7 @@
   tags: ['telegraf_config']
 
 - name: Ajout de l'utilisateur telegraf au groupe haproxy
-  user:
+  ansible.builtin.user:
     name: telegraf
     groups: haproxy
     append: true
@@ -25,7 +27,7 @@
   tags: ['telegraf_config']
 
 - name: Configuration des backups Borgmatic
-  template:
+  ansible.builtin.template:
     src: borgmatic/haproxy.yml.j2
     dest: /etc/borgmatic.d/haproxy.yml
     owner: root

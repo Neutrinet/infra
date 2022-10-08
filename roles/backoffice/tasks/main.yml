@@ -1,11 +1,11 @@
 ---
 - name: Installation de Caddy2
-  import_role:
+  ansible.builtin.import_role:
     name: caddy_server
   tags: ['caddy']
 
 - name: Configuration du site (caddy, etc.)
-  import_role:
+  ansible.builtin.import_role:
     name: web_app
   vars:
     web_app_domain: "{{ backoffice_domain }}"
@@ -13,7 +13,7 @@
   tags: ['web_app']
 
 - name: Configuration de Caddy2 pour ffdnapi
-  template:
+  ansible.builtin.template:
     src: caddy/ffdnapi.j2
     dest: "{{ caddy_vhosts_dir }}/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.conf"
     owner: root
@@ -24,7 +24,7 @@
   tags: ['caddy_config']
 
 - name: Configuration de la base de données PostgreSQL
-  import_role:
+  ansible.builtin.import_role:
     name: postgres_db
   vars:
     postgresql_db_name: "{{ web_app_owner }}"
@@ -32,11 +32,11 @@
   tags: ['postgres']
 
 - name: Installation de Backoffice
-  import_tasks: backoffice.yml
+  ansible.builtin.import_tasks: backoffice.yml
   tags: ['backoffice']
 
 - name: Configuration des backups Borgmatic
-  template:
+  ansible.builtin.template:
     src: borgmatic/backoffice.yml.j2
     dest: /etc/borgmatic.d/backoffice-{{ web_app_owner }}.yml
     owner: root

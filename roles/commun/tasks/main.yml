@@ -1,49 +1,60 @@
 ---
 # Rôle commun à tous les hosts
-- import_tasks: repos.yml
+- name: Configuration des dépôts APT
+  ansible.builtin.import_tasks: repos.yml
   tags: ['repos']
 
-- import_tasks: motd.yml
+- name: Configuration du message de bienvenue du serveur
+  ansible.builtin.import_tasks: motd.yml
   tags: ['motd']
 
-- import_tasks: openssh.yml
+- name: Configuration du serveur SSH
+  ansible.builtin.import_tasks: openssh.yml
   tags: ['openssh']
 
-- import_tasks: tools.yml
+- name: Installation des outils communs
+  ansible.builtin.import_tasks: tools.yml
   tags: ['tools']
 
-- import_tasks: zsh.yml
+- name: Configuration de ZSH
+  ansible.builtin.import_tasks: zsh.yml
   tags: ['zsh']
 
-- import_tasks: users.yml
+- name: Création des utilisateurs
+  ansible.builtin.import_tasks: users.yml
   tags: ['users']
 
-- import_tasks: locales.yml
+- name: Configuration des locales
+  ansible.builtin.import_tasks: locales.yml
   tags: ['locales']
 
-- import_tasks: time.yml
+- name: Configuration de l'horloge
+  ansible.builtin.import_tasks: time.yml
   tags: ['time']
 
-- import_tasks: swap.yml
+- name: Configuration de la swap
+  ansible.builtin.import_tasks: swap.yml
   tags: ['swap']
 
 - name: Installation de Telegraf
-  import_role:
+  ansible.builtin.import_role:
     name: telegraf
   tags: ['telegraf']
 
 - name: Installation de Borgmatic
-  import_role:
+  ansible.builtin.import_role:
     name: borgmatic
   tags: ['borgmatic']
 
-- import_tasks: serial.yml
+- name: Configuration du port série
+  ansible.builtin.include_tasks: serial.yml
   vars:
     serial_number: 0
   tags: ['serial']
   when: ansible_virtualization_type == "kvm" or ansible_product_name == "YL-SKUL6" or ansible_product_name == "PowerEdge R620"
 
-- import_tasks: serial.yml
+- name: Configuration du port série (HP ProLiant)
+  ansible.builtin.include_tasks: serial.yml
   vars:
     serial_number: 1
   tags: ['serial']

@@ -1,5 +1,5 @@
 - name: Configuration du service systemd victoriametrics-alert
-  template:
+  ansible.builtin.template:
     src: systemd/victoriametrics-alert.service.j2
     dest: /etc/systemd/system/victoriametrics-alert.service
     owner: root
@@ -9,7 +9,7 @@
     - restart victoriametrics-alert
 
 - name: Activation de victoriametrics-alert au démarrage
-  service:
+  ansible.builtin.service:
     name: victoriametrics-alert
     state: started
     enabled: true

@@ -1,16 +1,16 @@
 - name: Génération de la clé SSH pour le serveur de backup {{ repo.host }}
-  openssh_keypair:
+  ansible.builtin.openssh_keypair:
     path: "/root/.ssh/{{ repo.host | replace('.', '-') }}"
     type: ed25519
     comment: root@{{ ansible_fqdn }}
 
 - name: Récupération de la clé publique du client SSH
-  slurp:
+  ansible.builtin.slurp:
     path: /root/.ssh/{{ repo.host | replace('.', '-') }}.pub
   register: _borgmatic_ssh_public_key
 
 - name: Création de l'utilisateur {{ repo.user }} sur le serveur de backup {{ repo.host }}
-  user:
+  ansible.builtin.user:
     name: "{{ repo.user }}"
     password: '*'
     home: "{{ repo.path }}"
@@ -20,7 +20,7 @@
   run_once: true
 
 - name: Ajout de la clé publique du client SSH sur le serveur de backup {{ repo.host }}
-  authorized_key:
+  ansible.builtin.authorized_key:
     user: "{{ repo.user }}"
     key: "{{ _borgmatic_ssh_public_key.content | b64decode }}"
     key_options: command="borg serve --restrict-to-path {{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}",restrict
@@ -28,7 +28,7 @@
   throttle: 1
 
 - name: Création du dossier des données sur le serveur de backup {{ repo.host }}
-  file:
+  ansible.builtin.file:
     path: "{{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}"
     state: directory
     owner: "{{ repo.user }}"
@@ -37,7 +37,7 @@
   delegate_to: "{{ repo.host }}"
 
 - name: Configuration du client SSH pour le serveur de backup {{ repo.host }}
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /root/.ssh/config
     state: present
     create: true
@@ -52,7 +52,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ repo.host }}"
 
 - name: Scan de la clé publique du serveur de backup {{ repo.host }}
-  command: ssh-keyscan -H {{ repo.host }}
+  ansible.builtin.command: ssh-keyscan -H {{ repo.host }}
   changed_when: false
   loop:
     - "{{ repo.host }}"
@@ -61,7 +61,7 @@
   run_once: true
 
 - name: Ajout de {{ repo.host }} dans la liste des serveurs connus
-  known_hosts:
+  ansible.builtin.known_hosts:
     name: "{{ repo.host }}"
     key: "{{ ssh_keyscan.stdout }}"
     path: /root/.ssh/known_hosts

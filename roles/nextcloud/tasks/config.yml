@@ -1,5 +1,5 @@
 - name: Copie de la configuration de Nextcloud
-  template:
+  ansible.builtin.template:
     src: "nextcloud/config.json.j2"
     dest: "{{ web_app_home_dir }}/import.json"
     owner: "{{ web_app_owner }}"

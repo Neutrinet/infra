@@ -1,9 +1,9 @@
 - name: reload caddy
-  service:
+  ansible.builtin.service:
     name: caddy
     state: reloaded
 
 - name: restart telegraf
-  service:
+  ansible.builtin.service:
     name: telegraf
     state: restarted

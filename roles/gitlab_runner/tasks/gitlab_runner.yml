@@ -1,21 +1,21 @@
 - name: Ajout de la clé GPG de Gitlab Runner dans APT
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://packages.gitlab.com/runner/gitlab-runner/gpgkey
     state: present
 
 - name: Ajout du dépôt APT Gitlab Runner
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://packages.gitlab.com/runner/gitlab-runner/debian/ {{ ansible_distribution_release | lower }} main
     filename: gitlab-runner
     state: present
 
 - name: Installation de Gitlab Runner
-  package:
+  ansible.builtin.package:
     name: gitlab-runner
     state: present
 
 - name: Configuration de Gitlab Runner
-  template:
+  ansible.builtin.template:
     src: gitlab-runner/config.toml.j2
     dest: /etc/gitlab-runner/config.toml
     owner: root
@@ -25,7 +25,7 @@
   tags: ['gitlab_runner_config']
 
 - name: Activation de Gitlab Runner au démarrage
-  service:
+  ansible.builtin.service:
     name: gitlab-runner
     state: started
     enabled: true
@@ -33,10 +33,10 @@
 - name: Trigger handlers
   # We need to restart gitlab-runner to apply the new config
   # and expose the metrics for telegraf
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation des plugins Telegraf
-  template:
+  ansible.builtin.template:
     src: telegraf/gitlab-runner.conf.j2
     dest: /etc/telegraf/telegraf.d/gitlab-runner.conf
     owner: telegraf
@@ -47,7 +47,7 @@
   tags: ['telegraf_config']
 
 - name: Configuration des backups Borgmatic
-  template:
+  ansible.builtin.template:
     src: borgmatic/gitlab-runner.yml.j2
     dest: /etc/borgmatic.d/gitlab-runner.yml
     owner: root

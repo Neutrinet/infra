@@ -1,11 +1,11 @@
 ---
 - name: Installation de webhook
-  package:
+  ansible.builtin.package:
     name: webhook
     state: present
 
 - name: Création du dossier de configuration
-  file:
+  ansible.builtin.file:
     path: /etc/webhook
     state: directory
     owner: "{{ webhook_owner }}"
@@ -13,7 +13,7 @@
     mode: "u=rwx,g=rx,o="
 
 - name: Création du dossier des scripts
-  file:
+  ansible.builtin.file:
     path: /etc/webhook/scripts
     state: directory
     owner: "{{ webhook_owner }}"
@@ -21,7 +21,7 @@
     mode: "u=rwx,go=rx"
 
 - name: Copie du script exécuté par le webhook
-  copy:
+  ansible.builtin.copy:
     src: "{{ webhook_script }}"
     dest: /etc/webhook/scripts/{{ webhook_script | basename }}
     owner: "{{ webhook_owner }}"
@@ -29,7 +29,7 @@
     mode: "u=rwx,go=rx"
 
 - name: Configuration du webhook
-  template:
+  ansible.builtin.template:
     src: webhook/config.yml.j2
     dest: /etc/webhook/config.yml
     owner: "{{ webhook_owner }}"
@@ -38,7 +38,7 @@
   notify: reload webhook
 
 - name: Configuration du service systemd
-  template:
+  ansible.builtin.template:
     src: systemd/webhook.service.j2
     dest: /etc/systemd/system/webhook.service
     owner: root
@@ -49,7 +49,7 @@
     - restart webhook
 
 - name: Configuration des backups Borgmatic
-  template:
+  ansible.builtin.template:
     src: borgmatic/webhook.yml.j2
     dest: /etc/borgmatic.d/webhook.yml
     owner: root

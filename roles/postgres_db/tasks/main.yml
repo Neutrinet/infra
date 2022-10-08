@@ -1,22 +1,22 @@
 - name: Détection du serveur PostgreSQL primaire
-  import_tasks: patroni.yml
+  ansible.builtin.import_tasks: patroni.yml
   when: postgresql_patroni_hosts | length > 0
 
 - name: Ajout de la clé GPG de PostgreSQL dans APT
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
     state: present
   when: ansible_distribution_release == 'buster'
 
 - name: Installation du repo PostgreSQL
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
     filename: postgresql
     state: present
   when: ansible_distribution_release == 'buster'
 
 - name: Installation des dépendences
-  package:
+  ansible.builtin.package:
     name:
       - postgresql-client
       - acl
@@ -34,11 +34,20 @@
     db: "{{ postgresql_db_name }}"
     name: "{{ postgresql_db_name }}"
     password: "{{ postgresql_db_password }}"
-    priv: ALL
     role_attr_flags: "{{ postgresql_db_role_attributes }}"
   become_user: postgres
   delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
   no_log: true
+
+- name: Octroi des privilèges à l'utilisateur PostgreSQL {{ postgresql_db_name }}
+  community.postgresql.postgresql_privs:
+    db: "{{ postgresql_db_name }}"
+    priv: ALL
+    type: database
+    role: "{{ postgresql_db_name }}"
+    state: present
+  become_user: postgres
+  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
 
 - name: Changement du propriétaire de la base de données
   community.postgresql.postgresql_db:

@@ -1,7 +1,7 @@
 ---
 # Ajout d'un utilisateur et de ses clés SSH
 - name: Ajout de l'utilisateur {{ user.name }}
-  user:
+  ansible.builtin.user:
     name: "{{ user.name }}"
     shell: "{{ user.shell | default('/bin/bash') }}"
     # See https://unix.stackexchange.com/questions/193066/how-to-unlock-account-for-public-key-ssh-authorization-but-not-for-password-aut/193131#193131
@@ -15,7 +15,7 @@
   tags: ['skip_ansible_lint']
 
 - name: Ajout des clés SSH pour l'utilisateur {{ user.name }}
-  authorized_key:
+  ansible.builtin.authorized_key:
     user: "{{ user.name }}"
     state: present
     # we can pass multiple keys, but they must be separated by newlines
@@ -25,7 +25,7 @@
   when: user.state == 'present'
 
 - name: Suppression du dossier SSH de l'utilisateur {{ user.name }}
-  file:
+  ansible.builtin.file:
     path: "/home/{{ user.name }}/.ssh"
     state: absent
   when: user.state == 'absent'
