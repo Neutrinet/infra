@@ -9,8 +9,12 @@ http://{{ zammad_domain }} {
         max_size 50MB
     }
 
-    reverse_proxy localhost:3000
-    reverse_proxy /ws localhost:6042
+    reverse_proxy localhost:3000 {
+        trusted_proxies {{ zammad_trusted_proxies | join(' ') }}
+    }
+    reverse_proxy /ws localhost:6042 {
+        trusted_proxies {{ zammad_trusted_proxies | join(' ') }}
+    }
 
     log {
         output file /var/log/caddy/{{ zammad_owner }}.log
