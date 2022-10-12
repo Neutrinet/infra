@@ -106,6 +106,13 @@ haproxy:
     healthcheck: true
     healthcheck_url: "HEAD /status"
 
+  - hostname: support.neutrinet.be
+    target:
+      - zammad.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: "HEAD /healthcheck"
+
   - hostname: wiki.labriqueinter.net
     target:
       - web-static.patata.louise.neutri.net

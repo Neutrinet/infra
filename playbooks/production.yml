@@ -13,6 +13,7 @@
 - import_playbook: apps/backoffice.yml
 - import_playbook: apps/grav.yml
 - import_playbook: apps/dokuwiki.yml
+- import_playbook: apps/zammad.yml
 - import_playbook: apps/probe.yml
 - import_playbook: apps/victoriametrics.yml
 - import_playbook: apps/alertmanager.yml

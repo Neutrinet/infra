@@ -1,0 +1,26 @@
+- name: reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: restart elasticsearch
+  ansible.builtin.service:
+    name: elasticsearch
+    state: restarted
+
+- name: migrate zammad db
+  ansible.builtin.command:
+    cmd: zammad run rails db:migrate
+
+- name: seed zammad db
+  ansible.builtin.command:
+    cmd: zammad run rails db:seed
+
+- name: restart zammad
+  ansible.builtin.service:
+    name: zammad
+    state: restarted
+
+- name: reload caddy
+  ansible.builtin.service:
+    name: caddy
+    state: reloaded

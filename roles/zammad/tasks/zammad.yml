@@ -1,0 +1,65 @@
+- name: Ajout de la clé GPG de Zammad dans APT
+  ansible.builtin.apt_key:
+    url: https://dl.packager.io/srv/zammad/zammad/key
+    state: present
+
+- name: Ajout du dépôt APT Zammad
+  ansible.builtin.apt_repository:
+    repo: deb https://dl.packager.io/srv/deb/zammad/zammad/stable/debian {{ ansible_distribution_major_version }} main
+    filename: zammad
+    state: present
+
+- name: Installation de Zammad
+  ansible.builtin.package:
+    name: zammad
+    state: present
+
+- name: Configuration de la connexion à la base de données
+  ansible.builtin.template:
+    src: zammad/database.yml.j2
+    dest: /opt/zammad/config/database.yml
+    owner: zammad
+    group: zammad
+    mode: "u=rw,go="
+  notify:
+    - migrate zammad db
+    - seed zammad db
+    - restart zammad
+
+- name: Trigger Zammad handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Désactivation de Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: stopped
+    enabled: false
+
+- name: Désactivation de PostgreSQL en local
+  ansible.builtin.service:
+    name: postgresql
+    state: stopped
+    enabled: false
+  when: postgresql_host != "localhost"
+
+- name: Test si Zammad est connecté à ElasticSearch
+  ansible.builtin.command:
+    cmd: zammad run rails r "puts Setting.get('es_url')"
+  changed_when: false
+  register: _zammad_elasticsearch_configured
+
+- name: Connexion de Zammad à ElasticSearch
+  ansible.builtin.command:
+    cmd: zammad run rails r "Setting.set('es_url', 'http://localhost:9200')"
+  when: _zammad_elasticsearch_configured.stdout == ""
+
+- name: Reconstruction des indices ElasticSearch
+  ansible.builtin.command:
+    cmd: zammad run rails zammad:searchindex:rebuild
+  when: _zammad_elasticsearch_configured.stdout == ""
+
+- name: Activation de Zammad au démarrage
+  ansible.builtin.service:
+    name: zammad
+    state: started
+    enabled: true

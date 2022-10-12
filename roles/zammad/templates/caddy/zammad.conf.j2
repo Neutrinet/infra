@@ -1,0 +1,24 @@
+{{ ansible_managed | comment }}
+
+http://{{ zammad_domain }} {
+    encode gzip zstd
+
+    root * /opt/zammad/public
+
+    request_body {
+        max_size 50MB
+    }
+
+    reverse_proxy localhost:3000 {
+        header_up CLIENT_IP {remote_host}
+        trusted_proxies {{ zammad_trusted_proxies | join(' ') }}
+    }
+    reverse_proxy /ws localhost:6042 {
+        header_up CLIENT_IP {remote_host}
+        trusted_proxies {{ zammad_trusted_proxies | join(' ') }}
+    }
+
+    log {
+        output file /var/log/caddy/{{ zammad_owner }}.log
+    }
+}
