@@ -10,9 +10,11 @@ http://{{ zammad_domain }} {
     }
 
     reverse_proxy localhost:3000 {
+        header_up CLIENT_IP {remote_host}
         trusted_proxies {{ zammad_trusted_proxies | join(' ') }}
     }
     reverse_proxy /ws localhost:6042 {
+        header_up CLIENT_IP {remote_host}
         trusted_proxies {{ zammad_trusted_proxies | join(' ') }}
     }
 
