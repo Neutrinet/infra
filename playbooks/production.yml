@@ -38,6 +38,9 @@
 - name: Déploiement de Dokuwiki
   import_playbook: apps/dokuwiki.yml
 
+- name: Déploiement de Zammad
+  import_playbook: apps/zammad.yml
+
 - name: Déploiement des probes pour le monitoring
   import_playbook: apps/probe.yml
 
