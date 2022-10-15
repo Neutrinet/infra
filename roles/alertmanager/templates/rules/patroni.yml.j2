@@ -1,0 +1,35 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+  - name: Patroni
+    rules:
+      - alert: Patroni Primary
+        for: 5m
+        expr: sum by (scope) (prometheus_patroni_master) != 1
+        labels:
+          severity: critical
+        annotations:
+          description: 'Incorrect number of primary server for the Patroni cluster {{ $labels.scope }}: {{ $value }}'
+          summary: 'Incorrect number of primary server for the Patroni cluster'
+
+      - alert: Patroni Replica
+        for: 15m
+        expr: sum by (scope) (prometheus_patroni_replica) != 2
+        labels:
+          severity: warning
+        annotations:
+          description: 'Incorrect number of replica server for the Patroni cluster {{ $labels.scope }}: {{ $value }}'
+          summary: 'Incorrect number of replica server for the Patroni cluster'
+
+      - alert: PostreSQL Running
+        for: 5m
+        expr: >
+{% for host in patroni_cluster_hosts %}
+        prometheus_patroni_postgres_running{host="{{{ host }}}"} == 0{% if not loop.last %} OR {% endif %}
+{% endfor %}
+        labels:
+          severity: critical
+        annotations:
+          description: ''
+          summary: ''
