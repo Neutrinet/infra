@@ -25,7 +25,7 @@ groups:
       - alert: PostreSQL Running
         for: 5m
         expr: >
-{% for host in patroni_cluster_hosts %}
+{% for host in postgresql_patroni_hosts %}
         prometheus_patroni_postgres_running{host="{{{ host }}}"} == 0{% if not loop.last %} OR {% endif %}
 {% endfor %}
         labels:
