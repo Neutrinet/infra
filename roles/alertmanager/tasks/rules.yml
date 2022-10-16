@@ -8,6 +8,7 @@
   loop:
     - base
     - vpn
+    - patroni
   loop_control:
     loop_var: rule_group
   notify:
