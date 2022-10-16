@@ -34,3 +34,32 @@ groups:
         annotations:
           description: 'PostgreSQL is not running on host {{ $labels.host }} in the Patroni cluster {{ $labels.scope }}.'
           summary: 'PostgreSQL is not running in the Patroni cluster.'
+
+  - name: Etcd
+    rules:
+      - alert: Etcd Cluster Size
+        for: 15m
+        expr: count(prometheus_etcd_server_id) != 3
+        labels:
+          severity: critical
+        annotations:
+          description: 'Incorrect number of hosts for the Etcd cluster: {{ $labels.value }}.'
+          summary: 'Incorrect number of hosts for the Etcd cluster.'
+
+      - alert: Etcd Leader
+        for: 5m
+        expr: prometheus_etcd_server_has_leader != 1
+        labels:
+          severity: critical
+        annotations:
+          description: 'Etcd cluster has no leader on instance {{ $labels.instance }}.'
+          summary: 'Etcd cluster has no leader.'
+
+      - alert: Etcd Health
+        for: 5m
+        expr: prometheus_etcd_server_health_success == 0
+        labels:
+          severity: warning
+        annotations:
+          description: 'Etcd server is unhealthy on instance {{ $labels.instance}}.'
+          summary: 'Etcd server is unhealthy.'
