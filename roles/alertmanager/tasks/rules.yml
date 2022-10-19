@@ -1,10 +1,16 @@
-- name: Copie des alertes de base
+- name: Copie des alertes
   ansible.builtin.template:
-    src: rules/base.yml.j2
-    dest: /etc/victoriametrics/rules.d/base.yml
+    src: rules/{{ rule_group }}.yml.j2
+    dest: /etc/victoriametrics/rules.d/{{ rule_group }}.yml
     owner: root
     group: root
     mode: "u=rw,go=r"
+  loop:
+    - base
+    - vpn
+    - patroni
+  loop_control:
+    loop_var: rule_group
   notify:
     - reload victoriametrics
     - reload victoriametrics-alert
