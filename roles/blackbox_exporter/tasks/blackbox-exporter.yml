@@ -1,0 +1,81 @@
+- name: Création de l'utilisateur pour Blackbox exporter
+  ansible.builtin.user:
+    name: blackbox-exporter
+    home: /opt/blackbox-exporter
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: Création des dossiers de Blackbox exporter
+  ansible.builtin.file:
+    path: "{{ blackbox_exporter_dir }}"
+    owner: blackbox-exporter
+    group: blackbox-exporter
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/blackbox-exporter
+    - /opt/blackbox-exporter/{{ blackbox_exporter_version }}
+    - /etc/blackbox-exporter
+  loop_control:
+    loop_var: blackbox_exporter_dir
+
+- name: Création du dossier des archives de Blackbox exporter
+  ansible.builtin.file:
+    path: /usr/local/src/blackbox-exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive de Blackbox exporter v{{ blackbox_exporter_version }}
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus/blackbox_exporter/releases/download/v{{ blackbox_exporter_version }}/blackbox_exporter-{{ blackbox_exporter_version }}.linux-amd64.tar.gz
+    dest: /usr/local/src/blackbox-exporter/{{ blackbox_exporter_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/prometheus/blackbox_exporter/releases/download/v{{ blackbox_exporter_version }}/sha256sums.txt"
+
+- name: Décompression de l'archive
+  ansible.builtin.unarchive:
+    src: /usr/local/src/blackbox-exporter/{{ blackbox_exporter_version }}.tar.gz
+    dest: /opt/blackbox-exporter/{{ blackbox_exporter_version }}
+    creates: /opt/blackbox-exporter/{{ blackbox_exporter_version }}/blackbox_exporter
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: blackbox-exporter
+    group: blackbox-exporter
+
+- name: Création du lien symbolique pour le binaire de Blackbox exporter
+  ansible.builtin.file:
+    src: /opt/blackbox-exporter/{{ blackbox_exporter_version }}/blackbox_exporter
+    dest: /usr/local/bin/blackbox-exporter
+    state: link
+  notify: restart blackbox-exporter
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/blackbox-exporter.service.j2
+    dest: /etc/systemd/system/blackbox-exporter.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify: restart blackbox-exporter
+
+- name: Configuration de Blackbox exporter
+  ansible.builtin.template:
+    src: blackbox-exporter/config.yml.j2
+    dest: /etc/blackbox-exporter/config.yml
+    owner: blackbox-exporter
+    group: blackbox-exporter
+    mode: "u=rw,g=r,o="
+    validate: blackbox-exporter --config.check --config.file %s
+  notify: reload blackbox-exporter
+
+- name: Activation de Blackbox exporter au démarrage
+  ansible.builtin.service:
+    name: blackbox-exporter
+    state: started
+    enabled: true

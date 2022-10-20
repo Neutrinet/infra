@@ -1,0 +1,54 @@
+{{ ansible_managed | comment }}
+
+modules:
+{% for probe in blackbox_exporter_http_probes %}
+  {{ probe.name | default(probe.url) }}:
+    prober: http
+    http:
+      method: {{ probe.method | default('GET') }}
+{% if probe.url.startswith('https') %}
+      fail_if_not_ssl: true
+{% endif %}
+{% if probe.body is defined %}
+      fail_if_body_not_matches_regexp: {{ probe.body | to_json }}
+{% endif %}
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+{% endfor %}
+
+  tcp:
+    prober: tcp
+
+  tcp_ipv4:
+    prober: tcp
+    tcp:
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+
+  tcp_ipv6:
+    prober: icmp
+    tcp:
+      preferred_ip_protocol: ip6
+      ip_protocol_fallback: false
+
+  icmp:
+    prober: icmp
+
+  icmp_ipv4:
+    prober: icmp
+    icmp:
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+
+  icmp_ipv6:
+    prober: icmp
+    icmp:
+      preferred_ip_protocol: ip6
+      ip_protocol_fallback: false
+
+  ssh:
+    prober: tcp
+    tcp:
+      query_response:
+      - expect: "^SSH-2.0-"
+      - send: "SSH-2.0-blackbox-ssh-check"
