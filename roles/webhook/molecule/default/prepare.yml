@@ -5,21 +5,21 @@
 
   pre_tasks:
     - name: Mise à jour du cache APT
-      apt:
+      ansible.builtin.apt:
         update_cache: true
 
     - name: Installation de Git
-      package:
+      ansible.builtin.package:
         name: git
         state: present
 
     - name: Installation des ACL
-      package:
+      ansible.builtin.package:
         name: acl
         state: present
 
     - name: Création de l'utilisateur webhook
-      user:
+      ansible.builtin.user:
         name: webhook
         home: /var/www/webhook
         shell: /sbin/nologin
@@ -27,7 +27,7 @@
         state: present
 
     - name: Récupération du dépôt git de webhook
-      git:
+      ansible.builtin.git:
         repo: https://github.com/adnanh/webhook.git
         dest: /var/www/webhook/dist
         single_branch: true

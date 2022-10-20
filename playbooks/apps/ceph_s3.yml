@@ -1,11 +1,11 @@
 ---
-# Déploiement des ceph_s3
-- hosts: ceph_s3
+- name: Déploiement du cluster Ceph S3
+  hosts: ceph_s3
   become: true
 
   pre_tasks:
     - name: Mise à jour du cache APT
-      apt:
+      ansible.builtin.apt:
         update_cache: true
 
   roles:

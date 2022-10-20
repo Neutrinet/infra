@@ -1,6 +1,6 @@
 ---
 - name: Installation de Ceph
-  import_role:
+  ansible.builtin.import_role:
     name: ceph
   tags: ['ceph']
 
@@ -10,7 +10,7 @@
     name: ipmitool
 
 - name: Ajout du dépôt APT proxmox
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb http://download.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-no-subscription"
     filename: pve-install-repo
     state: present
@@ -19,7 +19,7 @@
   # The copy module doesn't work because /etc/pve is a special device
   # See also: https://github.com/ansible/ansible/issues/70535
   # Although it didn't work even with unsafe_writes=true in Ansible 2.11.5
-  shell:
+  ansible.builtin.shell:
     cmd: |
       cat > /etc/pve/status.cfg << EOF
       influxdb: InfluxDB
@@ -29,7 +29,7 @@
     creates: /etc/pve/status.cfg
 
 - name: Ajout de l'utilisateur telegraf au sudoers
-  user:
+  ansible.builtin.user:
     name: telegraf
     groups: disk
     append: true
@@ -37,7 +37,7 @@
   tags: ['telegraf_config']
 
 - name: Permission à l'utilisateur d'exécuter certaines commandes sudo
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     state: present
     regexp: '^telegraf'
@@ -46,7 +46,7 @@
   tags: ['sudo']
 
 - name: Installation des plugins Telegraf
-  template:
+  ansible.builtin.template:
     src: telegraf/proxmox.conf.j2
     dest: /etc/telegraf/telegraf.d/proxmox.conf
     owner: telegraf
@@ -57,7 +57,7 @@
   tags: ['telegraf_config']
 
 - name: Configuration des backups Borgmatic
-  template:
+  ansible.builtin.template:
     src: borgmatic/proxmox.yml.j2
     dest: /etc/borgmatic.d/proxmox.yml
     owner: root

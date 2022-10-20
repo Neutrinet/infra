@@ -1,5 +1,5 @@
 - name: Création des dossiers de VictoriaMetrics
-  file:
+  ansible.builtin.file:
     path: "{{ victoriametrics_dir }}"
     owner: victoriametrics
     group: victoriametrics
@@ -14,7 +14,7 @@
     loop_var: victoriametrics_dir
 
 - name: Création du dossier des archives VictoriaMetrics
-  file:
+  ansible.builtin.file:
     path: /usr/local/src/victoriametrics
     owner: root
     group: root
@@ -22,7 +22,7 @@
     state: directory
 
 - name: Téléchargement de l'archive VictoriaMetrics v{{ victoriametrics_version }}
-  get_url:
+  ansible.builtin.get_url:
     url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v{{ victoriametrics_version }}/victoria-metrics-amd64-v{{ victoriametrics_version }}.tar.gz
     dest: /usr/local/src/victoriametrics/{{ victoriametrics_version }}.tar.gz
     owner: root
@@ -30,7 +30,7 @@
     mode: "u=rw,go=r"
 
 - name: Téléchargement de l'archive des outils de VictoriaMetrics v{{ victoriametrics_version }}
-  get_url:
+  ansible.builtin.get_url:
     url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v{{ victoriametrics_version }}/vmutils-amd64-v{{ victoriametrics_version }}.tar.gz
     dest: /usr/local/src/victoriametrics/tools-{{ victoriametrics_version }}.tar.gz
     owner: root
@@ -38,7 +38,7 @@
     mode: "u=rw,go=r"
 
 - name: Décompression de l'archive VictoriaMetrics
-  unarchive:
+  ansible.builtin.unarchive:
     src: /usr/local/src/victoriametrics/{{ victoriametrics_version }}.tar.gz
     dest: /opt/victoriametrics/{{ victoriametrics_version }}
     creates: /opt/victoriametrics/{{ victoriametrics_version }}/victoria-metrics-prod
@@ -47,7 +47,7 @@
     group: victoriametrics
 
 - name: Décompression de l'archive des outils de VictoriaMetrics
-  unarchive:
+  ansible.builtin.unarchive:
     src: /usr/local/src/victoriametrics/tools-{{ victoriametrics_version }}.tar.gz
     dest: /opt/victoriametrics/{{ victoriametrics_version }}
     creates: /opt/victoriametrics/{{ victoriametrics_version }}/vmalert-prod
@@ -56,7 +56,7 @@
     group: victoriametrics
 
 - name: Création du lien symbolique pour les binaires de VictoriaMetrics
-  file:
+  ansible.builtin.file:
     src: /opt/victoriametrics/{{ victoriametrics_version }}/{{ victoriametrics_bin }}
     dest: /usr/local/bin/{{ victoriametrics_bin | replace('-prod', '') }}
     state: link
@@ -73,7 +73,7 @@
   notify: restart victoriametrics
 
 - name: Configuration de VictoriaMetrics
-  template:
+  ansible.builtin.template:
     src: victoriametrics/victoriametrics.yml.j2
     dest: /etc/victoriametrics/victoriametrics.yml
     owner: victoriametrics
@@ -83,7 +83,7 @@
   notify: reload victoriametrics
 
 - name: Création du répertoire des jobs
-  file:
+  ansible.builtin.file:
     path: /etc/victoriametrics/conf.d
     owner: victoriametrics
     group: victoriametrics
@@ -91,7 +91,7 @@
     state: directory
 
 - name: Création du répertoire des rules alert
-  file:
+  ansible.builtin.file:
     path: /etc/victoriametrics/rules.d
     owner: victoriametrics
     group: victoriametrics
@@ -99,7 +99,7 @@
     state: directory
 
 - name: Configuration du service systemd
-  template:
+  ansible.builtin.template:
     src: systemd/victoriametrics.service.j2
     dest: /etc/systemd/system/victoriametrics.service
     owner: root
@@ -109,7 +109,7 @@
     - restart victoriametrics
 
 - name: Activation de victoriametrics au démarrage
-  service:
+  ansible.builtin.service:
     name: victoriametrics
     state: started
     enabled: true

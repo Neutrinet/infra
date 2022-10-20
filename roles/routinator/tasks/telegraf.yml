@@ -1,7 +1,6 @@
-
 # cela peut prendre maximum 20 minutes
 - name: Attendre que routinator soit operationel
-  uri:
+  ansible.builtin.uri:
     url: "http://localhost:8323/metrics"
     status_code: 200
   register: result
@@ -11,7 +10,7 @@
   tags: ['telegraf_config']
 
 - name: Installation des plugins Telegraf
-  template:
+  ansible.builtin.template:
     src: telegraf/routinator.conf.j2
     dest: /etc/telegraf/telegraf.d/routinator.conf
     owner: telegraf

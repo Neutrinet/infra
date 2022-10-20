@@ -1,28 +1,28 @@
 ---
 - name: Installation de PostgreSQL
-  import_role:
+  ansible.builtin.import_role:
     name: postgres
   tags: ['postgresql']
 
 - name: Désactivation du serveur PostgreSQL par défaut
-  service:
+  ansible.builtin.service:
     name: postgresql
     state: stopped
     enabled: false
   tags: ['postgresql']
 
 - name: Installation de Etcd
-  import_role:
+  ansible.builtin.import_role:
     name: etcd
   tags: ['etcd']
 
 - name: Installation de Patroni
-  package:
+  ansible.builtin.package:
     name: patroni
     state: present
 
 - name: Configuration de Patroni
-  template:
+  ansible.builtin.template:
     src: config.yml.j2
     dest: /etc/patroni/config.yml
     owner: postgres
@@ -34,13 +34,13 @@
   notify: reload patroni
 
 - name: Activation de Patroni au démarrage
-  service:
+  ansible.builtin.service:
     name: patroni
     state: started
     enabled: true
 
 - name: Vérification que le cluster Patroni est prêt
-  uri:
+  ansible.builtin.uri:
     url: http://localhost:8008/health
   register: _postgresql_patroni_health
   retries: 10
@@ -50,15 +50,21 @@
 - name: Création de l'utilisateur PostgreSQL telegraf
   community.postgresql.postgresql_user:
     name: telegraf
-    groups:
-      - pg_monitor
   become_user: postgres
   when: _postgresql_patroni_health.json.role == 'master'
-  no_log: true
+  tags: ['telegraf_config']
+
+- name: Ajout de l'utilisateur PostgreSQL telegraf au groupe pg_monitor
+  community.postgresql.postgresql_membership:
+    group: pg_monitor
+    target_role: telegraf
+    state: exact
+  become_user: postgres
+  when: _postgresql_patroni_health.json.role == 'master'
   tags: ['telegraf_config']
 
 - name: Installation des plugins Telegraf
-  template:
+  ansible.builtin.template:
     src: telegraf/patroni.conf.j2
     dest: /etc/telegraf/telegraf.d/patroni.conf
     owner: telegraf
@@ -71,7 +77,7 @@
   tags: ['telegraf_config']
 
 - name: Configuration des backups Borgmatic
-  template:
+  ansible.builtin.template:
     src: borgmatic/patroni.yml.j2
     dest: /etc/borgmatic.d/patroni.yml
     owner: root

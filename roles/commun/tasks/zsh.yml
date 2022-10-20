@@ -9,7 +9,7 @@
       - safe-rm
 
 - name: Copie des fichiers de configuration de zsh
-  copy:
+  ansible.builtin.copy:
     src: "zsh/{{ config_file }}"
     dest: /etc/zsh/{{ config_file }}
     owner: root

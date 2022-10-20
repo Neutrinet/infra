@@ -1,11 +1,11 @@
 ---
 - name: Installation de Caddy2
-  import_role:
+  ansible.builtin.import_role:
     name: caddy_server
   tags: ['caddy']
 
 - name: Installation de PHP
-  import_role:
+  ansible.builtin.import_role:
     name: php_fpm
   vars:
     php_version: "7.4"
@@ -14,7 +14,7 @@
   tags: ['php_fpm']
 
 - name: Configuration du site (caddy, php-fpm, etc.)
-  import_role:
+  ansible.builtin.import_role:
     name: web_app
   vars:
     web_app_domain: "{{ dokuwiki_domain }}"
@@ -23,7 +23,7 @@
   tags: ['web_app']
 
 - name: Configuration des backups Borgmatic
-  template:
+  ansible.builtin.template:
     src: borgmatic/dokuwiki.yml.j2
     dest: /etc/borgmatic.d/dokuwiki-{{ web_app_owner }}.yml
     owner: root

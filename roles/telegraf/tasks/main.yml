@@ -1,6 +1,6 @@
 ---
 - name: Installation de GPG
-  package:
+  ansible.builtin.package:
     name:
       - gpg
       - gpg-agent
@@ -8,23 +8,23 @@
     state: present
 
 - name: Ajout de la clé GPG de InfluxDB
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://repos.influxdata.com/influxdb.key
     state: present
 
 - name: Ajout du dépôt APT pour Telegraf
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://repos.influxdata.com/debian {{ ansible_distribution_release }} stable
     state: present
     filename: telegraf
 
 - name: Installation de Telegraf
-  apt:
+  ansible.builtin.package:
     name: telegraf
     state: present
 
 - name: Copie des plugins globaux de Telegraf
-  template:
+  ansible.builtin.template:
     src: telegraf/global.conf.j2
     dest: /etc/telegraf/telegraf.d/global.conf
     owner: telegraf
@@ -35,7 +35,7 @@
   tags: ['telegraf_config']
 
 - name: Désactivation de la sortie influxdb
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/telegraf/telegraf.conf
     regexp: '^\[\[outputs\.influxdb\]\]'
     line: '# [[outputs.influxdb]]'
@@ -43,7 +43,7 @@
   notify: restart telegraf
 
 - name: Activation de Telegraf au démarrage
-  service:
+  ansible.builtin.service:
     name: telegraf
     state: started
     enabled: true

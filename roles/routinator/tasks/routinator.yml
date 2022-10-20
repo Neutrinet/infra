@@ -1,31 +1,31 @@
 ---
 - name: Installation des ACL
-  package:
+  ansible.builtin.package:
     name: acl
     state: present
   tags: ['routinator_install']
 
 - name: Ajout de la clé GPG de NLnet Labs
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://packages.nlnetlabs.nl/aptkey.asc
     state: present
   tags: ['routinator_install']
 
 - name: Ajout du dépôt APT pour routinator
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://packages.nlnetlabs.nl/linux/debian {{ ansible_distribution_release }} main
     state: present
     filename: routinator
   tags: ['routinator_install']
 
 - name: Installation de routinator
-  package:
+  ansible.builtin.package:
     name: routinator
     state: present
   tags: ['routinator_install']
 
 - name: Configuration de routinator
-  template:
+  ansible.builtin.template:
     src: routinator.conf.j2
     dest: /etc/routinator/routinator.conf
     owner: routinator
@@ -36,7 +36,7 @@
   tags: ['routinator_config']
 
 - name: Ajout exception Neutrinet pour routinator
-  copy:
+  ansible.builtin.copy:
     src: exceptions.json
     dest: /etc/routinator/exceptions.json
     owner: routinator
@@ -46,7 +46,7 @@
   tags: ['routinator_config']
 
 - name: Initialisation de routinator
-  command:
+  ansible.builtin.command:
     cmd: /usr/bin/routinator --config /etc/routinator/routinator.conf init --accept-arin-rpa
     creates: /var/lib/routinator/rpki-cache
     chdir: /var/lib/routinator
@@ -54,7 +54,7 @@
   tags: ['routinator_config']
 
 - name: Activation du service routinator au démarage
-  service:
+  ansible.builtin.service:
     name: routinator
     state: started
     enabled: true

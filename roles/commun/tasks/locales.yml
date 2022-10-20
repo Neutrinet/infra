@@ -1,13 +1,13 @@
 ---
 
 - name: Installation de locales
-  package:
+  ansible.builtin.package:
     name: locales
     state: present
   tags: locales
 
 - name: Génération des locales
-  locale_gen:
+  ansible.builtin.locale_gen:
     name: "{{ locale }}.UTF-8"
     state: present
   loop:
@@ -19,7 +19,7 @@
   tags: locales
 
 - name: Définition de la locale par défaut
-  replace:
+  ansible.builtin.replace:
     dest: /etc/default/locale
     regexp: 'LANG="(.)*'
     replace: 'LANG="en_US.UTF-8"'

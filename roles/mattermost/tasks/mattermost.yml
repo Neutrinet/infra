@@ -1,23 +1,23 @@
 - name: Installation de rsync
-  package:
+  ansible.builtin.package:
     name: rsync
     state: present
 
 - name: Téléchargement de la clé publique GPG de Mattermost
-  uri:
+  ansible.builtin.uri:
     url: https://deb.packages.mattermost.com/pubkey.gpg
     return_content: true
   register: _mattermost_gpg_public_key_downloaded
 
 - name: Importation de la clé publique GPG
-  command:
+  ansible.builtin.command:
     cmd: gpg --import -
     stdin: "{{ _mattermost_gpg_public_key_downloaded.content }}"
   changed_when: "'imported: 1' in _mattermost_gpg_public_key_imported.stdout"
   register: _mattermost_gpg_public_key_imported
 
 - name: Téléchargement de l'archive Mattermost v{{ mattermost_version }}
-  get_url:
+  ansible.builtin.get_url:
     url: https://releases.mattermost.com/{{ mattermost_version }}/mattermost-{{ mattermost_version }}-linux-amd64.tar.gz
     dest: /usr/local/src/mattermost-{{ mattermost_version }}.tar.gz
     owner: root
@@ -25,7 +25,7 @@
     mode: "u=rw,go=r"
 
 - name: Téléchargement de la signature GPG pour l'archive
-  get_url:
+  ansible.builtin.get_url:
     url: https://releases.mattermost.com/{{ mattermost_version }}/mattermost-{{ mattermost_version }}-linux-amd64.tar.gz.sig
     dest: /usr/local/src/mattermost-{{ mattermost_version }}.tar.gz.sig
     owner: root
@@ -33,13 +33,13 @@
     mode: "u=rw,go=r"
 
 - name: Vérification de la signature GPG
-  command:
+  ansible.builtin.command:
     cmd: gpg --verify mattermost-{{ mattermost_version }}.tar.gz.sig mattermost-{{ mattermost_version }}.tar.gz
     chdir: /usr/local/src
   changed_when: false
 
 - name: Création du dossier de Mattermost
-  file:
+  ansible.builtin.file:
     path: /var/www/{{ mattermost_owner }}/mattermost-{{ mattermost_version }}
     owner: "{{ mattermost_owner }}"
     group: "{{ mattermost_owner }}"
@@ -47,7 +47,7 @@
     state: directory
 
 - name: Décompression de l'archive
-  unarchive:
+  ansible.builtin.unarchive:
     src: /usr/local/src/mattermost-{{ mattermost_version }}.tar.gz
     dest: /var/www/{{ mattermost_owner }}/mattermost-{{ mattermost_version }}
     creates: /var/www/{{ mattermost_owner }}/mattermost-{{ mattermost_version }}/README.md
@@ -58,13 +58,13 @@
     group: "{{ mattermost_owner }}"
 
 - name: Vérification si Mattermost est déjà installé
-  stat:
+  ansible.builtin.stat:
     path: /var/www/{{ mattermost_owner }}/dist
     follow: false
   register: _mattermost_current_install_dir
 
 - name: Récupération de la liste des dossiers d'installation
-  find:
+  ansible.builtin.find:
     path: /var/www/{{ mattermost_owner }}
     file_type: directory
     use_regex: true
@@ -73,7 +73,7 @@
   register: _mattermost_installed_dirs
 
 - name: Récupération de la liste des archives
-  find:
+  ansible.builtin.find:
     path: /usr/local/src
     file_type: file
     use_regex: true
@@ -82,7 +82,7 @@
   register: _mattermost_archives
 
 - name: Récupération de la plus ancienne version et de la version courante
-  set_fact:
+  ansible.builtin.set_fact:
     mattermost_oldest_archive: "{{ mattermost_sorted_archives | first }}"
     mattermost_oldest_install_dir: "{{ mattermost_sorted_install_dirs | first }}"
     mattermost_oldest_version: "{{ mattermost_sorted_versions | first }}"
@@ -105,14 +105,14 @@
     mattermost_install_prefix: /var/www/{{ mattermost_owner }}/mattermost-
 
 - name: Vérification que la nouvelle version est plus récente que la version courante
-  assert:
+  ansible.builtin.assert:
     that: mattermost_version is version(mattermost_current_version, '>=')
     msg: "Mattermost v{{ mattermost_version }} < v{{ mattermost_current_version }} (current)!!!"
     quiet: true
 
 - name: Copie des dossiers de l'installation existante
   # This must be run only for updates, not for a fresh install.
-  synchronize:
+  ansible.builtin.synchronize:
     src: /var/www/{{ mattermost_owner }}/dist/{{ directory }}/
     dest: /var/www/{{ mattermost_owner }}/mattermost-{{ mattermost_version }}/{{ directory }}/
     compress: false
@@ -133,7 +133,7 @@
     - mattermost_version != mattermost_current_version
 
 - name: Création du lien symbolique vers la dernière version de Mattermost
-  file:
+  ansible.builtin.file:
     src: /var/www/{{ mattermost_owner }}/mattermost-{{ mattermost_version }}
     dest: /var/www/{{ mattermost_owner }}/dist
     state: link
@@ -142,7 +142,7 @@
 - name: Configuration de la base de données de Mattermost
   # This is needed in order to start the server in a test environment
   # All the other settings will be managed in the Mattermost admin panel.
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /var/www/{{ mattermost_owner }}/dist/config/config.json
     regex: '(\s+"DataSource":)'
     line: '\1 "postgres://{{ mattermost_owner }}:{{ mattermost_postgresql_password }}@{{ postgresql_host }}:5432/{{ mattermost_owner }}?sslmode=disable\\u0026connect_timeout=10",'
@@ -152,7 +152,7 @@
   notify: restart mattermost
 
 - name: Configuration du service systemd
-  template:
+  ansible.builtin.template:
     src: systemd/mattermost.service.j2
     dest: /etc/systemd/system/mattermost.service
     owner: root
@@ -162,16 +162,16 @@
     - restart mattermost
 
 - name: Activation de Mattermost au démarrage
-  service:
+  ansible.builtin.service:
     name: mattermost
     state: started
     enabled: true
 
 - name: Trigger Mattermost handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Vérification que le serveur Mattermost est prêt
-  uri:
+  ansible.builtin.uri:
     url: http://localhost:8065/api/v4/system/ping
   register: _mattermost_server_ping
   retries: 10
@@ -179,19 +179,19 @@
   until: _mattermost_server_ping is success
 
 - name: Suppression de la plus ancienne version (v{{ mattermost_oldest_version }})
-  file:
+  ansible.builtin.file:
     state: absent
     path: "{{ mattermost_oldest_install_dir }}"
   when: _mattermost_installed_dirs.files | length > 5
 
 - name: Suppression de la plus ancienne archive
-  file:
+  ansible.builtin.file:
     state: absent
     path: "{{ mattermost_oldest_archive }}"
   when: _mattermost_archives.files | length > 5
 
 - name: Configuration des backups Borgmatic
-  template:
+  ansible.builtin.template:
     src: borgmatic/mattermost.yml.j2
     dest: /etc/borgmatic.d/mattermost-{{ mattermost_owner }}.yml
     owner: root

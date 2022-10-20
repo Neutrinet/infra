@@ -2,11 +2,12 @@
 # config commun de tous les hosts
 # pour plus d'info, il faut regarder dans roles/*
 
-- hosts: all
+- name: Provisionning des machines Debian
+  hosts: all
   become: true
 
   tasks:
     - name: Role commun pour Debian
-      import_role:
+      ansible.builtin.import_role:
         name: commun
       when: ansible_facts['os_family'] == 'Debian'

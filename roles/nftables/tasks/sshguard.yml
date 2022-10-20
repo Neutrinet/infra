@@ -6,7 +6,7 @@
     state: present
 
 - name: Activation du service sshguard au démarrage
-  service:
+  ansible.builtin.service:
     name: sshguard
     state: started
     enabled: true

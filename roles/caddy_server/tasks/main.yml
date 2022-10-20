@@ -1,8 +1,9 @@
-- import_tasks: caddy.yml
+- name: Installation de Caddy2
+  ansible.builtin.import_tasks: caddy.yml
   tags: ['caddy']
 
 - name: Installation des plugins Telegraf
-  template:
+  ansible.builtin.template:
     src: telegraf/caddy.conf.j2
     dest: /etc/telegraf/telegraf.d/caddy.conf
     owner: telegraf

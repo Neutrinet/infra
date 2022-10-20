@@ -1,5 +1,5 @@
 - name: Copie de la configuration php-fpm
-  template:
+  ansible.builtin.template:
     src: php-fpm/php-pool.conf.j2
     dest: "{{ php_fpm_pool_dir }}/{{ web_app_owner }}.conf"
     owner: root
@@ -10,7 +10,7 @@
   tags: ['php_config']
 
 - name: Création du dossier tmp pour php-fpm
-  file:
+  ansible.builtin.file:
     path: "{{ php_fpm_tmp_dir }}"
     owner: "{{ web_app_owner }}"
     group: "{{ web_app_owner }}"
@@ -18,10 +18,10 @@
     state: directory
 
 - name: Trigger php-fpm handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation des plugins Telegraf
-  template:
+  ansible.builtin.template:
     src: telegraf/php-fpm.conf.j2
     dest: /etc/telegraf/telegraf.d/{{ web_app_owner }}.conf
     owner: telegraf
@@ -32,7 +32,7 @@
   tags: ['telegraf_config']
 
 - name: Ajout de l'utilisateur telegraf au groupe caddy
-  user:
+  ansible.builtin.user:
     name: telegraf
     groups: caddy
     append: true

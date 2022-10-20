@@ -1,5 +1,5 @@
 ---
 - name: Installation de Ceph
-  import_role:
+  ansible.builtin.import_role:
     name: ceph
   tags: ['ceph']

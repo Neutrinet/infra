@@ -1,5 +1,5 @@
 - name: Création du dossier de Hedgedoc
-  file:
+  ansible.builtin.file:
     path: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
     owner: "{{ hedgedoc_owner }}"
     group: "{{ hedgedoc_owner }}"
@@ -7,7 +7,7 @@
     state: directory
 
 - name: Téléchargement de Hedgedoc v{{ hedgedoc_version }}
-  unarchive:
+  ansible.builtin.unarchive:
     src: https://github.com/hedgedoc/hedgedoc/releases/download/{{ hedgedoc_version }}/hedgedoc-{{ hedgedoc_version }}.tar.gz
     dest: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
     creates: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/README.md
@@ -18,19 +18,19 @@
     group: "{{ hedgedoc_owner }}"
 
 - name: Installation des dépendences
-  package:
+  ansible.builtin.package:
     name: make
     state: present
 
 - name: Installation de Hedgedoc
-  command:
+  ansible.builtin.command:
     cmd: npm install --production
     chdir: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
     creates: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/node_modules
   become_user: "{{ hedgedoc_owner }}"
 
 - name: Configuration de Hedgedoc
-  template:
+  ansible.builtin.template:
     src: hedgedoc/config.json.j2
     dest: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/config.json
     owner: "{{ hedgedoc_owner }}"
@@ -39,7 +39,7 @@
   notify: restart hedgedoc
 
 - name: Configuration du service systemd
-  template:
+  ansible.builtin.template:
     src: systemd/hedgedoc.service.j2
     dest: /etc/systemd/system/hedgedoc.service
     owner: root
@@ -50,23 +50,23 @@
     - restart hedgedoc
 
 - name: Création du lien symbolique vers la dernière version de Hedgedoc
-  file:
+  ansible.builtin.file:
     src: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
     dest: /var/www/{{ hedgedoc_owner }}/dist
     state: link
   notify: restart hedgedoc
 
 - name: Activation de Hedgedoc au démarrage
-  service:
+  ansible.builtin.service:
     name: hedgedoc
     state: started
     enabled: true
 
 - name: Trigger Hedgedoc handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Vérication que le serveur Hedgedoc est prêt
-  uri:
+  ansible.builtin.uri:
     url: http://localhost:3000/status
   register: _hedgedoc_server_status
   retries: 10

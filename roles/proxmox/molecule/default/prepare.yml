@@ -5,11 +5,11 @@
 
   pre_tasks:
     - name: Mise à jour du cache APT
-      apt:
+      ansible.builtin.apt:
         update_cache: true
 
     - name: Installation de smartctl
-      package:
+      ansible.builtin.package:
         name: smartmontools
         state: present
 

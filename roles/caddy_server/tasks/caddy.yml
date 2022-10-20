@@ -1,22 +1,22 @@
 ---
 - name: Ajout de la clé GPG de Caddy dans APT
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://dl.cloudsmith.io/public/caddy/stable/gpg.155B6D79CA56EA34.key
     state: present
 
 - name: Ajout du dépôt APT Caddy
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://dl.cloudsmith.io/public/caddy/stable/deb/{{ ansible_distribution | lower }} any-version main
     filename: caddy-stable
     state: present
 
 - name: Installation de Caddy
-  package:
+  ansible.builtin.package:
     name: caddy
     state: present
 
 - name: Création du dossier de config des VHosts
-  file:
+  ansible.builtin.file:
     path: "{{ caddy_vhosts_dir }}"
     state: directory
     owner: root
@@ -24,7 +24,7 @@
     mode: "u=rwx,go=rx"
 
 - name: Copie du fichier de config principal
-  template:
+  ansible.builtin.template:
     src: caddy/Caddyfile.j2
     dest: "{{ caddy_config_dir }}/Caddyfile"
     owner: root
@@ -34,7 +34,7 @@
   notify: reload caddy
 
 - name: Copie de la config du healthcheck
-  template:
+  ansible.builtin.template:
     src: caddy/healthcheck.j2
     dest: "{{ caddy_vhosts_dir }}/healthcheck.conf"
     owner: root
@@ -44,7 +44,7 @@
   notify: reload caddy
 
 - name: Création du dossier des logs
-  file:
+  ansible.builtin.file:
     path: "{{ caddy_log_dir }}"
     state: directory
     owner: caddy
@@ -52,10 +52,10 @@
     mode: "u=rwx,g=rx,o="
 
 - name: Activation du service caddy au démarage
-  service:
+  ansible.builtin.service:
     name: caddy
     state: started
     enabled: true
 
 - name: Trigger Caddy handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
