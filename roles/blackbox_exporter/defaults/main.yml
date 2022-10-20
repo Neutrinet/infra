@@ -1,0 +1,10 @@
+blackbox_exporter_version: 0.22.0
+blackbox_exporter_http_probes:
+  - name: http://example.com
+    url: https://example.com
+    body:
+      - Example Domain
+
+blackbox_exporter_icmp_probes:
+  - "127.0.0.1"
+  - "::1"

@@ -1,0 +1,12 @@
+---
+- name: Déploiement de Blackbox exporter
+  hosts: blackbox_exporter
+  become: true
+
+  pre_tasks:
+    - name: Mise à jour du cache APT
+      ansible.builtin.apt:
+        update_cache: true
+
+  roles:
+    - blackbox_exporter

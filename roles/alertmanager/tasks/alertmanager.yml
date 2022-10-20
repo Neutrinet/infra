@@ -6,7 +6,7 @@
     mode: "u=rwx,g=rx,o="
     state: directory
   loop:
-    - /opt/alertamanager
+    - /opt/alertmanager
     - /opt/alertmanager/{{ alertmanager_version }}
     - /etc/alertmanager
     - /etc/alertmanager/templates
