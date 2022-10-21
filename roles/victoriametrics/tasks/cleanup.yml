@@ -1,5 +1,5 @@
 - name: Récupération de la liste des dossiers d'installation
-  find:
+  ansible.builtin.find:
     path: /opt/victoriametrics
     file_type: directory
     use_regex: true
@@ -8,7 +8,7 @@
   register: _victoriametrics_installed_dirs
 
 - name: Récupération de la liste des archives
-  find:
+  ansible.builtin.find:
     path: /usr/local/src/victoriametrics
     file_type: file
     use_regex: true
@@ -17,7 +17,7 @@
   register: _victoriametrics_archives
 
 - name: Récupération de la liste des archives des outils
-  find:
+  ansible.builtin.find:
     path: /usr/local/src/victoriametrics
     file_type: file
     use_regex: true
@@ -26,7 +26,7 @@
   register: _victoriametrics_tools_archives
 
 - name: Récupération de la plus ancienne version et de la version courante
-  set_fact:
+  ansible.builtin.set_fact:
     victoriametrics_oldest_archive: "{{ victoriametrics_sorted_archives | first }}"
     victoriametrics_tools_oldest_archive: "{{ victoriametrics_tools_sorted_archives | first }}"
     victoriametrics_oldest_install_dir: "{{ victoriametrics_sorted_install_dirs | first }}"
@@ -36,7 +36,7 @@
       {{ _victoriametrics_archives.files
         | map(attribute='path')
         | community.general.version_sort }}
-    victoriametrics_tools_sorted_archive: |-
+    victoriametrics_tools_sorted_archives: |-
       {{ _victoriametrics_tools_archives.files
         | map(attribute='path')
         | community.general.version_sort }}
@@ -46,19 +46,19 @@
         | community.general.version_sort }}
 
 - name: Suppression de la plus ancienne version (v{{ victoriametrics_oldest_version }})
-  file:
+  ansible.builtin.file:
     state: absent
     path: "{{ victoriametrics_oldest_install_dir }}"
   when: _victoriametrics_installed_dirs.files | length > 5
 
 - name: Suppression de la plus ancienne archive
-  file:
+  ansible.builtin.file:
     state: absent
     path: "{{ victoriametrics_oldest_archive }}"
   when: _victoriametrics_archives.files | length > 5
 
 - name: Suppression de la plus ancienne archive des outis
-  file:
+  ansible.builtin.file:
     state: absent
     path: "{{ victoriametrics_tools_oldest_archive }}"
   when: _victoriametrics_tools_archives.files | length > 5

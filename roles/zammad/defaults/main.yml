@@ -1,0 +1,9 @@
+zammad_domain: zammad.example.com
+zammad_owner: "{{ zammad_domain | replace('.', '-') }}"
+zammad_trusted_proxies:
+  - private_ranges
+
+postgresql_host: localhost
+
+zammad_postgresql_password: neutrinet
+zammad_elasticsearch_memory_limit: 512m

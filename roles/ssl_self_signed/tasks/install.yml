@@ -1,5 +1,5 @@
 - name: Installation des dépendences SSL
-  package:
+  ansible.builtin.package:
     name: "{{ package }}"
     state: present
   loop: "{{ ssl_packages }}"
@@ -8,7 +8,7 @@
   tags: ['ssl_install']
 
 - name: Création des dossiers SSL
-  file:
+  ansible.builtin.file:
     path: "{{ config_dir }}"
     state: directory
     owner: "{{ ssl_cert_owner }}"
@@ -23,7 +23,7 @@
   tags: ['ssl_install']
 
 - name: Création du dossier SSL pour les clés privées
-  file:
+  ansible.builtin.file:
     path: "{{ ssl_keys_dir }}"
     state: directory
     owner: "{{ ssl_private_key_owner }}"

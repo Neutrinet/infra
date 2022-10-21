@@ -1,0 +1,65 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+  - name: Patroni
+    rules:
+      - alert: Patroni Primary
+        for: 5m
+        expr: sum by (scope) (prometheus_patroni_master) != 1
+        labels:
+          severity: critical
+        annotations:
+          description: 'Incorrect number of primary server for the Patroni cluster {{ $labels.scope }}: {{ $value }}.'
+          summary: 'Incorrect number of primary server for the Patroni cluster.'
+
+      - alert: Patroni Replica
+        for: 15m
+        expr: sum by (scope) (prometheus_patroni_replica) != 2
+        labels:
+          severity: warning
+        annotations:
+          description: 'Incorrect number of replica server for the Patroni cluster {{ $labels.scope }}: {{ $value }}.'
+          summary: 'Incorrect number of replica server for the Patroni cluster.'
+
+      - alert: PostreSQL Running
+        for: 5m
+        expr: >
+{% for host in postgresql_patroni_hosts %}
+          prometheus_patroni_postgres_running{host="{{{ host }}}"} == 0{% if not loop.last %} OR {% endif %}
+
+{% endfor %}
+        labels:
+          severity: critical
+        annotations:
+          description: 'PostgreSQL is not running on host {{ $labels.host }} in the Patroni cluster {{ $labels.scope }}.'
+          summary: 'PostgreSQL is not running in the Patroni cluster.'
+
+  - name: Etcd
+    rules:
+      - alert: Etcd Cluster Size
+        for: 15m
+        expr: count(prometheus_etcd_server_id) != 3
+        labels:
+          severity: critical
+        annotations:
+          description: 'Incorrect number of hosts for the Etcd cluster: {{ $labels.value }}.'
+          summary: 'Incorrect number of hosts for the Etcd cluster.'
+
+      - alert: Etcd Leader
+        for: 5m
+        expr: prometheus_etcd_server_has_leader != 1
+        labels:
+          severity: critical
+        annotations:
+          description: 'Etcd cluster has no leader on instance {{ $labels.instance }}.'
+          summary: 'Etcd cluster has no leader.'
+
+      - alert: Etcd Health
+        for: 5m
+        expr: prometheus_etcd_server_health_success == 0
+        labels:
+          severity: warning
+        annotations:
+          description: 'Etcd server is unhealthy on instance {{ $labels.instance}}.'
+          summary: 'Etcd server is unhealthy.'

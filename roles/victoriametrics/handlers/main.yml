@@ -1,21 +1,21 @@
 - name: restart victoriametrics
-  systemd:
+  ansible.builtin.systemd:
     name: victoriametrics
     daemon_reload: true
     state: restarted
 
 - name: reload victoriametrics
-  service:
+  ansible.builtin.service:
     name: victoriametrics
     state: reloaded
 
 - name: restart victoriametrics-alert
-  systemd:
+  ansible.builtin.systemd:
     name: victoriametrics-alert
     daemon_reload: true
     state: restarted
 
 - name: reload victoriametrics-alert
-  service:
+  ansible.builtin.service:
     name: victoriametrics-alert
     state: reloaded

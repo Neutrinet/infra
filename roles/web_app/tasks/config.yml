@@ -1,6 +1,6 @@
 ---
 - name: Création du dossier {{ web_app_www_dir }}
-  file:
+  ansible.builtin.file:
     path: "{{ web_app_www_dir }}"
     owner: caddy
     group: caddy
@@ -8,7 +8,7 @@
     state: directory
 
 - name: Création du dossier {{ web_app_dist_dir }}
-  file:
+  ansible.builtin.file:
     path: "{{ web_app_dist_dir }}"
     owner: "{{ web_app_owner }}"
     group: "{{ web_app_group }}"

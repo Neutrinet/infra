@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/caddy/conf.d/{{ web_app_owner }}.conf"
+    - "{{ web_app_dist_dir }}"
+    - "{{ php_fpm_pool_dir }}/{{ web_app_owner }}.conf"
+
+storage:
+  archive_name_format: dokuwiki-{{ web_app_owner }}_{hostname}-{now}
+
+retention:
+  prefix: dokuwiki-{{ web_app_owner }}_
+
+consistency:
+  prefix: dokuwiki-{{ web_app_owner }}_

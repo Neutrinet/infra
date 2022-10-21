@@ -1,7 +1,0 @@
-- name: Création de l'utilisateur promscale
-  user:
-    name: promscale
-    home: /opt/promscale
-    shell: /sbin/nologin
-    system: true
-    state: present

@@ -1,11 +1,11 @@
 ---
 - name: Installation de Caddy2
-  import_role:
+  ansible.builtin.import_role:
     name: caddy_server
   tags: ['caddy']
 
 - name: Installation de PHP
-  import_role:
+  ansible.builtin.import_role:
     name: php_fpm
   vars:
     php_extra_modules:
@@ -16,12 +16,12 @@
   tags: ['php_fpm']
 
 - name: Installation de Composer
-  import_role:
+  ansible.builtin.import_role:
     name: composer
   tags: ['composer']
 
 - name: Configuration du site (caddy, php-fpm, etc.)
-  import_role:
+  ansible.builtin.import_role:
     name: web_app
   vars:
     web_app_domain: "{{ grav_domain }}"
@@ -30,5 +30,15 @@
   tags: ['web_app']
 
 - name: Installation du scheduler
-  import_tasks: scheduler.yml
+  ansible.builtin.import_tasks: scheduler.yml
   tags: ['scheduler']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/grav.yml.j2
+    dest: /etc/borgmatic.d/grav-{{ web_app_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

@@ -1,5 +1,5 @@
 - name: Création de l'utilisateur pour Alertmanager
-  user:
+  ansible.builtin.user:
     name: alertmanager
     home: /opt/alertmanager
     shell: /sbin/nologin

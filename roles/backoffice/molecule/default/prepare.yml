@@ -5,14 +5,15 @@
 
   pre_tasks:
     - name: Mise à jour du cache APT
-      apt:
+      ansible.builtin.apt:
         update_cache: true
 
     - name: Installation de Git
-      package:
+      ansible.builtin.package:
         name: git
         state: present
 
   roles:
     - telegraf
+    - borgmatic
     - postgres_standalone

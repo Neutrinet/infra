@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/default/etcd"
+    - "/etc/patroni"
+
+storage:
+  archive_name_format: patroni_{hostname}-{now}
+
+retention:
+  prefix: patroni_
+
+consistency:
+  prefix: patroni_

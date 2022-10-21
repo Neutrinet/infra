@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/matterbridge"
+    - "/etc/systemd/system/matterbridge.service"
+
+storage:
+  archive_name_format: matterbridge_{hostname}-{now}
+
+retention:
+  prefix: matterbridge_
+
+consistency:
+  prefix: matterbridge_

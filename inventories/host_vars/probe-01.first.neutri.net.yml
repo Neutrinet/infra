@@ -1,2 +1,0 @@
-prometheus_telegraf_hosts:
-  - "{{ inventory_hostname }}"

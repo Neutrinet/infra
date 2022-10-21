@@ -1,7 +1,7 @@
 ---
 # Configuration des dépôts et des mises à jour automatiques
 - name: Copie des fichiers de dépôts
-  template:
+  ansible.builtin.template:
     src: "apt/sources.list.j2"
     dest: /etc/apt/sources.list
     owner: root
@@ -10,7 +10,7 @@
   notify: update apt cache
 
 - name: Trigger APT handler
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de unattended-upgrades
   ansible.builtin.package:
@@ -18,7 +18,7 @@
     state: present
 
 - name: Copie du template unattended-upgrade
-  template:
+  ansible.builtin.template:
     src: repos/50unattended-upgrades.j2
     dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
     owner: root
@@ -26,7 +26,7 @@
     mode: "u=rw,go=r"
 
 - name: Copie du template 20auto-updates
-  copy:
+  ansible.builtin.copy:
     src: repos/20auto-updates
     dest: "/etc/apt/apt.conf.d/20auto-updates"
     owner: root

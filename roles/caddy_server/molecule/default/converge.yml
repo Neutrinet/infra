@@ -5,7 +5,7 @@
 
   pre_tasks:
     - name: Mise à jour du cache APT
-      apt:
+      ansible.builtin.apt:
         update_cache: true
 
   roles:
@@ -13,7 +13,7 @@
 
   post_tasks:
     - name: Copie de la config d'exemple de Caddy
-      copy:
+      ansible.builtin.copy:
         content: |
           localhost {
             root * {{ caddy_config_dir }}

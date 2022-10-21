@@ -1,7 +1,7 @@
 ---
 # Ajout des utilisateurs et de leurs clés SSH
 - name: Suppression du mot de passe pour sudo
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     state: present
     regexp: '^%sudo'
@@ -10,19 +10,19 @@
   tags: ['sudo']
 
 - name: Ajout des utilisateurs et de leurs clés SSH
-  include_tasks: user.yml
+  ansible.builtin.include_tasks: user.yml
   loop: "{{ users }}"
   loop_control:
     loop_var: user
     label: "{{ user.name }} ({{ user.state }})"
 
 - name: Test si l'hôte est un Proxmox
-  stat:
+  ansible.builtin.stat:
     path: /etc/pve
   register: _pve_directory
 
 - name: Suppression du mot de passe root
-  user:
+  ansible.builtin.user:
     name: root
     state: present
     shell: /bin/bash
@@ -31,4 +31,4 @@
   tags: ['skip_ansible_lint']
 
 - name: Trigger SSH handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

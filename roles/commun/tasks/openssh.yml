@@ -2,18 +2,18 @@
 # Attention peut casser la connexion ssh.
 # Penser à avoir un ControlPersist dans .ssh/config
 - name: Installation du serveur openssh
-  package:
+  ansible.builtin.package:
     name: ssh
     state: present
 
 - name: Récupération des informations de la clé SSH DSA
-  stat:
+  ansible.builtin.stat:
     path: /etc/ssh/ssh_host_dsa_key
   register: ssh_host_key_file
 
 # Si la clé DSA existe, la configuration des clés n'a pas encore été faite
 - name: Suppression des clés obsolètes du serveur OpenSSH
-  file:
+  ansible.builtin.file:
     path: /etc/ssh/{{ key_file }}
     state: absent
   loop:
@@ -30,7 +30,7 @@
   when: ssh_host_key_file.stat.exists
 
 - name: Création de la clé SSH ed25519
-  openssh_keypair:
+  ansible.builtin.openssh_keypair:
     path: /etc/ssh/ssh_host_ed25519_key
     owner: root
     group: root
@@ -38,7 +38,7 @@
   notify: restart ssh
 
 - name: Création de la clé SSH rsa4096
-  openssh_keypair:
+  ansible.builtin.openssh_keypair:
     path: /etc/ssh/ssh_host_rsa_key
     owner: root
     group: root
@@ -47,19 +47,19 @@
   notify: restart ssh
 
 - name: Vérification des modulos du serveur OpenSSH
-  raw: awk '$5 <= 2000' /etc/ssh/moduli
+  ansible.builtin.raw: awk '$5 <= 2000' /etc/ssh/moduli
   register: ssh_obsolete_moduli
   changed_when: ssh_obsolete_moduli.stdout | length > 0
 
-- name: Réduction du modulo SSH  # noqa 503
-  raw: >-
+- name: Réduction du modulo SSH  # noqa no-handler
+  ansible.builtin.raw: >-
     awk '$5 > 2000' /etc/ssh/moduli > /tmp/moduli &&
     mv /tmp/moduli /etc/ssh/moduli
   when: ssh_obsolete_moduli.changed
   notify: restart ssh
 
 - name: Copie du fichier de configuration du serveur OpenSSH
-  template:
+  ansible.builtin.template:
     src: sshd/sshd_config.j2
     dest: /etc/ssh/sshd_config
     owner: root
@@ -69,7 +69,7 @@
   notify: restart ssh
 
 - name: Activation du service SSH au démarrage
-  service:
+  ansible.builtin.service:
     name: ssh
     state: started
     enabled: true

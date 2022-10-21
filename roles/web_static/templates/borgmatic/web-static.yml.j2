@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/caddy/conf.d/{{ domain_owner }}.conf"
+    - "/var/www/{{ domain_owner }}/dist"
+
+storage:
+  archive_name_format: web-static-{{ domain_owner }}_{hostname}-{now}
+
+retention:
+  prefix: web-static-{{ domain_owner }}_
+
+consistency:
+  prefix: web-static-{{ domain_owner }}_

@@ -1,5 +1,5 @@
 - name: Création du dossier des certificats pour {{ domain.name }}
-  file:
+  ansible.builtin.file:
     path: "{{ ssl_certs_dir }}/{{ domain.name }}.d"
     state: directory
     owner: "{{ ssl_cert_owner }}"
@@ -8,7 +8,7 @@
   tags: ['ssl_install']
 
 - name: Génération de la clé privée '{{ ssl_private_key }}'
-  openssl_privatekey:
+  ansible.builtin.openssl_privatekey:
     path: "{{ ssl_private_key }}"
     owner: "{{ ssl_private_key_owner }}"
     group: "{{ ssl_private_key_group }}"
@@ -18,7 +18,7 @@
   tags: ['ssl_config']
 
 - name: Génération du CSR '{{ ssl_csr }}'
-  openssl_csr:
+  ansible.builtin.openssl_csr:
     path: "{{ ssl_csr }}"
     owner: "{{ ssl_cert_owner }}"
     group: "{{ ssl_cert_group }}"
@@ -29,7 +29,7 @@
   tags: ['ssl_config']
 
 - name: Génération du certificat auto-signé '{{ ssl_certificate }}'
-  openssl_certificate:
+  ansible.builtin.openssl_certificate:
     path: "{{ ssl_certificate }}"
     csr_path: "{{ ssl_csr }}"
     privatekey_path: "{{ ssl_private_key }}"

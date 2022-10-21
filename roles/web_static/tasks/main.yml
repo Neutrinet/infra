@@ -1,11 +1,11 @@
 ---
 - name: Installation de Caddy2
-  import_role:
+  ansible.builtin.import_role:
     name: caddy_server
   tags: ['caddy_install']
 
 - name: Configuration des sites statiques
-  include_role:
+  ansible.builtin.include_role:
     name: web_app
   loop: "{{ web_static_domains }}"
   loop_control:
@@ -14,3 +14,18 @@
     web_app_domain: "{{ domain.name }}"
     web_app_alt_domains: "{{ domain.alt_domains | default([]) }}"
     web_app_caddy_template: "{{ domain.template | default(omit) }}"
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/web-static.yml.j2
+    dest: /etc/borgmatic.d/web-static-{{ domain_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  loop: "{{ web_static_domains }}"
+  loop_control:
+    loop_var: domain
+  vars:
+    domain_owner: "{{ domain.name | replace('.', '-') }}"
+  tags: ['borgmatic_config']

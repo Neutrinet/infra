@@ -1,11 +1,11 @@
 ---
-# Déploiement de Mattermost
-- hosts: mattermost
+- name: Déploiement de Mattermost
+  hosts: mattermost
   become: true
 
   pre_tasks:
     - name: Mise à jour du cache APT
-      apt:
+      ansible.builtin.apt:
         update_cache: true
 
   roles:

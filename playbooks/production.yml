@@ -1,18 +1,57 @@
 ---
+- name: Provisionning des machines Debian
+  import_playbook: apps/debian_commun.yml
 
-- import_playbook: apps/debian_commun.yml
-- import_playbook: apps/keepalived.yml
-- import_playbook: apps/haproxy.yml
-- import_playbook: apps/postgres_patroni.yml
-- import_playbook: apps/web_static.yml
-- import_playbook: apps/webhook.yml
-- import_playbook: apps/ceph_s3.yml
-- import_playbook: apps/hedgedoc.yml
-- import_playbook: apps/mattermost.yml
-- import_playbook: apps/backoffice.yml
-- import_playbook: apps/grav.yml
-- import_playbook: apps/dokuwiki.yml
-- import_playbook: apps/probe.yml
-- import_playbook: apps/victoriametrics.yml
-- import_playbook: apps/alertmanager.yml
-- import_playbook: apps/gitlab_runner.yml
+- name: Déploiement de Keepalived
+  import_playbook: apps/keepalived.yml
+
+- name: Déploiement de HAProxy
+  import_playbook: apps/haproxy.yml
+
+- name: Déploiement du cluster Patroni pour PostgreSQL
+  import_playbook: apps/postgres_patroni.yml
+
+- name: Déploiement des sites web statiques
+  import_playbook: apps/web_static.yml
+
+- name: Déploiement des webhooks
+  import_playbook: apps/webhook.yml
+
+- name: Déploiement du cluster Ceph S3
+  import_playbook: apps/ceph_s3.yml
+
+- name: Déploiement de HedgeDoc
+  import_playbook: apps/hedgedoc.yml
+
+- name: Déploiement de Mattermost
+  import_playbook: apps/mattermost.yml
+
+- name: Déploiement de Nextcloud
+  import_playbook: apps/nextcloud.yml
+
+- name: Déploiement de Backoffice
+  import_playbook: apps/backoffice.yml
+
+- name: Déploiement de Grav
+  import_playbook: apps/grav.yml
+
+- name: Déploiement de Dokuwiki
+  import_playbook: apps/dokuwiki.yml
+
+- name: Déploiement de Zammad
+  import_playbook: apps/zammad.yml
+
+- name: Déploiement des probes pour le monitoring
+  import_playbook: apps/probe.yml
+
+- name: Déploiement de VictoriaMetrics
+  import_playbook: apps/victoriametrics.yml
+
+- name: Déploiement d'Alertmanager
+  import_playbook: apps/alertmanager.yml
+
+- name: Déploiement de Grafana
+  import_playbook: apps/grafana.yml
+
+- name: Déploiement de Gitlab Runner
+  import_playbook: apps/gitlab_runner.yml

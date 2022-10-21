@@ -26,4 +26,5 @@
       - safe-rm
       - bash-completion
       - psmisc # provide killall
+      - kitty-terminfo # terminal Tharyrok
     state: present

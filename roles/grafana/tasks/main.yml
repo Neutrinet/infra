@@ -1,21 +1,21 @@
 - name: Ajout de la clé GPG de Grafana dans APT
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://packages.grafana.com/gpg.key
     state: present
 
 - name: Ajout du dépôt APT Grafana
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://packages.grafana.com/oss/deb stable main
     filename: grafana
     state: present
 
 - name: Installation de Grafana
-  package:
+  ansible.builtin.package:
     name: grafana
     state: present
 
 - name: Configuration de Grafana
-  template:
+  ansible.builtin.template:
     src: grafana/grafana.ini.j2
     dest: /etc/grafana/grafana.ini
     owner: grafana
@@ -24,13 +24,13 @@
   notify: restart grafana
 
 - name: Activation de Grafana au démarrage
-  service:
+  ansible.builtin.service:
     name: grafana-server
     state: started
     enabled: true
 
 - name: Ajout du job grafana dans VictoriaMetrics
-  copy:
+  ansible.builtin.copy:
     src: victoriametrics/grafana.yml
     dest: /etc/victoriametrics/conf.d/grafana.yml
     owner: victoriametrics
@@ -39,7 +39,7 @@
   notify: reload victoriametrics
 
 - name: Vérification du mot de passe admin
-  uri:
+  ansible.builtin.uri:
     url: http://localhost:3000/api/login/ping
     user: admin
     # on utilise le mot de passe par défaut
@@ -53,6 +53,17 @@
   delay: 3
   until: _grafana_admin_login_checked is success
 
-- import_tasks: postinstall.yml
+- name: Post-installation de Grafana
+  ansible.builtin.import_tasks: postinstall.yml
   when: _grafana_admin_login_checked.status == 200
   tags: ['grafana_postinstall']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/grafana.yml.j2
+    dest: /etc/borgmatic.d/grafana.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

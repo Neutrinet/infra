@@ -1,12 +1,12 @@
 ---
 
 - name: Test si le certificat {{ domain }} rsa existe
-  stat:
+  ansible.builtin.stat:
     path: /etc/letsencrypt/live/{{ domain | replace('.', '-') }}/cert.pem
   register: letsencrypt_domain_rsa
 
 - name: Création du certificat {{ domain }} rsa  # noqa command-instead-of-shell
-  shell:
+  ansible.builtin.shell:
     cmd: |
       /opt/letsencrypt/bin/certbot certonly \
       --non-interactive \

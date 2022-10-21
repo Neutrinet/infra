@@ -1,4 +1,1 @@
 datacenter_name: unknown
-telegraf_username: telegraf
-telegraf_password: neutrinet
-telegraf_prometheus_client_listen_address: ""

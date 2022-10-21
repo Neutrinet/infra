@@ -1,5 +1,5 @@
 - name: Création des dossiers d'Alertmanager
-  file:
+  ansible.builtin.file:
     path: "{{ alertmanager_dir }}"
     owner: alertmanager
     group: alertmanager
@@ -15,7 +15,7 @@
     loop_var: alertmanager_dir
 
 - name: Création du dossier des archives d'Alertmanager
-  file:
+  ansible.builtin.file:
     path: /usr/local/src/alertmanager
     owner: root
     group: root
@@ -23,7 +23,7 @@
     state: directory
 
 - name: Téléchargement de l'archive d'Alertmanager v{{ alertmanager_version }}
-  get_url:
+  ansible.builtin.get_url:
     url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
     dest: /usr/local/src/alertmanager/{{ alertmanager_version }}.tar.gz
     owner: root
@@ -32,7 +32,7 @@
     checksum: "sha256:https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/sha256sums.txt"
 
 - name: Décompression de l'archive
-  unarchive:
+  ansible.builtin.unarchive:
     src: /usr/local/src/alertmanager/{{ alertmanager_version }}.tar.gz
     dest: /opt/alertmanager/{{ alertmanager_version }}
     creates: /opt/alertmanager/{{ alertmanager_version }}/alertmanager
@@ -43,7 +43,7 @@
     group: alertmanager
 
 - name: Création du lien symbolique pour les binaires d'Alertmanager
-  file:
+  ansible.builtin.file:
     src: /opt/alertmanager/{{ alertmanager_version }}/{{ alertmanager_bin }}
     dest: /usr/local/bin/{{ alertmanager_bin }}
     state: link
@@ -55,7 +55,7 @@
   notify: restart alertmanager
 
 - name: Configuration d'Alertmanager
-  template:
+  ansible.builtin.template:
     src: alertmanager/alertmanager.yml.j2
     dest: /etc/alertmanager/alertmanager.yml
     owner: alertmanager
@@ -65,7 +65,7 @@
   notify: reload alertmanager
 
 - name: Configuration du service systemd
-  template:
+  ansible.builtin.template:
     src: systemd/alertmanager.service.j2
     dest: /etc/systemd/system/alertmanager.service
     owner: root
@@ -76,13 +76,13 @@
     - restart alertmanager
 
 - name: Activation d'Alertmanager au démarrage
-  service:
+  ansible.builtin.service:
     name: alertmanager
     state: started
     enabled: true
 
 - name: Ajout du job alertmanager dans VictoriaMetrics
-  copy:
+  ansible.builtin.copy:
     src: victoriametrics/alertmanager.yml
     dest: /etc/victoriametrics/conf.d/alertmanager.yml
     owner: victoriametrics

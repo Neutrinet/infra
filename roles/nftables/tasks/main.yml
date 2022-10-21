@@ -1,9 +1,10 @@
 ---
 # tasks file for nftables
+- name: Installation de nftables
+  ansible.builtin.import_tasks: nftables.yml
 
-
-- import_tasks: nftables.yml
-- import_tasks: sshguard.yml
+- name: Installation de sshguard
+  ansible.builtin.import_tasks: sshguard.yml
 
 - name: Trigger sshguard handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

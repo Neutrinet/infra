@@ -1,5 +1,5 @@
 - name: Création du dossier d'installioon
-  file:
+  ansible.builtin.file:
     path: "{{ composer_install_dir }}"
     state: directory
     owner: root
@@ -7,26 +7,26 @@
     mode: "u=rwx,go=rx"
 
 - name: Téléchargement de la signature de Composer
-  uri:
+  ansible.builtin.uri:
     url: https://composer.github.io/installer.sig
     return_content: true
   register: composer_installer_signature
 
 - name: Téléchargement de l'installateur de Composer
-  get_url:
+  ansible.builtin.get_url:
     url: https://getcomposer.org/installer
     dest: "{{ composer_install_dir }}/composer-installer.php"
     mode: "u=rwx,go=rx"
     checksum: "sha384:{{ composer_installer_signature.content }}"
 
 - name: Exécution de l'installateur de Composer
-  command: php composer-installer.php --{{ composer_major_version | int }}
+  ansible.builtin.command: php composer-installer.php --{{ composer_major_version | int }}
   args:
     chdir: "{{ composer_install_dir }}"
   changed_when: true
 
 - name: Installation du binaire
-  file:
+  ansible.builtin.file:
     src: "{{ composer_install_dir }}/composer.phar"
     dest: /usr/local/bin/composer
     state: link

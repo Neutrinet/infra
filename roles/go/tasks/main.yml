@@ -1,5 +1,5 @@
 - name: Création du dossier d'installation de Go v{{ go_version }}
-  file:
+  ansible.builtin.file:
     path: /opt/go/{{ go_version }}
     owner: root
     group: root
@@ -7,13 +7,13 @@
     state: directory
 
 - name: Téléchargement de la checksum de Go v{{ go_version }}
-  uri:
+  ansible.builtin.uri:
     url: https://dl.google.com/go/go{{ go_version }}.linux-amd64.tar.gz.sha256
     return_content: true
   register: go_checksum
 
 - name: Téléchargement de l'archive de Go v{{ go_version }}
-  get_url:
+  ansible.builtin.get_url:
     url: https://dl.google.com/go/go{{ go_version }}.linux-amd64.tar.gz
     checksum: sha256:{{ go_checksum.content }}
     dest: /usr/local/src/go{{ go_version }}.tar.gz
@@ -22,7 +22,7 @@
     group: root
 
 - name: Décompression de l'archive
-  unarchive:
+  ansible.builtin.unarchive:
     src: /usr/local/src/go{{ go_version }}.tar.gz
     dest: /opt/go/{{ go_version }}
     remote_src: true
@@ -33,7 +33,7 @@
     group: root
 
 - name: Création du lien symbolique pour le binaire go{{ go_version }}
-  file:
+  ansible.builtin.file:
     src: /opt/go/{{ go_version }}/bin/go
     dest: /usr/local/bin/go{{ go_version }}
     state: link
@@ -42,6 +42,6 @@
     mode: "u=rwx,go=rx"
 
 - name: Installaiton des outils de compilation
-  package:
+  ansible.builtin.package:
     name: build-essential
     state: present

@@ -1,9 +1,9 @@
 - name: Installation des dépendences SSL et création des dossiers SSL
-  import_tasks: install.yml
+  ansible.builtin.import_tasks: install.yml
   tags: ssl_install
 
 - name: Installation des certificats de chaque domaine
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: domain.yml
     apply:
       tags: ssl_domain

@@ -1,16 +1,16 @@
 ---
 - name: Ajout de la clé GPG de NodeJS dans APT
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
     state: present
 
 - name: Ajout du dépôt APT NodeJS
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://deb.nodesource.com/node_{{ nodejs_major_version }}.x {{ ansible_distribution_release }} main
     filename: nodejs
     state: present
 
 - name: Installation de NodeJS
-  package:
+  ansible.builtin.package:
     name: nodejs
     state: present

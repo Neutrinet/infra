@@ -1,5 +1,5 @@
 - name: Installation de pip2 et ses dépendances
-  package:
+  ansible.builtin.package:
     name:
       - python-pip
       - virtualenv
@@ -8,8 +8,8 @@
       - gcc
     state: present
 
-- name: Récupération du dépôt git de backoffice  # noqa git-latest
-  git:
+- name: Récupération du dépôt git de backoffice  # noqa latest[git]
+  ansible.builtin.git:
     repo: https://gitlab.domainepublic.net/Neutrinet/backoffice.git
     dest: "{{ web_app_dist_dir }}"
     single_branch: true
@@ -17,7 +17,7 @@
   notify: restart backoffice
 
 - name: Configuration de backoffice
-  template:
+  ansible.builtin.template:
     src: backoffice/settings_local.py.j2
     dest: "{{ web_app_dist_dir }}/backoffice/settings_local.py"
     owner: "{{ web_app_owner }}"
@@ -26,7 +26,7 @@
   notify: restart backoffice
 
 - name: Création du virtualenv python
-  pip:
+  ansible.builtin.pip:
     requirements: "{{ web_app_dist_dir }}/requirements.txt"
     state: present
     virtualenv: "{{ web_app_dist_dir }}/env"
@@ -35,7 +35,7 @@
   notify: restart backoffice
 
 - name: Configuration du service systemd
-  template:
+  ansible.builtin.template:
     src: systemd/backoffice.service.j2
     dest: /etc/systemd/system/backoffice.service
     owner: root
@@ -46,7 +46,7 @@
     - restart backoffice
 
 - name: Activation de Backoffice au démarrage
-  service:
+  ansible.builtin.service:
     name: backoffice
     state: started
     enabled: true

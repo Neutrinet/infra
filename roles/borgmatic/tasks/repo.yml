@@ -1,0 +1,80 @@
+- name: Génération de la clé SSH pour le serveur de backup {{ repo.host }}
+  ansible.builtin.openssh_keypair:
+    path: "/root/.ssh/{{ repo.host | replace('.', '-') }}"
+    type: ed25519
+    comment: root@{{ ansible_fqdn }}
+
+- name: Récupération de la clé publique du client SSH
+  ansible.builtin.slurp:
+    path: /root/.ssh/{{ repo.host | replace('.', '-') }}.pub
+  register: _borgmatic_ssh_public_key
+
+- name: Création de l'utilisateur {{ repo.user }} sur le serveur de backup {{ repo.host }}
+  ansible.builtin.user:
+    name: "{{ repo.user }}"
+    password: '*'
+    home: "{{ repo.path }}"
+    shell: /bin/bash
+    state: present
+  delegate_to: "{{ repo.host }}"
+  run_once: true
+
+- name: Ajout de la clé publique du client SSH sur le serveur de backup {{ repo.host }}
+  ansible.builtin.authorized_key:
+    user: "{{ repo.user }}"
+    key: "{{ _borgmatic_ssh_public_key.content | b64decode }}"
+    key_options: command="borg serve --restrict-to-path {{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}",restrict
+  delegate_to: "{{ repo.host }}"
+  throttle: 1
+
+- name: Création du dossier des données sur le serveur de backup {{ repo.host }}
+  ansible.builtin.file:
+    path: "{{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}"
+    state: directory
+    owner: "{{ repo.user }}"
+    group: "{{ repo.user }}"
+    mode: u=rwx,go=
+  delegate_to: "{{ repo.host }}"
+
+- name: Configuration du client SSH pour le serveur de backup {{ repo.host }}
+  ansible.builtin.blockinfile:
+    path: /root/.ssh/config
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: u=rw,go=
+    block: |
+      Host {{ repo.host }}
+      User {{ repo.user }}
+      IdentityFile /root/.ssh/{{ repo.host | replace('.', '-') }}
+      PreferredAuthentications publickey,password
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ repo.host }}"
+
+- name: Récupération des adresses IP du serveur de backup {{ repo.host }}
+  ansible.builtin.command: hostname -i
+  changed_when: false
+  delegate_to: "{{ repo.host }}"
+  run_once: true
+  register: _borgmatic_repo_host_lookup
+
+- name: Scan de la clé publique du serveur de backup {{ repo.host }}
+  ansible.builtin.command: ssh-keyscan -H {{ repo.host }}
+  changed_when: false
+  register: _borgmatic_repo_host_ssh_keyscan
+  run_once: true
+
+- name: Ajout de {{ repo.host }} et de son IP dans la liste des serveurs connus
+  ansible.builtin.known_hosts:
+    name: "{{ target }}"
+    key: "{{ _borgmatic_repo_host_ssh_keyscan.stdout }}"
+    path: /root/.ssh/known_hosts
+    hash_host: true
+    state: present
+  loop:
+    - "{{ repo.host }}"
+    - "{{ repo_host_address }}"
+  loop_control:
+    loop_var: target
+  vars:
+    repo_host_address: "{{ _borgmatic_repo_host_lookup.stdout.split(' ') | first }}"

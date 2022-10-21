@@ -39,11 +39,21 @@ route:
     - matchers:
         - frequency = daily
       repeat_interval: 1d
-      receiver: default-receiver
-    - receiver: default-receiver
+      routes:
+        - receiver: default-receiver
+          continue: true
+        - receiver: matrix-alertbot-receiver
+    - routes:
+        - receiver: default-receiver
+          continue: true
+        - receiver: matrix-alertbot-receiver
 
 receivers:
   - name: default-receiver
     webhook_configs:
-      - url: {{ alertmanager_matrix_webhook_url }}
+      - url: {{ alertmanager_matrix_goneb_webhook_url }}
+        send_resolved: true
+  - name: matrix-alertbot-receiver
+    webhook_configs:
+      - url: http://localhost:4060/alerts/{{ alertmanager_matrix_alertbot_room }}
         send_resolved: true

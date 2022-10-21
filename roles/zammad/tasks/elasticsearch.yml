@@ -1,0 +1,48 @@
+- name: Ajout de la clé GPG de ElasticSearch dans APT
+  ansible.builtin.apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Ajout du dépôt APT ElasticSearch
+  ansible.builtin.apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    filename: elasticsearch
+    state: present
+
+- name: Installation de ElasticSearch
+  ansible.builtin.package:
+    name: elasticsearch
+    state: present
+
+- name: Configuration de ElasticSearch
+  ansible.builtin.template:
+    src: elasticsearch/elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+    owner: root
+    group: elasticsearch
+    mode: "u=rw,g=r,o="
+  notify: restart elasticsearch
+
+- name: Limitation de la mémoire utilisée par ElasticSearch
+  ansible.builtin.template:
+    src: elasticsearch/memory.options.j2
+    dest: /etc/elasticsearch/jvm.options.d/memory.options
+    owner: root
+    group: elasticsearch
+    mode: "u=rw,g=r,o="
+
+- name: Installation des plugins ElasticSearch
+  community.general.elasticsearch_plugin:
+    name: ingest-attachment
+    state: present
+    force: true
+  notify: restart elasticsearch
+
+- name: Activation de ElasticSearch au démarrage
+  ansible.builtin.service:
+    name: elasticsearch
+    state: started
+    enabled: true
+
+- name: Trigger ElasticSearch handlers
+  ansible.builtin.meta: flush_handlers

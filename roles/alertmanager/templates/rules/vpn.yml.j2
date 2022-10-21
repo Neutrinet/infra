@@ -1,0 +1,15 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+  - name: VPN
+    rules:
+      - alert: IPv4 Left
+        for: 5m
+        expr: openvpn_left_ipv4_value < 5
+        labels:
+          severity: warning
+          frequency: daily
+        annotations:
+          description: 'There are only {{ $value }} IPv4 left for the VPN'
+          summary: 'Few IPv4 left for the VPN'

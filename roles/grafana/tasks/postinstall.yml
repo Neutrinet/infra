@@ -1,5 +1,5 @@
 - name: Récupération des infos de l'organisation par défaut
-  uri:
+  ansible.builtin.uri:
     url: http://localhost:3000/api/org
     user: admin
     password: admin
@@ -9,7 +9,7 @@
 
 - name: Modification du nom de l'organisation
   # Nécessaire pour permettre un accès anonyme aux dashboards de l'organisation
-  uri:
+  ansible.builtin.uri:
     url: http://localhost:3000/api/org
     method: PUT
     body_format: json

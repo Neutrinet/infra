@@ -1,5 +1,5 @@
 - name: Création du dossier /var/www
-  file:
+  ansible.builtin.file:
     path: /var/www
     owner: root
     group: root
@@ -7,7 +7,7 @@
     state: directory
 
 - name: Création de l'utilisateur {{ mattermost_owner }}
-  user:
+  ansible.builtin.user:
     name: "{{ mattermost_owner }}"
     home: /var/www/{{ mattermost_owner }}
     shell: /sbin/nologin

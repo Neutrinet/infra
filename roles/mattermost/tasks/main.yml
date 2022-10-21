@@ -1,10 +1,10 @@
 ---
 - name: Création de l'utilisateur
-  import_tasks: user.yml
+  ansible.builtin.import_tasks: user.yml
   tags: ['user']
 
 - name: Configuration de la base de données PostgreSQL
-  import_role:
+  ansible.builtin.import_role:
     name: postgres_db
   vars:
     postgresql_db_name: "{{ mattermost_owner }}"
@@ -12,9 +12,9 @@
   tags: ['postgres']
 
 - name: Installation de Mattermost
-  import_tasks: mattermost.yml
+  ansible.builtin.import_tasks: mattermost.yml
   tags: ['mattermost']
 
 - name: Installation de Matterbridge
-  import_tasks: matterbridge.yml
+  ansible.builtin.import_tasks: matterbridge.yml
   tags: ['matterbridge']

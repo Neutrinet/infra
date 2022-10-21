@@ -1,5 +1,5 @@
 - name: Détection du serveur PostgreSQL primaire
-  uri:
+  ansible.builtin.uri:
     url: http://localhost:8008/health
   delegate_to: "{{ host }}"
   loop: "{{ postgresql_patroni_hosts }}"
@@ -8,7 +8,7 @@
   register: _postgresql_patroni_health
 
 - name: Énumération des serveurs PostgreSQL primaires détectés
-  set_fact:
+  ansible.builtin.set_fact:
     postgresql_patroni_primary_hosts: >-
       {{ _postgresql_patroni_health.results
         | selectattr("json.role", "==", "master")
@@ -16,10 +16,10 @@
         | list }}
 
 - name: Vérification qu'il n'y a qu'un seul serveur PostgreSQL primaire
-  assert:
+  ansible.builtin.assert:
     that: postgresql_patroni_primary_hosts | length == 1
     fail_msg: "Il ne peut y avoir qu'un seul serveur PostgreSQL primaire, trouvé {{ postgresql_patroni_primary_hosts | length }}"
 
 - name: Définition du serveur PostgreSQL primaire
-  set_fact:
+  ansible.builtin.set_fact:
     postgresql_patroni_primary_host: "{{ postgresql_patroni_primary_hosts | first }}"

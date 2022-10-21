@@ -5,11 +5,11 @@
 
   pre_tasks:
     - name: Mise à jour du cache APT
-      apt:
+      ansible.builtin.apt:
         update_cache: true
 
   tasks:
     - name: Installation de GPG
-      package:
+      ansible.builtin.package:
         name: gpg
         state: present

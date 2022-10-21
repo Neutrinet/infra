@@ -1,13 +1,13 @@
 ---
 
 - name: Installation de haproxy
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name: haproxy
     state: present
     default_release: "{{ ansible_distribution_release }}-backports"
 
 - name: Création du répertoire ssl
-  file:
+  ansible.builtin.file:
     path: /etc/haproxy/ssl
     mode: "u=rwx,g=rx,o="
     owner: haproxy
@@ -15,7 +15,7 @@
     state: directory
 
 - name: Copie du certificat par défaut
-  copy:
+  ansible.builtin.copy:
     src: default.pem
     dest: /etc/haproxy/ssl/default.pem
     mode: "u=rw,g=r,o="
@@ -24,7 +24,7 @@
   notify: reload haproxy
 
 - name: Copie des pages d'erreur personnaliser
-  copy:
+  ansible.builtin.copy:
     src: errors/{{ item }}.http
     dest: /etc/haproxy/errors/{{ item }}.http
     mode: "u=rw,g=r,o="
@@ -41,7 +41,7 @@
     - 504
 
 - name: Config de haproxy
-  template:
+  ansible.builtin.template:
     dest: /etc/haproxy/haproxy.cfg
     src: haproxy.conf.j2
     owner: root
@@ -51,7 +51,7 @@
   notify: reload haproxy
 
 - name: Activation de haproxy au démarrage
-  service:
+  ansible.builtin.service:
     name: haproxy
     state: started
     enabled: true
@@ -61,4 +61,4 @@
   # This forced reload is required on debian systems,
   # because haproxy appears to be already started and enabled by apt,
   # and later in this role, telegraf expects our haproxy to be correctly configured.
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

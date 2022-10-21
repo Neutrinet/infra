@@ -1,7 +1,7 @@
 ---
 
 - name: Changement de la timezone vers UTC
-  file:
+  ansible.builtin.file:
     src: /usr/share/zoneinfo/Etc/UTC
     dest: /etc/localtime
     state: link
@@ -10,7 +10,7 @@
 
 - name: Désinstallation de NTP et Chrony
   # See https://github.com/ilri/rmg-ansible-public/issues/46
-  package:
+  ansible.builtin.package:
     name:
       - ntp
       - chrony
@@ -18,14 +18,14 @@
   tags: ['ntp']
 
 - name: Installation de systemd-timesyncd
-  package:
+  ansible.builtin.package:
     name: systemd-timesyncd
     state: present
   when: ansible_distribution_release == 'bullseye'
   tags: ['ntp']
 
 - name: Activation de systemd-timesyncd au démarrage
-  service:
+  ansible.builtin.service:
     name: systemd-timesyncd
     state: started
     enabled: true

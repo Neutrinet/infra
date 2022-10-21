@@ -1,12 +1,12 @@
 ---
 - name: Installation de Docker
-  import_tasks: docker.yml
+  ansible.builtin.import_tasks: docker.yml
   tags: ['docker']
 
 - name: Installation de Gitlab Runner
-  import_tasks: gitlab_runner.yml
+  ansible.builtin.import_tasks: gitlab_runner.yml
   tags: ['gitlab_runner']
 
 - name: Compilation de l'image docker neutrinet/pre-commit
-  import_tasks: pre_commit.yml
+  ansible.builtin.import_tasks: pre_commit.yml
   tags: ['pre_commit']

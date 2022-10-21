@@ -1,5 +1,5 @@
 - name: Installation du cron job
-  cron:
+  ansible.builtin.cron:
     # Note that Grav will say there is no scheduler installed
     # because it is looking for an exact command line in crontab...
     name: grav-scheduler
@@ -8,7 +8,7 @@
     state: present
 
 - name: Configuration de la variable HOME du cron job
-  cron:
+  ansible.builtin.cron:
     name: HOME
     value: "{{ web_app_dist_dir }}"
     user: "{{ web_app_owner }}"
@@ -16,7 +16,7 @@
     env: true
 
 - name: Configuration de la variable PATH du cron job
-  cron:
+  ansible.builtin.cron:
     name: PATH
     value: "/usr/local/bin:/usr/bin"
     user: "{{ web_app_owner }}"

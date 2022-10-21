@@ -1,5 +1,17 @@
-- import_tasks: routinator.yml
+- name: Installation de Routinator
+  ansible.builtin.import_tasks: routinator.yml
   tags: ['routinator']
 
-- import_tasks: telegraf.yml
+- name: Configuration de Telegraf
+  ansible.builtin.import_tasks: telegraf.yml
   tags: ['telegraf_config']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/routinator.yml.j2
+    dest: /etc/borgmatic.d/routinator.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']
