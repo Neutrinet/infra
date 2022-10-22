@@ -1,4 +1,4 @@
-# Legacy probes, see blackbox_exporter group vars
+# These two variables are legacy probes, they will be removed soon
 probe_http_urls: "{{ blackbox_exporter_http_probes }}"
 probe_ping_hosts: "{{ blackbox_exporter_icmp_probes }}"
 
