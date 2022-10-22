@@ -1,0 +1,4 @@
+nagios_openvpn_probes:
+  - address: 80.67.181.129
+    port: 1195
+    tcp: true

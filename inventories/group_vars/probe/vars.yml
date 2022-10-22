@@ -50,3 +50,30 @@ blackbox_exporter_icmp_probes:
   - "2001:0913:1000:100::2"
   - "2001:0913:1000:200::20"
   - "2001:913:1fff:ff00::1"
+
+nagios_openvpn_probes:
+  - address: 2001:913:1fff:ff00::1
+    port: 1194
+    tcp: false
+  - address: 2001:913:1fff:ff00::1
+    port: 1195
+    tcp: false
+  - address: 2001:913:1fff:ff00::1
+    port: 1194
+    tcp: true
+  - address: 2001:913:1fff:ff00::1
+    port: 1195
+    tcp: true
+
+  - address: 80.67.181.129
+    port: 1194
+    tcp: false
+  - address: 80.67.181.129
+    port: 1195
+    tcp: false
+  - address: 80.67.181.129
+    port: 1194
+    tcp: true
+  - address: 80.67.181.129
+    port: 1195
+    tcp: true

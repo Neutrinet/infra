@@ -1,0 +1,30 @@
+- name: Installation des dépendences
+  ansible.builtin.package:
+    name: python-is-python3
+    state: present
+
+- name: Récupération du dépôt git de nagios-scinga-openvpn
+  ansible.builtin.git:
+    repo: https://github.com/liquidat/nagios-icinga-openvpn
+    version: master
+    dest: /opt/nagios-icinga-openvpn
+    single_branch: true
+    update: true
+
+- name: Création du lien symbolique pour le binaire check_openvpn
+  ansible.builtin.file:
+    src: /opt/nagios-icinga-openvpn/bin/check_openvpn
+    dest: /usr/local/bin/check_openvpn
+    mode: "u=rwx,go=rx"
+    state: link
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/nagios-openvpn.conf.j2
+    dest: /etc/telegraf/telegraf.d/nagios-openvpn.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: restart telegraf
+  tags: ['telegraf_config']

@@ -1,0 +1,15 @@
+{{ ansible_managed | comment }}
+
+{% for probe in nagios_openvpn_probes %}
+[[inputs.exec]]
+  commands = [ "check_openvpn {% if probe.tcp %}-t{% endif %} -p {{ probe.port }} {{ probe.address }}" ]
+
+  data_format = "nagios"
+  name_override = "check_openvpn"
+
+  [inputs.exec.tags]
+    port = "{{ probe.port }}"
+    ip_version = "{{ 6 if ':' in probe.address else 4 }}"
+    protocol = "{{ 'tcp' if probe.tcp else 'udp' }}"
+
+{% endfor %}

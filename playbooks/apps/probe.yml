@@ -11,3 +11,4 @@
   roles:
     - probe
     - blackbox_exporter
+    - nagios_openvpn
