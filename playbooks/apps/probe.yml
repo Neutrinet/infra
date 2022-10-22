@@ -10,3 +10,4 @@
 
   roles:
     - probe
+    - blackbox_exporter

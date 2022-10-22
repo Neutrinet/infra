@@ -44,9 +44,6 @@
 - name: Déploiement des probes pour le monitoring
   import_playbook: apps/probe.yml
 
-- name: Déploiement de Blackbox exporter pour le monitoring
-  import_playbook: apps/probe.yml
-
 - name: Déploiement de VictoriaMetrics
   import_playbook: apps/victoriametrics.yml
 
