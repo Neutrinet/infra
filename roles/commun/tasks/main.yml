@@ -35,6 +35,7 @@
 - name: Configuration de la swap
   ansible.builtin.import_tasks: swap.yml
   tags: ['swap']
+  when: ansible_virtualization_type != "lxc"
 
 - name: Installation de Telegraf
   ansible.builtin.import_role:
