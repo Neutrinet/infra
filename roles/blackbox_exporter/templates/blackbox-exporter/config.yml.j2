@@ -10,7 +10,7 @@ modules:
       fail_if_not_ssl: true
 {% endif %}
 {% if probe.body is defined %}
-      fail_if_body_not_matches_regexp: 
+      fail_if_body_not_matches_regexp:
         - {{ probe.body | to_json }}
 {% endif %}
 {% if not ansible_default_ipv6 %}
