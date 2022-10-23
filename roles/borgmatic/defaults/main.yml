@@ -1,6 +1,6 @@
 borgmatic_repositories:
   - host: "{{ inventory_hostname }}"
-    path: /media/backups
+    path: /media/data/backups
     user: backup-borg
 borgmatic_encryption_passphrase: neutrinet
 borgmatic_encryption_mode: keyfile
