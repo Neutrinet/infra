@@ -8,6 +8,7 @@
   name_override = "check_openvpn"
 
   [inputs.exec.tags]
+    address = "{{ probe.address }}"
     port = "{{ probe.port }}"
     ip_version = "{{ 6 if ':' in probe.address else 4 }}"
     protocol = "{{ 'tcp' if probe.tcp else 'udp' }}"
