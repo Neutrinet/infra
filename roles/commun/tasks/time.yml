@@ -21,7 +21,9 @@
   ansible.builtin.package:
     name: systemd-timesyncd
     state: present
-  when: ansible_distribution_release == 'bullseye'
+  when:
+    - ansible_distribution_release == 'bullseye'
+    - ansible_virtualization_type != 'lxc'
   tags: ['ntp']
 
 - name: Activation de systemd-timesyncd au démarrage
@@ -29,4 +31,5 @@
     name: systemd-timesyncd
     state: started
     enabled: true
+  when: ansible_virtualization_type != 'lxc'
   tags: ['ntp']
