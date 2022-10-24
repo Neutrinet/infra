@@ -2,7 +2,7 @@
 ssh_permit_root_login: false
 ssh_use_pam: false
 mail_notification: ahoy@example.com
-ntp_hosts: ""
+ntp_host: ""
 users:
   - name: neutrinet
     state: present
