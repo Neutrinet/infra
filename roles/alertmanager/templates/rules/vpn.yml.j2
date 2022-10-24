@@ -4,7 +4,16 @@
 groups:
   - name: VPN
     rules:
-      - alert: IPv4 Left
+      - alert: VPN Down
+        for: 5m
+        expr: check_openvpn_state != 0
+        labels:
+          severity: critical
+        annotations:
+          description: 'Unable to reach the VPN server at {{ $labels.address }}:{{ $labels.port }} with {{ $labels.protocol }} from {{ $labels.instance }}.'
+          summary: 'VPN server is down.'
+
+      - alert: VPN Few IPv4 Left
         for: 5m
         expr: openvpn_left_ipv4_value < 5
         labels:
