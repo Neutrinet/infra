@@ -1,1 +1,2 @@
 datacenter_name: LouiseDC
+ntp_host: "{{ ansible_default_ipv6.gateway }}"
