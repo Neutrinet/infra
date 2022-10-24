@@ -1,6 +1,11 @@
-zammad_monitoring_token: "{{ vault_zammad_monitoring_token }}"
+# These two variables are legacy probes, they will be removed soon
+probe_http_urls: "{{ blackbox_exporter_http_probes }}"
+probe_ping_hosts: "{{ blackbox_exporter_icmp_probes }}"
 
-probe_http_urls:
+blackbox_exporter_version: 0.22.0
+
+zammad_monitoring_token: "{{ vault_zammad_monitoring_token }}"
+blackbox_exporter_http_probes:
   - name: https://neutrinet.be
     url: https://neutrinet.be/en
     body: Neutral, Decentralized, And you ?
@@ -35,7 +40,7 @@ probe_http_urls:
     url: https://support.neutrinet.be/api/v1/monitoring/health_check?token={{ zammad_monitoring_token }}
     body: '"healthy":true'
 
-probe_ping_hosts:
+blackbox_exporter_icmp_probes:
   - "80.67.181.1"
   - "80.67.181.2"
   - "80.67.181.20"

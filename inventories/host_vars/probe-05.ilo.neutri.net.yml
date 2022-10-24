@@ -1,4 +1,4 @@
-probe_ping_hosts:
+blackbox_exporter_icmp_probes:
   - "80.67.181.1"
   - "80.67.181.2"
   - "80.67.181.20"

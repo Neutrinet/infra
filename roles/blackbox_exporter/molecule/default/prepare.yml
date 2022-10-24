@@ -1,6 +1,6 @@
 ---
-- name: Déploiement des probes pour le monitoring
-  hosts: probe
+- name: Prepare
+  hosts: all
   become: true
 
   pre_tasks:
@@ -9,5 +9,4 @@
         update_cache: true
 
   roles:
-    - probe
-    - blackbox_exporter
+    - telegraf

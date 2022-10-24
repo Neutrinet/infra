@@ -1,0 +1,29 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics from Blackbox exporter
+  urls = [
+{% for probe in blackbox_exporter_http_probes %}
+    "http://localhost:9115/probe?target={{ probe.url }}&module={{ probe.name | default(probe.url) }}",
+{% endfor %}
+{% for probe in blackbox_exporter_icmp_probes %}
+    "http://localhost:9115/probe?target={{ probe }}&module=icmp",
+{% endfor %}
+  ]
+  metric_version = 2
+  response_timeout = "10s"
+
+[[processors.regex]]
+  namepass = ["prometheus"]
+  fieldpass = ["probe_*"]
+
+  [[processors.regex.tags]]
+    key = "url"
+    pattern = "^http://localhost:9115/probe\\?target=(.+)&module=(.+)$"
+    replacement = "${2}"
+    result_key = "module"
+
+  [[processors.regex.tags]]
+    key = "url"
+    pattern = "^http://localhost:9115/probe\\?target=(.+)&module=(.+)$"
+    replacement = "${1}"
