@@ -4,7 +4,7 @@ location:
   source_directories: []
   repositories:
 {% for repo in borgmatic_repositories %}
-    - {{ repo.host }}:{{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}
+    - ssh://{{ repo.host }}:{{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}
 {% endfor %}
 storage:
   compression: zstd
