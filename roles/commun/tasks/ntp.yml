@@ -20,7 +20,7 @@
     owner: root
     group: root
     mode: "u=rwx,go=rx"
-  when: ntp_host != ""
+  when: ntp_hosts | length > 0
 
 - name: Configuration du client NTP
   ansible.builtin.template:
@@ -29,7 +29,7 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
-  when: ntp_host != ""
+  when: ntp_hosts | length > 0
   notify: restart systemd-timesyncd
 
 - name: Activation de systemd-timesyncd au démarrage

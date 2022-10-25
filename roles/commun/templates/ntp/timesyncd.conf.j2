@@ -1,4 +1,4 @@
 {{ ansible_managed | comment }}
 
 [Time]
-NTP={{ ntp_host }}
+NTP={{ ntp_hosts | join(' ') }}
