@@ -13,7 +13,7 @@ matrix:
   user_id: "@{{ alertmanager_matrix_username }}:{{ alertmanager_matrix_host }}"
 
   # Matrix account password (optional if access token used)
-  user_password: "{{ alertmanager_matrix_password }}"
+  user_password: {{ alertmanager_matrix_password | string | to_json }}
 
   # Path to the file where to store the user access token
   user_token_file: "/var/lib/matrix-alertbot/token.json"
