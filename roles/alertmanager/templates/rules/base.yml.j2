@@ -86,6 +86,9 @@ groups:
     rules:
       - alert: Backup Borgmatic Failed
         for: 5m
+        # We trigger an alert only if several backups failed within 24h.
+        # It's not a problem if we miss one or two backups during the day, since we create a backup every 3h.
+        # In short, we trigger an alert if more than 4 backups failed (24h / 3h = 8 backups per day)
         expr: sum by (instance) (count_over_time(systemd_units_active_code{name="borgmatic.service", active="failed"}[1d])) / sum by (instance) (count_over_time(systemd_units_active_code{name="borgmatic.service"}[1d])) > 0.5
         labels:
           severity: warning
