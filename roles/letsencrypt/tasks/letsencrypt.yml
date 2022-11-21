@@ -50,7 +50,7 @@
       /opt/letsencrypt/bin/certbot register \
       --non-interactive \
       {% if letsencrypt_staging %}--staging \{% endif %}
-      --email {{ mail_notification }} \
+      --email {{ letsencrypt_mail_notification }} \
       --no-eff-email \
       --agree-tos
   when: not letsencrypt_accounts.stat.exists

@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/letsencrypt"
+    - "/opt/letsencrypt"
+
+storage:
+  archive_name_format: letsencrypt_{hostname}-{now}
+
+retention:
+  prefix: letsencrypt_
+
+consistency:
+  prefix: letsencrypt_
