@@ -135,3 +135,4 @@ log/
 .gitsecret/keys/random_seed
 !*.secret
 vault.key
+.envrc
