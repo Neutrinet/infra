@@ -1,0 +1,57 @@
+- name: Ajout de la clé GPG de KeyDB dans APT
+  ansible.builtin.get_url:
+    url: https://download.keydb.dev/open-source-dist/keyring.gpg
+    dest: /etc/apt/keyrings/keydb.gpg
+    mode: "ugo=r"
+    owner: root
+    group: root
+
+- name: Ajout du dépôt KeyDB
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/keydb.gpg] https://download.keydb.dev/open-source-dist {{ ansible_distribution_release }} main
+    filename: keydb
+    state: present
+
+- name: Installation de KeyDB
+  ansible.builtin.package:
+    name:
+      - keydb-server
+      - keydb-tools
+    state: present
+
+- name: Activation du socket unix
+  ansible.builtin.replace:
+    dest: /etc/keydb/keydb.conf
+    regexp: '^(# |)unixsocket(.+)$'
+    replace: 'unixsocket /var/lib/keydb/keydb.sock'
+    backup: false
+  notify: Restart KeyDB
+
+- name: Definition permission socket unix
+  ansible.builtin.replace:
+    dest: /etc/keydb/keydb.conf
+    regexp: '^(# |)unixsocketperm (.+)$'
+    replace: 'unixsocketperm 770'
+    backup: false
+  notify: Restart KeyDB
+
+- name: Definition du port tcp
+  ansible.builtin.replace:
+    dest: /etc/keydb/keydb.conf
+    regexp: '^^(# |)port 6379$'
+    replace: "port {{ keydb_port }}"
+    backup: false
+  notify: Restart KeyDB
+
+- name: Activation de KeyDB au démarrage
+  ansible.builtin.service:
+    name: keydb-server.service
+    state: started
+    enabled: true
+
+- name: Trigger haproxy handler
+  # We force keydb to restart its config to ensure our config has been applied.
+  # This forced restart is required on debian systems,
+  # because keydb appears to be already started and enabled by apt,
+  # and later in this role, telegraf expects our keydb to be correctly configured.
+  ansible.builtin.meta: flush_handlers
