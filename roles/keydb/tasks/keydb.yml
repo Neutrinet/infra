@@ -36,12 +36,22 @@
   notify: Restart KeyDB
 
 - name: Definition du port tcp
+  # If the port is 0 then the IP/TCP part is not active
   ansible.builtin.replace:
     dest: /etc/keydb/keydb.conf
     regexp: '^^(# |)port 6379$'
     replace: "port {{ keydb_port }}"
     backup: false
   notify: Restart KeyDB
+
+- name: Activation overcommit_memory
+  ansible.posix.sysctl:
+    name: "vm.overcommit_memory"
+    value: '1'
+    sysctl_file: /etc/sysctl.d/80-overcommit_memory.conf
+    sysctl_set: true
+    state: present
+    reload: true
 
 - name: Activation de KeyDB au démarrage
   ansible.builtin.service:
