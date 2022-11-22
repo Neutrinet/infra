@@ -50,22 +50,6 @@
     validate: "haproxy -f %s -c -q"
   notify: reload haproxy
 
-- name: Création des dossiers Let's Encrypt pour le hook
-  ansible.builtin.file:
-    path: "/etc/letsencrypt"
-    owner: root
-    group: root
-    mode: "u=rwx,go=rx"
-    state: directory
-
-- name: Placement du hook pour Let's Encrypt
-  ansible.builtin.copy:
-    src: haproxy.py
-    dest: /etc/letsencrypt/haproxy.py
-    mode: "ugo=rx"
-    owner: root
-    group: root
-
 - name: Activation de haproxy au démarrage
   ansible.builtin.service:
     name: haproxy

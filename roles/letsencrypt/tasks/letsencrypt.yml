@@ -63,6 +63,15 @@
     group: root
     mode: "u=rw,go="
 
+- name: Placement du hook pour HAproxy
+  ansible.builtin.copy:
+    src: haproxy.py
+    dest: /etc/letsencrypt/haproxy.py
+    mode: "ugo=rx"
+    owner: root
+    group: root
+
+
 - name: Création des certificats rsa par challenge gandi
   ansible.builtin.include_tasks: letsencrypt-gandi-rsa.yml
   loop: "{{ letsencrypt_domains_gandi }}"
