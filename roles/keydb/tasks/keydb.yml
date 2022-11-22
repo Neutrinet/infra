@@ -27,7 +27,7 @@
     backup: false
   notify: Restart KeyDB
 
-- name: Definition permission socket unix
+- name: Définition permission socket unix
   ansible.builtin.replace:
     dest: /etc/keydb/keydb.conf
     regexp: '^(# |)unixsocketperm (.+)$'
@@ -35,7 +35,7 @@
     backup: false
   notify: Restart KeyDB
 
-- name: Definition du port tcp
+- name: Définition du port tcp
   # If the port is 0 then the IP/TCP part is not active
   ansible.builtin.replace:
     dest: /etc/keydb/keydb.conf
@@ -44,11 +44,19 @@
     backup: false
   notify: Restart KeyDB
 
-- name: Definition du bind
+- name: Définition du bind
   ansible.builtin.replace:
     dest: /etc/keydb/keydb.conf
     regexp: '^bind (.+)$'
     replace: "bind {{ keydb_bind }}"
+    backup: false
+  notify: Restart KeyDB
+
+- name: Définition du l\'allocation memoire
+  ansible.builtin.replace:
+    dest: /etc/keydb/keydb.conf
+    regexp: '^(# |)maxmemory (.+)$'
+    replace: "maxmemory {{ keydb_memory }}"
     backup: false
   notify: Restart KeyDB
 
