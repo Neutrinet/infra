@@ -55,14 +55,6 @@
       --agree-tos
   when: not letsencrypt_accounts.stat.exists
 
-- name: Placement du hook pour haproxy
-  ansible.builtin.copy:
-    src: haproxy.py
-    dest: /etc/letsencrypt/haproxy.py
-    mode: "u=rwx,go=rx"
-    owner: root
-    group: root
-
 - name: Config de Gandi pour Let's Encrypt
   ansible.builtin.template:
     dest: /etc/letsencrypt/gandi/gandi.ini
