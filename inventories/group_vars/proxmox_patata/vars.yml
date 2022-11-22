@@ -1,1 +1,2 @@
 ceph_proxmox_version: pacific
+ceph_cluster: proxmox-patata

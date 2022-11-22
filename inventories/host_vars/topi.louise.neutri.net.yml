@@ -1,2 +1,1 @@
 telegraf_ipmi_sensor_enabled: false
-ceph_cluster: proxmox-patata
