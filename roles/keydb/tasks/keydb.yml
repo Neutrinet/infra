@@ -45,7 +45,6 @@
   notify: Restart KeyDB
 
 - name: Definition du bind
-  # If the port is 0 then the IP/TCP part is not active
   ansible.builtin.replace:
     dest: /etc/keydb/keydb.conf
     regexp: '^bind (.+)$'
