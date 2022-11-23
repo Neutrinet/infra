@@ -11,27 +11,33 @@ command_prefix: "!alert"
 matrix:
   # The Matrix User ID of the bot account
   user_id: "@{{ alertmanager_matrix_username }}:{{ alertmanager_matrix_host }}"
-  # Matrix account access token (optional if password used)
-  user_token: "{{ alertmanager_matrix_alertbot_token }}"
-  # The device ID that is **non pre-existing** device
-  # If this device ID already exists, messages will be dropped silently in encrypted rooms
-  # If not set the server will provide a device ID after log in. Note that this ID
-  # will change each time the bot reconnects.
-  device_id: "{{ alertmanager_matrix_alertbot_device_id }}"
+
+  # Matrix account password (optional if access token used)
+  user_password: {{ alertmanager_matrix_password | string | to_json }}
+
+  # Path to the file where to store the user access token
+  user_token_file: "/var/lib/matrix-alertbot/token.json"
+
   # The URL of the homeserver to connect to
   url: "https://{{ alertmanager_matrix_host }}"
+
   # What to name the logged in device
   device_name: matrix-alertbot
+
+  # List of rooms where the bot can interact
   allowed_rooms: ["{{ alertmanager_matrix_alertbot_room }}"]
 
 webhook:
+  # Address and port for which the bot should listen to
   address: localhost
   port: 4060
 
 alertmanager:
+  # Url to Alertmanager server
   url: http://localhost:9093
 
 cache:
+   # The path to a directory for caching alerts and silences
   path: "/var/lib/matrix-alertbot/cache"
 
 storage:
