@@ -1,0 +1,4 @@
+# Use pfsense hosts as NTP servers
+ntp_hosts:
+ - 2001:913:1000:11::2
+ - 2001:913:1000:11::3
