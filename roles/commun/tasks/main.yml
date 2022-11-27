@@ -28,9 +28,14 @@
   ansible.builtin.import_tasks: locales.yml
   tags: ['locales']
 
-- name: Configuration de l'horloge
-  ansible.builtin.import_tasks: time.yml
-  tags: ['time']
+- name: Configuration de la timezone
+  ansible.builtin.import_tasks: timezone.yml
+  tags: ['timezone']
+
+- name: Configuration du client NTP
+  ansible.builtin.import_tasks: ntp.yml
+  tags: ['ntp']
+  when: ansible_virtualization_type != "lxc"
 
 - name: Configuration de la swap
   ansible.builtin.import_tasks: swap.yml
