@@ -1,0 +1,33 @@
+ import Config
+
+config :mobilizon, Mobilizon.Web.Endpoint,
+   server: true,
+   url: [host: "Mobilizon.be"],
+   http: [
+     ip: {127,0,0,1},
+     port: 4000
+    ],
+   secret_key_base: "M79xe7PZNz67+M9mAn3YH6Eiyar+jUhrN/sHoRv2P7eAe51ITpBdbyl6hf5GlcXt"
+
+config :mobilizon, Mobilizon.Web.Auth.Guardian,
+  secret_key: "CRWyq4ojCC7lM90QTU7ibWMqQRBYW+D39TjtKHCfaT1KG1ddwVq92R8+JbGDEgkg"
+
+config :mobilizon, :instance,
+  name: "Mobilizon.be",
+  description: "Change this to a proper description of your instance",
+  hostname: "Mobilizon.be",
+  registrations_open: false,
+  demo: false,
+  allow_relay: true,
+  federating: true,
+  email_from: "contact@neutrinet.be",
+  email_reply_to: "contact@neutrinet.be"
+
+config :mobilizon, Mobilizon.Storage.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "{{ mobilizon_owner }}",
+  password: "neutrinet",
+  database: "{{ mobilizon_owner }}",
+  hostname: "localhost",
+  port: "5432",
+  pool_size: 10

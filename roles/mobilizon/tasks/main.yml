@@ -1,0 +1,43 @@
+- name: Installation des dépendances obligatoires
+  ansible.builtin.package:
+    name:
+      - tar
+      - imagemagick
+      - file
+    state: present
+
+- name: Installation de la dépendance facultatives 
+  ansible.builtin.package:
+    name:
+      - gifsicle
+      - jpegoptim
+      - optipng
+      - pngquant
+    state: present
+
+- name: Création de l'utilisateur
+  ansible.builtin.import_tasks: user.yml
+  tags: ['user']
+
+- name: Installation de Mobilizon
+  ansible.builtin.import_tasks: mobilizon.yml
+  tags: ['mobilizon']
+
+- name: Configuration de la base de données PostgreSQL
+  ansible.builtin.import_role:
+    name: postgres_db
+  vars:
+    postgresql_db_name: "{{ mobilizon_owner }}"
+    postgresql_db_password: "{{ mobilizon_postgresql_password }}"
+  tags: ['postgres']
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: mobilizon/mobilizon.service.j2
+    dest: /etc/systemd/system/mobilizon.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart mobilizon

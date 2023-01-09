@@ -1,0 +1,71 @@
+- name: Création du dossier de Mobilizon
+  ansible.builtin.file:
+    path: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de Mobilizon v{{ mobilizon_version }}
+  ansible.builtin.unarchive:
+    src: https://packages.joinmobilizon.org/{{ mobilizon_version }}/mobilizon_{{ mobilizon_version }}_amd64.tar.gz
+    dest: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+    creates: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}/README.md
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}" 
+
+- name: Création du dossier de configuration de Mobilizon
+  ansible.builtin.file:
+    path: /etc/{{ mobilizon_owner }}
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Création du dossier pour les uploads
+  ansible.builtin.file:
+    path: /var/lib/{{ mobilizon_owner }}/uploads
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Création du dossier /uploads/exports/csv
+  ansible.builtin.file:
+    path: /var/lib/{{ mobilizon_owner }}/uploads/exports/csv
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Création du dossier /uploads/exports/data
+  ansible.builtin.file:
+    path: /var/lib/{{ mobilizon_owner }}/uploads/exports/data
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory  
+
+- name: Test Commande
+  ansible.builtin.command:
+    cmd: touch test.txt
+    chdir: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+  become_user: "{{ mobilizon_owner }}"
+
+#- name: Génération de la configuration pour Mobilizon
+#  ansible.builtin.command:
+#    cmd: ./bin/mobilizon_ctl instance gen  --output /etc/{{ mobilizon_owner }}/config.exs --output-psql /tmp/setup_db.psql
+#    chdir: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+#  become_user: "{{ mobilizon_owner }}"
+
+- name: Configuration de Mobilizon
+  ansible.builtin.template:
+    src: mobilizon/config.exs.j2
+    dest: /etc/{{ mobilizon_owner }}/config.exs
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rw,g=r,o="
+

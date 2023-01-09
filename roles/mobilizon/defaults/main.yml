@@ -1,0 +1,13 @@
+mobilizon_domain: mobilizon.be
+mobilizon_owner: "{{ mobilizon_domain | replace('.', '-') }}"
+mobilizon_version: 3.0.1
+
+postgresql_host: localhost
+
+mobilizon_postgresql_password: neutrinet
+
+mobilizon_s3_enabled: false
+mobilizon_s3_host: s3.example.com
+mobilizon_s3_port: 443
+mobilizon_s3_access_key: ""
+mobilizon_s3_secret_key: ""
