@@ -49,18 +49,6 @@
     mode: "u=rwx,g=rx,o="
     state: directory  
 
-- name: Test Commande
-  ansible.builtin.command:
-    cmd: touch test.txt
-    chdir: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
-  become_user: "{{ mobilizon_owner }}"
-
-#- name: Génération de la configuration pour Mobilizon
-#  ansible.builtin.command:
-#    cmd: ./bin/mobilizon_ctl instance gen  --output /etc/{{ mobilizon_owner }}/config.exs --output-psql /tmp/setup_db.psql
-#    chdir: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
-#  become_user: "{{ mobilizon_owner }}"
-
 - name: Configuration de Mobilizon
   ansible.builtin.template:
     src: mobilizon/config.exs.j2
