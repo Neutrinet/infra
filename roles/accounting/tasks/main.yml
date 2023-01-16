@@ -31,7 +31,7 @@
 
 - name: Installation de Accounting
   ansible.builtin.import_tasks: accounting.yml
-  tags: ['backoffice']
+  tags: ['accounting']
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:
