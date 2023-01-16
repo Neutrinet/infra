@@ -1,0 +1,44 @@
+[Unit]
+Description=Accounting - Manage Neutrinet's accounting
+After=network.target
+After=postgresql.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=2s
+ExecStart=/var/www/{{ accounting_owner }}/.rbenv/shims/bundle exec rails s
+ExecReload = /bin/kill -s USR1 $MAINPID
+
+User={{ accounting_owner }}
+Group={{ accounting_owner }}
+WorkingDirectory=/var/www/{{ accounting_owner }}/dist
+Environment=RAILS_ENV=production
+
+# Systemd hardening
+PrivateDevices=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+CapabilityBoundingSet=
+NoNewPrivileges=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+PrivateTmp=true
+PrivateUsers=true
+RemoveIPC=true
+LockPersonality=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+PrivateMounts=true
+ReadWritePaths=/var/www/{{ accounting_owner }}/dist
+
+[Install]
+WantedBy=multi-user.target

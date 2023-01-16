@@ -1,0 +1,24 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - /var/www/{{ accounting_owner }}/dist
+    - /etc/systemd/system/accounting.service
+
+storage:
+  archive_name_format: accounting-{{ accounting_owner }}_{hostname}-{now}
+
+retention:
+  prefix: accounting-{{ accounting_owner }}_
+
+consistency:
+  prefix: backoffice-{{ accounting_owner }}_
+
+hooks:
+  postgresql_databases:
+    - name: "{{ postgresql_db_name }}"
+      username: "{{ postgresql_db_name }}"
+      password: {{ postgresql_db_password | string | to_json }}
+      hostname: "{{ postgresql_host }}"

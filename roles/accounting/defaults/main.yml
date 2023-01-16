@@ -1,0 +1,6 @@
+accounting_domain: accounting.example.com
+accounting_owner: "{{ accounting_domain | replace('.', '-') }}"
+postgresql_host: localhost
+
+accounting_postgresql_password: neutrinet
+accounting_secret_key_base: "A9CIpqGEYNfmaYK9By84r30O30qJm0wS8gUzhyG8magw8EH65MpXn/tFOf4p83V0"
