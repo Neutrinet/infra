@@ -1,0 +1,5 @@
+accounting_domain: accounting.neutrinet.be
+accounting_owner: "{{ accounting_domain | replace('.', '-') }}"
+
+accounting_postgresql_password: "{{ vault_accounting_postgresql_password }}"
+accounting_secret_key: "{{ vault_accounting_secret_key }}"
