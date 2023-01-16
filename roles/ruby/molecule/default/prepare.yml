@@ -7,3 +7,8 @@
     - name: Mise à jour du cache APT
       ansible.builtin.apt:
         update_cache: true
+
+    - name: Installation de Git
+      ansible.builtin.package:
+        name: git
+        state: present
