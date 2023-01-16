@@ -22,14 +22,14 @@
     mode: "u=rw,g=r,o="
   notify: restart accounting
 
-- name: Installation de Accounting
+- name: Installation de Accounting  # noqa no-handler
   ansible.builtin.shell:
     cmd: eval "$(rbenv init -)" && bin/setup
     chdir: /var/www/{{ accounting_owner }}/dist
     executable: /bin/bash
   environment:
     RAILS_ENV: production
-  changed_when: _accounting_repo_cloned is changed
+  when: _accounting_repo_cloned is changed
   become_user: "{{ accounting_owner }}"
 
 - name: Configuration du service systemd
