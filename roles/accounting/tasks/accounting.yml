@@ -6,7 +6,7 @@
 - name: Récupération du dépôt git de accounting  # noqa latest[git]
   ansible.builtin.git:
     repo: https://gitlab.domainepublic.net/Neutrinet/accounting.git
-    version: tb/readme
+    version: main
     dest: /var/www/{{ accounting_owner }}/dist
     single_branch: true
   become_user: "{{ accounting_owner }}"
