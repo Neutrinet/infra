@@ -16,3 +16,8 @@
 [Journal]
 Storage=persistent
 Compress=yes
+MaxFileSec=1week
+MaxRetentionSec=54week
+
+# Don't duplicate log entries to /var/log/syslog
+ForwardToSyslog=no
