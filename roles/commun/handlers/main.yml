@@ -19,6 +19,11 @@
     name: sshguard
     state: restarted
 
+- name: restart systemd-journald
+  ansible.builtin.service:
+    name: systemd-journald
+    state: restarted
+
 - name: restart systemd-timesyncd
   ansible.builtin.service:
     name: systemd-timesyncd
