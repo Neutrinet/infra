@@ -1,0 +1,55 @@
+---
+- name: Installation des dépendances
+  ansible.builtin.package:
+    name:
+      - autoconf
+      - bison
+      - build-essential
+      - libssl-dev
+      - libyaml-dev
+      - libreadline-dev
+      - zlib1g-dev
+      - libncurses5-dev
+      - libffi-dev
+      - libgdbm-dev
+    state: present
+
+- name: Installation de rbenv
+  ansible.builtin.package:
+    name: rbenv
+    state: present
+
+- name: Configuration de rbenv pour l'utilisateur {{ ruby_owner }}
+  ansible.builtin.lineinfile:
+    line: eval "$(rbenv init -)"
+    dest: ~/.bashrc
+  become_user: "{{ ruby_owner }}"
+
+- name: Installation de rbenv-build  # noqa latest[git]
+  ansible.builtin.git:
+    repo: https://github.com/rbenv/ruby-build.git
+    dest: ~/.rbenv/plugins/ruby-build
+    single_branch: true
+  become_user: "{{ ruby_owner }}"
+
+- name: Installation de ruby {{ ruby_version }}
+  ansible.builtin.command:
+    cmd: rbenv install {{ ruby_version }}
+    creates: ~/.rbenv/versions/{{ ruby_version }}/bin/ruby
+  become_user: "{{ ruby_owner }}"
+
+- name: Configuration de ruby {{ ruby_version }} comme version par défaut
+  ansible.builtin.copy:
+    content: "{{ ruby_version }}"
+    dest: ~/.rbenv/version
+    owner: "{{ ruby_owner }}"
+    group: "{{ ruby_owner }}"
+    mode: "u=rw,go=r"
+  become_user: "{{ ruby_owner }}"
+
+- name: Installation de la gem bundler
+  community.general.gem:
+    name: bundler
+    state: latest
+    norc: true
+  become_user: "{{ ruby_owner }}"

@@ -39,6 +39,14 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /api/v4/system/ping
 
+  - hostname: accounting.neutrinet.be
+    target:
+      - accounting.patata.louise.neutri.net
+    target_port: 3000
+    healthcheck: true
+    healthcheck_url: HEAD /
+    timeout: 2m
+
   - hostname: cube.neutrinet.be
     target:
       - backoffice.patata.louise.neutri.net
