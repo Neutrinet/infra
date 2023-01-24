@@ -45,7 +45,6 @@ haproxy:
     target_port: 3000
     healthcheck: true
     healthcheck_url: HEAD /
-    timeout: 2m
 
   - hostname: cube.neutrinet.be
     target:
@@ -68,6 +67,7 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    timeout: 10m
 
   - hostname: user.neutrinet.be
     target:
