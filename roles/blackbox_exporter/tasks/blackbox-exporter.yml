@@ -79,3 +79,8 @@
     name: blackbox-exporter
     state: started
     enabled: true
+
+- name: Trigger handlers
+  # We need to restart blackbox-exporter to apply the new config
+  # and expose the metrics for telegraf
+  ansible.builtin.meta: flush_handlers
