@@ -18,6 +18,7 @@ blackbox_exporter_http_probes:
   - name: https://sync.labriqueinter.net
     url: https://sync.labriqueinter.net/hooks/health
   - url: https://mobilizon.be
+    ip_version: 4  # At the moment mobilizon.be is only available in IPv4
   - name: https://chat.neutrinet.be
     url: https://chat.neutrinet.be/api/v4/system/ping?get_server_status=1
     body: '"database_status":"OK","filestore_status":"OK","status":"OK"'
