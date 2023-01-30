@@ -74,13 +74,13 @@ groups:
     rules:
       - alert: Certificate Expires Next Month
         for: 5m
-        expr: round(x509_cert_expiry{organization=""} / 86400) < 28
+        expr: round((prometheus_probe_ssl_earliest_cert_expiry - time()) / 86400) < 28
         labels:
           severity: critical
           frequency: daily
         annotations:
-          description: 'Certificate for domain {{ $labels.common_name }} on host {{ $labels.host }} will expire in {{ $value }} days (source: {{ $labels.source }})'
-          summary: 'Certificate for domain {{ $labels.common_name }} will expire within the month'
+          description: 'Certificate for url {{ $labels.module }} will expire in {{ $value }} days'
+          summary: 'Certificate for url {{ $labels.module }} will expire within the month'
 
   - name: Backup
     rules:

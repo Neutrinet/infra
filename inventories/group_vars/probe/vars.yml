@@ -1,47 +1,64 @@
-# These two variables are legacy probes, they will be removed soon
-probe_http_urls: "{{ blackbox_exporter_http_probes }}"
-probe_ping_hosts: "{{ blackbox_exporter_icmp_probes }}"
-
 blackbox_exporter_version: 0.22.0
 
 zammad_monitoring_token: "{{ vault_zammad_monitoring_token }}"
 blackbox_exporter_http_probes:
+  # Grav
   - name: https://neutrinet.be
     url: https://neutrinet.be/en
     body: Neutral, Decentralized, And you ?
+  # Archived wikis
   - url: https://mediawiki.neutrinet.be
   - url: https://wikijs.neutrinet.be
   - url: https://realms-wiki.neutrinet.be
+  # La Brique Internet / Internet Cube
   - url: https://wiki.labriqueinter.net
   - url: https://labriqueinter.net
   - url: https://internetcu.be
   - name: https://sync.labriqueinter.net
     url: https://sync.labriqueinter.net/hooks/health
+  # Mobilizon
   - url: https://mobilizon.be
     ip_version: 4  # At the moment mobilizon.be is only available in IPv4
+  # Mattermost
   - name: https://chat.neutrinet.be
     url: https://chat.neutrinet.be/api/v4/system/ping?get_server_status=1
     body: '"database_status":"OK","filestore_status":"OK","status":"OK"'
+  # Neutrinet Accounting
   - url: https://accounting.neutrinet.be
+  # Neutrinet Backoffice
   - url: https://cube.neutrinet.be
   - url: https://ffdnapi.neutrinet.be/isp.json
     body: '"website": "https://neutrinet.be"'
+  # Nextcloud
   - name: https://files.neutrinet.be
     url: https://files.neutrinet.be/status.php
     body: '"productname":"Nextcloud"'
+  # ISPng
   - url: https://user.neutrinet.be
   - url: https://api.neutrinet.be
+  # Dokuwiki
   - url: https://wiki.neutrinet.be
+  # Discourse
   - name: https://meta.neutrinet.be
     url: https://meta.neutrinet.be/srv/status
     body: ^ok$
+  # Hedgedoc
   - name: https://doc.neutrinet.be
     url: https://doc.neutrinet.be/status
+  # Ceph S3
   - url: https://s3.neutrinet.be
-  - url: https://librenms.neutrinet.be
+  # Zammad
   - name: https://support.neutrinet.be
     url: https://support.neutrinet.be/api/v1/monitoring/health_check?token={{ zammad_monitoring_token }}
     body: '"healthy":true'
+  # Modoboa / Mail
+  - url: https://mail.neutri.net
+  # Librenms
+  - url: https://librenms.neutrinet.be
+  # Grafana
+  - name: https://grafana.neutrinet.be
+    url: https://grafana.neutrinet.be/healthz
+    body: ^Ok$
 
 blackbox_exporter_icmp_probes:
   - "80.67.181.1"
