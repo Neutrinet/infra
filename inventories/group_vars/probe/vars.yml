@@ -21,6 +21,7 @@ blackbox_exporter_http_probes:
   - name: https://chat.neutrinet.be
     url: https://chat.neutrinet.be/api/v4/system/ping?get_server_status=1
     body: '"database_status":"OK","filestore_status":"OK","status":"OK"'
+  - url: https://accounting.neutrinet.be
   - url: https://cube.neutrinet.be
   - url: https://ffdnapi.neutrinet.be/isp.json
     body: '"website": "https://neutrinet.be"'
