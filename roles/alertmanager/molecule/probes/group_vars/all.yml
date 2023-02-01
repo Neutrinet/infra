@@ -1,0 +1,7 @@
+victoriametrics_url: http://bullseye-alertmanager-molecule:8428
+victoriametrics_username: victoriametrics
+victoriametrics_password: neutrinet
+
+blackbox_exporter_http_probes:
+  - url: http://error.example.com
+  - url: https://example.com

@@ -50,3 +50,12 @@ receivers:
       # Send alerts to matrix-alertbot, which will forward them to a Matrix room
       - url: http://localhost:4060/alerts/{{ alertmanager_matrix_alertbot_room }}
         send_resolved: true
+
+inhibit_rules:
+  - target_matchers:
+      - category = probe
+      - host != {{ inventory_hostname }}
+    source_matchers:
+      - category = probe
+      - host = {{ inventory_hostname }}
+    equal: ['alertname', 'url', 'address', 'port', 'protocol']

@@ -1,0 +1,44 @@
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+platforms:
+  - name: bullseye-alertmanager-molecule
+    box: debian/bullseye64
+    cpu: 2
+    memory: 1024
+    interfaces:
+      - network_name: private_network
+        ip: 172.29.129.50
+        auto_config: true
+  - name: bullseye-probe-01-molecule
+    box: debian/bullseye64
+    cpu: 2
+    memory: 512
+    interfaces:
+      - network_name: private_network
+        ip: 172.29.129.51
+        auto_config: true
+  - name: bullseye-probe-02-molecule
+    box: debian/bullseye64
+    cpu: 2
+    memory: 512
+    interfaces:
+      - network_name: private_network
+        ip: 172.29.129.52
+        auto_config: true
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: hosts.ini
+  config_options:
+    defaults:
+      interpreter_python: /usr/bin/python3
+      vault_password_file: "${MOLECULE_PROJECT_DIRECTORY}/../../vault.key"
+    ssh_connection:
+      pipelining: true
+verifier:
+  name: ansible
