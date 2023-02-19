@@ -13,7 +13,7 @@ modules:
       fail_if_body_not_matches_regexp:
         - {{ probe.body | to_json }}
 {% endif %}
-{% if not ansible_default_ipv6 %}
+{% if not ansible_default_ipv6 or (probe.ip_version is defined and probe.ip_version == 4) %}
       preferred_ip_protocol: ip4
 {% endif %}
 {% endfor %}
