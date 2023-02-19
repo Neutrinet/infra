@@ -14,7 +14,5 @@ provisioner:
   config_options:
     defaults:
       interpreter_python: /usr/bin/python3
-    ssh_connection:
-      pipelining: true
 verifier:
   name: ansible

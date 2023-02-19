@@ -4,3 +4,10 @@
   ## Scrape metrics directly from Ceph
   urls = ["http://localhost:9283/metrics"]
   metric_version = 2
+
+[[processors.override]]
+  namepass = ["prometheus"]
+  fieldpass = ["ceph_*"]
+
+  [processors.override.tags]
+    ceph_cluster = "{{ ceph_cluster }}"
