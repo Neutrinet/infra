@@ -1,2 +1,7 @@
 ceph_proxmox_version: pacific
 ceph_cluster: proxmox-patata
+
+# Use pfsense hosts as NTP servers
+ntp_hosts:
+ - 2001:913:1000:10::61
+ - 2001:913:1000:10::62

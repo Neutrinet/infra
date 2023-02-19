@@ -3,7 +3,7 @@ dependency:
 driver:
   name: vagrant
   provider:
-    name: virtualbox
+    name: libvirt
 platforms:
   - name: bullseye-hedgedoc-molecule
     box: debian/bullseye64
@@ -19,7 +19,5 @@ provisioner:
     defaults:
       interpreter_python: /usr/bin/python3
       vault_password_file: "${MOLECULE_PROJECT_DIRECTORY}/../../vault.key"
-    ssh_connection:
-      pipelining: true
 verifier:
   name: ansible

@@ -11,7 +11,4 @@ alertmanager_matrix_password: !vault |
           3866626638383930336339626361313565336334616665636536
 alertmanager_matrix_host: matrix.domainepublic.net
 
-alertmanager_matrix_goneb_room: "!wjECRmYYmDbBJcebBt:matrix.domainepublic.net"
-alertmanager_matrix_goneb_service: alertmanager_service
-
-alertmanager_matrix_alertbot_room: "!sUVhsVlYJDsUWgPbeW:chat.batato.be"
+alertmanager_matrix_alertbot_room: "!wjECRmYYmDbBJcebBt:matrix.domainepublic.net"

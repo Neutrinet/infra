@@ -1,20 +1,19 @@
 [Unit]
-Description=Matrix Go-NEB - A Matrix bot written in Go
+Description=Accounting - Manage Neutrinet's accounting
 After=network.target
+After=postgresql.service
 
 [Service]
 Type=simple
 Restart=always
 RestartSec=2s
-ExecStart=/usr/local/bin/matrix-goneb
-ExecReload = /bin/kill -s HUP $MAINPID
-ExecStop = /bin/kill -s TERM $MAINPID
+ExecStart=/var/www/{{ accounting_owner }}/.rbenv/shims/bundle exec rails s
+ExecReload = /bin/kill -s USR1 $MAINPID
 
-User=matrix-goneb
-Group=matrix-goneb
-WorkingDirectory=/opt/matrix-goneb/dist
-ReadWritePaths=/opt/matrix-goneb/dist/db
-Environment=BIND_ADDRESS=localhost:4050 DATABASE_TYPE=sqlite3 DATABASE_URL=db/go-neb.db?_busy_timeout=5000 BASE_URL=http://localhost:4050 CONFIG_FILE=config.yml
+User={{ accounting_owner }}
+Group={{ accounting_owner }}
+WorkingDirectory=/var/www/{{ accounting_owner }}/dist
+Environment=RAILS_ENV=production
 
 # Systemd hardening
 PrivateDevices=true
@@ -28,17 +27,18 @@ ProtectClock=true
 ProtectHostname=true
 CapabilityBoundingSet=
 NoNewPrivileges=true
-RestrictNamespaces=true
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 RestrictRealtime=true
 RestrictSUIDSGID=true
+RestrictNamespaces=true
 PrivateTmp=true
 PrivateUsers=true
 RemoveIPC=true
 LockPersonality=true
 SystemCallArchitectures=native
 SystemCallFilter=@system-service
-MemoryDenyWriteExecute=true
+PrivateMounts=true
+ReadWritePaths=/var/www/{{ accounting_owner }}/dist
 
 [Install]
 WantedBy=multi-user.target

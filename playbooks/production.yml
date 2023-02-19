@@ -29,6 +29,9 @@
 - name: Déploiement de Nextcloud
   import_playbook: apps/nextcloud.yml
 
+- name: Déploiement de Accounting
+  import_playbook: apps/accounting.yml
+
 - name: Déploiement de Backoffice
   import_playbook: apps/backoffice.yml
 
