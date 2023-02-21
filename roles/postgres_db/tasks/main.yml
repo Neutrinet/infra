@@ -3,14 +3,25 @@
   when: postgresql_patroni_hosts | length > 0
 
 - name: Ajout de la clé GPG de PostgreSQL dans APT
-  ansible.builtin.apt_key:
+  ansible.builtin.get_url:
     url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
-    state: present
+    dest: /etc/apt/keyrings/postgresql.asc
+    owner: root
+    group: root
+    mode: "ugo=r"
+    force: true
   when: ansible_distribution_release == 'buster'
 
-- name: Installation du repo PostgreSQL
+- name: Suppresion de l'ancien dépôt APT pour PostgreSQL
   ansible.builtin.apt_repository:
     repo: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
+    filename: postgresql
+    state: absent
+  when: ansible_distribution_release == 'buster'
+
+- name: Ajout du dépôt APT pour PostgreSQL
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
     filename: postgresql
     state: present
   when: ansible_distribution_release == 'buster'

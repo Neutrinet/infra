@@ -8,7 +8,10 @@
       ansible.builtin.apt:
         update_cache: true
 
-    - name: Installation de GPG
-      ansible.builtin.package:
-        name: gpg
-        state: present
+    - name: Création du répertoire pour les clés GPG
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,go=rx"

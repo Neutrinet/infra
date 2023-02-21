@@ -1,11 +1,21 @@
 - name: Ajout de la clé GPG de Zammad dans APT
-  ansible.builtin.apt_key:
+  ansible.builtin.get_url:
     url: https://dl.packager.io/srv/zammad/zammad/key
-    state: present
+    dest: /etc/apt/keyrings/zammad.asc
+    owner: root
+    group: root
+    mode: "ugo=r"
+    force: true
 
-- name: Ajout du dépôt APT Zammad
+- name: Suppresion de l'ancien dépôt APT pour Zammad
   ansible.builtin.apt_repository:
     repo: deb https://dl.packager.io/srv/deb/zammad/zammad/stable/debian {{ ansible_distribution_major_version }} main
+    filename: zammad
+    state: absent
+
+- name: Ajout du dépôt APT pour Zammad
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/zammad.asc] https://dl.packager.io/srv/deb/zammad/zammad/stable/debian {{ ansible_distribution_major_version }} main
     filename: zammad
     state: present
 
