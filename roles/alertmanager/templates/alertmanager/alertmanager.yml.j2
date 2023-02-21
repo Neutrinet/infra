@@ -52,10 +52,49 @@ receivers:
         send_resolved: true
 
 inhibit_rules:
+  # Combine Certificate alerts from different probes
+  # to single alert from main probe.
   - target_matchers:
-      - category = probe
       - host != {{ inventory_hostname }}
     source_matchers:
-      - category = probe
+      - category = probe.cert
       - host = {{ inventory_hostname }}
-    equal: ['alertname', 'url', 'address', 'port', 'protocol']
+    equal: ['alertname', 'category', 'source']
+
+  # Combine HTTP alerts from different probes
+  # to single alert from main probe.
+  - target_matchers:
+      - host != {{ inventory_hostname }}
+    source_matchers:
+      - category = probe.http
+      - host = {{ inventory_hostname }}
+    equal: ['alertname', 'category', 'url']
+
+  # Combine ICMP alerts from different probes
+  # to single alert from main probe.
+  - target_matchers:
+      - host != {{ inventory_hostname }}
+    source_matchers:
+      - category = probe.icmp
+      - host = {{ inventory_hostname }}
+    equal: ['alertname', 'category', 'url']
+
+  # Combine VPN alerts from different probes
+  # to single alert from main probe.
+  - target_matchers:
+      - host != {{ inventory_hostname }}
+    source_matchers:
+      - category = probe.vpn
+      - host = {{ inventory_hostname }}
+    equal: ['alertname', 'category', 'address', 'port', 'protocol']
+
+  # Combine VPN alerts for different ports and protocols
+  # to single alert for TCP protocol and 1195 port.
+  - target_matchers:
+      - protocol != tcp
+      - port != 1195
+    source_matchers:
+      - category = probe.vpn
+      - protocol = tcp
+      - port = 1195
+    equal: ['alertname', 'category', 'address']

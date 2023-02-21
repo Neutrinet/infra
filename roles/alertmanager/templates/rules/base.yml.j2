@@ -78,7 +78,7 @@ groups:
         labels:
           severity: critical
           frequency: daily
-          category: probe
+          category: probe.cert
         annotations:
           description: 'Certificate for url {{ $labels.module }} will expire in {{ $value }} days'
           summary: 'Certificate for url {{ $labels.module }} will expire within the month'
@@ -88,7 +88,7 @@ groups:
         expr: prometheus_probe_success{module=~"^http.+"} == 0
         labels:
           severity: critical
-          category: probe
+          category: probe.http
         annotations:
           description: 'Website {{ $labels.module }} is down'
           summary: 'Website {{ $labels.module }} is down'
@@ -98,7 +98,7 @@ groups:
         expr: prometheus_probe_success{module="icmp"} == 0
         labels:
           severity: critical
-          category: probe
+          category: probe.icmp
         annotations:
           description: "Host {{ $labels.url }} doesn't respond to ping"
           summary: "Host {{ $labels.url }} doesn't respond to ping"
