@@ -1,11 +1,21 @@
 - name: Ajout de la clé GPG de Grafana dans APT
-  ansible.builtin.apt_key:
+  ansible.builtin.get_url:
     url: https://packages.grafana.com/gpg.key
-    state: present
+    dest: /etc/apt/keyrings/grafana.asc
+    owner: root
+    group: root
+    mode: "ugo=r"
+    force: true
 
-- name: Ajout du dépôt APT Grafana
+- name: Suppression de l'ancien dépôt APT pour Grafana
   ansible.builtin.apt_repository:
     repo: deb https://packages.grafana.com/oss/deb stable main
+    filename: grafana
+    state: absent
+
+- name: Ajout du dépôt APT pour Grafana
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/grafana.asc] https://packages.grafana.com/oss/deb stable main
     filename: grafana
     state: present
 

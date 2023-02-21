@@ -1,11 +1,21 @@
 - name: Ajout de la clé GPG de Gitlab Runner dans APT
-  ansible.builtin.apt_key:
+  ansible.builtin.get_url:
     url: https://packages.gitlab.com/runner/gitlab-runner/gpgkey
-    state: present
+    dest: /etc/apt/keyrings/gitlab-runner.asc
+    owner: root
+    group: root
+    mode: "ugo=r"
+    force: true
 
-- name: Ajout du dépôt APT Gitlab Runner
+- name: Suppression de l'ancien dépôt APT pour Gitlab Runner
   ansible.builtin.apt_repository:
     repo: deb https://packages.gitlab.com/runner/gitlab-runner/debian/ {{ ansible_distribution_release | lower }} main
+    filename: gitlab-runner
+    state: absent
+
+- name: Ajout du dépôt APT pour Gitlab Runner
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/gitlab-runner.asc] https://packages.gitlab.com/runner/gitlab-runner/debian/ {{ ansible_distribution_release | lower }} main
     filename: gitlab-runner
     state: present
 
