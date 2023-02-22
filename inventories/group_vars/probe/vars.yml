@@ -1,4 +1,4 @@
-blackbox_exporter_version: 0.22.0
+blackbox_exporter_version: 0.23.0
 
 zammad_monitoring_token: "{{ vault_zammad_monitoring_token }}"
 blackbox_exporter_http_probes:
@@ -6,6 +6,7 @@ blackbox_exporter_http_probes:
   - name: https://neutrinet.be
     url: https://neutrinet.be/en
     body: Neutral, Decentralized, And you ?
+    check_cert_expiry: true
   # Archived wikis
   - url: https://mediawiki.neutrinet.be
   - url: https://wikijs.neutrinet.be
@@ -13,12 +14,15 @@ blackbox_exporter_http_probes:
   # La Brique Internet / Internet Cube
   - url: https://wiki.labriqueinter.net
   - url: https://labriqueinter.net
+    check_cert_expiry: true
   - url: https://internetcu.be
+    check_cert_expiry: true
   - name: https://sync.labriqueinter.net
     url: https://sync.labriqueinter.net/hooks/health
   # Mobilizon
   - url: https://mobilizon.be
     ip_version: 4  # At the moment mobilizon.be is only available in IPv4
+    check_cert_expiry: true
   # Mattermost
   - name: https://chat.neutrinet.be
     url: https://chat.neutrinet.be/api/v4/system/ping?get_server_status=1
@@ -36,6 +40,7 @@ blackbox_exporter_http_probes:
   # ISPng
   - url: https://user.neutrinet.be
   - url: https://api.neutrinet.be
+    check_cert_expiry: true
   # Dokuwiki
   - url: https://wiki.neutrinet.be
   # Discourse
@@ -53,12 +58,14 @@ blackbox_exporter_http_probes:
     body: '"healthy":true'
   # Modoboa / Mail
   - url: https://mail.neutri.net
+    check_cert_expiry: true
   # Librenms
   - url: https://librenms.neutrinet.be
   # Grafana
   - name: https://grafana.neutrinet.be
     url: https://grafana.neutrinet.be/healthz
     body: ^Ok$
+    check_cert_expiry: true
 
 blackbox_exporter_icmp_probes:
   - "80.67.181.1"

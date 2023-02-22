@@ -1,10 +1,11 @@
-blackbox_exporter_version: 0.22.0
+blackbox_exporter_version: 0.23.0
 blackbox_exporter_http_probes:
   - name: http://example.com
     url: https://example.com
     body: Example Domain
   - url: https://neutrinet.be
     ip_version: 4
+    check_cert_expiry: true
 
 blackbox_exporter_icmp_probes:
   - "127.0.0.1"

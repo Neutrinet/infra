@@ -3,5 +3,7 @@ victoriametrics_username: victoriametrics
 victoriametrics_password: neutrinet
 
 blackbox_exporter_http_probes:
-  - url: http://error.example.com
+  - url: https://error.example.com
   - url: https://example.com
+  - url: https://expired.badssl.com/
+    check_cert_expiry: true

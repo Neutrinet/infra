@@ -59,7 +59,7 @@ inhibit_rules:
     source_matchers:
       - category = probe.cert
       - host = {{ inventory_hostname }}
-    equal: ['alertname', 'category', 'source']
+    equal: ['alertname', 'category', 'url']
 
   # Combine HTTP alerts from different probes
   # to single alert from main probe.

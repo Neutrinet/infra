@@ -16,6 +16,8 @@ modules:
 {% if not ansible_default_ipv6 or (probe.ip_version is defined and probe.ip_version == 4) %}
       preferred_ip_protocol: ip4
 {% endif %}
+      tls_config:
+        insecure_skip_verify: true
 {% endfor %}
 
   tcp:
