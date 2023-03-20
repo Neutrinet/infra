@@ -24,6 +24,10 @@
   ansible.builtin.import_tasks: users.yml
   tags: ['users']
 
+- name: Configuration des logs
+  ansible.builtin.import_tasks: logging.yml
+  tags: ['logging']
+
 - name: Configuration des locales
   ansible.builtin.import_tasks: locales.yml
   tags: ['locales']

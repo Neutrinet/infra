@@ -1,0 +1,44 @@
+- name: Création de l'utilisateur {{ accounting_owner }}
+  ansible.builtin.user:
+    name: "{{ accounting_owner }}"
+    home: /var/www/{{ accounting_owner }}
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: Configuration de la base de données PostgreSQL
+  ansible.builtin.import_role:
+    name: postgres_db
+  vars:
+    postgresql_db_name: "{{ accounting_owner }}"
+    postgresql_db_password: "{{ accounting_postgresql_password }}"
+  tags: ['postgres']
+
+- name: Installation de NodeJS
+  ansible.builtin.import_role:
+    name: nodejs
+  vars:
+    nodejs_major_version: 14
+  tags: ['nodejs']
+
+- name: Installation de Ruby
+  ansible.builtin.import_role:
+    name: ruby
+  vars:
+    ruby_version: 3.1.3
+    ruby_owner: "{{ accounting_owner }}"
+  tags: ['ruby']
+
+- name: Installation de Accounting
+  ansible.builtin.import_tasks: accounting.yml
+  tags: ['accounting']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/accounting.yml.j2
+    dest: /etc/borgmatic.d/accounting-{{ accounting_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

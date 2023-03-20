@@ -1,3 +1,4 @@
+ceph_cluster: s3-patata
 # Use pfsense hosts as NTP servers
 ntp_hosts:
  - 2001:913:1000:11::2

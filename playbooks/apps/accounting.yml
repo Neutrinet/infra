@@ -1,0 +1,11 @@
+- name: Déploiement de Accounting
+  hosts: accounting
+  become: true
+
+  pre_tasks:
+    - name: Mise à jour du cache APT
+      ansible.builtin.apt:
+        update_cache: true
+
+  roles:
+    - accounting

@@ -8,8 +8,10 @@
       ansible.builtin.apt:
         update_cache: true
 
-  tasks:
-    - name: Installation de GnuPG
-      ansible.builtin.package:
-        name: gnupg
-        state: present
+    - name: Création du répertoire pour les clés GPG
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,go=rx"

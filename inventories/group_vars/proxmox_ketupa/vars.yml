@@ -1,6 +1,9 @@
 ceph_proxmox_version: pacific
+ceph_cluster: proxmox-chez-meme
 
 # Use pfsense hosts as NTP servers
 ntp_hosts:
- - 2001:913:1000:10::61
- - 2001:913:1000:10::62
+ - 0.pool.ntp.org
+ - 1.pool.ntp.org
+ - 2.pool.ntp.org
+ - 3.pool.ntp.org
