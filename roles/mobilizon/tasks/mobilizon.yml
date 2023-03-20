@@ -10,7 +10,7 @@
   ansible.builtin.unarchive:
     src: https://packages.joinmobilizon.org/{{ mobilizon_version }}/mobilizon_{{ mobilizon_version }}_amd64.tar.gz
     dest: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
-    creates: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}/README.md
+    creates: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}/bin/mobilizon
     remote_src: true
     extra_opts:
       - --strip-components=1
@@ -19,7 +19,7 @@
 
 - name: Création du dossier de configuration de Mobilizon
   ansible.builtin.file:
-    path: /etc/{{ mobilizon_owner }}
+    path: /etc/mobilizon
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rwx,g=rx,o="
@@ -52,8 +52,30 @@
 - name: Configuration de Mobilizon
   ansible.builtin.template:
     src: mobilizon/config.exs.j2
-    dest: /etc/{{ mobilizon_owner }}/config.exs
+    dest: /etc/mobilizon/config.exs
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rw,g=r,o="
 
+- name: Migration de la DB
+  ansible.builtin.command:
+    cmd: ./bin/mobilizon_ctl migrate
+    chdir: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+  become_user: "{{ mobilizon_owner }}"
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: mobilizon/mobilizon.service.j2
+    dest: /etc/systemd/system/mobilizon.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart mobilizon
+
+- name: Activation de Mobilizon au démarrage
+  ansible.builtin.service:
+    name: mobilizon
+    state: started
+    enabled: true

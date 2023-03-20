@@ -3,7 +3,7 @@ Description=Mobilizon Service
 After=network.target postgresql.service
 
 [Service]
-User=mobilizon
+User={{ mobilizon_owner }}
 WorkingDirectory=/var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
 ExecStart=/var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}/bin/mobilizon start
 ExecStop=/var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}bin/mobilizon stop

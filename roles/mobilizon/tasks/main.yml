@@ -6,7 +6,7 @@
       - file
     state: present
 
-- name: Installation de la dépendance facultatives 
+- name: Installation des dépendances facultatives 
   ansible.builtin.package:
     name:
       - gifsicle
@@ -19,10 +19,6 @@
   ansible.builtin.import_tasks: user.yml
   tags: ['user']
 
-- name: Installation de Mobilizon
-  ansible.builtin.import_tasks: mobilizon.yml
-  tags: ['mobilizon']
-
 - name: Configuration de la base de données PostgreSQL
   ansible.builtin.import_role:
     name: postgres_db
@@ -31,13 +27,22 @@
     postgresql_db_password: "{{ mobilizon_postgresql_password }}"
   tags: ['postgres']
 
-- name: Configuration du service systemd
-  ansible.builtin.template:
-    src: mobilizon/mobilizon.service.j2
-    dest: /etc/systemd/system/mobilizon.service
-    owner: root
-    group: root
-    mode: "u=rw,go=r"
-  notify:
-    - reload systemd
-    - restart mobilizon
+- name: Ajout des extensions nécessaires à postgresql
+  community.postgresql.postgresql_ext:
+    name: "{{ extensions }}"
+    db: "{{ mobilizon_owner }}"
+  loop: 
+    - postgis
+    - pg_trgm
+    - unaccent
+  loop_control:
+    loop_var: extensions
+  become_user: postgres
+  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
+
+- name: Installation de Mobilizon
+  ansible.builtin.import_tasks: mobilizon.yml
+  tags: ['mobilizon']
+
+
+
