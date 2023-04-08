@@ -16,14 +16,3 @@
   notify:
     - reload systemd
     - restart telegraf
-
-- name: Installation des plugins Telegraf
-  ansible.builtin.template:
-    src: telegraf/probe.conf.j2
-    dest: /etc/telegraf/telegraf.d/probe.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  notify: restart telegraf
-  tags: ['telegraf_config']

@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: alertmanager
+  become: true
+
+  roles:
+    - alertmanager

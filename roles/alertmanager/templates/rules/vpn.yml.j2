@@ -9,6 +9,7 @@ groups:
         expr: check_openvpn_state != 0
         labels:
           severity: critical
+          category: probe.vpn
         annotations:
           description: 'Unable to reach the VPN server at {{ $labels.address }}:{{ $labels.port }} with {{ $labels.protocol }} from {{ $labels.instance }}.'
           summary: 'VPN server is down.'

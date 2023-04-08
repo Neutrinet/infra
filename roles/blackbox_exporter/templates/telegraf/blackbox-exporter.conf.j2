@@ -8,6 +8,9 @@
   metric_version = 2
   response_timeout = "10s"
 
+  [inputs.prometheus.tags]
+    check_cert_expiry = "{{ probe.check_cert_expiry | default(false) | int }}"
+
 {% endfor %}
 
 {% for probe in blackbox_exporter_icmp_probes %}
