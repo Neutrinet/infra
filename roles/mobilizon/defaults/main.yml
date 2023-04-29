@@ -18,3 +18,5 @@ mobilizon_email_reply_to: "contact@neutrinet.be"
 
 mobilizon_secret_key_base: "M79xe7PZNz67+M9mAn3YH6Eiyar+jUhrN/sHoRv2P7eAe51ITpBdbyl6hf5GlcXt"
 mobilizon_secret_key: "CRWyq4ojCC7lM90QTU7ibWMqQRBYW+D39TjtKHCfaT1KG1ddwVq92R8+JbGDEgkg"
+
+mobilizon_path: /var/lib/{{ mobilizon_owner }}

@@ -16,6 +16,7 @@
       - --strip-components=1
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}" 
+  notify: Migration de la DB
 
 - name: Création du dossier de configuration de Mobilizon
   ansible.builtin.file:
@@ -27,7 +28,7 @@
 
 - name: Création du dossier pour les uploads
   ansible.builtin.file:
-    path: /var/lib/{{ mobilizon_owner }}/uploads
+    path: /{{ mobilizon_path }}/uploads
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rwx,g=rx,o="
@@ -35,7 +36,7 @@
 
 - name: Création du dossier /uploads/exports/csv
   ansible.builtin.file:
-    path: /var/lib/{{ mobilizon_owner }}/uploads/exports/csv
+    path: /{{ mobilizon_path }}/uploads/exports/csv
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rwx,g=rx,o="
@@ -43,7 +44,7 @@
 
 - name: Création du dossier /uploads/exports/data
   ansible.builtin.file:
-    path: /var/lib/{{ mobilizon_owner }}/uploads/exports/data
+    path: /{{ mobilizon_path }}/uploads/exports/data
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rwx,g=rx,o="
@@ -56,13 +57,7 @@
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rw,g=r,o="
-
-- name: Migration de la DB
-  ansible.builtin.command:
-    cmd: ./bin/mobilizon_ctl migrate
-    chdir: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
-  become_user: "{{ mobilizon_owner }}"
-
+    
 - name: Configuration du service systemd
   ansible.builtin.template:
     src: mobilizon/mobilizon.service.j2

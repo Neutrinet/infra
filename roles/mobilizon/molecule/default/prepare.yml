@@ -9,6 +9,6 @@
 
   roles:
     - telegraf
-    #- borgmatic
+    - borgmatic
     #- haproxy
     - postgres_standalone

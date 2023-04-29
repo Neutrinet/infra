@@ -6,6 +6,13 @@
       - file
     state: present
 
+- name: Installation de la dépendance postgresql pour postgis
+  ansible.builtin.package:
+    name:
+      - postgresql-13-postgis
+    state: present
+  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
+
 - name: Installation des dépendances facultatives 
   ansible.builtin.package:
     name:

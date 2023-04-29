@@ -11,3 +11,9 @@
   ansible.builtin.service:
     name: telegraf
     state: restarted
+    
+- name: Migration de la DB
+  ansible.builtin.command:
+    cmd: ./bin/mobilizon_ctl migrate
+    chdir: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+  become_user: "{{ mobilizon_owner }}"

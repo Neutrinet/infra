@@ -1,0 +1,26 @@
+ 
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic.d/common.yml
+
+location:
+  source_directories:
+    - "/var/www/{{ mobilizon_owner }}/dist"
+    - "/var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}"
+    - "/etc/systemd/system/mobilizon.service"
+
+storage:
+  archive_name_format: mobilizon-{{ mobilizon_owner }}_{hostname}-{now}
+
+retention:
+  prefix: mobilizon-{{ mobilizon_owner }}_
+
+consistency:
+  prefix: mobilizon-{{ mobilizon_owner }}_
+
+hooks:
+  postgresql_databases:
+    - name: "{{ postgresql_db_name }}"
+      username: "{{ postgresql_db_name }}"
+      password: {{ postgresql_db_password | string | to_json }}
+      hostname: "{{ postgresql_host }}"
