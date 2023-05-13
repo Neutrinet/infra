@@ -13,7 +13,7 @@
     state: present
   delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
 
-- name: Installation des dépendances facultatives 
+- name: Installation des dépendances facultatives
   ansible.builtin.package:
     name:
       - gifsicle
@@ -38,7 +38,7 @@
   community.postgresql.postgresql_ext:
     name: "{{ extensions }}"
     db: "{{ mobilizon_owner }}"
-  loop: 
+  loop:
     - postgis
     - pg_trgm
     - unaccent
@@ -51,5 +51,12 @@
   ansible.builtin.import_tasks: mobilizon.yml
   tags: ['mobilizon']
 
-
-
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/mobilizon.yml.j2
+    dest: /etc/borgmatic.d/mobilizon-{{ mobilizon_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

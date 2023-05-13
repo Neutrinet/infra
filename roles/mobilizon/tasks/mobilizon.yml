@@ -15,7 +15,7 @@
     extra_opts:
       - --strip-components=1
     owner: "{{ mobilizon_owner }}"
-    group: "{{ mobilizon_owner }}" 
+    group: "{{ mobilizon_owner }}"
   notify: Migration de la DB
 
 - name: Création du dossier de configuration de Mobilizon
@@ -48,7 +48,7 @@
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rwx,g=rx,o="
-    state: directory  
+    state: directory
 
 - name: Configuration de Mobilizon
   ansible.builtin.template:
@@ -57,7 +57,7 @@
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rw,g=r,o="
-    
+
 - name: Configuration du service systemd
   ansible.builtin.template:
     src: mobilizon/mobilizon.service.j2
@@ -68,6 +68,13 @@
   notify:
     - reload systemd
     - restart mobilizon
+
+- name: Création du lien symbolique vers la dernière version de Mobilizon
+  ansible.builtin.file:
+    src: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+    dest: /var/www/{{ mobilizon_owner }}/dist
+    state: link
+  notify: restart mobilizon
 
 - name: Activation de Mobilizon au démarrage
   ansible.builtin.service:
