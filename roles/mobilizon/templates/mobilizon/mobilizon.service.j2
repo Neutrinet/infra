@@ -8,7 +8,7 @@ After=network.target postgresql.service
 User={{ mobilizon_owner }}
 WorkingDirectory=/var/www/{{ mobilizon_owner }}/dist
 ExecStart=/var/www/{{ mobilizon_owner }}/dist/bin/mobilizon start
-ExecStop=/var/www/dist/{{ mobilizon_owner }}/bin/mobilizon stop
+ExecStop=/var/www/{{ mobilizon_owner }}/dist/bin/mobilizon stop
 KillMode=process
 Restart=on-failure
 Environment=MIX_ENV=prod

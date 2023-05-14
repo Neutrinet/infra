@@ -28,7 +28,7 @@
 
 - name: Création du dossier pour les uploads
   ansible.builtin.file:
-    path: /{{ mobilizon_path }}/uploads
+    path: "{{ mobilizon_path }}/uploads"
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rwx,g=rx,o="
@@ -36,7 +36,7 @@
 
 - name: Création du dossier /uploads/exports/csv
   ansible.builtin.file:
-    path: /{{ mobilizon_path }}/uploads/exports/csv
+    path: "{{ mobilizon_path }}/uploads/exports/csv"
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rwx,g=rx,o="
@@ -44,7 +44,7 @@
 
 - name: Création du dossier /uploads/exports/data
   ansible.builtin.file:
-    path: /{{ mobilizon_path }}/uploads/exports/data
+    path: "{{ mobilizon_path }}/uploads/exports/data"
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rwx,g=rx,o="
@@ -57,6 +57,8 @@
     owner: "{{ mobilizon_owner }}"
     group: "{{ mobilizon_owner }}"
     mode: "u=rw,g=r,o="
+  notify:
+    - restart mobilizon
 
 - name: Configuration du service systemd
   ansible.builtin.template:
