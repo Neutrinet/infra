@@ -22,3 +22,4 @@ repos:
         files: \.(yaml|yml)$
         additional_dependencies:
           - ansible
+          - ansible-compat~=3.0
