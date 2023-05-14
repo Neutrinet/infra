@@ -47,6 +47,21 @@
   become_user: postgres
   delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
 
+- name: Installation de Caddy2
+  ansible.builtin.import_role:
+    name: caddy_server
+  tags: ['caddy']
+
+- name: Copie de la configuration Caddy2
+  ansible.builtin.template:
+    src: caddy/mobilizon.j2
+    dest: "{{ caddy_vhosts_dir }}/{{ mobilizon_owner }}.conf"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: caddy validate --adapter caddyfile --config %s
+  notify: reload caddy
+
 - name: Installation de Mobilizon
   ansible.builtin.import_tasks: mobilizon.yml
   tags: ['mobilizon']

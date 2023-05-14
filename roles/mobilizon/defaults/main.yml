@@ -20,3 +20,5 @@ mobilizon_secret_key_base: "M79xe7PZNz67+M9mAn3YH6Eiyar+jUhrN/sHoRv2P7eAe51ITpBd
 mobilizon_secret_key: "CRWyq4ojCC7lM90QTU7ibWMqQRBYW+D39TjtKHCfaT1KG1ddwVq92R8+JbGDEgkg"
 
 mobilizon_path: /var/lib/{{ mobilizon_owner }}
+
+mobilizon_trusted_proxies: []
