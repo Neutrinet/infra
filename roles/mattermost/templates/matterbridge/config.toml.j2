@@ -24,8 +24,10 @@ IgnoreFailureOnStart={{ matterbridge_ignore_failure | bool | lower }}
     Login="{{ matterbridge_mattermost_username }}"
     Password={{ matterbridge_mattermost_password | string | to_json }}
     PrefixMessagesWithNick=false
-    WebhookURL="http://localhost:8065/hooks/ifrf17s89jgwtdgrs15z1psmir"
     RemoteNickFormat="{NICK} [{PROTOCOL}]"
+{% if matterbridge_mattermost_webhook_url %}
+    WebhookURL="{{ matterbridge_mattermost_webhook_url }}"
+{% endif %}
 
 [[gateway]]
 name="Passerelle"
