@@ -13,7 +13,7 @@ matterbridge_ignore_failure: true
 matterbridge_mattermost_username: neutribot
 matterbridge_mattermost_password: neutrinet
 matterbridge_mattermost_team: neutrinet
-matterbridge_mattermost_channel: irc
+matterbridge_mattermost_channel: town-square
 matterbridge_mattermost_webhook_url: ""
 matterbridge_irc_username: neutribot
 matterbridge_irc_password: neutrinet

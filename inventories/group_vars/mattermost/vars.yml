@@ -7,7 +7,7 @@ matterbridge_ignore_failure: false
 matterbridge_mattermost_username: neutribot
 matterbridge_mattermost_password: "{{ vault_matterbridge_mattermost_password }}"
 matterbridge_mattermost_team: neutrinet
-matterbridge_mattermost_channel: irc
+matterbridge_mattermost_channel: town-square
 matterbridge_mattermost_webhook_url: "{{ vault_matterbridge_mattermost_webhook_url }}"
 matterbridge_irc_username: neutrinet-bot
 matterbridge_irc_password: "{{ vault_matterbridge_irc_password }}"
