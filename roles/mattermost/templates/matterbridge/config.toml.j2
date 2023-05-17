@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
 [general]
-RemoteNickFormat="{PROTOCOL} <{NICK}> "
+RemoteNickFormat="{PROTOCOL} <{NOPINGNICK}> "
 IgnoreFailureOnStart={{ matterbridge_ignore_failure | bool | lower }}
 
 [irc]
