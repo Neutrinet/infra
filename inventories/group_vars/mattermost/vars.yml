@@ -1,5 +1,5 @@
 mattermost_domain: chat.neutrinet.be
-mattermost_version: 7.8.1
+mattermost_version: 7.8.4
 mattermost_postgresql_password: "{{ vault_mattermost_postgresql_password }}"
 
 matterbridge_version: 1.26.0
