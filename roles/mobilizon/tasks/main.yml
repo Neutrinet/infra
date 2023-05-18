@@ -6,13 +6,6 @@
       - file
     state: present
 
-- name: Installation de la dépendance postgresql pour postgis
-  ansible.builtin.package:
-    name:
-      - postgresql-13-postgis
-    state: present
-  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
-
 - name: Installation des dépendances facultatives
   ansible.builtin.package:
     name:
@@ -33,6 +26,13 @@
     postgresql_db_name: "{{ mobilizon_owner }}"
     postgresql_db_password: "{{ mobilizon_postgresql_password }}"
   tags: ['postgres']
+
+- name: Installation de la dépendance postgresql pour postgis
+  ansible.builtin.package:
+    name:
+      - postgresql-{{ postgresql_major_version }}-postgis
+    state: present
+  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
 
 - name: Ajout des extensions nécessaires à postgresql
   community.postgresql.postgresql_ext:

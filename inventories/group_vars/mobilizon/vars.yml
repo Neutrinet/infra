@@ -1,11 +1,8 @@
-mobilizon_domain: mobilizon.be
+mobilizon_domain: mobilizon.neutrinet.be
 mobilizon_owner: "{{ mobilizon_domain | replace('.', '-') }}"
 mobilizon_version: 3.0.1
-postgresql_major_version: 13
 
-postgresql_host: localhost
-
-mobilizon_postgresql_password: neutrinet
+mobilizon_postgresql_password: "{{ vault_mobilizon_postgresql_password }}"
 
 mobilizon_s3_enabled: false
 mobilizon_s3_host: s3.example.com
@@ -17,9 +14,13 @@ mobilizon_s3_secret_key: ""
 mobilizon_email_from: "contact@neutrinet.be"
 mobilizon_email_reply_to: "contact@neutrinet.be"
 
-mobilizon_secret_key_base: "M79xe7PZNz67+M9mAn3YH6Eiyar+jUhrN/sHoRv2P7eAe51ITpBdbyl6hf5GlcXt"
-mobilizon_secret_key: "CRWyq4ojCC7lM90QTU7ibWMqQRBYW+D39TjtKHCfaT1KG1ddwVq92R8+JbGDEgkg"
+mobilizon_secret_key_base: "{{ vault_mobilizon_secret_key_base }}"
+mobilizon_secret_key: "{{ vault_mobilizon_secret_key }}"
 
 mobilizon_path: /var/lib/{{ mobilizon_owner }}
 
-mobilizon_trusted_proxies: []
+mobilizon_trusted_proxies:
+  - 10.0.11.11
+  - 2001:913:1000:11::11
+  - 10.0.11.12
+  - 2001:913:1000:11::12
