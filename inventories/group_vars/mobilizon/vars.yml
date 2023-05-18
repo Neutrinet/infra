@@ -17,13 +17,9 @@ mobilizon_email_reply_to: "contact@neutrinet.be"
 mobilizon_secret_key_base: "{{ vault_mobilizon_secret_key_base }}"
 mobilizon_secret_key: "{{ vault_mobilizon_secret_key }}"
 
-mobilizon_path: /var/lib/{{ mobilizon_owner }}
+mobilizon_path: /var/lib/mobilizon
 
-<<<<<<< HEAD
-mobilizon_trusted_proxies:
-=======
 mobilizon_trusted_proxies: 
->>>>>>> 598ec6f (Avancement atelier Ansible 18 mail 1)
   - 10.0.11.11
   - 2001:913:1000:11::11
   - 10.0.11.12

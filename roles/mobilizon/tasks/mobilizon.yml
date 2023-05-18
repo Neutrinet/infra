@@ -58,6 +58,7 @@
     group: "{{ mobilizon_owner }}"
     mode: "u=rw,g=r,o="
   notify:
+    - Migration de la DB
     - restart mobilizon
 
 - name: Configuration du service systemd
