@@ -8,6 +8,8 @@ location:
     - "/var/www/{{ mobilizon_owner }}/dist"
     - "/var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}"
     - "/etc/systemd/system/mobilizon.service"
+    - "/etc/mobilizon"
+    - "{{ mobilizon_path }}"
 
 storage:
   archive_name_format: mobilizon-{{ mobilizon_owner }}_{hostname}-{now}
