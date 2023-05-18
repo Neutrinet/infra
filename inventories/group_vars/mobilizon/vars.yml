@@ -19,7 +19,7 @@ mobilizon_secret_key: "{{ vault_mobilizon_secret_key }}"
 
 mobilizon_path: /var/lib/mobilizon
 
-mobilizon_trusted_proxies: 
+mobilizon_trusted_proxies:
   - 10.0.11.11
   - 2001:913:1000:11::11
   - 10.0.11.12
