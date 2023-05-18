@@ -83,6 +83,13 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
 
+  - hostname: mobilizon.neutrinet.be
+    target:
+      - mobilizon.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: GET /healthcheck
+
   - hostname: meta.neutrinet.be
     target:
       - meta.patata.louise.neutri.net
