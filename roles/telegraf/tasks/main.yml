@@ -7,6 +7,14 @@
       - dirmngr
     state: present
 
+- name: Création du répertoire pour les clés GPG
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
 - name: Ajout de la clé GPG de InfluxDB
   ansible.builtin.get_url:
     url: https://repos.influxdata.com/influxdata-archive_compat.key

@@ -70,17 +70,38 @@ groups:
           description: 'CPU usage is higher than 90% (value = {{ humanize $value }}%)'
           summary: 'CPU usage is at {{ humanize $value }}%'
 
-  - name: Certificates
+  - name: Probe
     rules:
       - alert: Certificate Expires Next Month
         for: 5m
-        expr: round(x509_cert_expiry{organization=""} / 86400) < 28
+        expr: round((prometheus_probe_ssl_earliest_cert_expiry{check_cert_expiry="1"} - time()) / 86400) < 28
         labels:
           severity: critical
           frequency: daily
+          category: probe.cert
         annotations:
-          description: 'Certificate for domain {{ $labels.common_name }} on host {{ $labels.host }} will expire in {{ $value }} days (source: {{ $labels.source }})'
-          summary: 'Certificate for domain {{ $labels.common_name }} will expire within the month'
+          description: 'Certificate for url {{ $labels.module }} will expire in {{ $value }} days'
+          summary: 'Certificate for url {{ $labels.module }} will expire within the month'
+
+      - alert: Website Down
+        for: 5m
+        expr: prometheus_probe_success{module=~"^http.+"} == 0
+        labels:
+          severity: critical
+          category: probe.http
+        annotations:
+          description: 'Website {{ $labels.module }} is down'
+          summary: 'Website {{ $labels.module }} is down'
+
+      - alert: Ping Down
+        for: 5m
+        expr: prometheus_probe_success{module="icmp"} == 0
+        labels:
+          severity: critical
+          category: probe.icmp
+        annotations:
+          description: "Host {{ $labels.url }} doesn't respond to ping"
+          summary: "Host {{ $labels.url }} doesn't respond to ping"
 
   - name: Backup
     rules:

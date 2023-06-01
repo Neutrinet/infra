@@ -1,6 +1,7 @@
 #jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
 {{{ ansible_managed | comment }}}
 
+{% if postgresql_patroni_hosts | length > 0 %}
 groups:
   - name: Patroni
     rules:
@@ -63,3 +64,4 @@ groups:
         annotations:
           description: 'Etcd server is unhealthy on instance {{ $labels.instance}}.'
           summary: 'Etcd server is unhealthy.'
+{% endif %}

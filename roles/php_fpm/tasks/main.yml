@@ -1,11 +1,21 @@
 - name: Ajout de la clé GPG de Sury dans APT
-  ansible.builtin.apt_key:
+  ansible.builtin.get_url:
     url: https://packages.sury.org/php/apt.gpg
-    state: present
+    dest: /etc/apt/keyrings/sury-php.gpg
+    owner: root
+    group: root
+    mode: "ugo=r"
+    force: true
 
-- name: Ajout du dépôt Sury
+- name: Suppression de l'ancien dépôt pour Sury
   ansible.builtin.apt_repository:
     repo: deb https://packages.sury.org/php/ {{ ansible_distribution_release }} main
+    filename: sury-php
+    state: absent
+
+- name: Ajout du dépôt pour Sury
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/sury-php.gpg] https://packages.sury.org/php/ {{ ansible_distribution_release }} main
     filename: sury-php
     state: present
 
