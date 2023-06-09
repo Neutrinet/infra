@@ -64,7 +64,7 @@ frontend haproxy-frontend
     mode http
 
     # enable HSTS
-    http-response set-header Strict-Transport-Security "max-age=63072000; includeSubDomains;{% if not letsencrypt_staging %} preload;{% endif %}"
+    http-response set-header Strict-Transport-Security "max-age=63072000;{% if not letsencrypt_staging %} preload;{% endif %}"
 
     # disable FLoC tracking
     http-response set-header Permissions-Policy "interest-cohort=()"
