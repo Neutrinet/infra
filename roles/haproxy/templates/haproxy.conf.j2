@@ -70,7 +70,7 @@ frontend haproxy-frontend
     http-response set-header Permissions-Policy "interest-cohort=()"
 
     # disable clients from sniffing the media type
-    http-response set-header X-Content-Type-Options "nosnif"f
+    http-response set-header X-Content-Type-Options "nosniff"
 
     # clickjacking protection
     http-response set-header X-Frame-Options "DENY"
