@@ -1,1 +1,2 @@
 telegraf_ipmi_sensor_enabled: false
+root_password: ""
