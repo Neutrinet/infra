@@ -16,19 +16,22 @@
     loop_var: user
     label: "{{ user.name }} ({{ user.state }})"
 
-- name: Test si l'hôte est un Proxmox
-  ansible.builtin.stat:
-    path: /etc/pve
-  register: _pve_directory
-
 - name: Suppression du mot de passe root
   ansible.builtin.user:
     name: root
     state: present
     shell: /bin/bash
     password: '*'
-  when: not _pve_directory.stat.exists
-  tags: ['skip_ansible_lint']
+  when: root_password == ''
+
+- name: Configuration du mot de passe root # noqa jinja[invalid]
+  ansible.builtin.user:
+    name: root
+    state: present
+    shell: /bin/bash
+    password: "{{ root_password | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
+  when: root_password != ''
+  no_log: true
 
 - name: Trigger SSH handlers
   ansible.builtin.meta: flush_handlers

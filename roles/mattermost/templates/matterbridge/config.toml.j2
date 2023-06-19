@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
 [general]
-RemoteNickFormat="{PROTOCOL} <{NICK}> "
+RemoteNickFormat="{PROTOCOL} <{NOPINGNICK}> "
 IgnoreFailureOnStart={{ matterbridge_ignore_failure | bool | lower }}
 
 [irc]
@@ -14,7 +14,7 @@ IgnoreFailureOnStart={{ matterbridge_ignore_failure | bool | lower }}
     NickServNick="{{ matterbridge_irc_username }}"
     Password={{ matterbridge_irc_password | string | to_json }}
     NickServPassword={{ matterbridge_irc_password | string | to_json }}
-    RemoteNickFormat="<{NICK}> "
+    RemoteNickFormat="<{NOPINGNICK}> "
 
 [mattermost]
     [mattermost.neutrinet]
@@ -23,7 +23,11 @@ IgnoreFailureOnStart={{ matterbridge_ignore_failure | bool | lower }}
     Team="{{ matterbridge_mattermost_team }}"
     Login="{{ matterbridge_mattermost_username }}"
     Password={{ matterbridge_mattermost_password | string | to_json }}
-    PrefixMessagesWithNick=true
+    PrefixMessagesWithNick=false
+    RemoteNickFormat="{NICK} [{PROTOCOL}]"
+{% if matterbridge_mattermost_webhook_url %}
+    WebhookURL="{{ matterbridge_mattermost_webhook_url }}"
+{% endif %}
 
 [[gateway]]
 name="Passerelle"
@@ -36,4 +40,4 @@ enable=true
     [[gateway.inout]]
     account="mattermost.neutrinet"
     channel="{{ matterbridge_mattermost_channel }}"
-    PrefixMessagesWithNick=true
+    PrefixMessagesWithNick=false
