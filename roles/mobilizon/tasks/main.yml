@@ -32,7 +32,19 @@
     name:
       - postgresql-{{ postgresql_major_version }}-postgis
     state: present
-  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
+  delegate_to: "{{ postgresql_host }}"
+  loop: "{{ postgresql_patroni_hosts }}"
+  loop_control:
+    loop_var: postgresql_host
+  when: postgresql_patroni_hosts | length > 0
+
+- name: Installation de la dépendance postgresql pour postgis
+  ansible.builtin.package:
+    name:
+      - postgresql-{{ postgresql_major_version }}-postgis
+    state: present
+  delegate_to: "{{ inventory_hostname }}"
+  when: postgresql_patroni_hosts | length == 0
 
 - name: Ajout des extensions nécessaires à postgresql
   community.postgresql.postgresql_ext:
