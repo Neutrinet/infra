@@ -56,5 +56,8 @@
 - name: Déploiement de Grafana
   import_playbook: apps/grafana.yml
 
+- name: Déploiement de Uptime-Kuma
+  import_playbook: apps/uptime_kuma.yml
+
 - name: Déploiement de Gitlab Runner
   import_playbook: apps/gitlab_runner.yml

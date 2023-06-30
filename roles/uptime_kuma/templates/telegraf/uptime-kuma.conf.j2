@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from haproxy's prometheus exporter
+  urls = ["http://localhost:3001/metrics"]
+  username = ""
+  password = "{{ uptime_kuma_api_token }}"
+  metric_version = 2

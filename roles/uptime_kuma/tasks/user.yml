@@ -1,0 +1,15 @@
+- name: Création du dossier /var/www
+  ansible.builtin.file:
+    path: /var/www
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Création de l'utilisateur {{ uptime_kuma_owner }}
+  ansible.builtin.user:
+    name: "{{ uptime_kuma_owner }}"
+    home: /var/www/{{ uptime_kuma_owner }}
+    shell: /sbin/nologin
+    system: true
+    state: present
