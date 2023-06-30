@@ -13,6 +13,11 @@
         name: git
         state: present
 
+    - name: Installation des ACL
+      ansible.builtin.package:
+        name: acl
+        state: present
+
   roles:
     - telegraf
     - borgmatic
