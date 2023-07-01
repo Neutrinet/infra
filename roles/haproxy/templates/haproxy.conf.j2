@@ -113,11 +113,14 @@ backend {{ host.hostname | replace('.', '-') }}-backend
 {% if host.username is defined and host.password is defined %}
     http-request auth unless { http_auth({{ host.hostname | replace('.', '-') }}-credentials) }
 {% endif %}
+{% if host.allow_origin is defined and host.allow_origin | length > 0 %}
+    http-response set-header Access-Control-Allow-Origin {{ host.allow_origin }}
+{% endif %}
 {% if "timeout" in host and host.timeout %}
     timeout server {{ host.timeout }}
 {% endif %}
 {% for target in host.target %}
-    server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check{% endif %} {% if "ssl" in host %} {{ host.ssl }} {% endif %} cookie sl
+    server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check{% endif %} {% if "ssl" in host %}ssl{% endif %} cookie sl {% if "ssl_verify" in host and not host.ssl_verify %}verify none{% endif %}
 {% endfor %}
 
 {% endfor %}
