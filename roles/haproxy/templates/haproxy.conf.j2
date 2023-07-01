@@ -63,7 +63,23 @@ frontend haproxy-frontend
 
     mode http
 
-    http-response set-header Strict-Transport-Security max-age=63072000
+    # enable HSTS
+    http-response set-header Strict-Transport-Security "max-age=63072000;{% if not letsencrypt_staging %} preload;{% endif %}"
+
+    # disable FLoC tracking
+    http-response set-header Permissions-Policy "interest-cohort=()"
+
+    # disable clients from sniffing the media type
+    http-response set-header X-Content-Type-Options "nosniff"
+
+    # clickjacking protection
+    http-response set-header X-Frame-Options "DENY"
+
+    # keep referrer data off of HTTP connections
+    http-response set-header Referrer-Policy "same-origin"
+
+    # Block pages from loading when they detect reflected XSS attacks
+    http-response set-header X-XSS-Protection "1; mode=block"
 
 {% for redirect in haproxy_redirect %}
     http-request redirect prefix https://{{ redirect.to }} code 301 if { hdr(host),field(1,:) -i {{ redirect.from }} }
