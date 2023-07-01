@@ -29,6 +29,14 @@ IgnoreFailureOnStart={{ matterbridge_ignore_failure | bool | lower }}
     WebhookURL="{{ matterbridge_mattermost_webhook_url }}"
 {% endif %}
 
+[matrix]
+    [matrix.domainepublic]
+    Server="https://matrix.domainepublic.net"
+    Login="{{ matterbridge_matrix_username }}"
+    Password={{ matterbridge_matrix_password | string | to_json }}
+    NoHomeServerSuffix=true
+    RemoteNickFormat="[{PROTOCOL}] <b>{NOPINGNICK}</b>: "
+
 [[gateway]]
 name="Passerelle"
 enable=true
@@ -41,3 +49,8 @@ enable=true
     account="mattermost.neutrinet"
     channel="{{ matterbridge_mattermost_channel }}"
     PrefixMessagesWithNick=false
+
+    [[gateway.inout]]
+    account="matrix.domainepublic"
+    channel="{{ matterbridge_matrix_channel }}"
+    PrefixMessagesWithNick=true

@@ -12,3 +12,7 @@ matterbridge_mattermost_webhook_url: "{{ vault_matterbridge_mattermost_webhook_u
 matterbridge_irc_username: neutrinet-bot
 matterbridge_irc_password: "{{ vault_matterbridge_irc_password }}"
 matterbridge_irc_channel: '#neutrinet'
+
+matterbridge_matrix_username: neutribot
+matterbridge_matrix_password: "{{ vault_matterbridge_matrix_password }}"
+matterbridge_matrix_channel: "!kNmIZbQNeqezaNqvya:matrix.domainepublic.net"
