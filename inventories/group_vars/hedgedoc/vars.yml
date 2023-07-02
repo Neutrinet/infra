@@ -1,6 +1,6 @@
 hedgedoc_domain: doc.neutrinet.be
 hedgedoc_owner: "{{ hedgedoc_domain | replace('.', '-') }}"
-hedgedoc_version: 1.9.6
+hedgedoc_version: 1.9.8
 
 hedgedoc_postgresql_password: "{{ vault_hedgedoc_postgresql_password }}"
 

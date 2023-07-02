@@ -1,0 +1,20 @@
+---
+- name: Ajout de la clé GPG de Yarn dans APT
+  ansible.builtin.get_url:
+    url: https://dl.yarnpkg.com/debian/pubkey.gpg
+    dest: /etc/apt/keyrings/yarn.asc
+    owner: root
+    group: root
+    mode: "ugo=r"
+    force: true
+
+- name: Ajout du dépôt APT pour Yarn
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/yarn.asc] https://dl.yarnpkg.com/debian/ stable main
+    filename: yarn
+    state: present
+
+- name: Installation de Yarn
+  ansible.builtin.package:
+    name: yarn
+    state: present

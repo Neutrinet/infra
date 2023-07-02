@@ -2,7 +2,14 @@
 - name: Installation de NodeJS
   ansible.builtin.import_role:
     name: nodejs
+  vars:
+    nodejs_major_version: 18
   tags: ['nodejs']
+
+- name: Installation de Yarn
+  ansible.builtin.import_role:
+    name: yarn
+  tags: ['yarn']
 
 - name: Création de l'utilisateur
   ansible.builtin.import_tasks: user.yml

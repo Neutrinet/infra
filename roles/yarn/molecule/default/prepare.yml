@@ -1,0 +1,17 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Mise à jour du cache APT
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Création du répertoire pour les clés GPG
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,go=rx"
