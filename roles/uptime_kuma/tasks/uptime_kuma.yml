@@ -11,9 +11,9 @@
     mode: "u=rwx,g=rx,o="
     state: directory
   loop:
-    - /var/log/uptime-kuma
     - /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
     - /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/dist
+    - /var/lib/uptime-kuma
   loop_control:
     loop_var: dir
 
@@ -61,6 +61,13 @@
   ansible.builtin.file:
     src: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
     dest: /var/www/{{ uptime_kuma_owner }}/dist
+    state: link
+  notify: restart uptime-kuma
+
+- name: Création du lien symbolique vers les données
+  ansible.builtin.file:
+    src: /var/lib/uptime-kuma
+    dest: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/data
     state: link
   notify: restart uptime-kuma
 
