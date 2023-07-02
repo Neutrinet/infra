@@ -11,7 +11,7 @@ User={{ uptime_kuma_owner }}
 Group={{ uptime_kuma_owner }}
 
 WorkingDirectory=/var/www/{{ uptime_kuma_owner }}/dist/
-ExecStart=node server/server.js --host=127.0.0.1 --port=3001
+ExecStart=node server/server.js --host=::1 --port=3001
 StandardOutput=append:/var/log/uptime-kuma/{{ uptime_kuma_owner }}.log
 StandardError=inherit
 
