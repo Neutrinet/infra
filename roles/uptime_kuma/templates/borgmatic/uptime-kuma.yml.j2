@@ -7,6 +7,7 @@ location:
     - "/var/www/{{ uptime_kuma_owner }}/dist"
     - "/var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}"
     - "/etc/systemd/system/uptime-kuma.service"
+    - "/var/lib/uptime-kuma"
 
 storage:
   archive_name_format: uptime-kuma-{{ uptime_kuma_owner }}_{hostname}-{now}
@@ -20,4 +21,4 @@ consistency:
 hooks:
   sqlite_databases:
     - name: "kuma"
-      path: "/var/www/{{ uptime_kuma_owner }}/dist/data/kuma.db"
+      path: "/var/lib/uptime-kuma/kuma.db"
