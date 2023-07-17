@@ -16,7 +16,7 @@
   ## Sudo must be configured to allow the telegraf user to run smartctl or nvme-cli
   ## without a password.
   use_sudo = true
-
+  attributes = true
 
 {% if telegraf_ipmi_sensor_enabled %}
 # Read metrics from the bare metal servers via IPMI
