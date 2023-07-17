@@ -5,6 +5,10 @@
   service_address = "udp://:8089"
 
 
+# Get kernel statistics from /proc/mdstat
+[[inputs.mdstat]]
+
+
 # Read metrics from storage devices supporting S.M.A.R.T.
 [[inputs.smart]]
   ## On most platforms used cli utilities requires root access.
