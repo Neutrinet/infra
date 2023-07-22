@@ -73,7 +73,7 @@ frontend haproxy-frontend
     http-response set-header X-Content-Type-Options "nosniff"
 
     # clickjacking protection
-    http-response set-header X-Frame-Options "DENY"
+    http-response set-header X-Frame-Options "SAMEORIGIN"
 
     # keep referrer data off of HTTP connections
     http-response set-header Referrer-Policy "same-origin"
