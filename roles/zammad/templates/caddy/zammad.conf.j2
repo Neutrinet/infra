@@ -17,6 +17,10 @@ http://{{ zammad_domain }} {
         header_up CLIENT_IP {remote_host}
         trusted_proxies {{ zammad_trusted_proxies | join(' ') }}
     }
+    reverse_proxy /cable localhost:3000 {
+        header_up CLIENT_IP {remote_host}
+        trusted_proxies {{ zammad_trusted_proxies | join(' ') }}
+    }
 
     log {
         output file /var/log/caddy/{{ zammad_owner }}.log
