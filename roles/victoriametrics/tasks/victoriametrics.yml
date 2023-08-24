@@ -23,7 +23,7 @@
 
 - name: Téléchargement de l'archive VictoriaMetrics v{{ victoriametrics_version }}
   ansible.builtin.get_url:
-    url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v{{ victoriametrics_version }}/victoria-metrics-amd64-v{{ victoriametrics_version }}.tar.gz
+    url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v{{ victoriametrics_version }}/victoria-metrics-linux-amd64-v{{ victoriametrics_version }}.tar.gz
     dest: /usr/local/src/victoriametrics/{{ victoriametrics_version }}.tar.gz
     owner: root
     group: root
@@ -31,7 +31,7 @@
 
 - name: Téléchargement de l'archive des outils de VictoriaMetrics v{{ victoriametrics_version }}
   ansible.builtin.get_url:
-    url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v{{ victoriametrics_version }}/vmutils-amd64-v{{ victoriametrics_version }}.tar.gz
+    url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v{{ victoriametrics_version }}/vmutils-linux-amd64-v{{ victoriametrics_version }}.tar.gz
     dest: /usr/local/src/victoriametrics/tools-{{ victoriametrics_version }}.tar.gz
     owner: root
     group: root
