@@ -2,6 +2,7 @@ letsencrypt_domains_gandi:
   - neutrinet.be
   - labriqueinter.net
   - internetcu.be
+  - mobilizon.be
 
 haproxy:
   - hostname: neutrinet.be
@@ -83,7 +84,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
 
-  - hostname: mobilizon.neutrinet.be
+  - hostname: mobilizon.be
     target:
       - mobilizon.patata.louise.neutri.net
     target_port: 80

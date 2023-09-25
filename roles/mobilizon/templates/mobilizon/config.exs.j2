@@ -34,9 +34,8 @@ config :mobilizon, Mobilizon.Storage.Repo,
   pool_size: 10
 
 config :mobilizon, Mobilizon.Web.Email.Mailer,
-  adapter: Bamboo.SMTPAdapter,
-  server: "{{ mobilizon_email_host }}",
-  hostname: "{{ mobilizon_domain }}",
+  adapter: Swoosh.Adapters.SMTP,
+  relay: "{{ mobilizon_email_host }}",
   # usually 25, 465 or 587
   port: 587,
   username: "{{ mobilizon_email_username }}",

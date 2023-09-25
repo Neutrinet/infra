@@ -1,6 +1,6 @@
-mobilizon_domain: mobilizon.neutrinet.be
+mobilizon_domain: mobilizon.be
 mobilizon_owner: "{{ mobilizon_domain | replace('.', '-') }}"
-mobilizon_version: 3.0.1
+mobilizon_version: 3.2.0
 
 mobilizon_postgresql_password: "{{ vault_mobilizon_postgresql_password }}"
 
