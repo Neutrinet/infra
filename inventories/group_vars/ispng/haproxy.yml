@@ -1,0 +1,19 @@
+letsencrypt_domains_gandi:
+  - neutrinet.be
+
+haproxy:
+  - hostname: api.neutrinet.be
+    target:
+      - "::1"
+    target_port: 8443
+    healthcheck: true
+    healthcheck_url: HEAD /
+    ssl: true
+    ssl_verify: false
+    allow_origin: https://user.neutrinet.be
+
+haproxy_redirect: []
+haproxy_postgresql: []
+
+haproxy_listen:
+  - "[::]"

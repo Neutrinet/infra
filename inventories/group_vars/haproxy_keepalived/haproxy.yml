@@ -2,6 +2,7 @@ letsencrypt_domains_gandi:
   - neutrinet.be
   - labriqueinter.net
   - internetcu.be
+  - mobilizon.be
 
 haproxy:
   - hostname: neutrinet.be
@@ -39,6 +40,13 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /api/v4/system/ping
 
+  - hostname: accounting.neutrinet.be
+    target:
+      - accounting.patata.louise.neutri.net
+    target_port: 3000
+    healthcheck: true
+    healthcheck_url: HEAD /
+
   - hostname: cube.neutrinet.be
     target:
       - backoffice.patata.louise.neutri.net
@@ -60,6 +68,7 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    timeout: 10m
 
   - hostname: user.neutrinet.be
     target:
@@ -71,6 +80,13 @@ haproxy:
   - hostname: wiki.neutrinet.be
     target:
       - dokuwiki.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: GET /healthcheck
+
+  - hostname: mobilizon.be
+    target:
+      - mobilizon.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck

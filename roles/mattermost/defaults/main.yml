@@ -1,19 +1,32 @@
 mattermost_domain: chat.example.com
 mattermost_owner: "{{ mattermost_domain | replace('.', '-') }}"
-mattermost_version: 7.1.2
+mattermost_version: 7.8.4
 
 postgresql_host: localhost
 
 mattermost_postgresql_password: neutrinet
 
-matterbridge_version: 1.25.2
+matterbridge_version: 1.26.0
 # Ignore failing bridge on startup. Useful for testing purposes.
 # After running the playbook, consider checking the logs to see if any bridge is failing
 matterbridge_ignore_failure: true
 matterbridge_mattermost_username: neutribot
 matterbridge_mattermost_password: neutrinet
 matterbridge_mattermost_team: neutrinet
-matterbridge_mattermost_channel: irc
+matterbridge_mattermost_channel: town-square
+matterbridge_mattermost_webhook_url: ""
+
 matterbridge_irc_username: neutribot
 matterbridge_irc_password: neutrinet
 matterbridge_irc_channel: '#neutrinet'
+
+matterbridge_matrix_username: neutribot-test
+matterbridge_matrix_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          37316361626334393330616365653134643339613566396564306430323639376537323135336664
+          3031373163336236346162333430626131303637336563630a646234353032313938656137353166
+          30663365303564356636313835373162623831313662366336393231323362666161356438306334
+          3664303539633633390a343065346365363261636363613637323832353936663938393335653235
+          63613361666433326635323139306165343434326466393066653834663530326431313661623436
+          3331373532666665373633366534623263346565613534656230
+matterbridge_matrix_channel: "!HVfmcpXtdbaxTkpLwH:matrix.domainepublic.net"

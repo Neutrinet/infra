@@ -1,0 +1,50 @@
+- name: Installation des dépendances pour PostgreSQL
+  ansible.builtin.package:
+    name: libpq-dev
+    state: present
+
+- name: Récupération du dépôt git de accounting  # noqa latest[git]
+  ansible.builtin.git:
+    repo: https://gitlab.domainepublic.net/Neutrinet/accounting.git
+    version: main
+    dest: /var/www/{{ accounting_owner }}/dist
+    single_branch: true
+  become_user: "{{ accounting_owner }}"
+  register: _accounting_repo_cloned
+  notify: restart accounting
+
+- name: Configuration de Accounting
+  ansible.builtin.template:
+    src: accounting/.env.j2
+    dest: /var/www/{{ accounting_owner }}/dist/.env
+    owner: "{{ accounting_owner }}"
+    group: "{{ accounting_owner }}"
+    mode: "u=rw,g=r,o="
+  notify: restart accounting
+
+- name: Installation de Accounting  # noqa no-handler
+  ansible.builtin.shell:
+    cmd: eval "$(rbenv init -)" && bin/setup
+    chdir: /var/www/{{ accounting_owner }}/dist
+    executable: /bin/bash
+  environment:
+    RAILS_ENV: production
+  when: _accounting_repo_cloned is changed
+  become_user: "{{ accounting_owner }}"
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/accounting.service.j2
+    dest: /etc/systemd/system/accounting.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart accounting
+
+- name: Activation de Accounting au démarrage
+  ansible.builtin.service:
+    name: accounting
+    state: started
+    enabled: true

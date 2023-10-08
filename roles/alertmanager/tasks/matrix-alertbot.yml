@@ -24,7 +24,9 @@
 
 - name: Installation des dépendences de matrix-alertbot
   ansible.builtin.package:
-    name: libolm3
+    name:
+      - libolm3
+      - libolm-dev
     state: present
 
 - name: Installation de matrix-alertbot  # noqa package-latest

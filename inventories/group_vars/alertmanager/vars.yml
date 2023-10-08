@@ -4,6 +4,4 @@ alertmanager_matrix_username: "neutribot"
 alertmanager_matrix_password: "{{ vault_alertmanager_matrix_password }}"
 alertmanager_matrix_host: matrix.domainepublic.net
 
-alertmanager_matrix_goneb_room: "!RwsRwTYSutAOiujkCC:matrix.domainepublic.net"
-
-alertmanager_matrix_alertbot_room: "!sUVhsVlYJDsUWgPbeW:chat.batato.be"
+alertmanager_matrix_alertbot_room: "!RwsRwTYSutAOiujkCC:matrix.domainepublic.net"
