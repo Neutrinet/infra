@@ -6,14 +6,25 @@
   tags: ['routinator_install']
 
 - name: Ajout de la clé GPG de NLnet Labs
-  ansible.builtin.apt_key:
+  ansible.builtin.get_url:
     url: https://packages.nlnetlabs.nl/aptkey.asc
-    state: present
+    dest: /etc/apt/keyrings/routinator.asc
+    owner: root
+    group: root
+    mode: "ugo=r"
+    force: true
+  tags: ['routinator_install']
+
+- name: Suppresion de l'ancien dépôt APT pour routinator
+  ansible.builtin.apt_repository:
+    repo: deb https://packages.nlnetlabs.nl/linux/debian {{ ansible_distribution_release }} main
+    state: absent
+    filename: routinator
   tags: ['routinator_install']
 
 - name: Ajout du dépôt APT pour routinator
   ansible.builtin.apt_repository:
-    repo: deb https://packages.nlnetlabs.nl/linux/debian {{ ansible_distribution_release }} main
+    repo: deb [signed-by=/etc/apt/keyrings/routinator.asc] https://packages.nlnetlabs.nl/linux/debian {{ ansible_distribution_release }} main
     state: present
     filename: routinator
   tags: ['routinator_install']

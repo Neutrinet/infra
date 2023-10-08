@@ -34,18 +34,6 @@ http://{{ nextcloud_domain }} {
 
     respond @forbidden 404
 
-    header {
-        # Add headers to serve security related headers
-        # Before enabling Strict-Transport-Security headers please read into this
-        # topic first.
-        # WARNING: Only add the preload option once you read about
-        # the consequences in https://hstspreload.org/. This option
-        # will add the domain to a hardcoded list that is shipped
-        # in all major browsers and getting removed from this list
-        # could take several months.
-        Strict-Transport-Security            "max-age=15768000; {% if nextcloud_hsts_preload_enabled %}preload;{% endif %}"
-    }
-
     log {
         output file {{ web_app_caddy_log | to_json }}
     }

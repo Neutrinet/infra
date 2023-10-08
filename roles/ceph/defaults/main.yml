@@ -1,2 +1,3 @@
 ceph_proxmox_version: octopus
 proxmox_major_version: 6
+ceph_cluster: default

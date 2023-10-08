@@ -14,10 +14,6 @@
   ansible.builtin.import_tasks: rules.yml
   tags: ['rules']
 
-- name: Installation de matrix-goneb
-  ansible.builtin.import_tasks: matrix-goneb.yml
-  tags: ['matrix_goneb']
-
 - name: Installation de matrix-alertbot
   ansible.builtin.import_tasks: matrix-alertbot.yml
   tags: ['matrix_alertbot']
@@ -32,7 +28,6 @@
     validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
   loop:
     - alertmanager
-    - matrix-goneb
     - matrix-alertbot
   loop_control:
     loop_var: config

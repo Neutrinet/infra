@@ -7,11 +7,6 @@
     name: alertmanager
     state: restarted
 
-- name: restart matrix-goneb
-  ansible.builtin.service:
-    name: matrix-goneb
-    state: restarted
-
 - name: restart matrix-alertbot
   ansible.builtin.service:
     name: matrix-alertbot

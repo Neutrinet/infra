@@ -19,6 +19,16 @@
     name: sshguard
     state: restarted
 
+- name: restart systemd-journald
+  ansible.builtin.service:
+    name: systemd-journald
+    state: restarted
+
+- name: restart systemd-timesyncd
+  ansible.builtin.service:
+    name: systemd-timesyncd
+    state: restarted
+
 - name: update grub  # noqa command-instead-of-shell
   ansible.builtin.shell:
     cmd: "grub-mkconfig -o /boot/grub/grub.cfg"

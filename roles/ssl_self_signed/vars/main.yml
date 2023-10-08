@@ -1,3 +1,0 @@
-ssl_packages:
-  - ssl-cert
-  - python3-openssl

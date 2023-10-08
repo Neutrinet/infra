@@ -45,7 +45,8 @@ users:
   - name: celo
     state: present
     keys:
-      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPjigU9KeN4e973Lhbp39RvifzkC0uVZjTefD8wXtNDE celo@smeagol"
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL+sip+jKqRBtOxNOjUWQ1ysaUt/vNVNEtyN6RYoA4G6 celo@madrigal"
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFjEuw43wiVmnMlPHRmizTGpYbB1CslUETWsbcfE8IbB celo@mistral"
 
 victoriametrics_url: https://victoriametrics.neutrinet.be
 victoriametrics_username: victoriametrics
