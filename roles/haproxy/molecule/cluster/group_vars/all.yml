@@ -8,3 +8,6 @@ keepalived_instances:
       - 172.29.129.11
       - 172.29.129.12
     type: ipv4
+
+letsencrypt_post_hook: 'systemctl restart haproxy'
+letsencrypt_deploy_hook: '/etc/letsencrypt/haproxy.py'

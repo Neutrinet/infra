@@ -9,6 +9,7 @@
     - base
     - vpn
     - patroni
+    - hardware
   loop_control:
     loop_var: rule_group
   notify:

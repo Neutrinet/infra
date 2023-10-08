@@ -37,6 +37,11 @@ route:
   # The child route trees.
   routes:
     - matchers:
+        - frequency = monthly
+      repeat_interval: 30d
+      routes:
+        - receiver: default-receiver
+    - matchers:
         - frequency = daily
       repeat_interval: 1d
       routes:

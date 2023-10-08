@@ -50,18 +50,10 @@
       /opt/letsencrypt/bin/certbot register \
       --non-interactive \
       {% if letsencrypt_staging %}--staging \{% endif %}
-      --email {{ mail_notification }} \
+      --email {{ letsencrypt_mail_notification }} \
       --no-eff-email \
       --agree-tos
   when: not letsencrypt_accounts.stat.exists
-
-- name: Placement du hook pour haproxy
-  ansible.builtin.copy:
-    src: haproxy.py
-    dest: /etc/letsencrypt/haproxy.py
-    mode: "u=rwx,go=rx"
-    owner: root
-    group: root
 
 - name: Config de Gandi pour Let's Encrypt
   ansible.builtin.template:
@@ -70,6 +62,15 @@
     owner: root
     group: root
     mode: "u=rw,go="
+
+- name: Placement du hook pour HAproxy
+  ansible.builtin.copy:
+    src: haproxy.py
+    dest: /etc/letsencrypt/haproxy.py
+    mode: "ugo=rx"
+    owner: root
+    group: root
+
 
 - name: Création des certificats rsa par challenge gandi
   ansible.builtin.include_tasks: letsencrypt-gandi-rsa.yml

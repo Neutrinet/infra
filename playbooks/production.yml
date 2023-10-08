@@ -2,6 +2,9 @@
 - name: Provisionning des machines Debian
   import_playbook: apps/debian_commun.yml
 
+- name: Configuration de Proxmox
+  import_playbook: apps/proxmox.yml
+
 - name: Déploiement de Keepalived
   import_playbook: apps/keepalived.yml
 
@@ -55,6 +58,9 @@
 
 - name: Déploiement de Grafana
   import_playbook: apps/grafana.yml
+
+- name: Déploiement de Uptime-Kuma
+  import_playbook: apps/uptime_kuma.yml
 
 - name: Déploiement de Gitlab Runner
   import_playbook: apps/gitlab_runner.yml

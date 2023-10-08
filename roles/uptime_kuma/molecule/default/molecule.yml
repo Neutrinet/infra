@@ -3,12 +3,12 @@ dependency:
 driver:
   name: vagrant
   provider:
-    name: virtualbox
+    name: libvirt
 platforms:
-  - name: bullseye-haproxy-molecule
+  - name: bullseye-uptime-kuma-molecule
     box: debian/bullseye64
     cpu: 2
-    memory: 512
+    memory: 1024
     interfaces:
       - network_name: private_network
         type: dhcp
