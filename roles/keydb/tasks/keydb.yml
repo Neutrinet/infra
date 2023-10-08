@@ -19,45 +19,14 @@
       - keydb-tools
     state: present
 
-- name: Activation du socket unix
-  ansible.builtin.replace:
-    dest: /etc/keydb/keydb.conf
-    regexp: '^(# |)unixsocket(.+)$'
-    replace: 'unixsocket /var/lib/keydb/keydb.sock'
-    backup: false
-  notify: Restart KeyDB
-
-- name: Définition permission socket unix
-  ansible.builtin.replace:
-    dest: /etc/keydb/keydb.conf
-    regexp: '^(# |)unixsocketperm (.+)$'
-    replace: 'unixsocketperm 770'
-    backup: false
-  notify: Restart KeyDB
-
-- name: Définition du port tcp
-  # If the port is 0 then the IP/TCP part is not active
-  ansible.builtin.replace:
-    dest: /etc/keydb/keydb.conf
-    regexp: '^(# |)port 6379$'
-    replace: "port {{ keydb_port }}"
-    backup: false
-  notify: Restart KeyDB
-
-- name: Définition du bind
-  ansible.builtin.replace:
-    dest: /etc/keydb/keydb.conf
-    regexp: '^bind (.+)$'
-    replace: "bind {{ keydb_bind }}"
-    backup: false
-  notify: Restart KeyDB
-
-- name: Définition du l\'allocation memoire
-  ansible.builtin.replace:
-    dest: /etc/keydb/keydb.conf
-    regexp: '^(# |)maxmemory (.+)$'
-    replace: "maxmemory {{ keydb_memory }}"
-    backup: false
+- name: Création de la configuration
+  ansible.builtin.template:
+    src: keydb.conf.j2
+    dest: /etc/keydb/keydb-{{ keydb_name_instance }}.conf
+    owner: keydb
+    group: keydb
+    mode: "u=r,go="
+    # validate: telegraf --config %s --test
   notify: Restart KeyDB
 
 - name: Activation overcommit_memory
@@ -69,9 +38,15 @@
     state: present
     reload: true
 
-- name: Activation de KeyDB au démarrage
+- name: Dasactiver le server KeyDB par default
   ansible.builtin.service:
     name: keydb-server.service
+    state: stopped
+    enabled: false
+
+- name: Activation de KeyDB au démarrage
+  ansible.builtin.service:
+    name: keydb-server@{{ keydb_name_instance }}.service
     state: started
     enabled: true
 

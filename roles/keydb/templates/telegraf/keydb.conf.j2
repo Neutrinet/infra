@@ -2,4 +2,4 @@
 
 
 [[inputs.redis]]
-  servers = ["unix:///var/lib/keydb/keydb.sock"]
+  servers = ["unix://{{ keydb_unixsocket }}"]

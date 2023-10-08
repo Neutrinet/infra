@@ -1,3 +1,28 @@
-keydb_memory: 100mb
+keydb_name_instance: neutrinet
+
+keydb_bind: 'bind 127.0.0.1 -::1'
 keydb_port: 0
-keydb_bind: "bind 127.0.0.1 -::1"
+keydb_unixsocket: '/var/run/keydb-{{ keydb_name_instance }}/keydb-server.sock'
+keydb_unixsocket_perm: '770'
+
+keydb_dbfilename: "dump-{{ keydb_name_instance }}.rdb"
+keydb_logfile: "/var/log/keydb/keydb-server-{{ keydb_name_instance }}.log"
+keydb_pidfile: "/var/run/keydb-{{ keydb_name_instance }}/keydb-server.pid"
+keydb_dir: "/var/lib/keydb"
+
+keydb_maxmemory: 100MB
+keydb_databases: 16
+keydb_maxmemory_policy: noeviction
+keydb_protected_mode: false
+
+# Défini la politique de sauvegarde sur le disque, exemple:
+# times = 900 et number_changed = 1 cela sauvegarde si apres 900 secondes il y a eu un au moins 1 changement
+# times = 300 et number_changed = 10 cela sauvegarde si apres 300 secondes il y a eu un au moins 10 changement
+# times = 60 et number_changed = 1000 cela sauvegarde si apres 60 secondes il y a eu un au moins 10000 changement
+keydb_saves:
+  - times: 900
+    number_changed: 1
+  - times: 300
+    number_changed: 10
+  - times: 60
+    number_changed: 10000
