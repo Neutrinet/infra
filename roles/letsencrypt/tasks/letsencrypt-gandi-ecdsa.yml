@@ -11,12 +11,12 @@
       /opt/letsencrypt/bin/certbot certonly \
       --non-interactive \
       {% if letsencrypt_staging %}--staging \{% endif %}
+      {% if letsencrypt_post_hook != "" %}--post-hook '{{ letsencrypt_post_hook }}' \{% endif %}
+      {% if letsencrypt_deploy_hook != "" %}--deploy-hook {{ letsencrypt_deploy_hook }} \{% endif %}
       --authenticator dns-gandi \
       --dns-gandi-credentials /etc/letsencrypt/gandi/gandi.ini \
       --key-type ecdsa \
       --cert-name {{ domain | replace('.', '-') }}-ecdsa \
       --domain {{ domain }} \
-      --domain *\.{{ domain }} \
-      --post-hook 'systemctl restart haproxy' \
-      --deploy-hook /etc/letsencrypt/haproxy.py
+      --domain *\.{{ domain }}
   when: not letsencrypt_domain_ecdsa.stat.exists
