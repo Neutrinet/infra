@@ -24,7 +24,7 @@
 
 - name: Installation de Hedgedoc
   ansible.builtin.command:
-    cmd: npm install --production
+    cmd: yarn workspaces focus --production
     chdir: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
     creates: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/node_modules
   become_user: "{{ hedgedoc_owner }}"

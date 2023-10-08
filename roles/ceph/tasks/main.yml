@@ -6,7 +6,7 @@
 - name: Ajout de la clé GPG de Proxmox dans APT
   ansible.builtin.get_url:
     url: "{{ proxmox_gpg_key_url }}"
-    dest: /etc/apt/keyrings/ceph.asc
+    dest: /etc/apt/keyrings/ceph.gpg
     owner: root
     group: root
     mode: "ugo=r"
@@ -20,7 +20,7 @@
 
 - name: Ajout du dépôt APT pour ceph
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/ceph.asc] http://download.proxmox.com/debian/ceph-{{ ceph_proxmox_version }} {{ ansible_distribution_release }} main"
+    repo: "deb [signed-by=/etc/apt/keyrings/ceph.gpg] http://download.proxmox.com/debian/ceph-{{ ceph_proxmox_version }} {{ ansible_distribution_release }} main"
     filename: ceph
     state: present
 

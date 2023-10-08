@@ -1,7 +1,6 @@
 nextcloud_domain: files.example.com
 nextcloud_trusted_proxies: []
 
-nextcloud_hsts_preload_enabled: false
 nextcloud_max_upload_size: 512MB
 
 postgresql_host: localhost
