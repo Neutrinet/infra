@@ -1,0 +1,58 @@
+- name: Ajout de la clé GPG de KeyDB dans APT
+  ansible.builtin.get_url:
+    url: https://download.keydb.dev/open-source-dist/keyring.gpg
+    dest: /etc/apt/keyrings/keydb.gpg
+    mode: "ugo=r"
+    owner: root
+    group: root
+
+- name: Ajout du dépôt KeyDB
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/keydb.gpg] https://download.keydb.dev/open-source-dist {{ ansible_distribution_release }} main
+    filename: keydb
+    state: present
+
+- name: Installation de KeyDB
+  ansible.builtin.package:
+    name:
+      - keydb-server
+      - keydb-tools
+    state: present
+
+- name: Création de la configuration
+  ansible.builtin.template:
+    src: keydb.conf.j2
+    dest: /etc/keydb/keydb-{{ keydb_name_instance }}.conf
+    owner: keydb
+    group: keydb
+    mode: "u=r,go="
+    # validate: telegraf --config %s --test
+  notify: Restart KeyDB
+
+- name: Activation overcommit_memory
+  ansible.posix.sysctl:
+    name: "vm.overcommit_memory"
+    value: '1'
+    sysctl_file: /etc/sysctl.d/80-overcommit-memory.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Dasactiver le server KeyDB par default
+  ansible.builtin.service:
+    name: keydb-server.service
+    state: stopped
+    enabled: false
+
+- name: Activation de KeyDB au démarrage
+  ansible.builtin.service:
+    name: keydb-server@{{ keydb_name_instance }}.service
+    state: started
+    enabled: true
+
+- name: Trigger haproxy handler
+  # We force keydb to restart its config to ensure our config has been applied.
+  # This forced restart is required on debian systems,
+  # because keydb appears to be already started and enabled by apt,
+  # and later in this role, telegraf expects our keydb to be correctly configured.
+  ansible.builtin.meta: flush_handlers

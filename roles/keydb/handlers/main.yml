@@ -1,0 +1,8 @@
+- name: Restart KeyDB
+  ansible.builtin.service:
+    name: keydb-server@{{ keydb_name_instance }}.service
+    state: restarted
+- name: Restart telegraf
+  ansible.builtin.service:
+    name: telegraf
+    state: restarted

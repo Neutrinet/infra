@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic/template.yml
+
+location:
+  source_directories:
+    - "/etc/keydb/keydb-{{ keydb_name_instance }}.conf"
+    - "{{ keydb_dir }}"
+
+storage:
+  archive_name_format: keydb_{{ keydb_name_instance }}_{hostname}-{now}
+
+retention:
+  prefix: keydb_{{ keydb_name_instance }}_
+
+consistency:
+  prefix: keydb_{{ keydb_name_instance }}_
