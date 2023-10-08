@@ -1,0 +1,89 @@
+- name: Installation du client Sqlite3
+  ansible.builtin.package:
+    name: sqlite3
+    state: present
+
+- name: Création des dossiers pour Uptime-Kuma
+  ansible.builtin.file:
+    path: "{{ dir }}"
+    owner: "{{ uptime_kuma_owner }}"
+    group: "{{ uptime_kuma_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
+    - /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/dist
+    - /var/lib/uptime-kuma
+  loop_control:
+    loop_var: dir
+
+- name: Téléchargement de Uptime-Kuma v{{ uptime_kuma_version }}
+  ansible.builtin.unarchive:
+    src: https://github.com/louislam/uptime-kuma/archive/refs/tags/{{ uptime_kuma_version }}.tar.gz
+    dest: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
+    creates: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/package.json
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: "{{ uptime_kuma_owner }}"
+    group: "{{ uptime_kuma_owner }}"
+
+- name: Téléchargement de Uptime-Kuma v{{ uptime_kuma_version }}
+  ansible.builtin.unarchive:
+    src: https://github.com/louislam/uptime-kuma/releases/download/{{ uptime_kuma_version }}/dist.tar.gz
+    dest: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/dist
+    creates: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/dist/index.html
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: "{{ uptime_kuma_owner }}"
+    group: "{{ uptime_kuma_owner }}"
+
+- name: Installation de Uptime-Kuma
+  ansible.builtin.command:
+    cmd: npm install
+    chdir: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
+    creates: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/node_modules
+  become_user: "{{ uptime_kuma_owner }}"
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/uptime-kuma.service.j2
+    dest: /etc/systemd/system/uptime-kuma.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart uptime-kuma
+
+- name: Création du lien symbolique vers la dernière version de Uptime-Kuma
+  ansible.builtin.file:
+    src: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
+    dest: /var/www/{{ uptime_kuma_owner }}/dist
+    state: link
+  notify: restart uptime-kuma
+
+- name: Création du lien symbolique vers les données
+  ansible.builtin.file:
+    src: /var/lib/uptime-kuma
+    dest: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/data
+    state: link
+  notify: restart uptime-kuma
+
+- name: Activation de Uptime-Kuma au démarrage
+  ansible.builtin.service:
+    name: uptime-kuma
+    state: started
+    enabled: true
+
+- name: Trigger Hedgedoc handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Vérification que le serveur Uptime-Kuma est prêt
+  ansible.builtin.uri:
+    url: http://localhost:3001
+  register: _uptime_kuma_server_ready
+  retries: 10
+  delay: 3
+  until: _uptime_kuma_server_ready is success

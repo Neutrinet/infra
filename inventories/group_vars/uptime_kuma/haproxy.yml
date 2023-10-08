@@ -1,0 +1,18 @@
+letsencrypt_domains_gandi:
+  - neutrinet.be
+
+haproxy:
+  - hostname: uptime.neutrinet.be
+    target:
+      - ::1
+    target_port: 3001
+    healthcheck: true
+    healthcheck_url: HEAD /
+    deny_paths:
+      - /metrics
+
+haproxy_redirect: []
+haproxy_postgresql: []
+
+haproxy_listen:
+  - "[::]"
