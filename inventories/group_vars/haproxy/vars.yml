@@ -1,3 +1,6 @@
 letsencrypt_dns_gandi_api_key: "{{ vault_dns_gandi_api_key }}"
 letsencrypt_dns_gandi_sharing_id: "{{ vault_dns_gandi_sharing_id }}"
 letsencrypt_staging: false
+
+letsencrypt_post_hook: 'systemctl restart haproxy'
+letsencrypt_deploy_hook: '/etc/letsencrypt/haproxy.py'

@@ -2,6 +2,9 @@
 - name: Provisionning des machines Debian
   import_playbook: apps/debian_commun.yml
 
+- name: Configuration de Proxmox
+  import_playbook: apps/proxmox.yml
+
 - name: Déploiement de Keepalived
   import_playbook: apps/keepalived.yml
 

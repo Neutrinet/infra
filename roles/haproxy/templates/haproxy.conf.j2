@@ -73,7 +73,7 @@ frontend haproxy-frontend
     http-response set-header X-Content-Type-Options "nosniff"
 
     # clickjacking protection
-    http-response set-header X-Frame-Options "DENY"
+    http-response set-header X-Frame-Options "SAMEORIGIN"
 
     # keep referrer data off of HTTP connections
     http-response set-header Referrer-Policy "same-origin"
@@ -120,7 +120,8 @@ backend {{ host.hostname | replace('.', '-') }}-backend
     timeout server {{ host.timeout }}
 {% endif %}
 {% for target in host.target %}
-    server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check{% endif %} {% if "ssl" in host %}ssl{% endif %} cookie sl {% if "ssl_verify" in host and not host.ssl_verify %}verify none{% endif %}
+    server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check{% endif %} cookie sl {% if "ssl" in host %}ssl{% endif %} {% if "ssl_verify" in host and not host.ssl_verify %}verify none{% endif %}
+
 {% endfor %}
 
 {% endfor %}

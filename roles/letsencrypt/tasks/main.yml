@@ -1,0 +1,25 @@
+---
+- name: Installation des certificats Let's Encrypt
+  ansible.builtin.import_tasks: letsencrypt.yml
+  tags: ['letsencrypt']
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/letsencrypt.conf.j2
+    dest: /etc/telegraf/telegraf.d/letsencrypt.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf_config']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/letsencrypt.yml.j2
+    dest: /etc/borgmatic.d/letsencrypt.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']
