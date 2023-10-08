@@ -1,0 +1,16 @@
+bind {{ keydb_bind }}
+port {{ keydb_port }}
+unixsocket {{ keydb_unixsocket }}
+unixsocketperm {{ keydb_unixsocket_perm }}
+dbfilename {{ keydb_dbfilename }}
+logfile {{ keydb_logfile }}
+daemonize yes
+pidfile {{ keydb_pidfile }}
+databases {{ keydb_databases }}
+maxmemory {{ keydb_maxmemory | human_to_bytes }}
+maxmemory-policy {{ keydb_maxmemory_policy }}
+protected-mode {{ keydb_protected_mode | ternary('yes', 'no') }}
+dir {{ keydb_dir }}
+{% for save in keydb_saves %}
+save {{ save.times }} {{ save.number_changed }}
+{% endfor %}
