@@ -4,7 +4,8 @@
   tags: ['haproxy']
 
 - name: Installation des certificats Let's Encrypt
-  ansible.builtin.import_tasks: letsencrypt.yml
+  ansible.builtin.import_role:
+    name: letsencrypt
   tags: ['letsencrypt']
 
 - name: Installation des plugins Telegraf
