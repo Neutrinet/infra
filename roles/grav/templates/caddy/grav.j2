@@ -5,7 +5,9 @@ http://{{ web_app_domain }} {
     encode gzip
     file_server
 
-    php_fastcgi unix/{{ php_fpm_socket_file }}
+    php_fastcgi unix/{{ php_fpm_socket_file }} {
+        trusted_proxies {{ caddy_trusted_proxies | join(' ') }}
+    }
 
     @forbidden {
         # Deny all direct access for these folders
