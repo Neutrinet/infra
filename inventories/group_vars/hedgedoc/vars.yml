@@ -6,6 +6,7 @@ hedgedoc_postgresql_password: "{{ vault_hedgedoc_postgresql_password }}"
 
 hedgedoc_s3_enabled: true
 hedgedoc_s3_host: s3.neutrinet.be
+hedgedoc_s3_bucket: hedgedoc
 hedgedoc_s3_port: 443
 hedgedoc_s3_access_key: "{{ vault_hedgedoc_s3_access_key }}"
 hedgedoc_s3_secret_key: "{{ vault_hedgedoc_s3_secret_key }}"
