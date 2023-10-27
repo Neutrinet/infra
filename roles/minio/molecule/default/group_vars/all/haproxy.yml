@@ -1,6 +1,9 @@
 letsencrypt_domains_gandi:
   - neutrinet.be
 
+letsencrypt_post_hook: 'systemctl restart haproxy'
+letsencrypt_deploy_hook: '/etc/letsencrypt/haproxy.py'
+
 haproxy_redirect: []
 haproxy_postgresql: []
 
