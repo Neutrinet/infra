@@ -1,0 +1,45 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Create RClone Backup
+Wants=network-online.target
+After=network-online.target
+ConditionACPower=true
+
+[Service]
+Type=oneshot
+Environment=RCLONE_CONFIG=/etc/rclone.conf
+Restart=no
+User=rclone
+Group=rclone
+# Delay start to prevent backups running during boot.
+ExecStart=rclone sync -v --fast-list src:{{ rclone_src_path }} backup:{{ rclone_backup_path }}
+
+# Security settings for systemd running as root, optional but recommended to improve security. You
+# can disable individual settings if they cause problems for your use case. For more details, see
+# the systemd manual: https://www.freedesktop.org/software/systemd/man/systemd.exec.html
+LockPersonality=true
+MemoryDenyWriteExecute=true
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateUsers=true
+PrivateTmp=true
+PrivateMounts=true
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+ProtectSystem=strict
+ReadOnlyPaths=-/etc/rclone.conf
+ProtectHome=true
+CapabilityBoundingSet=
+RemoveIPC=true

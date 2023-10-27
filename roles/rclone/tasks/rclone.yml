@@ -1,0 +1,79 @@
+- name: Installation des dépendances
+  ansible.builtin.package:
+    name: zip
+    state: present
+
+- name: Création des dossiers pour rclone
+  ansible.builtin.file:
+    path: "{{ rclone_dir }}"
+    owner: rclone
+    group: rclone
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/rclone
+    - /opt/rclone/{{ rclone_version }}
+  loop_control:
+    loop_var: rclone_dir
+
+- name: Création du dossier des archives de rclone
+  ansible.builtin.file:
+    path: /usr/local/src/rclone
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive de rclone v{{ rclone_version }}
+  ansible.builtin.get_url:
+    url: https://downloads.rclone.org/v{{ rclone_version }}/rclone-v{{ rclone_version }}-linux-amd64.zip
+    dest: /usr/local/src/rclone/{{ rclone_version }}.zip
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://downloads.rclone.org/v{{ rclone_version }}/SHA256SUMS"
+
+- name: Décompression de l'archive  # noqa command-instead-of-module
+  # Il y a un bug avec l'option -j et le module unarchived sur un fichier zip...
+  # Le plus simple est d'utiliser unzip directement
+  ansible.builtin.command:
+    cmd: unzip -j /usr/local/src/rclone/{{ rclone_version }}.zip -d /opt/rclone/{{ rclone_version }}
+    creates: /opt/rclone/{{ rclone_version }}/rclone
+
+- name: Création du lien symbolique pour le binaire rclone
+  ansible.builtin.file:
+    src: /opt/rclone/{{ rclone_version }}/rclone
+    dest: /usr/local/bin/rclone
+    state: link
+
+- name: Configuration de rclone
+  ansible.builtin.template:
+    src: rclone.conf.j2
+    dest: /etc/rclone.conf
+    owner: rclone
+    group: rclone
+    mode: "u=rw,g=r,o="
+
+- name: Création d'un timer pour créer les backups périodiquement
+  ansible.builtin.copy:
+    src: systemd/rclone-backup.timer
+    dest: /etc/systemd/system/rclone-backup.timer
+    owner: root
+    group: root
+    mode: u=rw,go=r
+  notify: reload systemd
+
+- name: Création d'un service pour créer les backups périodiquement
+  ansible.builtin.template:
+    src: systemd/rclone-backup.service.j2
+    dest: /etc/systemd/system/rclone-backup.service
+    owner: root
+    group: root
+    mode: u=rw,go=r
+  notify: reload systemd
+
+- name: Activation du timer rclone
+  ansible.builtin.service:
+    name: rclone-backup.timer
+    state: started
+    enabled: true

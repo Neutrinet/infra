@@ -1,0 +1,17 @@
+rclone_version: 1.64.2
+
+rclone_src_host: s3.neutrinet.be
+rclone_src_path: /neutrinet
+rclone_src_provider: minio
+rclone_src_access_key: minio
+rclone_src_secret_key: neutrinet
+rclone_src_region: ""
+rclone_src_storage_class: ""
+
+rclone_backup_host: s3.neutrinet.be
+rclone_backup_path: /backup
+rclone_backup_provider: minio
+rclone_backup_access_key: minio
+rclone_backup_secret_key: neutrinet
+rclone_backup_region: ""
+rclone_backup_storage_class: ""
