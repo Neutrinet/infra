@@ -12,6 +12,7 @@ haproxy:
     ssl_verify: false
     headers:
       Access-Control-Allow-Origin: https://user.neutrinet.be
+      Content-Security-Policy: default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self';
 
 haproxy_redirect: []
 haproxy_postgresql: []
