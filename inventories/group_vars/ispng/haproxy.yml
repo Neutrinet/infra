@@ -10,7 +10,8 @@ haproxy:
     healthcheck_url: HEAD /
     ssl: true
     ssl_verify: false
-    allow_origin: https://user.neutrinet.be
+    headers:
+      Access-Control-Allow-Origin: https://user.neutrinet.be
 
 haproxy_redirect: []
 haproxy_postgresql: []

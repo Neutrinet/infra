@@ -113,8 +113,10 @@ backend {{ host.hostname | replace('.', '-') }}-backend
 {% if host.username is defined and host.password is defined %}
     http-request auth unless { http_auth({{ host.hostname | replace('.', '-') }}-credentials) }
 {% endif %}
-{% if host.allow_origin is defined and host.allow_origin | length > 0 %}
-    http-response set-header Access-Control-Allow-Origin {{ host.allow_origin }}
+{% if host.headers is defined %}
+{% for header_name, header_value in host.headers.items() %}
+    http-response set-header {{ header_name }} "{{ header_value }}"
+{% endfor %}
 {% endif %}
 {% if "timeout" in host and host.timeout %}
     timeout server {{ host.timeout }}
