@@ -1,5 +1,4 @@
 nextcloud_domain: files.example.com
-nextcloud_trusted_proxies: []
 
 nextcloud_max_upload_size: 512MB
 

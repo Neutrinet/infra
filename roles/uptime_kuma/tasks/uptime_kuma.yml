@@ -28,7 +28,7 @@
     owner: "{{ uptime_kuma_owner }}"
     group: "{{ uptime_kuma_owner }}"
 
-- name: Téléchargement de Uptime-Kuma v{{ uptime_kuma_version }}
+- name: Téléchargement du frontend de Uptime-Kuma v{{ uptime_kuma_version }}
   ansible.builtin.unarchive:
     src: https://github.com/louislam/uptime-kuma/releases/download/{{ uptime_kuma_version }}/dist.tar.gz
     dest: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/dist

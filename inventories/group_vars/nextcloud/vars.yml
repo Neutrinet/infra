@@ -1,12 +1,6 @@
 nextcloud_domain: files.neutrinet.be
 nextcloud_postgresql_password: "{{ vault_nextcloud_postgresql_password }}"
 
-nextcloud_trusted_proxies:
-  - 10.0.11.11
-  - 2001:913:1000:11::11
-  - 10.0.11.12
-  - 2001:913:1000:11::12
-
 nextcloud_s3_enabled: true
 nextcloud_s3_host: s3.neutrinet.be
 nextcloud_s3_port: 443

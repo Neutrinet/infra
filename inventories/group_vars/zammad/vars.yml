@@ -1,10 +1,5 @@
 zammad_domain: support.neutrinet.be
 zammad_owner: "{{ zammad_domain | replace('.', '-') }}"
-zammad_trusted_proxies:
-  - 10.0.11.11
-  - 2001:913:1000:11::11
-  - 10.0.11.12
-  - 2001:913:1000:11::12
 
 zammad_postgresql_password: "{{ vault_zammad_postgresql_password }}"
 zammad_elasticsearch_memory_limit: 2g

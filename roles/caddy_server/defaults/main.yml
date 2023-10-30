@@ -2,3 +2,6 @@ caddy_config_dir: /etc/caddy
 caddy_vhosts_dir: "{{ caddy_config_dir }}/conf.d"
 caddy_log_dir: /var/log/caddy
 caddy_healthcheck_log: "{{ caddy_log_dir }}/healthcheck.log"
+
+caddy_trusted_proxies:
+  - private_ranges

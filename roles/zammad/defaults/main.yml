@@ -1,7 +1,5 @@
 zammad_domain: zammad.example.com
 zammad_owner: "{{ zammad_domain | replace('.', '-') }}"
-zammad_trusted_proxies:
-  - private_ranges
 
 postgresql_host: localhost
 
