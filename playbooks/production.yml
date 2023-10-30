@@ -1,27 +1,41 @@
 ---
 - name: Provisionning des machines Debian
-  import_playbook: apps/debian_commun.yml
+  import_playbook: core/debian_commun.yml
 
 - name: Configuration de Proxmox
-  import_playbook: apps/proxmox.yml
+  import_playbook: core/proxmox.yml
+
+- name: Déploiement du cluster Ceph S3
+  import_playbook: core/ceph_s3.yml
+
 
 - name: Déploiement de Keepalived
-  import_playbook: apps/keepalived.yml
+  import_playbook: services/keepalived.yml
 
 - name: Déploiement de HAProxy
-  import_playbook: apps/haproxy.yml
+  import_playbook: services/haproxy.yml
 
 - name: Déploiement du cluster Patroni pour PostgreSQL
-  import_playbook: apps/postgres_patroni.yml
+  import_playbook: services/postgres_patroni.yml
+
+- name: Déploiement des probes pour le monitoring
+  import_playbook: services/probe.yml
+
+- name: Déploiement de VictoriaMetrics
+  import_playbook: services/victoriametrics.yml
+
+- name: Déploiement d'Alertmanager
+  import_playbook: services/alertmanager.yml
+
+- name: Déploiement de Gitlab Runner
+  import_playbook: /gitlab_runner.yml
+
+- name: Déploiement des webhooks
+  import_playbook: services/webhook.yml
+
 
 - name: Déploiement des sites web statiques
   import_playbook: apps/web_static.yml
-
-- name: Déploiement des webhooks
-  import_playbook: apps/webhook.yml
-
-- name: Déploiement du cluster Ceph S3
-  import_playbook: apps/ceph_s3.yml
 
 - name: Déploiement de HedgeDoc
   import_playbook: apps/hedgedoc.yml
@@ -47,20 +61,9 @@
 - name: Déploiement de Zammad
   import_playbook: apps/zammad.yml
 
-- name: Déploiement des probes pour le monitoring
-  import_playbook: apps/probe.yml
-
-- name: Déploiement de VictoriaMetrics
-  import_playbook: apps/victoriametrics.yml
-
-- name: Déploiement d'Alertmanager
-  import_playbook: apps/alertmanager.yml
-
 - name: Déploiement de Grafana
   import_playbook: apps/grafana.yml
 
 - name: Déploiement de Uptime-Kuma
   import_playbook: apps/uptime_kuma.yml
 
-- name: Déploiement de Gitlab Runner
-  import_playbook: apps/gitlab_runner.yml
