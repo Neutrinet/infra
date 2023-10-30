@@ -28,7 +28,7 @@
   import_playbook: services/alertmanager.yml
 
 - name: Déploiement de Gitlab Runner
-  import_playbook: /gitlab_runner.yml
+  import_playbook: services/gitlab_runner.yml
 
 - name: Déploiement des webhooks
   import_playbook: services/webhook.yml
