@@ -60,13 +60,21 @@
 
 - name: Copie du fichier de configuration du serveur OpenSSH
   ansible.builtin.template:
-    src: sshd/sshd_config.j2
+    src: sshd/{{ ansible_distribution_release }}.j2
     dest: /etc/ssh/sshd_config
     owner: root
     group: root
-    mode: "u=rw,go=r"
+    mode: "ugo=r"
     validate: 'sshd -t -f %s'
   notify: restart ssh
+
+- name: Copie du fichier de configuration du client OpenSSH
+  ansible.builtin.copy:
+    src: ssh/{{ ansible_distribution_release }}.j2
+    dest: /etc/ssh/ssh_config
+    owner: root
+    group: root
+    mode: "ugo=r"
 
 - name: Activation du service SSH au démarrage
   ansible.builtin.service:
