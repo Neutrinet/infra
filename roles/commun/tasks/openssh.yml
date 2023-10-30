@@ -70,7 +70,7 @@
 
 - name: Copie du fichier de configuration du client OpenSSH
   ansible.builtin.copy:
-    src: ssh/{{ ansible_distribution_release }}.j2
+    src: ssh/{{ ansible_distribution_release }}
     dest: /etc/ssh/ssh_config
     owner: root
     group: root
