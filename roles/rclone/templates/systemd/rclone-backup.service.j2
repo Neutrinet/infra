@@ -13,7 +13,7 @@ Restart=no
 User=rclone
 Group=rclone
 # Delay start to prevent backups running during boot.
-ExecStart=rclone sync -v --fast-list src:/{{ rclone_src_bucket }} backup:/{{ rclone_backup_bucket }}
+ExecStart=rclone sync -v --fast-list --checksum src:{{ rclone_src_bucket }} encrypted-backup:
 
 # Security settings for systemd running as root, optional but recommended to improve security. You
 # can disable individual settings if they cause problems for your use case. For more details, see

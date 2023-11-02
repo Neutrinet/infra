@@ -15,3 +15,6 @@ rclone_backup_access_key: minio
 rclone_backup_secret_key: neutrinet
 rclone_backup_region: ""
 rclone_backup_storage_class: ""
+
+rclone_backup_encryption_password: neutrinet
+rclone_backup_encryption_salt: somesalt

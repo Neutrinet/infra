@@ -8,8 +8,13 @@ region = {{ rclone_src_region }}
 endpoint = https://{{ rclone_src_host }}
 location_constraint =
 acl =
-server_side_encryption =
 storage_class = {{ rclone_src_storage_class }}
+
+[encrypt-backup]
+type = crypt
+remote = backup:{{ rclone_backup_bucket }}
+password = {{ rclone_backup_obscure_encryption_password }}
+password2 = {{ rclone_backup_obscure_encryption_salt }}
 
 [backup]
 type = s3
@@ -21,5 +26,4 @@ region = {{ rclone_backup_region }}
 endpoint = https://{{ rclone_backup_host }}
 location_constraint =
 acl =
-server_side_encryption =
 storage_class = {{ rclone_backup_storage_class }}

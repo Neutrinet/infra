@@ -46,6 +46,50 @@
     dest: /usr/local/bin/rclone
     state: link
 
+- name: Obfuscation du mot de passe de chiffrement
+  ansible.builtin.shell:
+    cmd: rclone obscure "{{ rclone_backup_encryption_password }}" > /opt/rclone/.backup_encryption_password.secret
+    creates: /opt/rclone/.backup_encryption_password.secret
+
+- name: Permissions pour le mot de passe de chiffrement obfusqué
+  ansible.builtin.file:
+    path: /opt/rclone/.backup_encryption_password.secret
+    state: file
+    mode: "u=rw,go="
+    owner: root
+    group: root
+
+- name: Récupération du mot de passe de chiffrement obfusqué
+  ansible.builtin.slurp:
+    src: /opt/rclone/.backup_encryption_password.secret
+  register: rclone_obscured_encryption_password
+  no_log: true
+
+- name: Obfuscation du salt de chiffrement
+  ansible.builtin.shell:
+    cmd: rclone obscure "{{ rclone_backup_encryption_salt }}" > /opt/rclone/.backup_encryption_salt.secret
+    creates: /opt/rclone/.backup_encryption_salt.secret
+
+- name: Permissions pour le salt de chiffrement obfusqué
+  ansible.builtin.file:
+    path: /opt/rclone/.backup_encryption_salt.secret
+    state: file
+    mode: "u=rw,go="
+    owner: root
+    group: root
+
+- name: Récupération du salt de chiffrement obfusqué
+  ansible.builtin.slurp:
+    src: /opt/rclone/.backup_encryption_salt.secret
+  register: rclone_obscured_encryption_salt
+  no_log: true
+
+- name: Décodage du salt et du mot de passe de chiffrement obfusqués
+  ansible.builtin.set_fact:
+    rclone_backup_obscure_encryption_password: "{{ rclone_obscured_encryption_password.content | b64decode | trim }}"
+    rclone_backup_obscure_encryption_salt: "{{ rclone_obscured_encryption_salt.content | b64decode | trim }}"
+  no_log: true
+
 - name: Configuration de rclone
   ansible.builtin.template:
     src: rclone.conf.j2
@@ -53,6 +97,7 @@
     owner: rclone
     group: rclone
     mode: "u=rw,g=r,o="
+  no_log: true
 
 - name: Création d'un timer pour créer les backups périodiquement
   ansible.builtin.copy:
