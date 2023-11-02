@@ -12,7 +12,7 @@ Environment=RCLONE_CONFIG=/etc/rclone.conf
 Restart=no
 User=rclone
 Group=rclone
-# Delay start to prevent backups running during boot.
+# See https://rclone.org/s3/#avoiding-head-requests-to-read-the-modification-time
 ExecStart=rclone sync -v --fast-list --update --use-server-modtime src:{{ rclone_src_bucket }} encrypt-backup:
 
 # Security settings for systemd running as root, optional but recommended to improve security. You
