@@ -7,3 +7,14 @@ nextcloud_s3_bucket: nextcloud
 nextcloud_s3_port: 443
 nextcloud_s3_access_key: "{{ vault_nextcloud_s3_access_key }}"
 nextcloud_s3_secret_key: "{{ vault_nextcloud_s3_secret_key }}"
+
+rclone_backup_host: s3.fr-par.scw.cloud
+rclone_backup_bucket: neutrinet-nextcloud
+rclone_backup_provider: scaleway
+rclone_backup_access_key: "{{ vault_rclone_backup_access_key }}"
+rclone_backup_secret_key: "{{ vault_rclone_backup_secret_key }}"
+rclone_backup_region: fr-par
+rclone_backup_storage_class: ONEZONE_IA
+
+rclone_backup_encryption_password: "{{ vault_rclone_backup_encryption_password }}"
+rclone_backup_encryption_salt: "{{ vault_rclone_backup_encryption_salt }}"
