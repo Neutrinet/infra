@@ -14,10 +14,10 @@ mobilizon_s3_access_key: ""
 mobilizon_s3_secret_key: ""
 
 mobilizon_email_host: "localhost"
-mobilizon_email_username: "contact@neutrinet.be"
+mobilizon_email_username: "no-reply@mobilizon.be"
 mobilizon_email_password: "neutrinet"
-mobilizon_email_from: "noreply@neutrinet.be"
-mobilizon_email_reply_to: "noreply@neutrinet.be"
+mobilizon_email_from: "no-reply@mobilizon.be"
+mobilizon_email_reply_to: "no-reply@moblizon.be"
 
 mobilizon_secret_key_base: "M79xe7PZNz67+M9mAn3YH6Eiyar+jUhrN/sHoRv2P7eAe51ITpBdbyl6hf5GlcXt"
 mobilizon_secret_key: "CRWyq4ojCC7lM90QTU7ibWMqQRBYW+D39TjtKHCfaT1KG1ddwVq92R8+JbGDEgkg"
