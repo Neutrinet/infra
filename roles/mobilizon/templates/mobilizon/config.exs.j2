@@ -56,3 +56,10 @@ config :mobilizon, Mobilizon.Web.Email.Mailer,
   no_mx_lookups: false,
   # can be `:always`. If your smtp relay requires authentication set it to `:always`.
   auth: :always
+
+{% if mobilizon_push_public_key != "" and mobilizon_push_private_key != "" %}
+config :web_push_encryption, :vapid_details,
+  subject: "mailto:{{ mobilizon_email_from }}",
+  public_key: "{{ mobilizon_push_public_key }}",
+  private_key: "{{ mobilizon_push_private_key}}"
+{% endif %}

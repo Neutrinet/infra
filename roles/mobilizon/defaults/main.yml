@@ -22,6 +22,9 @@ mobilizon_email_reply_to: "no-reply@moblizon.be"
 mobilizon_secret_key_base: "M79xe7PZNz67+M9mAn3YH6Eiyar+jUhrN/sHoRv2P7eAe51ITpBdbyl6hf5GlcXt"
 mobilizon_secret_key: "CRWyq4ojCC7lM90QTU7ibWMqQRBYW+D39TjtKHCfaT1KG1ddwVq92R8+JbGDEgkg"
 
+mobilizon_push_public_key: ""
+mobilizon_push_private_key: ""
+
 mobilizon_path: /var/lib/mobilizon
 
 mobilizon_trusted_proxies: []

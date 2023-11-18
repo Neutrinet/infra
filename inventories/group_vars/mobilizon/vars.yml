@@ -19,6 +19,9 @@ mobilizon_email_reply_to: "no-reply@mobilizon.be"
 mobilizon_secret_key_base: "{{ vault_mobilizon_secret_key_base }}"
 mobilizon_secret_key: "{{ vault_mobilizon_secret_key }}"
 
+mobilizon_push_public_key: "{{ vault_mobilizon_push_public_key }}"
+mobilizon_push_private_key: "{{ vault_mobilizon_push_private_key }}"
+
 mobilizon_path: /var/lib/mobilizon
 
 mobilizon_trusted_proxies:
