@@ -1,3 +1,5 @@
+keepalived_interface: ens18
+
 keepalived_vrrp_scripts:
   - name: check_haproxy
     cmd: /usr/bin/killall -0 haproxy

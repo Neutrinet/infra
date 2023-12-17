@@ -5,7 +5,7 @@
         "htaccess.RewriteBase": "/",
         "datadirectory": "{{ web_app_dist_dir }}/data",
         "overwrite.cli.url": "https://{{ nextcloud_domain }}",
-        "trusted_proxies": {{ nextcloud_trusted_proxies | list | to_json }},
+        "trusted_proxies": {{ caddy_trusted_proxies | list | to_json }},
         "dbtype": "pgsql",
         "dbname": "{{ web_app_owner }}",
         "dbhost": "{{ postgresql_host }}",

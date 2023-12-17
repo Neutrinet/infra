@@ -10,7 +10,7 @@
   ansible.builtin.lineinfile:
     path: "/etc/default/grub"
     regexp: 'GRUB_CMDLINE_LINUX="(.*)"'
-    line: 'GRUB_CMDLINE_LINUX=""'
+    line: 'GRUB_CMDLINE_LINUX="{{ grub_option_boot_linux }}"'
   notify: update grub
 
 - name: Enable serial and console input grub

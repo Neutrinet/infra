@@ -1,0 +1,38 @@
+---
+- name: Installation de NodeJS
+  ansible.builtin.import_role:
+    name: nodejs
+  vars:
+    nodejs_major_version: 18
+  tags: ['nodejs']
+
+- name: Création de l'utilisateur
+  ansible.builtin.import_tasks: user.yml
+  tags: ['user']
+
+- name: Installation de Uptime-Kuma
+  ansible.builtin.import_tasks: uptime_kuma.yml
+  tags: ['uptime_kuma']
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/uptime-kuma.conf.j2
+    dest: /etc/telegraf/telegraf.d/{{ uptime_kuma_owner }}.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  when: uptime_kuma_api_token != ""
+  notify: restart telegraf
+  no_log: true
+  tags: ['telegraf']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/uptime-kuma.yml.j2
+    dest: /etc/borgmatic.d/uptime-kuma-{{ uptime_kuma_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

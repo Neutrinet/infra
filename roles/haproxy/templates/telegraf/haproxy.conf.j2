@@ -4,18 +4,3 @@
   ## Scrape metrics directly from haproxy's prometheus exporter
   urls = ["http://localhost:8405/metrics"]
   metric_version = 2
-
-
-{% if letsencrypt_domains_gandi | length > 0 %}
-# Reads metrics from a SSL certificate
-[[inputs.x509_cert]]
-  ## List certificate sources
-  ## Prefix your entry with 'file://' if you intend to use relative paths
-  sources = [
-{% for domain in letsencrypt_domains_gandi %}
-    "/etc/haproxy/ssl/{{ domain | replace('.', '-') }}.pem",
-    "/etc/haproxy/ssl/{{ domain | replace('.', '-') }}-ecdsa.pem"{% if not loop.last %},{% endif %}
-
-{% endfor %}
-  ]
-{% endif %}

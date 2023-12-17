@@ -1,4 +1,4 @@
-php_version: "8.0"
+php_version: 8.2
 php_config_dir: "/etc/php/{{ php_version }}"
 php_extra_modules: []
 
@@ -7,8 +7,7 @@ php_fpm_pool_dir: "{{ php_fpm_config_dir }}/pool.d"
 php_fpm_tmp_dir: "{{ web_app_home_dir }}/tmp"
 
 # Socket
-php_fpm_socket_dir: /var/run
-php_fpm_socket_file: "{{ php_fpm_socket_dir }}/{{ web_app_owner }}.sock"
+php_fpm_socket_file: /var/run/php/{{ php_executable }}-{{ web_app_owner }}.sock
 
 # Process manager
 php_fpm_pm: ondemand
