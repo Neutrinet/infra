@@ -1,0 +1,23 @@
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+platforms:
+  - name: bullseye-rclone-minio-molecule
+    box: debian/bullseye64
+    cpu: 2
+    memory: 1024
+    interfaces:
+      - network_name: private_network
+        type: dhcp
+        auto_config: true
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: /usr/bin/python3
+      vault_password_file: "${MOLECULE_PROJECT_DIRECTORY}/../../vault.key"
+verifier:
+  name: ansible

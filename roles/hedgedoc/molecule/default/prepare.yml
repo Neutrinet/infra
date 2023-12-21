@@ -13,8 +13,37 @@
         name: git
         state: present
 
+    - name: Ajout du domaine dans /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: ::1 minio.neutrinet.be s3.neutrinet.be
+        state: present
+
+    - name: Téléchargement du Root CA staging de Let's encrypt
+      # Minio ne permet pas d'ignorer la vérification du certificat
+      # Comme on utilise les certificats de test de Let's encrypt,
+      # on doit donc les ajouter dans les CA de confiance
+      ansible.builtin.get_url:
+        url: https://letsencrypt.org/certs/staging/{{ ca_name }}.pem
+        dest: /usr/local/share/ca-certificates/{{ ca_name }}.crt
+        mode: "u=rw,go=r"
+        owner: root
+        group: root
+      loop:
+        - letsencrypt-stg-root-x1
+        - letsencrypt-stg-root-x2
+      loop_control:
+        loop_var: ca_name
+      notify: Update ca certificates
+
   roles:
     - telegraf
     - borgmatic
     - haproxy
     - postgres_standalone
+    - minio
+
+  handlers:
+    - name: Update ca certificates  # noqa no-changed-when
+      ansible.builtin.command:
+        cmd: update-ca-certificates

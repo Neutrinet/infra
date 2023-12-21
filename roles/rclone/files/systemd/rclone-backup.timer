@@ -1,0 +1,11 @@
+[Unit]
+Description=RClone Backup Timer
+
+[Timer]
+# Run rclone-backup every 3h
+OnCalendar=*-*-* 0/3:0:0
+RandomizedDelaySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target
