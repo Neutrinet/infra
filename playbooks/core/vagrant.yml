@@ -1,0 +1,19 @@
+---
+# config commun de tous les hosts
+# pour plus d'info, il faut regarder dans roles/*
+
+- name: Provisionning des machines Vagrant
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: Test si le dossier home de Vagrant existe 
+      ansible.builtin.stat:
+        path: /home/vagrant
+      register: vagrant_home
+
+    - name: Role commun pour les VM Vagrant
+      ansible.builtin.import_role:
+        name: vagrant
+      when: vagrant_home.stat.exists

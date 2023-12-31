@@ -10,3 +10,5 @@ users:
 
 root_password: "vagrant"
 ssh_permit_jump: true
+
+grub_option_boot_linux: 'net.ifnames=0 biosdevname=0'

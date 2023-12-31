@@ -1,4 +1,7 @@
 ---
+- name: Provisionning des machines Vagrant
+  import_playbook: core/vagrant.yml
+
 - name: Provisionning des machines Debian
   import_playbook: core/debian_commun.yml
 
@@ -17,6 +20,9 @@
 
 - name: Déploiement du cluster Patroni pour PostgreSQL
   import_playbook: services/postgres_patroni.yml
+
+- name: Déploiement de PostgreSQL
+  import_playbook: services/postgres_standalone.yml
 
 - name: Déploiement des probes pour le monitoring
   import_playbook: services/probe.yml

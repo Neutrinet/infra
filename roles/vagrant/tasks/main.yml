@@ -1,0 +1,4 @@
+---
+
+- name: Création et activation de la swap
+  ansible.builtin.import_tasks: swap.yml

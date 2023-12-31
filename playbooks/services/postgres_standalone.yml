@@ -1,6 +1,7 @@
+
 ---
-- name: Déploiement de HAProxy
-  hosts: haproxy, services_haproxy
+- name: Déploiement de PostgreSQL
+  hosts: services_postgres_standalone
   become: true
 
   pre_tasks:
@@ -9,4 +10,4 @@
         update_cache: true
 
   roles:
-    - haproxy
+    - postgres_standalone

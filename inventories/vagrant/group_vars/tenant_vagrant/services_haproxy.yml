@@ -1,0 +1,34 @@
+---
+haproxy:
+  - hostname: neutrinet.be
+    target:
+      - 127.0.0.1
+    target_port: 8080
+    healthcheck: false
+    # username: admin
+    # password: neutrinet
+    deny_paths:
+      - /metrics
+      - /forbidden
+  - hostname: example.com
+    target:
+      - 127.0.0.1
+    target_port: 8080
+    healthcheck: false
+
+haproxy_redirect: []
+
+haproxy_postgresql: []
+
+haproxy_listen:
+  - "[::]"
+
+letsencrypt_mail_notification: "{{ mail_notification }}"
+
+letsencrypt_post_hook: ''
+letsencrypt_deploy_hook: ''
+
+letsencrypt_dns_gandi_api_key: ''
+letsencrypt_dns_gandi_sharing_id: ''
+letsencrypt_staging: true
+letsencrypt_domains_gandi: []
