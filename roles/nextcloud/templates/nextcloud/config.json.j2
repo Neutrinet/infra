@@ -16,7 +16,7 @@
         "objectstore": {
             "class": "\\OC\\Files\\ObjectStore\\S3",
             "arguments": {
-                "bucket": "nextcloud",
+                "bucket": "{{ nextcloud_s3_bucket }}",
                 "autocreate": false,
                 "key": "{{ nextcloud_s3_access_key }}",
                 "secret": "{{ nextcloud_s3_secret_key }}",

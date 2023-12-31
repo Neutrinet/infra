@@ -1,0 +1,7 @@
+- name: Création de l'utilisateur pour rclone
+  ansible.builtin.user:
+    name: rclone
+    home: /opt/rclone
+    shell: /sbin/nologin
+    system: true
+    state: present

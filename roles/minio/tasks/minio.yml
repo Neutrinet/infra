@@ -1,0 +1,53 @@
+- name: Création des dossiers pour Minio
+  ansible.builtin.file:
+    path: "{{ minio_dir }}"
+    owner: minio
+    group: minio
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/minio
+    - /var/lib/minio
+  loop_control:
+    loop_var: minio_dir
+
+- name: Téléchargement de l'archive de Minio
+  ansible.builtin.get_url:
+    url: https://dl.min.io/server/minio/release/linux-amd64/minio
+    dest: /opt/minio/minio
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+  notify: restart minio
+
+- name: Création du lien symbolique pour le binaire minio
+  ansible.builtin.file:
+    src: /opt/minio/minio
+    dest: /usr/local/bin/minio
+    state: link
+
+- name: Configuration de l'environnement de Minio
+  ansible.builtin.template:
+    src: minio/env.j2
+    dest: /etc/default/minio
+    owner: minio
+    group: minio
+    mode: "u=rw,g=r,o="
+  notify: restart minio
+
+- name: Configuration du service systemd
+  ansible.builtin.copy:
+    src: systemd/minio.service
+    dest: /etc/systemd/system/minio.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart minio
+
+- name: Activation de Minio au démarrage
+  ansible.builtin.service:
+    name: minio
+    state: started
+    enabled: true

@@ -1,0 +1,7 @@
+- name: Création de l'utilisateur pour Minio
+  ansible.builtin.import_tasks: user.yml
+  tags: ['user']
+
+- name: Installation de Minio
+  ansible.builtin.import_tasks: minio.yml
+  tags: ['minio']

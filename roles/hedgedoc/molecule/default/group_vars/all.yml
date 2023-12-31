@@ -1,5 +1,12 @@
+letsencrypt_domains_gandi:
+  - neutrinet.be
+
+letsencrypt_post_hook: 'systemctl restart haproxy'
+letsencrypt_deploy_hook: '/etc/letsencrypt/haproxy.py'
+
 haproxy_redirect: []
 haproxy_postgresql: []
+
 haproxy:
   - hostname: doc.example.com
     target:
@@ -9,3 +16,15 @@ haproxy:
     healthcheck_url: "HEAD /status"
     deny_paths:
       - /metrics
+  - hostname: s3.neutrinet.be
+    target:
+      - "::1"
+    target_port: 9000
+    healthcheck: false
+    healthcheck_url: HEAD /minio/health/live
+  - hostname: minio.neutrinet.be
+    target:
+      - "::1"
+    target_port: 9090
+    healthcheck: true
+    healthcheck_url: HEAD /

@@ -1,0 +1,30 @@
+mobilizon_domain: mobilizon.be
+mobilizon_owner: "{{ mobilizon_domain | replace('.', '-') }}"
+mobilizon_version: 3.2.0
+postgresql_major_version: 13
+
+postgresql_host: localhost
+
+mobilizon_postgresql_password: neutrinet
+
+mobilizon_s3_enabled: false
+mobilizon_s3_host: s3.example.com
+mobilizon_s3_port: 443
+mobilizon_s3_access_key: ""
+mobilizon_s3_secret_key: ""
+
+mobilizon_email_host: "localhost"
+mobilizon_email_username: "no-reply@mobilizon.be"
+mobilizon_email_password: "neutrinet"
+mobilizon_email_from: "no-reply@mobilizon.be"
+mobilizon_email_reply_to: "no-reply@moblizon.be"
+
+mobilizon_secret_key_base: "M79xe7PZNz67+M9mAn3YH6Eiyar+jUhrN/sHoRv2P7eAe51ITpBdbyl6hf5GlcXt"
+mobilizon_secret_key: "CRWyq4ojCC7lM90QTU7ibWMqQRBYW+D39TjtKHCfaT1KG1ddwVq92R8+JbGDEgkg"
+
+mobilizon_push_public_key: ""
+mobilizon_push_private_key: ""
+
+mobilizon_path: /var/lib/mobilizon
+
+mobilizon_trusted_proxies: []

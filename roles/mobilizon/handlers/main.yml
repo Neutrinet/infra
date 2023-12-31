@@ -1,0 +1,19 @@
+- name: reload systemd
+  ansible.builtin.systemd:
+   daemon_reload: true
+
+- name: Migration de la DB
+  ansible.builtin.command:
+    cmd: ./bin/mobilizon_ctl migrate
+    chdir: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+  become_user: "{{ mobilizon_owner }}"
+
+- name: restart mobilizon
+  ansible.builtin.service:
+    name: mobilizon
+    state: restarted
+
+- name: restart telegraf
+  ansible.builtin.service:
+    name: telegraf
+    state: restarted

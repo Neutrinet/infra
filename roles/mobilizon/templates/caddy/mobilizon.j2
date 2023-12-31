@@ -1,0 +1,48 @@
+{{ ansible_managed | comment }}
+
+http://{{ mobilizon_domain }} {
+    encode gzip zstd
+
+    request_body {
+        max_size 16MB
+    }
+
+    @staticfiles {
+        path /js/*
+        path /css/*
+    }
+    handle @staticfiles {
+        root * /var/www/{{ mobilizon_owner }}/dist/priv/static
+        header Cache-Control "public, max-age=31536000, immutable"
+        header -ETag
+        file_server
+    }
+
+    @mediafiles {
+        path /media/*
+        path /proxy/*
+    }
+    handle @mediafiles {
+        header Cache-Control "public, max-age=31536000, immutable"
+        header -ETag
+        reverse_proxy localhost:4000
+    }
+
+    handle_errors {
+        @5xx expression `{err.status_code} >= 500 && {err.status_code} < 600`
+	    handle @5xx {
+            root * /var/www/{{ mobilizon_owner }}/dist/priv/errors
+            rewrite * /error.html
+            file_server
+        }
+    }
+    reverse_proxy localhost:4000 {
+{% if mobilizon_trusted_proxies | length > 0 %}
+        trusted_proxies {{ mobilizon_trusted_proxies | join(' ') }}
+{% endif %}
+    }
+
+    log {
+        output file "{{ caddy_log_dir }}/{{ mobilizon_owner }}.log"
+    }
+}

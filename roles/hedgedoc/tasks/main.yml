@@ -47,3 +47,14 @@
     mode: "u=rw,go="
     validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
   tags: ['borgmatic_config']
+
+- name: Installation de rclone pour les backups du stockage S3
+  ansible.builtin.import_role:
+    name: rclone
+  vars:
+    rclone_src_host: "{{ hedgedoc_s3_host }}"
+    rclone_src_bucket: "{{ hedgedoc_s3_bucket }}"
+    rclone_src_access_key: "{{ hedgedoc_s3_access_key }}"
+    rclone_src_secret_key: "{{ hedgedoc_s3_secret_key }}"
+  when: hedgedoc_s3_enabled
+  tags: ['rclone']

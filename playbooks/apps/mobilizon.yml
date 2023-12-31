@@ -1,0 +1,11 @@
+- name: Déploiement de Mobilizon
+  hosts: mobilizon
+  become: true
+
+  pre_tasks:
+    - name: Mise à jour du cache APT
+      ansible.builtin.apt:
+        update_cache: true
+
+  roles:
+    - mobilizon

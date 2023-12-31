@@ -1,0 +1,86 @@
+- name: Création du dossier de Mobilizon
+  ansible.builtin.file:
+    path: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de Mobilizon v{{ mobilizon_version }}
+  ansible.builtin.unarchive:
+    src: https://packages.joinmobilizon.org/{{ mobilizon_version }}/mobilizon_{{ mobilizon_version }}_amd64.tar.gz
+    dest: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+    creates: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}/bin/mobilizon
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+  notify: Migration de la DB
+
+- name: Création du dossier de configuration de Mobilizon
+  ansible.builtin.file:
+    path: /etc/mobilizon
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Création du dossier pour les uploads
+  ansible.builtin.file:
+    path: "{{ mobilizon_path }}/uploads"
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Création du dossier /uploads/exports/csv
+  ansible.builtin.file:
+    path: "{{ mobilizon_path }}/uploads/exports/csv"
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Création du dossier /uploads/exports/data
+  ansible.builtin.file:
+    path: "{{ mobilizon_path }}/uploads/exports/data"
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Configuration de Mobilizon
+  ansible.builtin.template:
+    src: mobilizon/config.exs.j2
+    dest: /etc/mobilizon/config.exs
+    owner: "{{ mobilizon_owner }}"
+    group: "{{ mobilizon_owner }}"
+    mode: "u=rw,g=r,o="
+  notify:
+    - Migration de la DB
+    - restart mobilizon
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: mobilizon/mobilizon.service.j2
+    dest: /etc/systemd/system/mobilizon.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd
+    - restart mobilizon
+
+- name: Création du lien symbolique vers la dernière version de Mobilizon
+  ansible.builtin.file:
+    src: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
+    dest: /var/www/{{ mobilizon_owner }}/dist
+    state: link
+  notify: restart mobilizon
+
+- name: Activation de Mobilizon au démarrage
+  ansible.builtin.service:
+    name: mobilizon
+    state: started
+    enabled: true

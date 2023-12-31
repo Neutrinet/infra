@@ -1,0 +1,5 @@
+minio_s3_domain: s3.neutrinet.be
+minio_browser_domain: minio.neutrinet.be
+
+minio_root_username: minio
+minio_root_password: neutrinet

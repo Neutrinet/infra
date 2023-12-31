@@ -1,0 +1,12 @@
+---
+- name: Création de l'utilisateur
+  ansible.builtin.import_tasks: user.yml
+  tags: ['user']
+
+- name: Installation de rclone
+  ansible.builtin.import_tasks: rclone.yml
+  tags: ['rclone']
+
+- name: Nettoyage des anciennes versions
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ['cleanup']
