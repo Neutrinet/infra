@@ -6,6 +6,7 @@
     group: caddy
     mode: "u=rwx,go=rx"
     state: directory
+  when: web_app_create_user
 
 - name: Création du dossier {{ web_app_dist_dir }}
   ansible.builtin.file:
@@ -14,3 +15,4 @@
     group: "{{ web_app_group }}"
     mode: "u=rwx,go=rx"
     state: directory
+  when: web_app_create_user

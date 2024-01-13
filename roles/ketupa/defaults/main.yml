@@ -1,0 +1,8 @@
+ketupa_app_domain: example.com
+ketupa_app_owner: "{{ ketupa_app_domain | replace('.', '-') }}"
+ketupa_app_group: "{{ ketupa_app_owner }}"
+ketupa_app_create_user: true
+ketupa_app_www_dir: /var/www
+ketupa_app_home_dir: "{{ ketupa_app_www_dir }}/{{ ketupa_app_owner }}"
+ketupa_app_dist_dir: "{{ ketupa_app_www_dir }}/{{ ketupa_app_owner }}/dist"
+ketupa_app_caddy_log: "{{ caddy_log_dir }}/{{ ketupa_app_owner }}.log"

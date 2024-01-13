@@ -2,6 +2,7 @@ web_app_domain: example.com
 web_app_alt_domains: []
 web_app_owner: "{{ web_app_domain | replace('.', '-') }}"
 web_app_group: "{{ web_app_owner }}"
+web_app_create_user: true
 web_app_www_dir: /var/www
 web_app_home_dir: "{{ web_app_www_dir }}/{{ web_app_owner }}"
 web_app_dist_dir: "{{ web_app_www_dir }}/{{ web_app_owner }}/dist"

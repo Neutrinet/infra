@@ -1,0 +1,8 @@
+ketupa_app_domain: ketupa.vagrant.neutrinet.me
+ketupa_app_owner: vagrant
+ketupa_app_group: vagrant
+ketupa_app_create_user: false
+ketupa_app_www_dir: /vagrant/frontend
+ketupa_app_home_dir: "{{ ketupa_app_www_dir }}"
+ketupa_app_dist_dir: "{{ ketupa_app_www_dir }}/public"
+ketupa_app_caddy_log: "{{ caddy_log_dir }}/{{ ketupa_app_domain | replace('.', '-') }}.log"

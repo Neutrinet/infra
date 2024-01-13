@@ -1,3 +1,32 @@
 ---
+
+- name: Installation de Caddy2
+  ansible.builtin.import_role:
+    name: caddy_server
+  tags: ['caddy']
+
+- name: Installation de PHP
+  ansible.builtin.import_role:
+    name: php_fpm
+  vars:
+    php_version: "8.2"
+    php_extra_modules:
+      - bcmath
+      - pgsql
+  tags: ['php_fpm']
+
+- name: Installation de NodeJS
+  ansible.builtin.import_role:
+    name: nodejs
+  vars:
+    nodejs_major_version: 20
+  tags: ['nodejs']
+
+- name: Installation de Composer
+  ansible.builtin.import_role:
+    name: composer
+  tags: ['composer_install']
+
+
 - name: Installation du frontend Ketupa
   ansible.builtin.import_tasks: frontend.yml

@@ -1,0 +1,7 @@
+---
+- name: Déploiement de Ketupa
+  hosts: apps_ketupa
+  become: true
+
+  roles:
+    - ketupa

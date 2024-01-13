@@ -5,3 +5,4 @@
     shell: /sbin/nologin
     system: true
     state: present
+  when: web_app_create_user

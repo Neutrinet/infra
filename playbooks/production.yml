@@ -73,3 +73,6 @@
 - name: Déploiement de Uptime-Kuma
   import_playbook: apps/uptime_kuma.yml
 
+- name: Déploiement de Ketupa
+  import_playbook: apps/ketupa.yml
+
