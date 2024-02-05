@@ -91,7 +91,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
+      Content-Security-Policy: "default-src 'self' https://api.neutrinet.be; img-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https:; font-src 'self' https:;"
 
   - hostname: wiki.neutrinet.be
     target:
