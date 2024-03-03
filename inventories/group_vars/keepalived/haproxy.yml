@@ -1,6 +1,7 @@
-letsencrypt_domains_gandi:
+letsencrypt_domains_ovh:
   - neutrinet.be
   - labriqueinter.net
+letsencrypt_domains_gandi:
   - internetcu.be
   - mobilizon.be
 

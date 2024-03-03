@@ -1,4 +1,8 @@
 ---
+- name: Installation de rsync
+  ansible.builtin.package:
+    name: rsync
+    state: present
 
 - name: Installation de haproxy
   ansible.builtin.package:
@@ -23,22 +27,23 @@
     group: haproxy
   notify: reload haproxy
 
-- name: Copie des pages d'erreur personnaliser
-  ansible.builtin.copy:
-    src: errors/{{ item }}.http
-    dest: /etc/haproxy/errors/{{ item }}.http
-    mode: "u=rw,g=r,o="
+- name: Création du dossier des pages d'erreur personnalisées
+  ansible.builtin.file:
+    path: /etc/haproxy/errors
+    state: directory
+    mode: "u=rwx,go=rx"
     owner: haproxy
     group: haproxy
+
+- name: Copie des pages d'erreur personnalisées
+  ansible.posix.synchronize:
+    src: errors/
+    dest: /etc/haproxy/errors/
+    mode: push
+    archive: true
+    delete: true
+  become_user: haproxy
   notify: reload haproxy
-  with_items:
-    - 400
-    - 403
-    - 408
-    - 500
-    - 502
-    - 503
-    - 504
 
 - name: Config de haproxy
   ansible.builtin.template:

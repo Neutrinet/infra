@@ -1,5 +1,6 @@
-letsencrypt_domains_gandi:
+letsencrypt_domains_ovh:
   - neutrinet.be
+letsencrypt_domains_gandi: []
 
 haproxy:
   - hostname: api.neutrinet.be

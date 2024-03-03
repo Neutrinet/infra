@@ -7,8 +7,9 @@
       {% if letsencrypt_staging %}--staging {% endif %}
       {% if letsencrypt_post_hook != "" %}--post-hook '{{ letsencrypt_post_hook }}' {% endif %}
       {% if letsencrypt_deploy_hook != "" %}--deploy-hook {{ letsencrypt_deploy_hook }} {% endif %}
-      --authenticator dns-gandi
-      --dns-gandi-credentials /etc/letsencrypt/gandi/gandi.ini
+      --authenticator dns-ovh
+      --dns-ovh-credentials /etc/letsencrypt/ovh/ovh.ini
+      --dns-ovh-propagation-seconds 30
       --key-type rsa
       --rsa-key-size 4096
       --cert-name {{ domain | replace('.', '-') }}
