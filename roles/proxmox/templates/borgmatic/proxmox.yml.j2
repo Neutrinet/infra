@@ -1,16 +1,9 @@
 {{ ansible_managed | comment }}
 
-<<: !include /etc/borgmatic/template.yml
+<<: !include /etc/borgmatic.d/common.yml
 
-location:
-  source_directories:
-    - "/etc/pve"
+source_directories: !retain
+  - "/etc/pve"
+  - "/etc/keys"
 
-storage:
-  archive_name_format: proxmox_{hostname}-{now}
-
-retention:
-  prefix: proxmox_
-
-consistency:
-  prefix: proxmox_
+archive_name_format: proxmox_{hostname}-{now}

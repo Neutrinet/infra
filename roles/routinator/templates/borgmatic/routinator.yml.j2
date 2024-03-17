@@ -1,16 +1,8 @@
 {{ ansible_managed | comment }}
 
-<<: !include /etc/borgmatic/template.yml
+<<: !include /etc/borgmatic.d/common.yml
 
-location:
-  source_directories:
-    - "/etc/routinator"
+source_directories: !retain
+  - "/etc/routinator"
 
-storage:
-  archive_name_format: routinator_{hostname}-{now}
-
-retention:
-  prefix: routinator_
-
-consistency:
-  prefix: routinator_
+archive_name_format: routinator_{hostname}-{now}
