@@ -40,7 +40,7 @@ groups:
         for: 10m
         expr: 0 < prometheus_patroni_postgres_timeline < ignoring (host, instance, job, monitor) group_left avg without (host, instance, job, monitor) (prometheus_patroni_postgres_timeline)
         labels:
-          severity: critical
+          severity: warning
         annotations:
           description: 'PostgreSQL on host {{ $labels.host }} is behind the current timeline (value = {{ $value }}).'
           summary: 'PostgreSQL is behind the current timeline.'
