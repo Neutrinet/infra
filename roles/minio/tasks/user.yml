@@ -1,0 +1,7 @@
+- name: Création de l'utilisateur pour Minio
+  ansible.builtin.user:
+    name: minio
+    home: /opt/minio
+    shell: /sbin/nologin
+    system: true
+    state: present

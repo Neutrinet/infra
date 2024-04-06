@@ -11,6 +11,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
 
   - hostname: mediawiki.neutrinet.be
     target:
@@ -18,6 +20,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
 
   - hostname: wikijs.neutrinet.be
     target:
@@ -25,6 +29,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'self'; img-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self';"
 
   - hostname: realms-wiki.neutrinet.be
     target:
@@ -32,6 +38,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https:; font-src 'self' https:;"
 
   - hostname: chat.neutrinet.be
     target:
@@ -46,6 +54,8 @@ haproxy:
     target_port: 3000
     healthcheck: true
     healthcheck_url: HEAD /
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
   - hostname: cube.neutrinet.be
     target:
@@ -54,6 +64,8 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     timeout: 2m
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
 
   - hostname: ffdnapi.neutrinet.be
     target:
@@ -61,6 +73,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
   - hostname: files.neutrinet.be
     target:
@@ -76,6 +90,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'self' https://api.neutrinet.be; img-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https:; font-src 'self' https:;"
 
   - hostname: wiki.neutrinet.be
     target:
@@ -83,6 +99,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
 
   - hostname: mobilizon.be
     target:
@@ -106,12 +124,16 @@ haproxy:
     target_port: 7480
     healthcheck: true
     healthcheck_url: HEAD /
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
   - hostname: librenms.neutrinet.be
     target:
       - librenms.patata.louise.neutri.net
     target_port: 80
     healthcheck: false
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
   - hostname: doc.neutrinet.be
     target:
@@ -135,6 +157,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
   - hostname: labriqueinter.net
     target:
@@ -142,6 +166,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
   - hostname: internetcu.be
     target:
@@ -149,6 +175,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
   - hostname: cfacile.labriqueinter.net
     target:
@@ -156,6 +184,8 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
   - hostname: sync.labriqueinter.net
     target:
@@ -163,6 +193,8 @@ haproxy:
     target_port: 9000
     healthcheck: true
     healthcheck_url: GET /hooks/health
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
 haproxy_redirect:
   - from: www.neutrinet.be

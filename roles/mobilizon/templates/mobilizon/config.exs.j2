@@ -1,0 +1,65 @@
+ import Config
+
+config :mobilizon, Mobilizon.Web.Endpoint,
+   server: true,
+   url: [host: "{{ mobilizon_domain }}"],
+   http: [
+     ip: {127,0,0,1},
+     port: 4000
+    ],
+   secret_key_base: "{{ mobilizon_secret_key_base }}"
+
+config :mobilizon, Mobilizon.Web.Auth.Guardian,
+  secret_key: "{{ mobilizon_secret_key }}"
+
+config :mobilizon, :instance,
+  name: "{{ mobilizon_domain }}",
+  description: "Change this to a proper description of your instance",
+  hostname: "{{ mobilizon_domain }}",
+  registrations_open: false,
+  demo: false,
+  allow_relay: true,
+  federating: true,
+  email_from: "{{ mobilizon_email_from }}",
+  email_reply_to: "{{ mobilizon_email_reply_to }}"
+
+config :mobilizon, Mobilizon.Storage.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  socket_options: [:inet6],
+  username: "{{ mobilizon_owner }}",
+  password: "{{ mobilizon_postgresql_password }}",
+  database: "{{ mobilizon_owner }}",
+  hostname: "{{ postgresql_host }}",
+  port: "5432",
+  pool_size: 10
+
+config :mobilizon, Mobilizon.Web.Email.Mailer,
+  adapter: Swoosh.Adapters.SMTP,
+  relay: "{{ mobilizon_email_host }}",
+  # usually 25 (clear), 465 (TLS) or 587 (STARTTLS)
+  port: 587,
+  username: "{{ mobilizon_email_username }}",
+  password: "{{ mobilizon_email_password }}",
+  # can be `:always` or `:never`
+  tls: :always,
+  ssl: false,
+  allowed_tls_versions: [:"tlsv1.2", :"tlsv1.3"],
+  tls_options: [
+    verify: :verify_peer,
+    versions: [:"tlsv1.2", :"tlsv1.3"],
+    cacerts: :public_key.cacerts_get(),
+    server_name_indication: ~c"{{ mobilizon_email_host }}",
+    depth: 99
+  ],
+  retries: 2,
+  # can be `true`
+  no_mx_lookups: false,
+  # can be `:always`. If your smtp relay requires authentication set it to `:always`.
+  auth: :always
+
+{% if mobilizon_push_public_key != "" and mobilizon_push_private_key != "" %}
+config :web_push_encryption, :vapid_details,
+  subject: "mailto:{{ mobilizon_email_from }}",
+  public_key: "{{ mobilizon_push_public_key }}",
+  private_key: "{{ mobilizon_push_private_key}}"
+{% endif %}

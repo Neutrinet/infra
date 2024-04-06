@@ -1,5 +1,4 @@
 nextcloud_domain: files.example.com
-nextcloud_trusted_proxies: []
 
 nextcloud_max_upload_size: 512MB
 
@@ -7,7 +6,8 @@ postgresql_host: localhost
 nextcloud_postgresql_password: password
 
 nextcloud_s3_enabled: false
-nextcloud_s3_host: s3.example.com
+nextcloud_s3_host: s3.neutrinet.be
+nextcloud_s3_bucket: nextcloud
 nextcloud_s3_port: 443
-nextcloud_s3_access_key: ""
-nextcloud_s3_secret_key: ""
+nextcloud_s3_access_key: minio
+nextcloud_s3_secret_key: neutrinet

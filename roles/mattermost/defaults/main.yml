@@ -6,6 +6,12 @@ postgresql_host: localhost
 
 mattermost_postgresql_password: neutrinet
 
+mattermost_s3_enabled: false
+mattermost_s3_host: s3.neutrinet.be
+mattermost_s3_bucket: mattermost
+mattermost_s3_access_key: minio
+mattermost_s3_secret_key: neutrinet
+
 matterbridge_version: 1.26.0
 # Ignore failing bridge on startup. Useful for testing purposes.
 # After running the playbook, consider checking the logs to see if any bridge is failing

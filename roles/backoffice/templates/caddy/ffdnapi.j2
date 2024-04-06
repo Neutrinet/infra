@@ -5,7 +5,9 @@ http://{{ backoffice_ffdnapi_domain }} {
     respond 404
 
     handle /isp.json {
-        reverse_proxy localhost:5005
+        reverse_proxy localhost:5005 {
+            trusted_proxies {{ caddy_trusted_proxies | join(' ') }}
+        }
     }
 
     log {

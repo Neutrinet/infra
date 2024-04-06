@@ -8,7 +8,9 @@ After=postgresql.service
 
 [Service]
 Type=exec
-Environment=NODE_ENV=production
+Environment= \
+  NODE_ENV=production \
+  NODE_OPTIONS="--use-openssl-ca"
 Restart=always
 RestartSec=2s
 ExecStart=/usr/bin/yarn start
