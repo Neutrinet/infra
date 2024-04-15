@@ -1,6 +1,6 @@
 mattermost_domain: chat.example.com
 mattermost_owner: "{{ mattermost_domain | replace('.', '-') }}"
-mattermost_version: 7.8.4
+mattermost_version: 9.5.3
 
 postgresql_host: localhost
 

@@ -101,7 +101,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
+      Content-Security-Policy: "default-src 'none'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self';"
 
   - hostname: mobilizon.be
     target:
@@ -168,7 +168,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
+      - Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; media-src 'self'; frame-src 'self' https://db.ffdn.org;"
 
   - hostname: internetcu.be
     target:
@@ -177,7 +177,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
+      - Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; media-src 'self'; frame-src 'self' https://db.ffdn.org;"
 
   - hostname: cfacile.labriqueinter.net
     target:
