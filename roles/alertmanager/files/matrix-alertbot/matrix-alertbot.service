@@ -14,6 +14,7 @@ User=matrix-alertbot
 Group=matrix-alertbot
 WorkingDirectory=/etc/matrix-alertbot
 ReadWritePaths=/var/lib/matrix-alertbot
+ReadWritePaths=/var/log/matrix-alertbot
 
 # Systemd hardening
 PrivateDevices=true

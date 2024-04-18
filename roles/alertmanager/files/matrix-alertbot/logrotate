@@ -1,0 +1,8 @@
+/var/log/matrix-alertbot/matrix-alertbot.log {
+    daily
+    rotate 30
+    missingok
+    notifempty
+    compress
+    delaycompress
+}
