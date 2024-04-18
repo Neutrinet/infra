@@ -22,6 +22,14 @@
     mode: "u=rwx,g=rx,o="
     state: directory
 
+- name: Création du dossier des logs de matrix-alertbot
+  ansible.builtin.file:
+    path: /var/log/matrix-alertbot
+    owner: matrix-alertbot
+    group: matrix-alertbot
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
 - name: Installation des dépendences de matrix-alertbot
   ansible.builtin.package:
     name:
@@ -56,9 +64,18 @@
     mode: "u=rw,g=r,o="
   notify: restart matrix-alertbot
 
+- name: Configuration de logrotate
+  ansible.builtin.copy:
+    src: matrix-alertbot/logrotate
+    dest: /etc/logrotate.d/matrix-alertbot
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: logrotate --debug %s
+
 - name: Configuration du service systemd
   ansible.builtin.copy:
-    src: systemd/matrix-alertbot.service
+    src: matrix-alertbot/matrix-alertbot.service
     dest: /etc/systemd/system/matrix-alertbot.service
     owner: root
     group: root
