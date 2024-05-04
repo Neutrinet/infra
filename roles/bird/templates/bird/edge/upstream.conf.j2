@@ -1,0 +1,150 @@
+{% if item.type in ['transit','route-server','peering'] %}
+filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v4 {
+   bgp_large_community.delete([(my_asn, 0, *)]);
+
+   if reject_bogon_asns("import", "{{ item.type }}")           then reject;
+   if reject_long_aspaths("import", "{{ item.type }}")         then reject;
+   if reject_v4_bogon_prefixes("import", "{{ item.type }}")    then reject;
+   if reject_v4_small_prefixes("import", "{{ item.type }}")    then reject;
+   if reject_v4_default_route("import", "{{ item.type }}")     then reject;
+   if reject_v4_invalid_rpki("import", "{{ item.type }}")      then reject;
+
+{% if 'verixi' in ansible_fqdn %}
+   bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "private")));
+{% endif %}
+{% if 'bnix' in ansible_fqdn %}
+   bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "bnix")));
+{% endif %}
+{% if 'nlix' in ansible_fqdn %}
+   bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "nlix")));
+{% endif %}
+{% if 'belgiumix' in ansible_fqdn %}
+   bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "belgiumix")));
+{% endif %}
+
+{% if item.type == 'transit' %}
+   bgp_local_pref = 100;
+{% endif %}
+{% if item.type == 'route-server' %}
+   bgp_local_pref = 110;
+{% endif %}
+{% if item.type == 'peering' %}
+   bgp_local_pref = 111;
+{% endif %}
+
+   bgp_large_community.add((my_asn, 0, 20));
+
+   accept;
+}
+
+filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v4 {
+   if (bgp_large_community ~ [(my_asn, 0, 30)]) then {
+      if reject_bogon_asns("import", "{{ item.type }}")           then reject;
+      if reject_long_aspaths("import", "{{ item.type }}")         then reject;
+      if reject_v4_bogon_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v4_small_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v4_default_route("import", "{{ item.type }}")     then reject;
+      if reject_v4_invalid_rpki("import", "{{ item.type }}")      then reject;
+
+      accept;
+   }
+   reject;
+}
+
+filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v6 {
+   bgp_large_community.delete([(my_asn, 0, *)]);
+
+   if reject_bogon_asns("import", "{{ item.type }}")           then reject;
+   if reject_long_aspaths("import", "{{ item.type }}")         then reject;
+   if reject_v6_bogon_prefixes("import", "{{ item.type }}")    then reject;
+   if reject_v6_small_prefixes("import", "{{ item.type }}")    then reject;
+   if reject_v6_default_route("import", "{{ item.type }}")     then reject;
+   if reject_v6_invalid_rpki("import", "{{ item.type }}")      then reject;
+
+{% if 'verixi' in ansible_fqdn %}
+   bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "private")));
+{% endif %}
+{% if 'bnix' in ansible_fqdn %}
+   bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "bnix")));
+{% endif %}
+{% if 'nlix' in ansible_fqdn %}
+   bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "nlix")));
+{% endif %}
+{% if 'belgiumix' in ansible_fqdn %}
+   bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "belgiumix")));
+{% endif %}
+
+{% if item.type == 'transit' %}
+   bgp_local_pref = 100;
+{% endif %}
+{% if item.type == 'route-server' %}
+   bgp_local_pref = 110;
+{% endif %}
+{% if item.type == 'peering' %}
+   bgp_local_pref = 111;
+{% endif %}
+
+   bgp_large_community.add((my_asn, 0, 20));
+
+   accept;
+}
+
+filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v6 {
+   if (bgp_large_community ~ [(my_asn, 0, 30)]) then {
+      if reject_bogon_asns("import", "{{ item.type }}")           then reject;
+      if reject_long_aspaths("import", "{{ item.type }}")         then reject;
+      if reject_v6_bogon_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v6_small_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v6_default_route("import", "{{ item.type }}")     then reject;
+      if reject_v6_invalid_rpki("import", "{{ item.type }}")      then reject;
+
+      accept;
+   }
+   reject;
+}
+{% endif %}
+
+
+{% if item.neighbor_ipv6 is defined and (item.neighbor_ipv6 | length > 0) %}
+protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
+   neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
+{% if 'neighbor_ipv6_password' in item %}
+   password "{{ item.neighbor_ipv6_password }}";
+{% endif %}
+   local as my_asn;
+   description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";
+   vrf "routing";
+
+   ipv6 {
+      #table VRF_ROUTING_V6;
+
+      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v6;
+      export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v6;
+
+      next hop self;
+   };
+
+}
+{% endif %}
+
+{% if item.neighbor_ipv4 is defined and (item.neighbor_ipv4 | length > 0) %}
+protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v4 {
+   neighbor {{ item.neighbor_ipv4 }} as {{ item.asn }};
+{% if 'neighbor_ipv4_password' in item %}
+   password "{{ item.neighbor_ipv6_password }}";
+{% endif %}
+   local as my_asn;
+   description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";
+   vrf "routing";
+
+   ipv4 {
+      #table VRF_ROUTING_V4;
+
+      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v4;
+      export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v4;
+
+      next hop self;
+   };
+
+}
+{% endif %}

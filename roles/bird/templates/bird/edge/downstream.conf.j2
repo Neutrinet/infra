@@ -1,0 +1,58 @@
+{% if item.type == 'route-reflector' %}
+filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
+   if (bgp_large_community ~ [(my_asn, 0, 20)]) then accept;
+   reject;
+}
+
+filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
+   if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
+   reject;
+}
+{% endif %}
+
+{% if item.neighbor_ipv6 is defined and (item.neighbor_ipv6 | length > 0) %}
+protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
+   neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
+   local as my_asn;
+   description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";
+   vrf "routing";
+
+{% if 'neighbor_ipv4' not in item %}
+   ipv4 {
+      #table VRF_ROUTING_V4;
+
+      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
+      export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
+
+      next hop self;
+   };
+{% endif %}
+   ipv6 {
+      #table VRF_ROUTING_V6;
+
+      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
+      export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
+
+      next hop self;
+   };
+}
+{% endif %}
+
+{% if item.neighbor_ipv4 is defined and (item.neighbor_ipv4 | length > 0) %}
+protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v4 {
+   neighbor {{ item.neighbor_ipv4 }} as {{ item.asn }};
+   local as my_asn;
+   description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";
+   vrf "routing";
+
+   ipv4 {
+      #table VRF_ROUTING_V4;
+
+      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
+      export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
+
+      next hop self;
+   };
+
+}
+{% endif %}

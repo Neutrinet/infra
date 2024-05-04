@@ -57,13 +57,45 @@
 
 - name: Configuration des peers upstream de bird
   ansible.builtin.template:
-    src: bird/upstream.conf.j2
+    src: "bird/{{ bird_role }}/upstream.conf.j2"
     dest: "/etc/bird/peers/upstreams/{{ item.type | replace('-', '_') }}_{{ item.asn }}_{{ item.slug }}.conf"
     owner: bird
     group: bird
     mode: "ug=r,o="
   loop: "{{ bird_peers_upstreams }}"
-  notify: restart bird
+  notify: reload bird
+  tags: ['bird_config']
+
+- name: Configuration des peers downstream de bird
+  ansible.builtin.template:
+    src: "bird/{{ bird_role }}/downstream.conf.j2"
+    dest: "/etc/bird/peers/downstreams/{{ item.type | replace('-', '_') }}_{{ item.asn }}_{{ item.slug }}.conf"
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  loop: "{{ bird_peers_downstreams }}"
+  notify: reload bird
+  tags: ['bird_config']
+
+- name: Configuration des l'export dans le kernel
+  ansible.builtin.template:
+    src: "bird/kernel.conf.j2"
+    dest: "/etc/bird/conf.d/90_kernel.conf"
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  notify: reload bird
+  when: bird_role != 'route-reflector'
+  tags: ['bird_config']
+
+- name: Configuration des route static pour bird
+  ansible.builtin.template:
+    src: "bird/static-route.conf.j2"
+    dest: "/etc/bird/conf.d/10_static_{{ ansible_fqdn | replace('.', '_') | replace('-', '_') }}.conf"
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  notify: reload bird
   tags: ['bird_config']
 
 - name: Activation du service bird au démarage

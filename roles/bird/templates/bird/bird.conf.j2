@@ -14,6 +14,9 @@ define rpki_routinator_2 = {{ bird_server_rpki_02 }};
 roa4 table roa_v4;
 roa6 table roa_v6;
 
+ipv4 table VRF_ROUTING_V4;
+ipv6 table VRF_ROUTING_V6;
+
 include "/etc/bird/conf.d/*.conf";
 include "/etc/bird/peers/upstreams/*.conf";
 include "/etc/bird/peers/downstreams/*.conf";

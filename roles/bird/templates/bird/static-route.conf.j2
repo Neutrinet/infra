@@ -1,0 +1,43 @@
+{% if bird_static_route_v4 is defined and (bird_static_route_v4 | length > 0) %}
+protocol static {{ ansible_fqdn | replace('.', '_') | replace('-', '_') }}_v4 {
+    ipv4 { table VRF_ROUTING_V4; };
+    vrf "routing";
+{% for route in bird_static_route_v4 %}
+{% if route.unreachable %}
+    route {{ route.prefix }} unreachable  {
+{% else %}
+    route {{ route.prefix }} via {{ route.via }} {
+{% endif %}
+        bgp_local_pref = 190;
+{% if route.is_public_exportable %}
+        bgp_large_community.add((my_asn, 0, 30));
+{% else %}
+        bgp_large_community.add((my_asn, 0, 40));
+{% endif %}
+    };
+{% endfor %}
+
+}
+{% endif %}
+
+{% if bird_static_route_v6 is defined and (bird_static_route_v4 | length > 0) %}
+protocol static {{ ansible_fqdn | replace('.', '_') | replace('-', '_') }}_v6 {
+    ipv6 { table VRF_ROUTING_V6; };
+    vrf "routing";
+{% for route in bird_static_route_v6 %}
+{% if route.unreachable %}
+    route {{ route.prefix }} unreachable  {
+{% else %}
+    route {{ route.prefix }} via {{ route.via }} {
+{% endif %}
+        bgp_local_pref = 190;
+{% if route.is_public_exportable %}
+        bgp_large_community.add((my_asn, 0, 30));
+{% else %}
+        bgp_large_community.add((my_asn, 0, 40));
+{% endif %}
+    };
+{% endfor %}
+
+}
+{% endif %}

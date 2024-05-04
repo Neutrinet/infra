@@ -2,5 +2,29 @@ bird_router_id: 169.254.0.220
 bird_my_asn: 204059
 bird_router_source_ipv4: 80.67.181.10
 bird_router_source_ipv6: 2001:913:1000:100::220
-bird_server_rpki_01: fdc9:94e5:e86::190
-bird_server_rpki_02: fdc9:94e5:e86::191 
+bird_server_rpki_01: 2001:913:1000:10::190
+bird_server_rpki_02: 2001:913:1000:10::191
+bird_role: core
+bird_peers_upstreams:
+  - asn: 204059
+    neighbor_ipv6: fdc9:94e5:e86::190
+    name: "Route Reflector 01"
+    slug: route_reflector_01
+    type: route-reflector
+  - asn: 204059
+    neighbor_ipv6: fdc9:94e5:e86::191
+    name: "Route Reflector 02"
+    slug: route_reflector_02
+    type: route-reflector
+bird_peers_downstreams: []
+
+bird_static_route_v4: []
+bird_static_route_v6:
+  - prefix: 2001:0913:1000:10::/64
+    unreachable: false
+    via: 2001:0913:1000:200::20
+    is_public_exportable: false
+  - prefix: 2001:0913:1000:11::/64
+    unreachable: false
+    via: 2001:0913:1000:200::20
+    is_public_exportable: false
