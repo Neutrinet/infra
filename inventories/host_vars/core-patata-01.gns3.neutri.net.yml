@@ -1,0 +1,6 @@
+bird_router_id: 169.254.0.220
+bird_my_asn: 204059
+bird_router_source_ipv4: 80.67.181.10
+bird_router_source_ipv6: 2001:913:1000:100::220
+bird_server_rpki_01: fdc9:94e5:e86::190
+bird_server_rpki_02: fdc9:94e5:e86::191 

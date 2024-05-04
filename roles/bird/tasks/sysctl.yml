@@ -1,0 +1,37 @@
+
+- name: Bind tcp all vrf
+  ansible.posix.sysctl:
+    name: "net.ipv4.tcp_l3mdev_accept"
+    value: '1'
+    sysctl_file: /etc/sysctl.d/85-bind-vrf.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Bind udp all vrf
+  ansible.posix.sysctl:
+    name: "net.ipv4.udp_l3mdev_accept"
+    value: '1'
+    sysctl_file: /etc/sysctl.d/85-bind-vrf.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+
+- name: Activation du forward v4
+  ansible.posix.sysctl:
+    name: "net.ipv4.ip_forward"
+    value: '1'
+    sysctl_file: /etc/sysctl.d/85-forward.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Activation du forward v6
+  ansible.posix.sysctl:
+    name: "net.ipv6.conf.all.forwarding"
+    value: '1'
+    sysctl_file: /etc/sysctl.d/85-forward.conf
+    sysctl_set: true
+    state: present
+    reload: true

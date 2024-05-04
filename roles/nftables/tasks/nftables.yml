@@ -4,3 +4,9 @@
   ansible.builtin.package:
     name: nftables
     state: present
+
+- name: Activation du service nftables au démarage
+  ansible.builtin.service:
+    name: nftables
+    state: started
+    enabled: true

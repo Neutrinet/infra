@@ -1,0 +1,56 @@
+---
+
+- name: Activation du bbr
+  ansible.posix.sysctl:
+    name: "net.ipv4.tcp_congestion_control"
+    value: 'bbr'
+    sysctl_file: /etc/sysctl.d/80-bbr.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Activation du fq
+  ansible.posix.sysctl:
+    name: "net.core.default_qdisc"
+    value: 'fq'
+    sysctl_file: /etc/sysctl.d/80-bbr.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Optimisation du netlink rmem default à 64M
+  ansible.posix.sysctl:
+    name: "net.core.rmem_default"
+    value: '67108864'
+    sysctl_file: /etc/sysctl.d/80-netlink.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Optimisation du netlink wmem default à 64M
+  ansible.posix.sysctl:
+    name: "net.core.wmem_default"
+    value: '67108864'
+    sysctl_file: /etc/sysctl.d/80-netlink.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Optimisation du netlink rmem max à 64M
+  ansible.posix.sysctl:
+    name: "net.core.rmem_max"
+    value: '67108864'
+    sysctl_file: /etc/sysctl.d/80-netlink.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Optimisation du netlink wmem max à 64M
+  ansible.posix.sysctl:
+    name: "net.core.wmem_max"
+    value: '67108864'
+    sysctl_file: /etc/sysctl.d/80-netlink.conf
+    sysctl_set: true
+    state: present
+    reload: true
+

@@ -1,0 +1,9 @@
+- name: restart bird
+  ansible.builtin.service:
+    name: bird
+    state: restarted
+
+- name: restart telegraf
+  ansible.builtin.service:
+    name: telegraf
+    state: restarted

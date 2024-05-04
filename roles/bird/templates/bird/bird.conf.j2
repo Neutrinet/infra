@@ -1,0 +1,19 @@
+log syslog all;
+timeformat protocol iso long;
+debug protocols { states };
+
+router id {{ bird_router_id }};
+define my_asn = {{ bird_my_asn }};
+
+define my_krt_prefsrc_v6 = {{ bird_router_source_ipv4 }};
+define my_krt_prefsrc_v4 = {{ bird_router_source_ipv6 }};
+
+define rpki_routinator_1 = {{ bird_server_rpki_01 }};
+define rpki_routinator_2 = {{ bird_server_rpki_02 }};
+
+roa4 table roa_v4;
+roa6 table roa_v6;
+
+include "/etc/bird/conf.d/*.conf";
+include "/etc/bird/peers/upstreams/*.conf";
+include "/etc/bird/peers/downstreams/*.conf";
