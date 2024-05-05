@@ -67,7 +67,7 @@ bird_peers_upstreams:
 
   - asn: 6939
     neighbor_ipv4: 193.239.116.14
-    neighbor_ipv6: 2001:7f8:13::a500:6939:1 
+    neighbor_ipv6: 2001:7f8:13::a500:6939:1
     name: "Hurricane Electric"
     slug: hurricane_electric
     type: peering
