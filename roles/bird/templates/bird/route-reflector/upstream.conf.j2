@@ -1,11 +1,13 @@
 {% if item.type == 'edge' %}
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
    if (bgp_large_community ~ [(my_asn, 0, 20)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
    reject;
 }
 
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
-   if (bgp_large_community ~ [(my_asn, 0, 30),(my_asn, 0, 40)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
    reject;
 }
 {% endif %}
@@ -20,15 +22,11 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
 
 {% if 'neighbor_ipv4' not in item %}
    ipv4 {
-      #table VRF_ROUTING_V4;
-
       import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
       export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
    };
 {% endif %}
    ipv6 {
-      #table VRF_ROUTING_V6;
-
       import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
       export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
    };
@@ -44,8 +42,6 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v4 {
    vrf "routing";
 
    ipv4 {
-      #table VRF_ROUTING_V4;
-
       import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
       export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
    };

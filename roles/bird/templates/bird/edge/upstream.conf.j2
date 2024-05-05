@@ -116,8 +116,6 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
    vrf "routing";
 
    ipv6 {
-      #table VRF_ROUTING_V6;
-
       import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v6;
       export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v6;
 
@@ -138,8 +136,6 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v4 {
    vrf "routing";
 
    ipv4 {
-      #table VRF_ROUTING_V4;
-
       import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v4;
       export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v4;
 

@@ -1,6 +1,6 @@
 {% if bird_static_route_v4 is defined and (bird_static_route_v4 | length > 0) %}
-protocol static {{ ansible_fqdn | replace('.', '_') | replace('-', '_') }}_v4 {
-    ipv4 { table VRF_ROUTING_V4; };
+protocol static {{ ansible_fqdn | replace('.', '_') | replace('-', '_') | replace('neutri.net', '') }}_v4 {
+    ipv4;
     vrf "routing";
 {% for route in bird_static_route_v4 %}
 {% if route.unreachable %}
@@ -20,9 +20,9 @@ protocol static {{ ansible_fqdn | replace('.', '_') | replace('-', '_') }}_v4 {
 }
 {% endif %}
 
-{% if bird_static_route_v6 is defined and (bird_static_route_v4 | length > 0) %}
-protocol static {{ ansible_fqdn | replace('.', '_') | replace('-', '_') }}_v6 {
-    ipv6 { table VRF_ROUTING_V6; };
+{% if bird_static_route_v6 is defined and (bird_static_route_v6 | length > 0) %}
+protocol static {{ ansible_fqdn | replace('.', '_') | replace('-', '_') | replace('neutri.net', '') }}_v6 {
+    ipv6;
     vrf "routing";
 {% for route in bird_static_route_v6 %}
 {% if route.unreachable %}

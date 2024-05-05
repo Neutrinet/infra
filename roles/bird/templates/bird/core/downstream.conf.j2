@@ -26,8 +26,6 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
 
 {% if 'neighbor_ipv4' not in item %}
    ipv4 {
-      #table VRF_ROUTING_V4;
-
       import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
       export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
 
@@ -35,8 +33,6 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
    };
 {% endif %}
    ipv6 {
-      #table VRF_ROUTING_V6;
-
       import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
       export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
 
@@ -53,8 +49,6 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
    vrf "routing";
 
    ipv4 {
-      #table VRF_ROUTING_V4;
-
       import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
       export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
 
