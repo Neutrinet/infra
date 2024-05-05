@@ -186,7 +186,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; media-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; font-src 'self';"
 
   - hostname: sync.labriqueinter.net
     target:
