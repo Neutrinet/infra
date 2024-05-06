@@ -1,20 +1,12 @@
-{% if item.type == 'core' %}
+{% if item.type == 'neutrinet' %}
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
 
-   if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
-   if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
+   bgp_large_community.add((my_asn, 0, 40));
+   bgp_local_pref = 190;
 
-   reject;
+   accept;
 }
 
-filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
-
-   if (bgp_large_community ~ [(my_asn, 0, 20)]) then accept;
-   if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
-   if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
-
-   reject;
-}
 {% endif %}
 
 {% if item.neighbor_ipv6 is defined and (item.neighbor_ipv6 | length > 0) %}
@@ -26,31 +18,34 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
 
 {% if 'neighbor_ipv4' not in item %}
    ipv4 {
-      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
-      export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
+      #import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
+      import none;
+      export where proto = "default_gw_v4";
 
       next hop self;
    };
 {% endif %}
    ipv6 {
-      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
-      export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
+      #import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
+      import none;
+      export where proto = "default_gw_v6";
 
       next hop self;
    };
 }
 {% endif %}
 
-{% if neighbor_ipv6 is defined and (neighbor_ipv6 | length > 0) %}
-protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
-   neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
+{% if item.neighbor_ipv4 is defined and (item.neighbor_ipv4 | length > 0) %}
+protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v4 {
+   neighbor {{ item.neighbor_ipv4 }} as {{ item.asn }};
    local as my_asn;
    description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";
    vrf "routing";
 
    ipv4 {
-      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
-      export filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export;
+      #import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
+      import none;
+      export where proto = "default_gw_v4";
 
       next hop self;
    };

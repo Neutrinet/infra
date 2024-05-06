@@ -11,6 +11,7 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
 
    if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
    if source = RTS_DEVICE then {
       bgp_large_community.add((my_asn, 0, 40));
       bgp_local_pref = 190;

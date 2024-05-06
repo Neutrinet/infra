@@ -44,8 +44,9 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v4 {
       if reject_v4_bogon_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v4_small_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v4_default_route("import", "{{ item.type }}")     then reject;
-      if reject_v4_invalid_rpki("import", "{{ item.type }}")      then reject;
+      #if reject_v4_invalid_rpki("import", "{{ item.type }}")      then reject;
 
+      bgp_large_community.delete([(my_asn, 0, *)]);
       accept;
    }
    reject;
@@ -96,8 +97,9 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v6 {
       if reject_v6_bogon_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v6_small_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v6_default_route("import", "{{ item.type }}")     then reject;
-      if reject_v6_invalid_rpki("import", "{{ item.type }}")      then reject;
+      #if reject_v6_invalid_rpki("import", "{{ item.type }}")      then reject;
 
+      bgp_large_community.delete([(my_asn, 0, *)]);
       accept;
    }
    reject;
