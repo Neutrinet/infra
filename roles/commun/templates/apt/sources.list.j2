@@ -10,6 +10,3 @@ deb http://security.debian.org/debian-security {{ ansible_distribution_release }
 {% else %}
 deb http://security.debian.org/ {{ ansible_distribution_release }}/updates main contrib non-free {% if ansible_distribution_major_version is version(12, '>=') %}non-free-firmware{% endif %}
 {% endif %}
-
-
-

@@ -25,7 +25,7 @@ blackbox_exporter_http_probes:
     check_cert_expiry: true
   # Mattermost
   - name: https://chat.neutrinet.be
-    url: https://chat.neutrinet.be/api/v4/system/ping?get_server_status=1
+    url: https://chat.neutrinet.be/api/v4/system/ping?get_server_status=true
     body: '"database_status":"OK","filestore_status":"OK","status":"OK"'
   # Neutrinet Accounting
   - url: https://accounting.neutrinet.be

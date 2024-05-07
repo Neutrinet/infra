@@ -6,7 +6,7 @@
   urls = ["http://localhost:9115/probe?target={{ probe.url }}&module={{ probe.name | default(probe.url) }}"]
 
   metric_version = 2
-  timeout = "10s"
+  timeout = "15s"
 
   [inputs.prometheus.tags]
     check_cert_expiry = "{{ probe.check_cert_expiry | default(false) | int }}"
@@ -19,7 +19,7 @@
   urls = ["http://localhost:9115/probe?target={{ probe }}&module=icmp"]
 
   metric_version = 2
-  timeout = "10s"
+  timeout = "15s"
 
 {% endfor %}
 

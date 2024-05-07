@@ -11,7 +11,7 @@
   ansible.builtin.package:
     name: systemd-timesyncd
     state: present
-  when: ansible_distribution_major_version is version(11, '>=') 
+  when: ansible_distribution_major_version is version(11, '>=')
 
 - name: Création du dossier de configuration de systemd-timesyncd
   ansible.builtin.file:
