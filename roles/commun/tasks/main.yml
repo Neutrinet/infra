@@ -49,6 +49,7 @@
 - name: Optimisation réseau
   ansible.builtin.import_tasks: network.yml
   tags: ['network']
+  when: ansible_virtualization_type != "lxc"
 
 - name: Installation de Telegraf
   ansible.builtin.import_role:
@@ -66,4 +67,3 @@
     serial_number: 0
   tags: ['serial']
   when: ansible_virtualization_type == "kvm" or ansible_product_name == "PowerEdge R620"
-

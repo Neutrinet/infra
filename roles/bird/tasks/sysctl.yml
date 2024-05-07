@@ -35,3 +35,21 @@
     sysctl_set: true
     state: present
     reload: true
+
+- name: Activation de l'asymmetric routing global
+  ansible.posix.sysctl:
+    name: "net.ipv4.conf.all.rp_filter"
+    value: '0'
+    sysctl_file: /etc/sysctl.d/85-asymmetric-routing.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Activation de l'asymmetric routing default
+  ansible.posix.sysctl:
+    name: "net.ipv4.conf.default.rp_filter"
+    value: '0'
+    sysctl_file: /etc/sysctl.d/85-asymmetric-routing.conf
+    sysctl_set: true
+    state: present
+    reload: true

@@ -3,7 +3,7 @@ filter kernel_v4_export {
 
    if (proto = "default_gw_v4") then accept;
    if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
-   
+
    if (bgp_large_community ~ [(my_asn, 0, 20),(my_asn, 0, 30)]) then {
       if reject_bogon_asns("import", "kernel")           then reject;
       if reject_long_aspaths("import", "kernel")         then reject;
@@ -13,7 +13,7 @@ filter kernel_v4_export {
       if reject_v4_invalid_rpki("import", "kernel")      then reject;
       accept;
    }
-   
+
    reject;
 }
 
@@ -23,7 +23,7 @@ filter kernel_v6_export {
 
    if (proto = "default_gw_v6") then accept;
    if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
-   
+
    if (bgp_large_community ~ [(my_asn, 0, 20),(my_asn, 0, 30)]) then {
       if reject_bogon_asns("import", "kernel")           then reject;
       if reject_long_aspaths("import", "kernel")         then reject;
@@ -33,7 +33,7 @@ filter kernel_v6_export {
       if reject_v6_invalid_rpki("import", "kernel")      then reject;
       accept;
    }
-   
+
    reject;
 }
 
@@ -41,6 +41,7 @@ protocol kernel kernel_v4 {
    scan time 30;
    vrf "routing";
    kernel table 1011;
+   persist;
 
    ipv4 {
       import none;
@@ -52,6 +53,7 @@ protocol kernel kernel_v6 {
    scan time 30;
    vrf "routing";
    kernel table 1011;
+   persist;
 
    ipv6 {
       import none;

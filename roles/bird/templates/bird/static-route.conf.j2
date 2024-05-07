@@ -28,7 +28,7 @@ protocol static {{ ansible_fqdn | replace('.', '_') | replace('-', '_') | replac
 {% if route.unreachable %}
     route {{ route.prefix }} unreachable  {
 {% else %}
-    route {{ route.prefix }} via {{ route.via }} {
+    route {{ route.prefix }} via {{ route.via }}{% if 'interface' in route %}%{{ route.interface }}{% endif %} {
 {% endif %}
         bgp_local_pref = 190;
 {% if route.is_public_exportable %}

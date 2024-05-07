@@ -1,10 +1,22 @@
 {% if item.type == 'neutrinet' %}
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
 
-   bgp_large_community.add((my_asn, 0, 40));
-   bgp_local_pref = 190;
+   if (net.type = NET_IP4) then {
+      if (net ~ neutrinet_network_v4) then {
+         bgp_large_community.add((my_asn, 0, 40));
+         bgp_local_pref = 190;
+         accept;
+      }
+   }
+   if (net.type = NET_IP6) then {
+      if (net ~ neutrinet_network_v6) then {
+         bgp_large_community.add((my_asn, 0, 40));
+         bgp_local_pref = 190;
+         accept;
+      }
+   }
+   reject;
 
-   accept;
 }
 
 {% endif %}
@@ -12,22 +24,24 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
 {% if item.neighbor_ipv6 is defined and (item.neighbor_ipv6 | length > 0) %}
 protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
    neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
+{% if 'neighbor_ipv6_interface' in item %}
+   interface "{{ item.neighbor_ipv6_interface }}";
+   direct;
+{% endif %}
    local as my_asn;
    description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";
    vrf "routing";
 
 {% if 'neighbor_ipv4' not in item %}
    ipv4 {
-      #import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
-      import none;
+      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
       export where proto = "default_gw_v4";
 
       next hop self;
    };
 {% endif %}
    ipv6 {
-      #import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
-      import none;
+      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
       export where proto = "default_gw_v6";
 
       next hop self;
@@ -43,8 +57,7 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v4 {
    vrf "routing";
 
    ipv4 {
-      #import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
-      import none;
+      import filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import;
       export where proto = "default_gw_v4";
 
       next hop self;

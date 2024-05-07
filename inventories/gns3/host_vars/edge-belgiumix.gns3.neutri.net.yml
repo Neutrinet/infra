@@ -62,4 +62,3 @@ bird_peers_downstreams:
     name: "Route Reflector 02"
     slug: route_reflector_02
     type: route-reflector
-

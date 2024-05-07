@@ -12,11 +12,21 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
 
    if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
    if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
-   if source = RTS_DEVICE then {
-      bgp_large_community.add((my_asn, 0, 40));
-      bgp_local_pref = 190;
-
-      accept;
+   if (proto = "direct1") then {
+      if (net.type = NET_IP4) then {
+         if (net ~ neutrinet_network_v4) then {
+            bgp_large_community.add((my_asn, 0, 40));
+            bgp_local_pref = 190;
+            accept;
+         }
+      }
+      if (net.type = NET_IP6) then {
+         if (net ~ neutrinet_network_v6) then {
+            bgp_large_community.add((my_asn, 0, 40));
+            bgp_local_pref = 190;
+            accept;
+         }
+      }
    }
    reject;
 }
@@ -25,6 +35,10 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
 {% if item.neighbor_ipv6 is defined and (item.neighbor_ipv6 | length > 0) %}
 protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
    neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
+{% if 'neighbor_ipv6_interface' in item %}
+   interface "{{ item.neighbor_ipv6_interface }}";
+   direct;
+{% endif %}
    local as my_asn;
    description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";
    vrf "routing";

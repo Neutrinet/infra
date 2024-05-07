@@ -43,6 +43,7 @@
     - 20_bgp_rpki.conf
   loop_control:
     loop_var: bird_conf
+  notify: reload bird
   tags: ['bird_config']
 
 - name: Configuration de base de bird
@@ -52,7 +53,7 @@
     owner: bird
     group: bird
     mode: "ug=r,o="
-  notify: restart bird
+  notify: reload bird
   tags: ['bird_config']
 
 - name: Configuration des peers upstream de bird

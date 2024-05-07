@@ -53,13 +53,14 @@ bird_peers_upstreams:
 
 bird_peers_downstreams:
   - asn: 204059
-    neighbor_ipv6: fdc9:94e5:e86::190
+    neighbor_ipv6: fe80:cafe::190
+    neighbor_ipv6_interface: ens19
     name: "Route Reflector 01"
     slug: route_reflector_01
     type: route-reflector
   - asn: 204059
-    neighbor_ipv6: fdc9:94e5:e86::191
+    neighbor_ipv6: fe80:cafe::191
+    neighbor_ipv6_interface: ens19
     name: "Route Reflector 02"
     slug: route_reflector_02
     type: route-reflector
-

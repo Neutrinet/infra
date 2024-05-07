@@ -16,6 +16,10 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
 {% if item.neighbor_ipv6 is defined and (item.neighbor_ipv6 | length > 0) %}
 protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
    neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
+{% if 'neighbor_ipv6_interface' in item %}
+   interface "{{ item.neighbor_ipv6_interface }}";
+   direct;
+{% endif %}
    local as my_asn;
    rr client;
    description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";
