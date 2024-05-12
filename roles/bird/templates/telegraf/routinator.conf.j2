@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from routinator
+  urls = ["http://localhost:8323/metrics"]
+  metric_version = 2

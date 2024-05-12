@@ -1,0 +1,6 @@
+- name: Déploiement de nftables
+  hosts: nftables
+  become: true
+
+  roles:
+    - nftables

@@ -1,0 +1,78 @@
+---
+
+- name: Création de l'utilisateur pour Bird exporter
+  ansible.builtin.user:
+    name: bird-exporter
+    home: /opt/bird-exporter
+    shell: /sbin/nologin
+    system: true
+    groups:
+      - bird
+    append: true
+    state: present
+
+- name: Création des dossiers de Bird exporter
+  ansible.builtin.file:
+    path: "{{ bird_exporter_dir }}"
+    owner: bird-exporter
+    group: bird-exporter
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/bird-exporter
+    - /opt/bird-exporter/{{ bird_exporter_version }}
+  loop_control:
+    loop_var: bird_exporter_dir
+
+- name: Création du dossier des archives de Bird exporter
+  ansible.builtin.file:
+    path: /usr/local/src/bird-exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive de Bird exporter v{{ bird_exporter_version }}
+  ansible.builtin.get_url:
+    url: https://github.com/czerwonk/bird_exporter/releases/download/{{ bird_exporter_version }}/bird_exporter_{{ bird_exporter_version }}_linux_amd64.tar.gz
+    dest: /usr/local/src/bird-exporter/{{ bird_exporter_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/czerwonk/bird_exporter/releases/download/{{ bird_exporter_version }}/bird_exporter_{{ bird_exporter_version }}_checksums.txt"
+
+- name: Décompression de l'archive
+  ansible.builtin.unarchive:
+    src: /usr/local/src/bird-exporter/{{ bird_exporter_version }}.tar.gz
+    dest: /opt/bird-exporter/{{ bird_exporter_version }}
+    creates: /opt/bird-exporter/{{ bird_exporter_version }}/bird_exporter
+    remote_src: true
+    owner: bird-exporter
+    group: bird-exporter
+
+- name: Création du lien symbolique pour le binaire de Bird exporter
+  ansible.builtin.file:
+    src: /opt/bird-exporter/{{ bird_exporter_version }}/bird_exporter
+    dest: /usr/local/bin/bird-exporter
+    state: link
+  notify: restart bird-exporter
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/bird-exporter.service.j2
+    dest: /etc/systemd/system/bird-exporter.service
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: restart bird-exporter
+
+- name: Activation de Bird exporter au démarrage
+  ansible.builtin.service:
+    name: bird-exporter
+    state: started
+    enabled: true
+
+- name: Trigger handlers
+  # We need to restart bird-exporter to apply the new config
+  # and expose the metrics for telegraf
+  ansible.builtin.meta: flush_handlers

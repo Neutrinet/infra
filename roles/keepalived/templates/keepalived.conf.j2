@@ -1,3 +1,4 @@
+{% set interface_info = lookup('vars', 'ansible_' + keepalived_interface) %}
 {{ ansible_managed | comment }}
 
 global_defs {
@@ -13,15 +14,36 @@ vrrp_script {{ script.name }} {
 }
 {% endfor %}
 
+vrrp_sync_group VG {
+  group {
+{% for instance in keepalived_instances %}
+    VI_{{ instance.type }}
+{% endfor %}
+  }
+
+{% if keepalived_vrrp_scripts | length > 0 %}
+  track_script {
+{% for script in keepalived_vrrp_scripts %}
+    {{ script.name }}
+{% endfor %}
+  }
+{% endif %}
+}
+
 {% for instance in keepalived_instances %}
 vrrp_instance VI_{{ instance.type }} {
   interface {{ keepalived_interface }}
+
   state BACKUP
   priority 100
   advert_int 1
 
-  unicast_src_ip {{ lookup('vars', 'ansible_default_' + instance.type).address }}
-
+{% if instance.type == 'ipv4' %}
+  unicast_src_ip {{ interface_info.ipv4.address }}
+{% endif %}
+{% if instance.type == 'ipv6' %}
+  unicast_src_ip {{ interface_info.ipv6 | selectattr("scope", "equalto", "global") | map(attribute='address') | first }}
+{% endif %}
   unicast_peer {
 {% for ip in instance.addresses if ip not in lookup('vars', 'ansible_all_' + instance.type + '_addresses') %}
     {{ ip }}
@@ -31,12 +53,5 @@ vrrp_instance VI_{{ instance.type }} {
   virtual_ipaddress {
     {{ instance.vip }}
   }
-{% if keepalived_vrrp_scripts | length > 0 %}
-  track_script {
-{% for script in keepalived_vrrp_scripts %}
-    {{ script.name }}
-{% endfor %}
-  }
-{% endif %}
 }
 {% endfor %}

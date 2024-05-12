@@ -1,0 +1,24 @@
+---
+
+- name: Config réseau via sysctl
+  ansible.builtin.import_tasks: sysctl.yml
+  tags: ['bird']
+
+- name: Installation de Bird2
+  ansible.builtin.import_tasks: bird.yml
+  tags: ['bird']
+
+- name: Configuration de bird_exporter
+  ansible.builtin.import_role:
+    name: bird_exporter
+  tags: ['telegraf_config']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/routinator.yml.j2
+    dest: /etc/borgmatic.d/bird.yml
+    owner: root
+    group: root
+    mode: "u=r,go="
+    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+  tags: ['borgmatic_config']

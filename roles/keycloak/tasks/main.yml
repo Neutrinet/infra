@@ -1,0 +1,18 @@
+- name: Installation de Keycloak
+  ansible.builtin.import_tasks: keycloak.yml
+  tags: ['keycloak']
+
+- name: Nettoyage des archives de Keycloak
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ['cleanup']
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/keycloak.conf.j2
+    dest: /etc/telegraf/telegraf.d/keycloak.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: restart telegraf
+  tags: ['telegraf_config']

@@ -1,0 +1,76 @@
+bird_router_id: 169.254.0.190
+bird_my_asn: 204059
+bird_router_source_ipv4: 169.254.0.190
+bird_router_source_ipv6: fe80:cafe::190
+bird_server_rpki_01: 2001:913:1000:10::190
+bird_server_rpki_02: 2001:913:1000:10::191
+bird_role: route-reflector
+bird_peers_upstreams:
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::200
+    neighbor_ipv6_interface: ens19
+    name: "Edge verixi 01"
+    slug: edge_verixi_01
+    type: edge
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::201
+    neighbor_ipv6_interface: ens19
+    name: "belgiumix"
+    slug: edge_belgiumix
+    type: edge
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::202
+    neighbor_ipv6_interface: ens19
+    name: "Edge bnix"
+    slug: edge_bnix
+    type: edge
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::203
+    neighbor_ipv6_interface: ens19
+    name: "Edge nlix"
+    slug: edge_nlix
+    type: edge
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::204
+    neighbor_ipv6_interface: ens19
+    name: "Edge verixi 02"
+    slug: edge_verixi_02
+    type: edge
+bird_peers_downstreams:
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::220
+    neighbor_ipv6_interface: ens19
+    name: "core patata 01"
+    slug: core_patata_01
+    type: core
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::221
+    neighbor_ipv6_interface: ens19
+    name: "Core patata 02"
+    slug: core_patata_02
+    type: core
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::222
+    neighbor_ipv6_interface: ens19
+    name: "core bra 01"
+    slug: core_bra_01
+    type: core
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::223
+    neighbor_ipv6_interface: ens19
+    name: "Core bra 02"
+    slug: core_bra_02
+    type: core
+
+bird_static_route_v4:
+  - prefix: 80.67.181.0/24
+    unreachable: true
+    is_public_exportable: true
+  - prefix: 80.67.191.0/24
+    unreachable: true
+    is_public_exportable: true
+
+bird_static_route_v6:
+  - prefix: 2001:913:1000::/36
+    unreachable: true
+    is_public_exportable: true
