@@ -4,6 +4,7 @@ modules:
 {% for probe in blackbox_exporter_http_probes %}
   {{ probe.name | default(probe.url) }}:
     prober: http
+    timeout: 10s
     http:
       method: {{ probe.method | default('GET') }}
 {% if probe.url.startswith('https') %}
@@ -22,6 +23,7 @@ modules:
 
   tcp:
     prober: tcp
+    timeout: 10s
 {% if not ansible_default_ipv6 %}
     tcp:
       preferred_ip_protocol: ip4
@@ -29,6 +31,7 @@ modules:
 
   icmp:
     prober: icmp
+    timeout: 10s
 {% if not ansible_default_ipv6 %}
     icmp:
       preferred_ip_protocol: ip4
@@ -36,6 +39,7 @@ modules:
 
   ssh:
     prober: tcp
+    timeout: 10s
     tcp:
       query_response:
       - expect: "^SSH-2.0-"
