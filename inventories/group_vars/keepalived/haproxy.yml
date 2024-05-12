@@ -135,7 +135,7 @@ haproxy:
     target_port: 80
     healthcheck: false
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self';"
 
   - hostname: doc.neutrinet.be
     target:
