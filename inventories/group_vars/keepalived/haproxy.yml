@@ -2,6 +2,7 @@ letsencrypt_domains_ovh:
   - neutrinet.be
   - labriqueinter.net
   - internetcu.be
+  - teamrecup.be
 letsencrypt_domains_gandi:
   - mobilizon.be
 
