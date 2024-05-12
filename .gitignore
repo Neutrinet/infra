@@ -136,3 +136,4 @@ log/
 !*.secret
 vault.key
 .envrc
+.gitsecret

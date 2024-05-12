@@ -1,0 +1,24 @@
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+platforms:
+  - name: bullseye-routinator-molecule
+    box: debian/bullseye64
+    cpu: 2
+    memory: 512
+    interfaces:
+      - network_name: private_network
+        type: dhcp
+        auto_config: true
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: /usr/bin/python3
+    ssh_connection:
+      pipelining: true
+verifier:
+  name: ansible

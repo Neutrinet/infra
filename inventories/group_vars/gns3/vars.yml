@@ -1,0 +1,9 @@
+datacenter_name: gns3
+
+# Use pfsense hosts as NTP servers
+ntp_hosts:
+ - 2001:913:1000:10::61
+ - 2001:913:1000:10::32
+
+root_password: neutrinet
+
