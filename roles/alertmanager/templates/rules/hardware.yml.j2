@@ -14,7 +14,7 @@ groups:
           description: 'Disk /dev/{{ $labels.device }} is failing on host {{ $labels.host }}'
           summary: 'Disk /dev{{ $labels.device }} is failing'
 
-       - alert: RAID disk failure
+      - alert: RAID disk failure
         for: 5m
         expr: mdstat_DisksFailed != 0
         labels:
@@ -24,7 +24,7 @@ groups:
           description: 'RAID {{ $labels.name }} has {{ $value }} failed devices on host {{ $labels.host }}. Remaining devices are: {{ $labels.devices }}'
           summary: 'RAID {{ $labels.name }} has {{ $value }} failed devices'
 
-       - alert: RAID disk down
+      - alert: RAID disk down
         for: 5m
         expr: mdstat_DisksDown != 0
         labels:
