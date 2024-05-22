@@ -1,44 +1,19 @@
 {% if item.type == 'neutrinet' %}
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
 
-   if (net.type = NET_IP4) then {
-      if (net ~ neutrinet_network_v4) then {
-         bgp_large_community.add((my_asn, 0, 40));
-         bgp_local_pref = 190;
-         accept;
-      }
-   }
-   if (net.type = NET_IP6) then {
-      if (net ~ neutrinet_network_v6) then {
-         bgp_large_community.add((my_asn, 0, 40));
-         bgp_local_pref = 190;
-         accept;
-      }
-   }
-   reject;
-
-}
-filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
-   if (net.type = NET_IP4) then {
-      if (proto = "default_gw_v4") then accept;
-   }
-   if (net.type = NET_IP6) then {
-      if (proto = "default_gw_v6") then accept;
-   }
-   reject;
-}
-{% endif %}
-
-{% if item.type == 'client' %}
-filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
-   if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
-   reject;
-
-}
-filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
-
    if (bgp_large_community ~ [(my_asn, 0, 20)]) then accept;
    if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
+
+   reject;
+}
+
+filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
+
+   if (bgp_large_community ~ [(my_asn, 0, 30)]) then {
+      if (net ~ neutrinet_network_v4) then {
+         reject;
+      }
+   }
    reject;
 
 }
@@ -72,7 +47,7 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
 }
 {% endif %}
 
-{% if item.neighbor_ipv4 is defined and (item.neighbor_ipv4 | length > 0) %}
+{% if item.neighbor_ipv4 is defined and (neighbor_ipv4 | length > 0) %}
 protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v4 {
    neighbor {{ item.neighbor_ipv4 }} as {{ item.asn }};
    local as my_asn;
