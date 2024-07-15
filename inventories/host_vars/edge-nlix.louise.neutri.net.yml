@@ -72,6 +72,15 @@ bird_peers_upstreams:
     slug: hurricane_electric
     type: peering
 
+  - asn: 15169
+    neighbor_ipv4: 193.239.117.141
+    neighbor_ipv4_password: jutran7dEbUwr6c9
+    neighbor_ipv6: 2001:7f8:13::a501:5169:1
+    neighbor_ipv6_password: jutran7dEbUwr6c9
+    name: "Google LLC"
+    slug: google
+    type: peering
+
 bird_peers_downstreams:
   - asn: 204059
     neighbor_ipv6: fe80:cafe::190

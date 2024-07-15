@@ -4,4 +4,4 @@
   become: true
 
   roles:
-    - blackbox_exporter
+    - bird_exporter
