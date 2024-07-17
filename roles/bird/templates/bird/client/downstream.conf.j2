@@ -96,7 +96,7 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v6 {
 }
 {% endif %}
 
-{% if item.neighbor_ipv6 is defined and (item.neighbor_ipv6 | length > 0) %}
+{% if item.neighbor_ipv6 is defined and (item.neighbor_ipv6 != "") %}
 protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
    neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
 {% if 'neighbor_ipv6_interface' in item %}
@@ -120,7 +120,7 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
 }
 {% endif %}
 
-{% if item.neighbor_ipv4 is defined and (item.neighbor_ipv4 | length > 0) %}
+{% if item.neighbor_ipv4 is defined and (item.neighbor_ipv4 != "") %}
 protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v4 {
    neighbor {{ item.neighbor_ipv4 }} as {{ item.asn }};
 {% if 'neighbor_ipv4_password' in item %}
