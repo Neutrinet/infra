@@ -28,6 +28,12 @@
     virtualenv_python: python3
     chdir: /opt/borgmatic
 
+- name: Création du lien symbolique pour le binaire borgmatic
+  ansible.builtin.file:
+    src: /opt/borgmatic/bin/borgmatic
+    dest: /usr/local/bin/borgmatic
+    state: link
+
 - name: Création du dossier pour le client SSH
   ansible.builtin.file:
     path: /root/.ssh
@@ -44,27 +50,18 @@
     loop_var: repo
     label: "{{ repo.host }}"
 
-- name: Création des dossiers de config de Borgmatic
+- name: Création du dossier de config de Borgmatic
   ansible.builtin.file:
-    path: "{{ config_dir }}"
+    path: "/etc/borgmatic.d"
     state: directory
     owner: root
     group: root
     mode: u=rwx,g=rx,o=
-  loop:
-    - /etc/borgmatic
-    - /etc/borgmatic.d
-  loop_control:
-    loop_var: config_dir
 
-- name: Configuration du template des backups Borgmatic
-  ansible.builtin.template:
-    src: borgmatic/template.yml.j2
-    dest: /etc/borgmatic/template.yml
-    owner: root
-    group: root
-    mode: u=rw,go=
-    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+- name: Suppression de l'ancien dossier de template de Borgmatic
+  ansible.builtin.file:
+    path: "/etc/borgmatic"
+    state: absent
 
 - name: Configuration commune des backups Borgmatic
   ansible.builtin.template:
@@ -73,7 +70,7 @@
     owner: root
     group: root
     mode: u=rw,go=
-    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+    validate: borgmatic config validate --show -c %s
   notify: init borgmatic
 
 - name: Création d'un timer pour créer et vérifier les backups périodiquement

@@ -1,5 +1,5 @@
 - name: Génération de la clé SSH pour le serveur de backup {{ repo.host }}
-  ansible.builtin.openssh_keypair:
+  community.crypto.openssh_keypair:
     path: "/root/.ssh/{{ repo.host | replace('.', '-') }}"
     type: ed25519
     comment: root@{{ ansible_fqdn }}
@@ -20,7 +20,7 @@
   run_once: true
 
 - name: Ajout de la clé publique du client SSH sur le serveur de backup {{ repo.host }}
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ repo.user }}"
     key: "{{ _borgmatic_ssh_public_key.content | b64decode }}"
     key_options: command="borg serve --restrict-to-path {{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}",restrict

@@ -3,7 +3,6 @@
 <<: !include /etc/borgmatic.d/common.yml
 
 source_directories: !retain
-  - "/etc/pve"
-  - "/etc/keys"
+  - "/etc/bird"
 
-archive_name_format: proxmox_{hostname}-{now}
+archive_name_format: bird_{hostname}-{now}

@@ -1,17 +1,9 @@
 {{ ansible_managed | comment }}
 
-<<: !include /etc/borgmatic/template.yml
+<<: !include /etc/borgmatic.d/common.yml
 
-location:
-  source_directories:
-    - "/etc/letsencrypt"
-    - "/opt/letsencrypt"
+source_directories: !retain
+  - "/etc/letsencrypt"
+  - "/opt/letsencrypt"
 
-storage:
-  archive_name_format: letsencrypt_{hostname}-{now}
-
-retention:
-  prefix: letsencrypt_
-
-consistency:
-  prefix: letsencrypt_
+archive_name_format: letsencrypt_{hostname}-{now}

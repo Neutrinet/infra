@@ -1,17 +1,9 @@
 {{ ansible_managed | comment }}
 
-<<: !include /etc/borgmatic/template.yml
+<<: !include /etc/borgmatic.d/common.yml
 
-location:
-  source_directories:
-    - "/etc/gitlab-runner"
-    - "/etc/docker"
+source_directories: !retain
+  - "/etc/gitlab-runner"
+  - "/etc/docker"
 
-storage:
-  archive_name_format: gitlab-runner_{hostname}-{now}
-
-retention:
-  prefix: gitlab-runner_
-
-consistency:
-  prefix: gitlab-runner_
+archive_name_format: gitlab-runner_{hostname}-{now}

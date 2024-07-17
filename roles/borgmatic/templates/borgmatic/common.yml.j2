@@ -1,14 +1,38 @@
 {{ ansible_managed | comment }}
 
-<<: !include /etc/borgmatic/template.yml
+source_directories:
+  - "/boot"
+  - "/etc"
+  - "/home"
+  - "/opt"
+  - "/root"
+  - "/var"
 
-location:
-  source_directories:
-    - "/etc/apt"
-    - "/etc/motd"
-    - "/etc/ssh"
-    - "/etc/zsh"
-    - "/etc/sudoers"
-    - "/etc/telegraf"
-    - "/etc/default/grub"
-    - "/etc/sysctl.d"
+exclude_patterns:
+  - "/home/*/.cache"
+  - "/root/.cache"
+  - "/var/backups"
+  - "/var/cache"
+  - "/var/lib/apt"
+  - "/var/lib/docker"
+  - "/var/lib/postgresql"
+  - "/var/lib/mysql"
+  - "/var/lib/elasticsearch"
+  - "/var/log"
+  - "/var/run"
+  - "/var/tmp"
+
+repositories:
+{% for repo in borgmatic_repositories %}
+  - path: ssh://{{ repo.host }}{{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}
+    label: {{ repo.host | replace('.', '-') }}
+{% endfor %}
+
+compression: zstd
+encryption_passphrase: {{ borgmatic_encryption_passphrase | string | to_json }}
+ssh_command: ssh -o LogLevel=error
+
+keep_daily: 7
+keep_monthly: 6
+keep_weekly: 4
+keep_hourly: 8
