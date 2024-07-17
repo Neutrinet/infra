@@ -7,11 +7,11 @@
     name: elasticsearch
     state: restarted
 
-- name: migrate zammad db
+- name: migrate zammad db  # noqa no-changed-when
   ansible.builtin.command:
     cmd: zammad run rails db:migrate
 
-- name: seed zammad db
+- name: seed zammad db  # noqa no-changed-when
   ansible.builtin.command:
     cmd: zammad run rails db:seed
 

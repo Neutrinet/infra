@@ -13,6 +13,7 @@
     repo: https://gitlab.domainepublic.net/Neutrinet/backoffice.git
     dest: "{{ web_app_dist_dir }}"
     single_branch: true
+  become: true
   become_user: "{{ web_app_owner }}"
   notify: restart backoffice
 
@@ -31,6 +32,7 @@
     state: present
     virtualenv: "{{ web_app_dist_dir }}/env"
     virtualenv_python: python2
+  become: true
   become_user: "{{ web_app_owner }}"
   notify: restart backoffice
 

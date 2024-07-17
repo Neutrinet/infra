@@ -39,7 +39,7 @@
   changed_when: false
   register: _ceph_module_prometheus_config
 
-- name: Configuration de l'exporteur Prometheus
+- name: Configuration de l'exporteur Prometheus  # noqa no-changed-when
   ansible.builtin.command: ceph config set mgr mgr/prometheus/server_addr localhost
   when: _ceph_module_prometheus_config.stdout != 'localhost'
 
