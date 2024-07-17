@@ -1,5 +1,6 @@
-- name: config nextcloud
+- name: config nextcloud  # noqa no-changed-when
   ansible.builtin.command:
     cmd: "{{ php_executable }} occ config:import {{ web_app_home_dir }}/import.json"
     chdir: "{{ web_app_dist_dir }}"
+  become: true
   become_user: "{{ web_app_owner }}"

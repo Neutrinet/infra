@@ -61,6 +61,7 @@
     cmd: /usr/bin/routinator --config /etc/routinator/routinator.conf init --accept-arin-rpa
     creates: /var/lib/routinator/rpki-cache
     chdir: /var/lib/routinator
+  become: true
   become_user: routinator
   tags: ['routinator_config']
 

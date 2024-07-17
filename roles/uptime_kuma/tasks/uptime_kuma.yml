@@ -44,6 +44,7 @@
     cmd: npm install
     chdir: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
     creates: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/node_modules
+  become: true
   become_user: "{{ uptime_kuma_owner }}"
 
 - name: Configuration du service systemd

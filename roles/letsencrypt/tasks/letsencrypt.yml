@@ -44,7 +44,7 @@
     path: /etc/letsencrypt/accounts
   register: letsencrypt_accounts
 
-- name: Enregistrement du compte Let's Encrypt  # noqa command-instead-of-shell
+- name: Enregistrement du compte Let's Encrypt  # noqa command-instead-of-shell no-changed-when
   ansible.builtin.shell:
     cmd: |
       /opt/letsencrypt/bin/certbot register \

@@ -27,6 +27,7 @@
     cmd: yarn workspaces focus --production
     chdir: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
     creates: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/node_modules
+  become: true
   become_user: "{{ hedgedoc_owner }}"
 
 - name: Configuration de Hedgedoc

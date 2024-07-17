@@ -5,7 +5,7 @@
     path: /etc/letsencrypt/live/{{ domain | replace('.', '-') }}-ecdsa/cert.pem
   register: letsencrypt_domain_ecdsa
 
-- name: Création du certificat {{ domain }} ecdsa  # noqa command-instead-of-shell
+- name: Création du certificat {{ domain }} ecdsa  # noqa command-instead-of-shell no-changed-when
   ansible.builtin.shell:
     cmd: |
       /opt/letsencrypt/bin/certbot certonly \

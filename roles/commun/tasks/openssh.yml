@@ -30,7 +30,7 @@
   when: ssh_host_key_file.stat.exists
 
 - name: Création de la clé SSH ed25519
-  ansible.builtin.openssh_keypair:
+  community.crypto.openssh_keypair:
     path: /etc/ssh/ssh_host_ed25519_key
     owner: root
     group: root
@@ -38,7 +38,7 @@
   notify: restart ssh
 
 - name: Création de la clé SSH rsa4096
-  ansible.builtin.openssh_keypair:
+  community.crypto.openssh_keypair:
     path: /etc/ssh/ssh_host_rsa_key
     owner: root
     group: root
@@ -51,7 +51,7 @@
   register: ssh_obsolete_moduli
   changed_when: ssh_obsolete_moduli.stdout | length > 0
 
-- name: Réduction du modulo SSH  # noqa no-handler
+- name: Réduction du modulo SSH  # noqa no-handler no-changed-when
   ansible.builtin.raw: >-
     awk '$5 > 2000' /etc/ssh/moduli > /tmp/moduli &&
     mv /tmp/moduli /etc/ssh/moduli

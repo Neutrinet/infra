@@ -112,7 +112,7 @@
 
 - name: Copie des dossiers de l'installation existante
   # This must be run only for updates, not for a fresh install.
-  ansible.builtin.synchronize:
+  ansible.posix.synchronize:
     src: /var/www/{{ mattermost_owner }}/dist/{{ directory }}/
     dest: /var/www/{{ mattermost_owner }}/mattermost-{{ mattermost_version }}/{{ directory }}/
     compress: false

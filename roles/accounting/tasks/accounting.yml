@@ -9,6 +9,7 @@
     version: main
     dest: /var/www/{{ accounting_owner }}/dist
     single_branch: true
+  become: true
   become_user: "{{ accounting_owner }}"
   register: _accounting_repo_cloned
   notify: restart accounting
@@ -22,7 +23,7 @@
     mode: "u=rw,g=r,o="
   notify: restart accounting
 
-- name: Installation de Accounting  # noqa no-handler
+- name: Installation de Accounting  # noqa no-handler no-changed-when
   ansible.builtin.shell:
     cmd: eval "$(rbenv init -)" && bin/setup
     chdir: /var/www/{{ accounting_owner }}/dist
@@ -30,6 +31,7 @@
   environment:
     RAILS_ENV: production
   when: _accounting_repo_cloned is changed
+  become: true
   become_user: "{{ accounting_owner }}"
 
 - name: Configuration du service systemd
