@@ -1,0 +1,56 @@
+bird_router_id: 169.254.0.221
+bird_my_asn: 204059
+bird_router_source_ipv4: 80.67.181.11
+bird_router_source_ipv6: 2001:913:1000:100::221
+bird_server_rpki_01: 2001:913:1000:10::190
+bird_server_rpki_02: 2001:913:1000:10::191
+bird_role: core
+bird_peers_upstreams:
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::190
+    neighbor_ipv6_interface: ens19
+    name: "Route Reflector 01"
+    slug: route_reflector_01
+    type: route-reflector
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::191
+    neighbor_ipv6_interface: ens19
+    name: "Route Reflector 02"
+    slug: route_reflector_02
+    type: route-reflector
+bird_peers_downstreams:
+  - asn: 64512
+    neighbor_ipv4: 169.254.20.10
+    neighbor_ipv6: fe80:cafe:20::10
+    neighbor_ipv6_interface: ens21
+    name: "ISPng"
+    slug: ispng
+    type: neutrinet
+
+bird_static_route_v4: []
+bird_static_route_v6:
+  - prefix: 2001:0913:1000:10::/64
+    unreachable: false
+    via: 2001:0913:1000:200::20
+    is_public_exportable: false
+  - prefix: 2001:0913:1000:11::/64
+    unreachable: false
+    via: 2001:0913:1000:200::20
+    is_public_exportable: false
+
+keepalived_interface: ens20
+keepalived_vrrp_scripts:
+  - name: check_bird
+    cmd: /usr/bin/killall -0 bird
+
+keepalived_instances:
+  - vip: 80.67.181.17/32
+    addresses:
+      - 80.67.181.18
+      - 80.67.181.19
+    type: ipv4
+  - vip: 2001:913:1000:200::17/128
+    addresses:
+      - 2001:913:1000:200::18
+      - 2001:913:1000:200::19
+    type: ipv6
