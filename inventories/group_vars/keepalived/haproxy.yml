@@ -1,7 +1,9 @@
-letsencrypt_domains_gandi:
+letsencrypt_domains_ovh:
   - neutrinet.be
   - labriqueinter.net
   - internetcu.be
+  - teamrecup.be
+letsencrypt_domains_gandi:
   - mobilizon.be
 
 haproxy:
@@ -133,7 +135,7 @@ haproxy:
     target_port: 80
     healthcheck: false
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self';"
 
   - hostname: doc.neutrinet.be
     target:
@@ -167,7 +169,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      - Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; media-src 'self'; frame-src 'self' https://db.ffdn.org;"
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; media-src 'self'; frame-src 'self' https://db.ffdn.org;"
 
   - hostname: internetcu.be
     target:
@@ -176,7 +178,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      - Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; media-src 'self'; frame-src 'self' https://db.ffdn.org;"
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; media-src 'self'; frame-src 'self' https://db.ffdn.org;"
 
   - hostname: cfacile.labriqueinter.net
     target:
@@ -185,7 +187,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; media-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; font-src 'self';"
 
   - hostname: sync.labriqueinter.net
     target:

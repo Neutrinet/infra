@@ -34,5 +34,5 @@
     owner: root
     group: root
     mode: "u=rw,go="
-    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+    validate: borgmatic config validate --show -c %s
   tags: ['borgmatic_config']
