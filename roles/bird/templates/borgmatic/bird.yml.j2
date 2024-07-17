@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic.d/common.yml
+
+source_directories: !retain
+  - "/etc/bird"
+
+archive_name_format: bird_{hostname}-{now}
