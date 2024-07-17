@@ -5,7 +5,7 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - name: bullseye-routinator-molecule
+  - name: bullseye-bird-molecule
     box: debian/bullseye64
     cpu: 2
     memory: 512
