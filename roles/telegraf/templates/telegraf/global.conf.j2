@@ -18,7 +18,7 @@
 #                            OUTPUT PLUGINS                                   #
 ###############################################################################
 
-{% if victoriametrics_url is defined %}
+{% if victoriametrics_url is defined and (victoriametrics_url | length > 0) %}
 [[outputs.influxdb]]
   urls = ["{{ victoriametrics_url }}"]
 
