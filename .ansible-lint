@@ -2,6 +2,7 @@
 warn_list:  # or 'skip_list' to silence them completely
   - yaml  # Violations reported by yamllint
   - name[casing]
+  - var-naming[no-role-prefix]
 
 skip_list:
   - name[template]

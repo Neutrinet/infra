@@ -15,7 +15,7 @@
   tags: ['skip_ansible_lint']
 
 - name: Ajout des clés SSH pour l'utilisateur {{ user.name }}
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ user.name }}"
     state: present
     # we can pass multiple keys, but they must be separated by newlines

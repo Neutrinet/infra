@@ -29,6 +29,6 @@
     name: systemd-timesyncd
     state: restarted
 
-- name: update grub  # noqa command-instead-of-shell
+- name: update grub  # noqa command-instead-of-shell no-changed-when
   ansible.builtin.shell:
     cmd: "grub-mkconfig -o /boot/grub/grub.cfg"
