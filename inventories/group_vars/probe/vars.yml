@@ -66,6 +66,10 @@ blackbox_exporter_http_probes:
     url: https://grafana.neutrinet.be/healthz
     body: ^Ok$
     check_cert_expiry: true
+  # Uptime Kuma
+  - name: https://uptime.neutrinet.be
+    check_cert_expiry: true
+  # Team Recup
   - url: https://teamrecup.be
     check_cert_expiry: true
 
