@@ -1,0 +1,4 @@
+deb http://deb.debian.org/debian/ bullseye contrib main non-free
+deb http://deb.debian.org/debian/ bullseye-updates contrib main non-free
+deb http://deb.debian.org/debian/ bullseye-backports contrib main non-free
+deb https://security.debian.org/debian-security/ bullseye-security contrib main non-free

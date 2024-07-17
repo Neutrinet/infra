@@ -26,13 +26,13 @@
 
 - name: Suppression de l'ancien dépôt APT pour Telegraf
   ansible.builtin.apt_repository:
-    repo: deb https://repos.influxdata.com/debian {{ ansible_distribution_release }} stable
+    repo: deb [signed-by=/etc/apt/keyrings/influxdb.asc] https://repos.influxdata.com/debian {{ ansible_distribution_release }} stable
     state: absent
     filename: telegraf
 
 - name: Ajout du dépôt APT pour Telegraf
   ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/influxdb.asc] https://repos.influxdata.com/debian {{ ansible_distribution_release }} stable
+    repo: deb [signed-by=/etc/apt/keyrings/influxdb.asc] https://repos.influxdata.com/debian stable main
     state: present
     filename: telegraf
 
