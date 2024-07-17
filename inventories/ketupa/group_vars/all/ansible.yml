@@ -1,0 +1,3 @@
+ansible_user: vagrant
+ansible_private_key_file: ~/.vagrant.d/insecure_private_keys/vagrant.key.rsa
+ansible_become_method: sudo

@@ -11,7 +11,7 @@
       - users
     append: true
     state: "{{ user.state }}"
-    update_password: on_create
+    update_password: "{{ 'always' if user.name == 'vagrant' else 'on_create' }}"
   tags: ['skip_ansible_lint']
 
 - name: Ajout des clés SSH pour l'utilisateur {{ user.name }}

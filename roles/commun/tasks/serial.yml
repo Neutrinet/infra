@@ -3,7 +3,7 @@
   ansible.builtin.lineinfile:
     path: "/etc/default/grub"
     regexp: 'GRUB_CMDLINE_LINUX_DEFAULT="(.*)"'
-    line: 'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS{{ serial_number }},115200n8 console=tty0 quiet"'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS{{ serial_number }},115200n8 console=tty0 quiet {{ grub_option_boot_linux }}"'
   notify: update grub
 
 - name: Clean option grub
