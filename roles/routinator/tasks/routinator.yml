@@ -41,7 +41,7 @@
     dest: /etc/routinator/routinator.conf
     owner: routinator
     group: routinator
-    mode: "u=rw,g=r,o="
+    mode: "ug=r,o="
     validate: routinator --config %s config
   notify: restart routinator
   tags: ['routinator_config']
@@ -52,7 +52,7 @@
     dest: /etc/routinator/exceptions.json
     owner: routinator
     group: routinator
-    mode: "u=rw,g=r,o="
+    mode: "ug=r,o="
   notify: restart routinator
   tags: ['routinator_config']
 

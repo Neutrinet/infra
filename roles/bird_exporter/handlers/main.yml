@@ -1,0 +1,15 @@
+- name: restart bird-exporter
+  ansible.builtin.systemd:
+    name: bird-exporter
+    daemon_reload: true
+    state: restarted
+
+- name: reload bird-exporter
+  ansible.builtin.service:
+    name: bird-exporter
+    state: reloaded
+
+- name: restart telegraf
+  ansible.builtin.service:
+    name: telegraf
+    state: restarted

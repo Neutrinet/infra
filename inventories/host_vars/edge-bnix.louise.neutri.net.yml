@@ -1,0 +1,123 @@
+bird_router_id: 169.254.0.200
+bird_my_asn: 204059
+bird_router_source_ipv4: 80.67.181.0
+bird_router_source_ipv6: 2001:913:1000:100::202
+bird_server_rpki_01: 2001:913:1000:10::190
+bird_server_rpki_02: 2001:913:1000:10::191
+bird_role: edge
+bird_peers_upstreams:
+  - asn: 5406
+    neighbor_ipv4: 194.53.172.1
+    neighbor_ipv6: 2001:7f8:26::a500:5406:1
+    name: "BNIX 01"
+    slug: bnix_01
+    type: route-server
+  - asn: 5406
+    neighbor_ipv4: 194.53.172.2
+    neighbor_ipv6: 2001:7f8:26::a500:5406:2
+    name: "BNIX 02"
+    slug: bnix_02
+    type: route-server
+
+  - asn: 13335
+    neighbor_ipv4: 194.53.172.66
+    neighbor_ipv6: 2001:7f8:26::a501:3335:1
+    name: "cloudflare"
+    slug: cloudflare
+    type: peering
+
+  - asn: 16276
+    neighbor_ipv4: 194.53.172.70
+    neighbor_ipv6: 2001:7f8:26::a501:6276:1
+    name: "OVHcloud"
+    slug: ovhcloud
+    type: peering
+
+  - asn: 20940
+    neighbor_ipv4: 194.53.172.121
+    neighbor_ipv6: 2001:7f8:26::a502:940:1
+    name: "Akamai Technologies"
+    slug: akamai_technologies
+    type: peering
+
+  - asn: 2611
+    neighbor_ipv4: 194.53.172.65
+    neighbor_ipv6: 2001:7f8:26::a500:2611:1
+    name: "BelNET"
+    slug: belnet
+    type: peering
+
+  - asn: 2906
+    neighbor_ipv4: 194.53.172.32
+    neighbor_ipv6: 2001:7f8:26::a500:2906:2
+    name: "Netflix"
+    slug: netflix
+    type: peering
+
+  - asn: 32934
+    neighbor_ipv4: 194.53.172.35
+    neighbor_ipv6: 2001:7f8:26::a503:2934:1
+    name: "Facebook 01"
+    slug: facebook_01
+    type: peering
+  - asn: 32934
+    neighbor_ipv4: 194.53.172.45
+    neighbor_ipv6: 2001:7f8:26::a503:2934:2
+    name: "Facebook 02"
+    slug: facebook_02
+    type: peering
+
+  - asn: 34019
+    neighbor_ipv4: 194.53.172.36
+    neighbor_ipv6: 2001:7f8:26::a503:4019:1
+    name: "Hivan"
+    slug: hivan
+    type: peering
+
+  - asn: 62044
+    neighbor_ipv4: 194.53.172.23
+    name: "Zscaler"
+    slug: zscaler
+    type: peering
+
+  - asn: 6939
+    neighbor_ipv4: 194.53.172.33
+    neighbor_ipv6: 2001:7f8:26::a500:6939:1
+    name: "Hurricane Electric"
+    slug: hurricane_electric
+    type: peering
+
+  - asn: 8368
+    neighbor_ipv4: 194.53.172.108
+    neighbor_ipv6: 2001:7f8:26::a500:8368:1
+    name: "Destiny NV"
+    slug: destiny
+    type: peering
+
+  - asn: 8674
+    neighbor_ipv4: 194.53.172.100
+    neighbor_ipv6: 2001:7f8:26::a500:8674:2
+    name: "Netnod"
+    slug: netnod
+    type: peering
+
+  - asn: 9031
+    neighbor_ipv4: 194.53.172.89
+    neighbor_ipv6: 2001:7f8:26::a500:9031:1
+    name: "EDPNET"
+    slug: edpnet
+    type: peering
+
+bird_peers_downstreams:
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::190
+    neighbor_ipv6_interface: ens19
+    name: "Route Reflector 01"
+    slug: route_reflector_01
+    type: route-reflector
+  - asn: 204059
+    neighbor_ipv6: fe80:cafe::191
+    neighbor_ipv6_interface: ens19
+    name: "Route Reflector 02"
+    slug: route_reflector_02
+    type: route-reflector
