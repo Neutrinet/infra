@@ -1,0 +1,71 @@
+filter kernel_v4_export {
+   krt_prefsrc = my_krt_prefsrc_v4;
+
+   if (proto = "default_gw_v4") then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
+
+   if (bgp_large_community ~ [(my_asn, 0, 30)]) then {
+      dest = RTD_UNREACHABLE;
+      accept;
+   }
+
+   if (bgp_large_community ~ [(my_asn, 0, 20)]) then {
+      if reject_bogon_asns("import", "kernel")           then reject;
+      if reject_long_aspaths("import", "kernel")         then reject;
+      if reject_v4_bogon_prefixes("import", "kernel")    then reject;
+      if reject_v4_small_prefixes("import", "kernel")    then reject;
+      if reject_v4_default_route("import", "kernel")     then reject;
+      if reject_v4_invalid_rpki("import", "kernel")      then reject;
+      accept;
+   }
+
+   reject;
+}
+
+
+filter kernel_v6_export {
+   if (proto = "default_gw_v6") then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
+
+   if (bgp_large_community ~ [(my_asn, 0, 30)]) then {
+      dest = RTD_UNREACHABLE;
+      accept;
+   }
+
+   krt_prefsrc = my_krt_prefsrc_v6;
+   if (bgp_large_community ~ [(my_asn, 0, 20)]) then {
+      if reject_bogon_asns("import", "kernel")           then reject;
+      if reject_long_aspaths("import", "kernel")         then reject;
+      if reject_v6_bogon_prefixes("import", "kernel")    then reject;
+      if reject_v6_small_prefixes("import", "kernel")    then reject;
+      if reject_v6_default_route("import", "kernel")     then reject;
+      if reject_v6_invalid_rpki("import", "kernel")      then reject;
+      accept;
+   }
+
+   reject;
+}
+
+protocol kernel kernel_v4 {
+   scan time 30;
+   vrf "routing";
+   kernel table 1011;
+   persist;
+
+   ipv4 {
+      import none;
+      export filter kernel_v4_export;
+   };
+}
+
+protocol kernel kernel_v6 {
+   scan time 30;
+   vrf "routing";
+   kernel table 1011;
+   persist;
+
+   ipv6 {
+      import none;
+      export filter kernel_v6_export;
+   };
+}

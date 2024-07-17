@@ -1,0 +1,18 @@
+bird_router_id: 127.0.0.1
+bird_my_asn: 64512
+bird_router_source_ipv4: 127.0.0.1
+bird_router_source_ipv6: ::1
+bird_server_rpki_01: 127.0.0.1
+bird_server_rpki_02: 127.0.0.1
+bird_role: core
+bird_peers_upstreams:
+  - asn: 204059
+    neighbor_ipv6: fdc9:94e5:e86::190
+    name: "Route Reflector 01"
+    slug: route_reflector_01
+    type: route-reflector
+  - asn: 204059
+    neighbor_ipv6: fdc9:94e5:e86::191
+    name: "Route Reflector 02"
+    slug: route_reflector_02
+    type: route-reflector

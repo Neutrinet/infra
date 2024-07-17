@@ -1,0 +1,44 @@
+- name: Récupération de la liste des dossiers d'installation
+  ansible.builtin.find:
+    path: /opt/bird-exporter
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _bird_exporter_installed_dirs
+
+- name: Récupération de la liste des archives
+  ansible.builtin.find:
+    path: /usr/local/src/bird-exporter
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _bird_exporter_archives
+
+- name: Récupération de la plus ancienne version et de la version courante
+  ansible.builtin.set_fact:
+    bird_exporter_oldest_archive: "{{ bird_exporter_sorted_archives | first }}"
+    bird_exporter_oldest_install_dir: "{{ bird_exporter_sorted_install_dirs | first }}"
+    bird_exporter_oldest_version: "{{ bird_exporter_sorted_install_dirs | first | basename }}"
+  vars:
+    bird_exporter_sorted_archives: |-
+      {{ _bird_exporter_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    bird_exporter_sorted_install_dirs: |-
+      {{ _bird_exporter_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: Suppression de la plus ancienne version (v{{ bird_exporter_oldest_version }})
+  ansible.builtin.file:
+    state: absent
+    path: "{{ bird_exporter_oldest_install_dir }}"
+  when: _bird_exporter_installed_dirs.files | length > 5
+
+- name: Suppression de la plus ancienne archive
+  ansible.builtin.file:
+    state: absent
+    path: "{{ bird_exporter_oldest_archive }}"
+  when: _bird_exporter_archives.files | length > 5
