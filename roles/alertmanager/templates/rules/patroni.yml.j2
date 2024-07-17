@@ -23,7 +23,7 @@ groups:
           description: 'Incorrect number of replica server for the Patroni cluster {{ $labels.scope }}: {{ $value }}.'
           summary: 'Incorrect number of replica server for the Patroni cluster.'
 
-      - alert: PostreSQL Running
+      - alert: PostgreSQL Running
         for: 5m
         expr: >
 {% for host in postgresql_patroni_hosts %}
@@ -35,6 +35,15 @@ groups:
         annotations:
           description: 'PostgreSQL is not running on host {{ $labels.host }} in the Patroni cluster {{ $labels.scope }}.'
           summary: 'PostgreSQL is not running in the Patroni cluster.'
+
+      - alert: PostgreSQL Behind Timeline
+        for: 10m
+        expr: 0 < prometheus_patroni_postgres_timeline < ignoring (host, instance, job, monitor) group_left avg without (host, instance, job, monitor) (prometheus_patroni_postgres_timeline)
+        labels:
+          severity: warning
+        annotations:
+          description: 'PostgreSQL on host {{ $labels.host }} is behind the current timeline (value = {{ $value }}).'
+          summary: 'PostgreSQL is behind the current timeline.'
 
   - name: Etcd
     rules:
