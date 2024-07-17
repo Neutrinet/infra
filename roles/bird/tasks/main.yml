@@ -15,7 +15,7 @@
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:
-    src: borgmatic/routinator.yml.j2
+    src: borgmatic/bird.yml.j2
     dest: /etc/borgmatic.d/bird.yml
     owner: root
     group: root

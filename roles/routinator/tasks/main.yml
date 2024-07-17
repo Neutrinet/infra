@@ -12,6 +12,6 @@
     dest: /etc/borgmatic.d/routinator.yml
     owner: root
     group: root
-    mode: "u=r,go="
-    validate: /opt/borgmatic/bin/validate-borgmatic-config -c %s
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
   tags: ['borgmatic_config']

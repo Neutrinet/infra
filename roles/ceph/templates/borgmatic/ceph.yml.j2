@@ -1,16 +1,8 @@
 {{ ansible_managed | comment }}
 
-<<: !include /etc/borgmatic/template.yml
+<<: !include /etc/borgmatic.d/common.yml
 
-location:
-  source_directories:
-    - "/etc/ceph"
+source_directories: !retain
+  - "/etc/ceph"
 
-storage:
-  archive_name_format: ceph_{hostname}-{now}
-
-retention:
-  prefix: ceph_
-
-consistency:
-  prefix: ceph_
+archive_name_format: ceph_{hostname}-{now}

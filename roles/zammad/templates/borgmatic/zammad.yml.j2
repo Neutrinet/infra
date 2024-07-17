@@ -1,26 +1,17 @@
 {{ ansible_managed | comment }}
 
-<<: !include /etc/borgmatic/template.yml
+<<: !include /etc/borgmatic.d/common.yml
 
-location:
-  source_directories:
-    - "/etc/caddy/conf.d/{{ zammad_owner }}.conf"
-    - "/opt/zammad"
-    - "/etc/zammad"
-    - "/etc/elasticsearch"
+source_directories: !retain
+  - "/etc/caddy/conf.d/{{ zammad_owner }}.conf"
+  - "/opt/zammad"
+  - "/etc/zammad"
+  - "/etc/elasticsearch"
 
-storage:
-  archive_name_format: zammad-{{ zammad_owner }}_{hostname}-{now}
+archive_name_format: zammad-{{ zammad_owner }}_{hostname}-{now}
 
-retention:
-  prefix: zammad-{{ zammad_owner }}_
-
-consistency:
-  prefix: zammad-{{ zammad_owner }}_
-
-hooks:
-  postgresql_databases:
-    - name: "{{ postgresql_db_name }}"
-      username: "{{ postgresql_db_name }}"
-      password: {{ postgresql_db_password | string | to_json }}
-      hostname: "{{ postgresql_host }}"
+postgresql_databases:
+  - name: "{{ postgresql_db_name }}"
+    username: "{{ postgresql_db_name }}"
+    password: {{ postgresql_db_password | string | to_json }}
+    hostname: "{{ postgresql_host }}"

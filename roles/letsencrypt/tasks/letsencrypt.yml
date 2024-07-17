@@ -17,6 +17,7 @@
     state: directory
   with_items:
     - /etc/letsencrypt
+    - /etc/letsencrypt/ovh
     - /etc/letsencrypt/gandi
     - /opt/letsencrypt
 
@@ -25,11 +26,18 @@
     name:
       - pip
       - certbot
+      - certbot-dns-ovh
       - certbot-plugin-gandi
     virtualenv: /opt/letsencrypt
     virtualenv_python: python3
     state: latest
     chdir: /opt/letsencrypt
+
+- name: Création d'un lien symbolique pour le binaire certbot
+  ansible.builtin.file:
+    src: /opt/letsencrypt/bin/certbot
+    dest: /usr/local/bin/certbot
+    state: link
 
 - name: Création d'un cron job pour renouveler les certificats
   ansible.builtin.cron:
@@ -39,21 +47,26 @@
     user: "root"
     job: "/opt/letsencrypt/bin/certbot renew"
 
-- name: Test si le compte Let's Encrypt existe
-  ansible.builtin.stat:
-    path: /etc/letsencrypt/accounts
-  register: letsencrypt_accounts
-
-- name: Enregistrement du compte Let's Encrypt  # noqa command-instead-of-shell no-changed-when
-  ansible.builtin.shell:
-    cmd: |
-      /opt/letsencrypt/bin/certbot register \
-      --non-interactive \
-      {% if letsencrypt_staging %}--staging \{% endif %}
-      --email {{ letsencrypt_mail_notification }} \
-      --no-eff-email \
+- name: Enregistrement du compte Let's Encrypt
+  ansible.builtin.command:
+    cmd: >
+      /opt/letsencrypt/bin/certbot register
+      --non-interactive
+      {% if letsencrypt_staging %}--staging {% endif %}
+      --email {{ letsencrypt_mail_notification }}
+      --no-eff-email
       --agree-tos
-  when: not letsencrypt_accounts.stat.exists
+    creates: /etc/letsencrypt/accounts
+
+- name: Config d'OVH pour Let's Encrypt
+  ansible.builtin.template:
+    dest: /etc/letsencrypt/ovh/ovh.ini
+    src: ovh.ini.j2
+    owner: root
+    group: root
+    mode: "u=rw,go="
+  no_log: true
+  when: letsencrypt_domains_ovh | length > 0
 
 - name: Config de Gandi pour Let's Encrypt
   ansible.builtin.template:
@@ -62,6 +75,8 @@
     owner: root
     group: root
     mode: "u=rw,go="
+  no_log: true
+  when: letsencrypt_domains_gandi | length > 0
 
 - name: Placement du hook pour HAproxy
   ansible.builtin.copy:
@@ -70,6 +85,18 @@
     mode: "ugo=rx"
     owner: root
     group: root
+
+- name: Création des certificats rsa par challenge ovh
+  ansible.builtin.include_tasks: letsencrypt-ovh-rsa.yml
+  loop: "{{ letsencrypt_domains_ovh }}"
+  loop_control:
+    loop_var: domain
+
+- name: Création des certificats ecdsa par challenge ovh
+  ansible.builtin.include_tasks: letsencrypt-ovh-ecdsa.yml
+  loop: "{{ letsencrypt_domains_ovh }}"
+  loop_control:
+    loop_var: domain
 
 
 - name: Création des certificats rsa par challenge gandi
