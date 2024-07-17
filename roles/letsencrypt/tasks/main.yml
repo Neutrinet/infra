@@ -12,7 +12,7 @@
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
   notify: Restart telegraf
-  when: letsencrypt_domains_gandi | length > 0
+  when: letsencrypt_domains_ovh | length > 0 or letsencrypt_domains_gandi | length > 0
   tags: ['telegraf_config']
 
 - name: Configuration des backups Borgmatic
