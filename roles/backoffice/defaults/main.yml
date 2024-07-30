@@ -1,4 +1,6 @@
 backoffice_domain: cube.example.com
+backoffice_owner: "{{ backoffice_domain | replace('.', '-') }}"
+
 backoffice_ffdnapi_domain: ffdnapi.example.com
 
 postgresql_host: localhost

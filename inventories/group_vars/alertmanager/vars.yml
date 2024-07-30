@@ -1,4 +1,4 @@
-alertmanager_version: 0.26.0
+alertmanager_version: 0.27.0
 
 alertmanager_matrix_username: "neutribot"
 alertmanager_matrix_password: "{{ vault_alertmanager_matrix_password }}"

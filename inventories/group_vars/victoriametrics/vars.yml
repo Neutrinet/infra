@@ -1,6 +1,6 @@
 telegraf_victoriametrics_client_listen_address: localhost
 
-victoriametrics_version: 1.87.7
+victoriametrics_version: 1.87.14
 
 victoriametrics_storage_retention: 3y
 victoriametrics_storage_path: /media/data/victoriametrics

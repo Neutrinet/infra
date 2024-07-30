@@ -42,7 +42,7 @@ vrrp_instance VI_{{ instance.type }} {
   unicast_src_ip {{ interface_info.ipv4.address }}
 {% endif %}
 {% if instance.type == 'ipv6' %}
-  unicast_src_ip {{ interface_info.ipv6 | selectattr("scope", "equalto", "global") | map(attribute='address') | first }}
+  unicast_src_ip {{ interface_info.ipv6 | selectattr("scope", "equalto", "global") | map(attribute='address') | reject('equalto', instance.vip.split('/')[0]) | first }}
 {% endif %}
   unicast_peer {
 {% for ip in instance.addresses if ip not in lookup('vars', 'ansible_all_' + instance.type + '_addresses') %}
