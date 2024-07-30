@@ -25,7 +25,7 @@
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:
     src: borgmatic/dokuwiki.yml.j2
-    dest: /etc/borgmatic.d/dokuwiki-{{ dokuwiki_domain | replace('.', '-') }}.yml
+    dest: /etc/borgmatic.d/dokuwiki-{{ dokuwiki_owner }}.yml
     owner: root
     group: root
     mode: "u=rw,go="
