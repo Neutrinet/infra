@@ -4,14 +4,14 @@
     # because it is looking for an exact command line in crontab...
     name: grav-scheduler
     job: "{{ php_executable }} bin/grav scheduler 1>> /dev/null 2>&1"
-    user: "{{ web_app_owner }}"
+    user: "{{ grav_owner }}"
     state: present
 
 - name: Configuration de la variable HOME du cron job
   ansible.builtin.cron:
     name: HOME
     value: "{{ web_app_dist_dir }}"
-    user: "{{ web_app_owner }}"
+    user: "{{ grav_owner }}"
     state: present
     env: true
 
@@ -19,6 +19,6 @@
   ansible.builtin.cron:
     name: PATH
     value: "/usr/local/bin:/usr/bin"
-    user: "{{ web_app_owner }}"
+    user: "{{ grav_owner }}"
     state: present
     env: true

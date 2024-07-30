@@ -3,8 +3,8 @@
 <<: !include /etc/borgmatic.d/common.yml
 
 source_directories: !retain
-  - "/etc/caddy/conf.d/{{ web_app_owner }}.conf"
+  - "/etc/caddy/conf.d/{{ dokuwiki_owner }}.conf"
   - "{{ web_app_dist_dir }}"
-  - "{{ php_fpm_pool_dir }}/{{ web_app_owner }}.conf"
+  - "{{ php_fpm_pool_dir }}/{{ dokuwiki_owner }}.conf"
 
-archive_name_format: dokuwiki-{{ web_app_owner }}_{hostname}-{now}
+archive_name_format: dokuwiki-{{ dokuwiki_owner }}_{hostname}-{now}

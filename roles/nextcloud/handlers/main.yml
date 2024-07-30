@@ -2,4 +2,4 @@
   ansible.builtin.command:
     cmd: "{{ php_executable }} occ config:import {{ web_app_home_dir }}/import.json"
     chdir: "{{ web_app_dist_dir }}"
-  become_user: "{{ web_app_owner }}"
+  become_user: "{{ nextcloud_owner }}"

@@ -15,8 +15,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': '{{ postgresql_host }}',
-        'NAME': '{{ web_app_owner }}',
-        'USER': '{{ web_app_owner }}',
+        'NAME': '{{ backoffice_owner }}',
+        'USER': '{{ backoffice_owner }}',
         'PASSWORD': '{{ backoffice_postgresql_password }}'
     }
 }

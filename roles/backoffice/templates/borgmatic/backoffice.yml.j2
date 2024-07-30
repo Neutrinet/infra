@@ -3,12 +3,12 @@
 <<: !include /etc/borgmatic.d/common.yml
 
 source_directories: !retain
-  - "/etc/caddy/conf.d/{{ web_app_owner }}.conf"
+  - "/etc/caddy/conf.d/{{ backoffice_owner }}.conf"
   - "/etc/caddy/conf.d/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.conf"
   - "{{ web_app_dist_dir }}"
   - "/etc/systemd/system/backoffice.service"
 
-archive_name_format: backoffice-{{ web_app_owner }}_{hostname}-{now}
+archive_name_format: backoffice-{{ backoffice_owner }}_{hostname}-{now}
 
 postgresql_databases:
   - name: "{{ postgresql_db_name }}"
