@@ -81,6 +81,13 @@ bird_peers_upstreams:
     slug: google
     type: peering
 
+  - asn: 49544
+    neighbor_ipv4: 193.239.117.76
+    neighbor_ipv6: 2001:7f8:13::a504:9544:1
+    name: "i3D.net"
+    slug: 13d_net
+    type: peering
+
 bird_peers_downstreams:
   - asn: 204059
     neighbor_ipv6: fe80:cafe::190
