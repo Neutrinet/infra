@@ -11,7 +11,7 @@
 
 - name: Ajout du dépôt APT proxmox
   ansible.builtin.apt_repository:
-    repo: "deb http://download.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-no-subscription"
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/proxmox-release-{{ ansible_distribution_release }}.gpg] http://download.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-no-subscription"
     filename: pve-install-repo
     state: present
 

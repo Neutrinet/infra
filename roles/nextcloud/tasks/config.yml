@@ -2,7 +2,7 @@
   ansible.builtin.template:
     src: "nextcloud/config.json.j2"
     dest: "{{ web_app_home_dir }}/import.json"
-    owner: "{{ web_app_owner }}"
+    owner: "{{ nextcloud_owner }}"
     group: "{{ web_app_group }}"
     mode: "u=rw,g=r,o="
   notify: config nextcloud
