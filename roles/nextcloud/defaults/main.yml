@@ -1,4 +1,5 @@
 nextcloud_domain: files.example.com
+nextcloud_owner: "{{ nextcloud_domain | replace('.', '-') }}"
 
 nextcloud_max_upload_size: 512MB
 

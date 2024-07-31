@@ -13,15 +13,15 @@
     repo: https://gitlab.domainepublic.net/Neutrinet/backoffice.git
     dest: "{{ web_app_dist_dir }}"
     single_branch: true
-  become_user: "{{ web_app_owner }}"
+  become_user: "{{ backoffice_owner }}"
   notify: restart backoffice
 
 - name: Configuration de backoffice
   ansible.builtin.template:
     src: backoffice/settings_local.py.j2
     dest: "{{ web_app_dist_dir }}/backoffice/settings_local.py"
-    owner: "{{ web_app_owner }}"
-    group: "{{ web_app_owner }}"
+    owner: "{{ backoffice_owner }}"
+    group: "{{ backoffice_owner }}"
     mode: "u=rw,g=r,o="
   notify: restart backoffice
 
@@ -31,7 +31,7 @@
     state: present
     virtualenv: "{{ web_app_dist_dir }}/env"
     virtualenv_python: python2
-  become_user: "{{ web_app_owner }}"
+  become_user: "{{ backoffice_owner }}"
   notify: restart backoffice
 
 - name: Configuration du service systemd

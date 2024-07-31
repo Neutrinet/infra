@@ -3,11 +3,11 @@
 <<: !include /etc/borgmatic.d/common.yml
 
 source_directories: !retain
-  - "/etc/caddy/conf.d/{{ web_app_owner }}.conf"
+  - "/etc/caddy/conf.d/{{ nextcloud_owner }}.conf"
   - "{{ web_app_dist_dir }}"
-  - "{{ php_fpm_pool_dir }}/{{ web_app_owner }}.conf"
+  - "{{ php_fpm_pool_dir }}/{{ nextcloud_owner }}.conf"
 
-archive_name_format: nextcloud-{{ web_app_owner }}_{hostname}-{now}
+archive_name_format: nextcloud-{{ nextcloud_owner }}_{hostname}-{now}
 
 postgresql_databases:
   - name: "{{ postgresql_db_name }}"

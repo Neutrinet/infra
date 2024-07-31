@@ -7,10 +7,10 @@
         "overwrite.cli.url": "https://{{ nextcloud_domain }}",
         "trusted_proxies": {{ caddy_trusted_proxies | list | to_json }},
         "dbtype": "pgsql",
-        "dbname": "{{ web_app_owner }}",
+        "dbname": "{{ nextcloud_owner }}",
         "dbhost": "{{ postgresql_host }}",
         "dbport": 5432,
-        "dbuser": "{{ web_app_owner }}",
+        "dbuser": "{{ nextcloud_owner }}",
         "dbpassword": {{ nextcloud_postgresql_password | string | to_json }},
 {% if nextcloud_s3_enabled %}
         "objectstore": {

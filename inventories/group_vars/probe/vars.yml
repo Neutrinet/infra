@@ -1,4 +1,4 @@
-blackbox_exporter_version: 0.23.0
+blackbox_exporter_version: 0.25.0
 
 zammad_monitoring_token: "{{ vault_zammad_monitoring_token }}"
 blackbox_exporter_http_probes:
@@ -67,7 +67,7 @@ blackbox_exporter_http_probes:
     body: ^Ok$
     check_cert_expiry: true
   # Uptime Kuma
-  - name: https://uptime.neutrinet.be
+  - url: https://uptime.neutrinet.be
     check_cert_expiry: true
   # Team Recup
   - url: https://teamrecup.be

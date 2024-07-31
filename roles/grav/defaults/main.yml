@@ -1,1 +1,2 @@
 grav_domain: grav.example.com
+grav_owner: "{{ grav_domain | replace('.', '-') }}"

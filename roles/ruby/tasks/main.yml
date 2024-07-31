@@ -52,4 +52,5 @@
     name: bundler
     state: latest
     norc: true
+    executable: ~/.rbenv/versions/{{ ruby_version }}/bin/gem
   become_user: "{{ ruby_owner }}"
