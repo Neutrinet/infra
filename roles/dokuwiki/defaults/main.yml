@@ -1,1 +1,2 @@
 dokuwiki_domain: wiki.example.com
+dokuwiki_owner: "{{ dokuwiki_domain | replace('.', '-') }}"

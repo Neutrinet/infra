@@ -1,5 +1,7 @@
 {{ ansible_managed | comment }}
 
+DAEMON_ARGS="--heartbeat-interval 250 --election-timeout 1250"
+
 # [Member]
 ETCD_NAME="{{ ansible_hostname }}"
 ETCD_DATA_DIR="{{ etcd_data_dir }}"

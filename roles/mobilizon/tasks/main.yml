@@ -87,4 +87,7 @@
     group: root
     mode: "u=rw,go="
     validate: borgmatic config validate --show -c %s
+  vars:
+    postgresql_db_name: "{{ mobilizon_owner }}"
+    postgresql_db_password: "{{ mobilizon_postgresql_password }}"
   tags: ['borgmatic_config']
