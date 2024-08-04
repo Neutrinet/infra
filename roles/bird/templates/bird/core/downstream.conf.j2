@@ -47,6 +47,11 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
 {% if item.neighbor_ipv6 is defined and (item.neighbor_ipv6 | length > 0) %}
 protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
    neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
+   bfd graceful;
+   graceful restart yes;
+   graceful restart time 0;
+   long lived graceful restart yes;
+   long lived stale time 120;
 {% if 'neighbor_ipv6_interface' in item %}
    interface "{{ item.neighbor_ipv6_interface }}";
    direct;
@@ -75,6 +80,11 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
 {% if item.neighbor_ipv4 is defined and (item.neighbor_ipv4 | length > 0) %}
 protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v4 {
    neighbor {{ item.neighbor_ipv4 }} as {{ item.asn }};
+   bfd graceful;
+   graceful restart yes;
+   graceful restart time 0;
+   long lived graceful restart yes;
+   long lived stale time 120;
    local as my_asn;
    description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";
    vrf "routing";

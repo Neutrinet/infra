@@ -40,6 +40,7 @@
     - 10_device.conf
     - 10_direct.conf
     - 10_static.conf
+    - 10_bfd.conf
     - 20_bgp_rpki.conf
   loop_control:
     loop_var: bird_conf
@@ -54,6 +55,16 @@
     group: bird
     mode: "ug=r,o="
   notify: reload bird
+  tags: ['bird_config']
+
+- name: Configuration des variables d'environement pour bird
+  ansible.builtin.template:
+    src: bird/envvars.j2
+    dest: /etc/bird/envvars
+    owner: root
+    group: root
+    mode: "ug=r,o="
+  notify: restart bird
   tags: ['bird_config']
 
 - name: Configuration des peers upstream de bird
