@@ -5,3 +5,11 @@ alertmanager_matrix_password: "{{ vault_alertmanager_matrix_password }}"
 alertmanager_matrix_host: matrix.domainepublic.net
 
 alertmanager_matrix_alertbot_room: "!RwsRwTYSutAOiujkCC:matrix.domainepublic.net"
+alertmanager_matrix_alertbot_users:
+  - matrix_id: "@hgo:chat.batato.be"
+    vpn_uuids:
+      - 08119079-ba91-4b23-b9a5-519fcb3b5fad
+      - f596b8aa-5f9c-401d-8bd2-fe861ec8dc88
+  - matrix_id: "@celo:chat.brocolis.party"
+    vpn_uuids:
+      - 8e4cb2ab-3b68-4c6e-84c1-ee2f9e2d38f4
