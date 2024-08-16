@@ -11,8 +11,8 @@ ExecStart={{ web_app_dist_dir }}/env/bin/gunicorn backoffice.wsgi:application -b
 ExecReload = /bin/kill -s HUP $MAINPID
 ExecStop = /bin/kill -s TERM $MAINPID
 
-User={{ web_app_owner }}
-Group={{ web_app_owner }}
+User={{ backoffice_owner }}
+Group={{ backoffice_owner }}
 WorkingDirectory={{ web_app_dist_dir }}
 
 

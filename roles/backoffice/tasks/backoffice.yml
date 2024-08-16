@@ -21,8 +21,8 @@
   ansible.builtin.template:
     src: backoffice/settings_local.py.j2
     dest: "{{ web_app_dist_dir }}/backoffice/settings_local.py"
-    owner: "{{ web_app_owner }}"
-    group: "{{ web_app_owner }}"
+    owner: "{{ backoffice_owner }}"
+    group: "{{ backoffice_owner }}"
     mode: "u=rw,g=r,o="
   notify: restart backoffice
 

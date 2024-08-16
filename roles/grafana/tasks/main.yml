@@ -50,7 +50,7 @@
 
 - name: Vérification du mot de passe admin
   ansible.builtin.uri:
-    url: http://localhost:3000/api/login/ping
+    url: http://localhost:3000/api/user
     user: admin
     # on utilise le mot de passe par défaut
     # permet de vérifier si c'est une nouvelle install

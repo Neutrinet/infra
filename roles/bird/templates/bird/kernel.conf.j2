@@ -51,6 +51,7 @@ protocol kernel kernel_v4 {
    vrf "routing";
    kernel table 1011;
    persist;
+   graceful restart yes;
 
    ipv4 {
       import none;
@@ -63,6 +64,7 @@ protocol kernel kernel_v6 {
    vrf "routing";
    kernel table 1011;
    persist;
+   graceful restart yes;
 
    ipv6 {
       import none;

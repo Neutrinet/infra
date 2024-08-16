@@ -42,6 +42,7 @@
     mode: push
     archive: true
     delete: true
+  become: true
   become_user: haproxy
   notify: reload haproxy
 

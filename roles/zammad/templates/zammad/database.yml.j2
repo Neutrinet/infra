@@ -14,7 +14,7 @@ production:
   password: {{ zammad_postgresql_password | string | to_json }}
 
   # If the database server is not on localhost, you can set hostname and port:
-  host: "{{ postgresql_host }}"
+  host: {{ postgresql_host }}
   port: 5432
 
   database: "{{ zammad_owner }}"

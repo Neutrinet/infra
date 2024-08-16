@@ -197,6 +197,9 @@
     group: root
     mode: "u=rw,go="
     validate: borgmatic config validate --show -c %s
+  vars:
+    postgresql_db_name: "{{ mattermost_owner }}"
+    postgresql_db_password: "{{ mattermost_postgresql_password }}"
   tags: ['borgmatic_config']
 
 - name: Installation de rclone pour les backups du stockage S3
