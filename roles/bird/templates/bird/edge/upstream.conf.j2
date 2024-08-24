@@ -138,6 +138,9 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v6 {
 {% if 'neighbor_ipv6_password' in item %}
    password "{{ item.neighbor_ipv6_password }}";
 {% endif %}
+{% if 'passive' in item and item.passive %}
+   passive on;
+{% endif %}
    local as my_asn;
    description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";
    vrf "routing";
@@ -162,6 +165,9 @@ protocol bgp {{ item.type | replace('-', '_') }}_{{ item.slug }}_v4 {
    long lived stale time 120;
 {% if 'neighbor_ipv4_password' in item %}
    password "{{ item.neighbor_ipv6_password }}";
+{% endif %}
+{% if 'passive' in item and item.passive %}
+   passive on;
 {% endif %}
    local as my_asn;
    description "[{{ item.type }}] {{ item.name }} ({{ item.asn }})";

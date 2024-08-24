@@ -11,44 +11,177 @@ bird_peers_upstreams:
     neighbor_ipv4_password: jaTqsjV5
     neighbor_ipv6: 2001:7f8:d2::2
     neighbor_ipv6_password: jaTqsjV5
-    name: "BelgiumIX 01"
-    slug: belgiumix_01
+    name: "BelgiumIX Route Servers 02"
+    slug: belgiumix_route_servers_02
     type: route-server
   - asn: 35137
     neighbor_ipv4: 185.1.127.3
     neighbor_ipv4_password: jaTqsjV5
     neighbor_ipv6: 2001:7f8:d2::3
     neighbor_ipv6_password: jaTqsjV5
-    name: "BelgiumIX 02"
-    slug: belgiumix_02
+    name: "BelgiumIX Route Servers 03"
+    slug: belgiumix_route_servers_03
     type: route-server
 
-  - asn: 13335
-    neighbor_ipv4: 185.1.127.13
-    neighbor_ipv6: 2001:7f8:d2::13
-    name: "cloudflare"
-    slug: cloudflare
+  - asn: 112
+    name: DNS-OARC-112
+    neighbor_ipv4: 185.1.127.112
+    neighbor_ipv6: 2001:7f8:d2::112
+    passive: true # Ticket#87169506
+    slug: dns_oarc_112
     type: peering
-
-  - asn: 16276
-    neighbor_ipv4: 185.1.127.25
-    neighbor_ipv6: 2001:7f8:d2::25
-    name: "OVHcloud"
-    slug: ovhcloud
-    type: peering
-
-  - asn: 49268
-    neighbor_ipv4: 185.1.127.33
-    neighbor_ipv6: 2001:7f8:d2::33
-    name: "ampr"
-    slug: ampr
-    type: peering
-
   - asn: 6939
+    name: Hurricane Electric
     neighbor_ipv4: 185.1.127.23
     neighbor_ipv6: 2001:7f8:d2::23
-    name: "Hurricane Electric"
+    passive: false
     slug: hurricane_electric
+    type: peering
+  - asn: 8315
+    name: Accenture Backbone
+    neighbor_ipv4: 185.1.127.37
+    neighbor_ipv6: 2001:7f8:d2::37
+    passive: true # Ticket#87169515
+    slug: accenture_backbone
+    type: peering
+  - asn: 13226
+    name: Cybernet Belgium
+    neighbor_ipv4: 185.1.127.30
+    neighbor_ipv6: 2001:7f8:d2::30
+    passive: true # Ticket#87169524
+    slug: cybernet_belgium
+    type: peering
+  - asn: 13335
+    name: Cloudflare
+    neighbor_ipv4: 185.1.127.13
+    neighbor_ipv6: 2001:7f8:d2::13
+    passive: false
+    slug: cloudflare
+    type: peering
+  - asn: 16276
+    name: OVHcloud
+    neighbor_ipv4: 185.1.127.25
+    neighbor_ipv6: 2001:7f8:d2::25
+    passive: false
+    slug: ovhcloud
+    type: peering
+  - asn: 39923
+    name: Unix-Solutions 14
+    neighbor_ipv4: 185.1.127.14
+    neighbor_ipv6: 2001:7f8:d2::14
+    passive: true # Ticket#87169533
+    slug: unix_solutions_14
+    type: peering
+  - asn: 39923
+    name: Unix-Solutions 22
+    neighbor_ipv4: 185.1.127.22
+    neighbor_ipv6: 2001:7f8:d2::22
+    passive: true # Ticket#87169533
+    slug: unix_solutions_22
+    type: peering
+  - asn: 39923
+    name: Unix-Solutions 27
+    neighbor_ipv4: 185.1.127.27
+    neighbor_ipv6: 2001:7f8:d2::27
+    passive: true # Ticket#87169533
+    slug: unix_solutions_27
+    type: peering
+  - asn: 45049
+    name: WAN4YOU BE
+    neighbor_ipv4: 185.1.127.44
+    neighbor_ipv6: 2001:7f8:d2::44
+    passive: true # Ticket#87169542
+    slug: wan4you_be
+    type: peering
+  - asn: 47688
+    name: Fastic
+    neighbor_ipv4: 185.1.127.20
+    neighbor_ipv6: 2001:7f8:d2::20
+    passive: true
+    slug: fastic
+    type: peering
+  - asn: 49268
+    name: AMPR Belgium
+    neighbor_ipv4: 185.1.127.33
+    neighbor_ipv6: 2001:7f8:d2::33
+    passive: false
+    slug: ampr_belgium
+    type: peering
+  - asn: 49935
+    name: SmartEye
+    neighbor_ipv4: 185.1.127.31
+    neighbor_ipv6: 2001:7f8:d2::31
+    passive: true # Ticket#87169561
+    slug: smarteye
+    type: peering
+  - asn: 50156
+    name: Boxed IT Ltd.
+    neighbor_ipv4: 185.1.127.28
+    neighbor_ipv6: 2001:7f8:d2::28
+    passive: true # Ticket#87169579
+    slug: boxed_it_ltd
+    type: peering
+  - asn: 50309
+    name: ARCADIZ TELECOM
+    neighbor_ipv4: 185.1.127.36
+    neighbor_ipv6: 2001:7f8:d2::36
+    passive: true # Ticket#87169588
+    slug: arcadiz_telecom
+    type: peering
+  - asn: 59943
+    name: LEVEL27 07
+    neighbor_ipv4: 185.1.127.7
+    neighbor_ipv6: 2001:7f8:d2::7
+    passive: true # Ticket#87169597
+    slug: level27_07
+    type: peering
+  - asn: 59943
+    name: LEVEL27 08
+    neighbor_ipv4: 185.1.127.8
+    neighbor_ipv6: 2001:7f8:d2::8
+    passive: true # Ticket#87169597
+    slug: level27_08
+    type: peering
+  - asn: 196755
+    name: Sewan Belgium
+    neighbor_ipv4: 185.1.127.21
+    neighbor_ipv6: 2001:7f8:d2::21
+    passive: true # Ticket#87169603
+    slug: sewan_belgium
+    type: peering
+  - asn: 204120
+    name: Colibri Consulting
+    neighbor_ipv4: 185.1.127.19
+    neighbor_ipv6: 2001:7f8:d2::19
+    passive: true # Ticket#87169612
+    slug: colibri_consulting
+    type: peering
+  - asn: 206639
+    name: Gregory Falla
+    neighbor_ipv4: 185.1.127.29
+    neighbor_ipv6: 2001:7f8:d2::29
+    passive: true # Ticket#87169621
+    slug: gregory_falla
+    type: peering
+  - asn: 208725
+    name: Devrandom
+    neighbor_ipv4: 185.1.127.26
+    neighbor_ipv6: 2001:7f8:d2::26
+    passive: true # Ticket#87169631
+    slug: devrandom
+    type: peering
+  - asn: 210017
+    name: Connect4Hasselt
+    neighbor_ipv4: 185.1.127.10
+    passive: true # Ticket#87169649
+    slug: connect4hasselt
+    type: peering
+  - asn: 210890
+    name: Kristiaan De Rocker
+    neighbor_ipv4: 185.1.127.35
+    neighbor_ipv6: 2001:7f8:d2::35
+    passive: true # Ticket#87169658
+    slug: kristiaan_de_rocker
     type: peering
 
 bird_peers_downstreams:
