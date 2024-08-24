@@ -12,5 +12,6 @@ alertmanager_matrix_password: !vault |
 alertmanager_matrix_host: matrix.domainepublic.net
 
 alertmanager_matrix_alertbot_room: "!wjECRmYYmDbBJcebBt:matrix.domainepublic.net"
+alertmanager_matrix_alertbot_users: []
 
 postgresql_patroni_hosts: []
