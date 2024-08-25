@@ -67,3 +67,11 @@
     serial_number: 0
   tags: ['serial']
   when: ansible_virtualization_type == "kvm" or ansible_product_name == "PowerEdge R620"
+
+- name: Ajout du la CA de developement
+  ansible.builtin.import_role:
+    name: pki_development
+  vars:
+    import_ca: true
+  tags: ['pki']
+  when: inventory_hostname in groups['vagrant']

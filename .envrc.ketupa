@@ -4,5 +4,9 @@ ANSIBLE_STRATEGY_PLUGINS="$(pwd)/env/lib/python3.12/site-packages/ansible_mitoge
 export VIRTUAL_ENV=env
 export ANSIBLE_STRATEGY_PLUGINS
 export ANSIBLE_STRATEGY=mitogen_linear
+export ANSIBLE_INVENTORY=inventories/ketupa/ketupa.ini
+export ANSIBLE_VAULT_PASSWORD_FILE=requirements.txt
+export ANSIBLE_DISPLAY_OK_HOSTS=no
+export ANSIBLE_DISPLAY_SKIPPED_HOSTS=no
 
 layout python3

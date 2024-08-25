@@ -1,0 +1,5 @@
+---
+
+- name: Ajout du la CA de developement
+  ansible.builtin.import_tasks: client.yml
+  when: import_ca | default(false)

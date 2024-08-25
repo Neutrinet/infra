@@ -3,10 +3,10 @@
   ansible.builtin.import_tasks: haproxy.yml
   tags: ['haproxy']
 
-- name: Installation des certificats Let's Encrypt
-  ansible.builtin.import_role:
-    name: letsencrypt
-  tags: ['letsencrypt']
+# - name: Installation des certificats Let's Encrypt
+#   ansible.builtin.import_role:
+#     name: letsencrypt
+#   tags: ['letsencrypt']
 
 - name: Installation des plugins Telegraf
   ansible.builtin.template:

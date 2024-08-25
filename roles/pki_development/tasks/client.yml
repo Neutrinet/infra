@@ -1,0 +1,8 @@
+---
+
+- name: Copy Neutrinet CA certificate
+  ansible.builtin.copy:
+    src: "files/neutrinet-ca-dev.crt"
+    dest: /usr/local/share/ca-certificates/neutrinet-ca-dev.crt
+    mode: '0644'
+  notify: Update CA certificates
