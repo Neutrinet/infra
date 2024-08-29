@@ -10,26 +10,23 @@
     group: root
     mode: "ugo=r"
     force: true
-  when: ansible_distribution_release == 'buster'
 
 - name: Suppresion de l'ancien dépôt APT pour PostgreSQL
   ansible.builtin.apt_repository:
     repo: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
     filename: postgresql
     state: absent
-  when: ansible_distribution_release == 'buster'
 
 - name: Ajout du dépôt APT pour PostgreSQL
   ansible.builtin.apt_repository:
     repo: deb [signed-by=/etc/apt/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
     filename: postgresql
     state: present
-  when: ansible_distribution_release == 'buster'
 
 - name: Installation des dépendences
   ansible.builtin.package:
     name:
-      - postgresql-client
+      - postgresql-client-{{ postgresql_major_version }}
       - acl
     state: present
 
@@ -39,17 +36,17 @@
     state: present
   become: true
   become_user: postgres
-  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
+  delegate_to: "{{ postgresql_server_delegate }}"
 
 - name: Création de l'utilisateur PostgreSQL {{ postgresql_db_name }}
   community.postgresql.postgresql_user:
     db: "{{ postgresql_db_name }}"
-    name: "{{ postgresql_db_name }}"
+    name: "{{ postgresql_db_user }}"
     password: "{{ postgresql_db_password }}"
     role_attr_flags: "{{ postgresql_db_role_attributes }}"
   become: true
   become_user: postgres
-  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
+  delegate_to: "{{ postgresql_server_delegate }}"
   no_log: true
 
 - name: Octroi des privilèges à l'utilisateur PostgreSQL {{ postgresql_db_name }}
@@ -57,18 +54,18 @@
     db: "{{ postgresql_db_name }}"
     priv: ALL
     type: database
-    role: "{{ postgresql_db_name }}"
+    role: "{{ postgresql_db_user }}"
     state: present
   become: true
   become_user: postgres
-  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
+  delegate_to: "{{ postgresql_server_delegate }}"
 
 - name: Changement du propriétaire de la base de données
   community.postgresql.postgresql_db:
     db: "{{ postgresql_db_name }}"
-    owner: "{{ postgresql_db_name }}"
+    owner: "{{ postgresql_db_user }}"
     state: present
   become: true
   become_user: postgres
-  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
+  delegate_to: "{{ postgresql_server_delegate }}"
   when: postgresql_db_change_owner

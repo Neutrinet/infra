@@ -1,0 +1,34 @@
+---
+
+- name: Install requirement python
+  ansible.builtin.package:
+    name: python3-cryptography
+    state: present
+
+- name: Ensure output directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "u=rwx,g=rx,o=rx"
+    owner: root
+    group: root
+  loop:
+    - "{{ pki_development_cert_directory }}"
+    - "{{ pki_development_private_directory }}"
+    - "{{ pki_development_issued_directory }}"
+
+- name: Création du répertoire ssl de HaProxy
+  ansible.builtin.file:
+    path: "{{ pki_development_haproxy_cert_directory }}"
+    mode: "u=rwx,g=rx,o="
+    recurse: true
+    owner: haproxy
+    group: haproxy
+    state: directory
+  when: pki_development_haproxy_mode
+
+- name: Création des certificats
+  ansible.builtin.include_tasks: generate.yml
+  loop: "{{ pki_development_domains }}"
+  loop_control:
+    loop_var: domain

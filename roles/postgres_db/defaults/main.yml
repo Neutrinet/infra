@@ -1,5 +1,8 @@
 postgresql_patroni_hosts: []
-postgresql_db_name: neutrinet
+postgresql_server_delegate: "{{ inventory_hostname }}"
+postgresql_db_name: "{{ postgresql_db_user }}"
+postgresql_db_user: neutrinet
 postgresql_db_password: neutrinet
 postgresql_db_role_attributes: ""
 postgresql_db_change_owner: false
+postgresql_major_version: 13

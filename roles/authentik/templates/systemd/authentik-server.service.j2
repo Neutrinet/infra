@@ -1,0 +1,23 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Authentik Server
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+TimeoutStartSec=0
+Restart=always
+ExecStart=/usr/bin/docker run --rm --name authentik-server \
+    --env-file /etc/default/authentik \
+    --user '{{ user_authentik.uid }}:{{ user_authentik.group }}' \
+    --volume '/etc/hosts:/etc/hosts:ro' \
+    --volume '/opt/authentik/media:/media' \
+    --volume '/opt/authentik/templates:/templates' \
+    --publish 9000:9000 \
+    --publish 9443:9443 \
+    ghcr.io/goauthentik/server:{{ authentik_app_version }} server
+
+[Install]
+WantedBy=multi-user.target

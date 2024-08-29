@@ -1,0 +1,6 @@
+- name: Déploiement de pki_development
+  hosts: pki_development
+  become: true
+
+  roles:
+    - pki_development

@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Authentik Worker
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+TimeoutStartSec=0
+Restart=always
+ExecStart=/usr/bin/docker run --rm --name authentik-worker \
+    --env-file /etc/default/authentik \
+    --user '{{ user_authentik.uid }}:{{ user_authentik.group }}' \
+    --volume '/etc/hosts:/etc/hosts:ro' \
+    --volume '/opt/authentik/media:/media' \
+    --volume '/opt/authentik/certs:/certs' \
+    --volume '/opt/authentik/templates:/templates' \
+    ghcr.io/goauthentik/server:{{ authentik_app_version }} worker
+
+[Install]
+WantedBy=multi-user.target

@@ -1,6 +1,6 @@
 keydb_name_instance: neutrinet
 
-keydb_bind: 'bind 127.0.0.1 -::1'
+keydb_bind: '127.0.0.1 -::1'
 keydb_port: 0
 keydb_unixsocket: '/var/run/keydb-{{ keydb_name_instance }}/keydb-server.sock'
 keydb_unixsocket_perm: '770'

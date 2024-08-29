@@ -1,13 +1,20 @@
+---
+
 - name: Création de l'utilisateur de l'application web
   ansible.builtin.import_tasks: user.yml
+  when: web_app_owner != 'vagrant'
   tags: ['web_app_user']
+
 - name: Création des dossiers de l'application web
   ansible.builtin.import_tasks: config.yml
+  when: web_app_owner != 'vagrant'
   tags: ['web_app_config']
+
 - name: Configuration de php-fpm
   ansible.builtin.import_tasks: php-fpm.yml
   when: web_app_php_fpm_enabled
   tags: ['php_fpm_config']
+
 - name: Configuration de Caddy2
   ansible.builtin.import_tasks: caddy.yml
   tags: ['caddy_config']

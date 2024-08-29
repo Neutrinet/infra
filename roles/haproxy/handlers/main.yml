@@ -2,7 +2,7 @@
 - name: reload haproxy
   ansible.builtin.service:
     name: haproxy
-    state: reloaded
+    state: restarted
 
 - name: restart telegraf
   ansible.builtin.service:

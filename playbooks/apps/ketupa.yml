@@ -1,0 +1,6 @@
+- name: Déploiement de ketupa
+  hosts: ketupa
+  become: true
+
+  roles:
+    - ketupa

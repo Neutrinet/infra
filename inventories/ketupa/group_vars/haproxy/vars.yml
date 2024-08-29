@@ -1,0 +1,31 @@
+haproxy:
+  - hostname: ketupa.vagrant.neutrinet.me
+    target:
+      - ketupa.vagrant.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'"
+  - hostname: auth.vagrant.neutrinet.me
+    target:
+      - authentik.vagrant.neutri.net
+    target_port: 9000
+    healthcheck: true
+    healthcheck_url: GET /-/health/ready/
+    headers:
+      Content-Security-Policy: "default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'"
+
+haproxy_redirect: []
+
+haproxy_postgresql: []
+
+haproxy_listen:
+  - "127.0.0.1"
+  - "192.168.33.5"
+
+pki_development_generate_certificat: true
+pki_development_haproxy_mode: true
+pki_development_domains:
+  - "ketupa.vagrant.neutrinet.me"
+  - "vagrant.neutrinet.me"

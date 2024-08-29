@@ -1,0 +1,6 @@
+- name: Déploiement de authentik
+  hosts: authentik
+  become: true
+
+  roles:
+    - authentik

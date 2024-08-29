@@ -22,4 +22,4 @@
 
 - name: Définition du serveur PostgreSQL primaire
   ansible.builtin.set_fact:
-    postgresql_patroni_primary_host: "{{ postgresql_patroni_primary_hosts | first }}"
+    postgresql_server_delegate: "{{ postgresql_patroni_primary_hosts | first }}"

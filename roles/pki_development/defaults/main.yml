@@ -1,0 +1,10 @@
+pki_development_domains:
+  - "neutrinet.be"
+pki_development_cert_directory: "/etc/ssl/certs"
+pki_development_private_directory: "/etc/ssl/private"
+pki_development_issued_directory: "/etc/ssl/issued"
+pki_development_haproxy_cert_directory: "/etc/haproxy/ssl"
+pki_development_ca_cert_path: "/usr/local/share/ca-certificates/neutrinet-ca-dev.crt"
+pki_development_ca_privatekey_path: "/etc/ssl/private/neutrinet-ca-dev.crt"
+pki_development_haproxy_mode: false
+pki_development_generate_certificat: false

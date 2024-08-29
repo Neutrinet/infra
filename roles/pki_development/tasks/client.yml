@@ -1,8 +1,18 @@
 ---
 
-- name: Copy Neutrinet CA certificate
+- name: Copier la clé public de l'autorité de certification Neutrinet
   ansible.builtin.copy:
     src: "files/neutrinet-ca-dev.crt"
-    dest: /usr/local/share/ca-certificates/neutrinet-ca-dev.crt
-    mode: '0644'
+    dest: "{{ pki_development_ca_cert_path }}"
+    owner: root
+    group: root
+    mode: uog=r
   notify: Update CA certificates
+
+- name: Copier la clé privée de l'autorité de certification Neutrinet
+  ansible.builtin.copy:
+    src: "files/neutrinet-ca-dev.key"
+    dest: "{{ pki_development_ca_privatekey_path }}"
+    owner: root
+    group: root
+    mode: u=r,og=

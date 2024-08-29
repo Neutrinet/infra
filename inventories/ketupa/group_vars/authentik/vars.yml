@@ -1,0 +1,2 @@
+authentik_postgresql_host: 'postgresql.vagrant.neutri.net'
+authentik_redis_host: 'authentik.vagrant.neutri.net'

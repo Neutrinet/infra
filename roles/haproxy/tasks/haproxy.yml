@@ -40,7 +40,8 @@
     src: errors/
     dest: /etc/haproxy/errors/
     mode: push
-    archive: true
+    archive: false
+    recursive: true
     delete: true
   become: true
   become_user: haproxy

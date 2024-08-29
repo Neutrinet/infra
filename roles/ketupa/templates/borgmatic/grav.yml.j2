@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic.d/common.yml
+
+source_directories: !retain
+  - "/etc/caddy/conf.d/{{ grav_owner }}.conf"
+  - "{{ web_app_dist_dir }}"
+  - "{{ php_fpm_pool_dir }}/{{ grav_owner }}.conf"
+
+archive_name_format: grav-{{ grav_owner }}_{hostname}-{now}

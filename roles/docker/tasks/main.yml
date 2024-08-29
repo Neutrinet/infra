@@ -34,11 +34,12 @@
 
 - name: Configuration de Docker
   ansible.builtin.copy:
-    src: docker/daemon.json
+    src: daemon.json
     dest: /etc/docker/daemon.json
     owner: root
     group: root
-    mode: "u=rw,go=r"
+    mode: "ugo=r"
+    validate: dockerd --validate --config-file=%s
   notify: restart docker
 
 - name: Activation de Docker au démarrage
@@ -55,3 +56,13 @@
     special_time: weekly
     user: root
     job: docker system prune -af --filter "until=$((30*24))h" > /dev/null
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/docker.yml.j2
+    dest: /etc/borgmatic.d/docker.yml
+    owner: root
+    group: root
+    mode: "u=r,go="
+    validate: borgmatic config validate --show -c %s
+  tags: ['borgmatic_config']

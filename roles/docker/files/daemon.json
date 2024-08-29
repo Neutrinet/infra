@@ -4,5 +4,7 @@
     "log-opts": {
         "max-size": "100m"
     },
-    "storage-driver": "overlay2"
+    "storage-driver": "overlay2",
+    "ipv6": true,
+    "fixed-cidr-v6": "fd33:9a37:c311::/48"
 }

@@ -1,0 +1,28 @@
+---
+- name: Installation de Docker
+  ansible.builtin.import_role:
+    name: docker
+  tags: ['docker']
+
+- name: Installation de KeyDB
+  ansible.builtin.import_role:
+    name: keydb
+  vars:
+    keydb_bind: '* -::*'
+    keydb_port: 6379
+  tags: ['keydb']
+
+- name: Configuration de la base de données PostgreSQL
+  ansible.builtin.import_role:
+    name: postgres_db
+  vars:
+    postgresql_db_name: "{{ authentik_postgresql_database }}"
+    postgresql_db_user: "{{ authentik_postgresql_user }}"
+    postgresql_db_password: "{{ authentik_postgresql_password }}"
+  tags: ['postgres']
+
+
+- name: Installation de authentik
+  ansible.builtin.import_tasks:
+    file: authentik.yml
+  tags: ['authentik']

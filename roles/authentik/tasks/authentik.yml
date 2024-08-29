@@ -1,0 +1,52 @@
+---
+
+- name: Création de l'utilisateur authentik
+  ansible.builtin.user:
+    name: "authentik"
+    home: /opt/authentik
+    shell: /sbin/nologin
+    system: true
+    state: present
+  register: user_authentik
+
+- name: Creation des repertoire
+  ansible.builtin.file:
+    path: "/opt/authentik/{{ item }}"
+    state: directory
+    owner: authentik
+    group: authentik
+    mode: "u=rwX,go=rX"
+  loop:
+    - media
+    - templates
+    - certs
+
+- name: Generation des variables d'environement
+  ansible.builtin.template:
+    src: 'authentik.env.j2'
+    dest: /etc/default/authentik
+    owner: root
+    group: root
+    mode: "u=r,go="
+  notify: Restart authentik
+
+- name: Generation des services systemd
+  ansible.builtin.template:
+    src: "systemd/authentik-{{ item }}.service.j2"
+    dest: "/etc/systemd/system/authentik-{{ item }}.service"
+    owner: root
+    group: root
+    mode: "ugo=r"
+  loop:
+    - server
+    - worker
+  notify: Reload systemd
+
+- name: Activation au demerage de authentik
+  ansible.builtin.systemd:
+    name: "authentik-{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - worker
+    - server

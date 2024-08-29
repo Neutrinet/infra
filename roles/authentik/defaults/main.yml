@@ -1,0 +1,23 @@
+authentik_app_version: '2024.6.4'
+authentik_app_secret_key: authentik # 50 characters
+authentik_boostrap_password: neutrinet
+authentik_boostrap_token: neutrinet
+
+authentik_postgresql_host: localhost
+authentik_postgresql_port: 5432
+authentik_postgresql_user: authentik
+authentik_postgresql_password: authentik
+authentik_postgresql_database: authentik
+authentik_redis_host: localhost
+authentik_redis_port: 6379
+authentik_redis_db: 0
+
+# HA Mode
+authentik_ha_mode: false
+authentik_postgresql_host_read: localhost
+authentik_postgresql_port_read: 5433
+authentik_s3_endpoint: http://localhost
+authentik_s3_custome_domain: localhost/authentik
+authentik_s3_access_key: authentik
+authentik_s3_secret_key: authentik
+authentik_s3_bucket: authentik

@@ -1,0 +1,37 @@
+---
+
+- name: Configuration du site (caddy, php-fpm, etc.)  # noqa var-naming[no-role-prefix]
+  ansible.builtin.import_role:
+    name: web_app
+  vars:
+    php_version: 8.3
+    web_app_domain: "{{ ketupa_domain }}"
+    web_app_owner: "vagrant"
+    web_app_group: "vagrant"
+    web_app_home_dir: /vagrant/frontend
+    web_app_dist_dir: /vagrant/frontend/public/
+    web_app_caddy_template: caddy/ketupa-frontend.j2
+    web_app_identifier: "{{ ketupa_domain | replace('.', '-') }}"
+    php_fpm_tmp_dir: "/var/www/{{ web_app_identifier }}/tmp"
+    web_app_php_fpm_enabled: true
+  tags: ['web_app']
+
+- name: Install des dépendence php
+  community.general.composer:
+    command: install
+    working_dir: /vagrant/frontend
+    prefer_dist: true
+    no_dev: false
+    optimize_autoloader: true
+  become: true
+  become_user: vagrant
+  when: inventory_hostname in groups['vagrant']
+
+- name: Install des dépendence nodejs
+  community.general.npm:
+    path: /vagrant/frontend
+    state: present
+    production: false
+  become: true
+  become_user: vagrant
+  when: inventory_hostname in groups['vagrant']

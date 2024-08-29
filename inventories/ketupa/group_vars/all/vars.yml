@@ -8,7 +8,8 @@ caddy_trusted_proxies:
 
 grub_option_boot_linux: 'net.ifnames=0 biosdevname=0'
 
-postgresql_patroni_primary_host: 'postgresql.vagrant.neutri.net'
+postgresql_major_version: 15
+postgresql_server_delegate: 'postgresql.vagrant.neutri.net'
 
 users:
   - name: vagrant

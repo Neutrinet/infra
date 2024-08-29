@@ -1,0 +1,38 @@
+---
+
+- name: Installation de Caddy2
+  ansible.builtin.import_role:
+    name: caddy_server
+  tags: ['caddy']
+
+- name: Installation de PHP FPM  # noqa var-naming[no-role-prefix]
+  ansible.builtin.import_role:
+    name: php_fpm
+  vars:
+    php_fpm_opcache_enabled: true
+    php_version: 8.3
+    php_extra_modules:
+      - intl
+      - xdebug
+      - pgsql
+      - apcu
+  tags: ['php_fpm']
+
+- name: Installation de Composer
+  ansible.builtin.import_role:
+    name: composer
+  when: inventory_hostname in groups['vagrant']
+  tags: ['composer']
+
+- name: Installation de NodeJS
+  ansible.builtin.import_role:
+    name: nodejs
+  vars:
+    nodejs_major_version: 20
+  when: inventory_hostname in groups['vagrant']
+  tags: ['nodejs']
+
+- name: Configuration du frontend ketupa
+  ansible.builtin.import_tasks:
+    file: frontend.yml
+  tags: ['ketupa_frontend']

@@ -1,0 +1,71 @@
+- name: Set domain_slug variable
+  ansible.builtin.set_fact:
+    domain_slug: "{{ domain | replace('.', '-') }}"
+
+- name: Check if certificate exists
+  ansible.builtin.stat:
+    path: "{{ pki_development_cert_directory }}/{{ domain_slug }}.crt"
+  register: cert_file
+
+- name: Get certificate expiration date
+  community.crypto.x509_certificate_info:
+    path: "{{ pki_development_cert_directory }}/{{ domain_slug }}.crt"
+  when: cert_file.stat.exists
+  register: cert_info
+
+- name: Calculate days until certificate expiration
+  ansible.builtin.set_fact:
+    days_until_expiration: "{{ ((cert_info.not_after | to_datetime('%Y%m%d%H%M%SZ')) - (ansible_date_time.iso8601 | to_datetime('%Y-%m-%dT%H:%M:%SZ'))).days | int }}"
+  when: cert_file.stat.exists
+
+- name: Create private key for new certificate
+  community.crypto.openssl_privatekey:
+    path: "{{ pki_development_private_directory }}/{{ domain_slug }}.key"
+    state: present
+    type: ECC
+    curve: secp384r1
+    return_content: true
+  register: private_key_generated
+
+- name: Create CSR for new certificate
+  community.crypto.openssl_csr:
+    path: "{{ pki_development_issued_directory }}/{{ domain_slug }}.csr"
+    privatekey_path: "{{ pki_development_private_directory }}/{{ domain_slug }}.key"
+    commonName: "{{ domain }}"
+    subject_alt_name:
+      - "DNS:{{ domain }}"
+      - "DNS:*.{{ domain }}"
+    key_usage_critical: true
+    key_usage:
+      - digitalSignature
+    extended_key_usage:
+      - clientAuth
+      - serverAuth
+    basic_constraints_critical: true
+    basic_constraints: "CA:FALSE"
+  run_once: true
+  when: not cert_file.stat.exists or (days_until_expiration is defined and days_until_expiration | int <= 90)
+
+- name: Sign certificate with our CA
+  community.crypto.x509_certificate:
+    path: "{{ pki_development_cert_directory }}/{{ domain_slug }}.crt"
+    csr_path: "{{ pki_development_issued_directory }}/{{ domain_slug }}.csr"
+    provider: ownca
+    ownca_path: "{{ pki_development_ca_cert_path }}"
+    ownca_privatekey_path: "{{ pki_development_ca_privatekey_path }}"
+    ownca_not_after: +365d  # valid for one year
+    ownca_not_before: "-1d"  # valid since yesterday
+    ownca_digest: sha384
+    return_content: true
+  register: certificate_generated
+  when: not cert_file.stat.exists or (days_until_expiration is defined and days_until_expiration | int <= 90)
+
+- name: Generate concatenated PEM for HAProxy
+  ansible.builtin.copy:
+    dest: "{{ pki_development_haproxy_cert_directory }}/{{ domain_slug }}.pem"
+    content: "{{ private_key_generated.privatekey }}{{ certificate_generated.certificate }}"
+    owner: haproxy
+    group: haproxy
+    mode: "0600"
+  notify: Reload haproxy
+  when: certificate_generated is changed and pki_development_haproxy_mode

@@ -1,7 +1,12 @@
+
+- name: debug
+  ansible.builtin.debug:
+    var: php_version
+
 - name: Copie de la configuration php-fpm
   ansible.builtin.template:
     src: php-fpm/php-pool.conf.j2
-    dest: "{{ php_fpm_pool_dir }}/{{ web_app_owner }}.conf"
+    dest: "{{ php_fpm_pool_dir }}/{{ web_app_identifier }}.conf"
     owner: root
     group: root
     mode: "u=rw,go=r"
@@ -23,7 +28,7 @@
 - name: Installation des plugins Telegraf
   ansible.builtin.template:
     src: telegraf/php-fpm.conf.j2
-    dest: /etc/telegraf/telegraf.d/{{ web_app_owner }}.conf
+    dest: /etc/telegraf/telegraf.d/{{ web_app_identifier }}.conf
     owner: telegraf
     group: telegraf
     mode: "u=rw,g=r,o="
