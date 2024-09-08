@@ -1,0 +1,19 @@
+- name: Vérification si l'utilisateur {{ semaphore_admin_username }} existe
+  ansible.builtin.command:
+    cmd: semaphore user list
+    chdir: /etc/semaphore
+  changed_when: no
+  become: true
+  become_user: "{{ semaphore_owner }}"
+  register: _semaphore_users
+  tags: [semaphore_health]
+
+- name: Création de l'utilisateur {{ semaphore_admin_username }}
+  ansible.builtin.command:
+    cmd: semaphore user add --admin --login {{ semaphore_admin_username }} --name {{ semaphore_admin_username }} --email {{ semaphore_admin_email }} --password {{ semaphore_admin_password | quote }}
+    chdir: /etc/semaphore
+  changed_when: true
+  become: true
+  become_user: "{{ semaphore_owner }}"
+  no_log: true
+  when: semaphore_admin_username not in _semaphore_users.stdout_lines
