@@ -7,6 +7,7 @@
     cmd: ./bin/mobilizon_ctl migrate
     chdir: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
   changed_when: true
+  become: true
   become_user: "{{ mobilizon_owner }}"
 
 - name: Restart mobilizon
