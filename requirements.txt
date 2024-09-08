@@ -3,7 +3,8 @@ ansible-core~=2.16
 ansible-lint~=24.7
 ansible-compat~=24.7
 molecule~=24.7
-molecule-plugins[vagrant]~=23.5
+# See https://github.com/ansible-community/molecule-plugins/issues/239
+molecule-plugins[vagrant]==23.5.0
 pre-commit~=3.7
 python-vagrant~=1.0
 mitogen @ git+https://github.com/mitogen-hq/mitogen
