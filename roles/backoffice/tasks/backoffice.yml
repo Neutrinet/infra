@@ -15,7 +15,7 @@
     single_branch: true
   become: true
   become_user: "{{ web_app_owner }}"
-  notify: restart backoffice
+  notify: Restart backoffice
 
 - name: Configuration de backoffice
   ansible.builtin.template:
@@ -24,7 +24,7 @@
     owner: "{{ backoffice_owner }}"
     group: "{{ backoffice_owner }}"
     mode: "u=rw,g=r,o="
-  notify: restart backoffice
+  notify: Restart backoffice
 
 - name: Création du virtualenv python
   ansible.builtin.pip:
@@ -34,7 +34,7 @@
     virtualenv_python: python2
   become: true
   become_user: "{{ web_app_owner }}"
-  notify: restart backoffice
+  notify: Restart backoffice
 
 - name: Configuration du service systemd
   ansible.builtin.template:
@@ -44,8 +44,8 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
-    - restart backoffice
+    - Reload systemd
+    - Restart backoffice
 
 - name: Activation de Backoffice au démarrage
   ansible.builtin.service:

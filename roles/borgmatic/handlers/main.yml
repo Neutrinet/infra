@@ -1,8 +1,8 @@
-- name: init borgmatic
+- name: Init borgmatic
   ansible.builtin.command: /opt/borgmatic/bin/borgmatic init -e keyfile
   changed_when: _borgmatic_init.stderr
   register: _borgmatic_init
 
-- name: reload systemd
+- name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: true

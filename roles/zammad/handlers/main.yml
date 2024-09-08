@@ -1,26 +1,28 @@
-- name: reload systemd
+- name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: true
 
-- name: restart elasticsearch
+- name: Restart elasticsearch
   ansible.builtin.service:
     name: elasticsearch
     state: restarted
 
-- name: migrate zammad db  # noqa no-changed-when
+- name: Migrate zammad db
   ansible.builtin.command:
     cmd: zammad run rails db:migrate
+  changed_when: true
 
-- name: seed zammad db  # noqa no-changed-when
+- name: Seed zammad db
   ansible.builtin.command:
     cmd: zammad run rails db:seed
+  changed_when: true
 
-- name: restart zammad
+- name: Restart zammad
   ansible.builtin.service:
     name: zammad
     state: restarted
 
-- name: reload caddy
+- name: Reload caddy
   ansible.builtin.service:
     name: caddy
     state: reloaded

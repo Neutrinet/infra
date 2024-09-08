@@ -14,5 +14,5 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
-    - restart telegraf
+    - Reload systemd
+    - Restart telegraf

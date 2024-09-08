@@ -16,7 +16,7 @@
     group: telegraf
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
-  notify: restart telegraf
+  notify: Restart telegraf
   tags: ['telegraf_config']
 
 - name: Ajout de l'utilisateur telegraf au groupe haproxy
@@ -24,7 +24,7 @@
     name: telegraf
     groups: haproxy
     append: true
-  notify: restart telegraf
+  notify: Restart telegraf
   tags: ['telegraf_config']
 
 - name: Configuration des backups Borgmatic
