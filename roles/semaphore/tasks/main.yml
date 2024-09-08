@@ -45,8 +45,6 @@
     mode: "u=rw,go="
   notify: Restart semaphore
 
-  tags: [semaphore_config]
-
 - name: Configuration du service systemd
   ansible.builtin.template:
     src: systemd/semaphore.service.j2
