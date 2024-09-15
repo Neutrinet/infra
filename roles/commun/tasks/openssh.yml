@@ -51,7 +51,7 @@
   register: ssh_obsolete_moduli
   changed_when: ssh_obsolete_moduli.stdout | length > 0
 
-- name: Réduction du modulo SSH  # noqa no-handler no-changed-when
+- name: Réduction du modulo SSH  # noqa no-handler
   ansible.builtin.raw: >-
     awk '$5 > 2000' /etc/ssh/moduli > /tmp/moduli &&
     mv /tmp/moduli /etc/ssh/moduli

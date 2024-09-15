@@ -58,13 +58,13 @@
   changed_when: false
   register: _zammad_elasticsearch_configured
 
-- name: Connexion de Zammad à ElasticSearch  # noqa no-changed-when
+- name: Connexion de Zammad à ElasticSearch
   ansible.builtin.command:
     cmd: zammad run rails r "Setting.set('es_url', 'http://localhost:9200')"
   changed_when: true
   when: _zammad_elasticsearch_configured.stdout == ""
 
-- name: Reconstruction des indices ElasticSearch  # noqa no-changed-when
+- name: Reconstruction des indices ElasticSearch
   ansible.builtin.command:
     cmd: zammad run rails zammad:searchindex:rebuild
   changed_when: true

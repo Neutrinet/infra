@@ -2,7 +2,7 @@
   ansible.builtin.systemd:
     daemon_reload: true
 
-- name: Migration de la DB  # noqa no-changed-when
+- name: Migration de la DB
   ansible.builtin.command:
     cmd: ./bin/mobilizon_ctl migrate
     chdir: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}

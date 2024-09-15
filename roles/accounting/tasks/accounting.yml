@@ -23,7 +23,7 @@
     mode: "u=rw,g=r,o="
   notify: Restart accounting
 
-- name: Installation de Accounting  # noqa no-handler no-changed-when
+- name: Installation de Accounting  # noqa no-handler
   ansible.builtin.shell:
     cmd: eval "$(rbenv init -)" && bin/setup
     chdir: /var/www/{{ accounting_owner }}/dist
