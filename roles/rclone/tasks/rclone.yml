@@ -106,7 +106,7 @@
     owner: root
     group: root
     mode: u=rw,go=r
-  notify: reload systemd
+  notify: Reload systemd
 
 - name: Création d'un service pour créer les backups périodiquement
   ansible.builtin.template:
@@ -115,7 +115,7 @@
     owner: root
     group: root
     mode: u=rw,go=r
-  notify: reload systemd
+  notify: Reload systemd
 
 - name: Activation du timer rclone
   ansible.builtin.service:

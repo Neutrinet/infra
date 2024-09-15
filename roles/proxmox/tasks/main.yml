@@ -33,7 +33,7 @@
     name: telegraf
     groups: disk
     append: true
-  notify: restart telegraf
+  notify: Restart telegraf
   tags: ['telegraf_config']
 
 - name: Permission à l'utilisateur d'exécuter certaines commandes sudo
@@ -53,7 +53,7 @@
     group: telegraf
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
-  notify: restart telegraf
+  notify: Restart telegraf
   tags: ['telegraf_config']
 
 - name: Configuration des backups Borgmatic

@@ -44,6 +44,7 @@
     - minio
 
   handlers:
-    - name: Update ca certificates  # noqa no-changed-when
+    - name: Update ca certificates
       ansible.builtin.command:
         cmd: update-ca-certificates
+      changed_when: true

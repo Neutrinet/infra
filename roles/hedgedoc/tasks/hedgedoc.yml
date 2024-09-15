@@ -37,7 +37,7 @@
     owner: "{{ hedgedoc_owner }}"
     group: "{{ hedgedoc_owner }}"
     mode: "u=rw,g=r,o="
-  notify: restart hedgedoc
+  notify: Restart hedgedoc
 
 - name: Configuration du service systemd
   ansible.builtin.template:
@@ -47,15 +47,15 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
-    - restart hedgedoc
+    - Reload systemd
+    - Restart hedgedoc
 
 - name: Création du lien symbolique vers la dernière version de Hedgedoc
   ansible.builtin.file:
     src: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
     dest: /var/www/{{ hedgedoc_owner }}/dist
     state: link
-  notify: restart hedgedoc
+  notify: Restart hedgedoc
 
 - name: Activation de Hedgedoc au démarrage
   ansible.builtin.service:

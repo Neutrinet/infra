@@ -1,5 +1,5 @@
 ---
-- name: reload patroni
+- name: Reload patroni
   ansible.builtin.service:
     name: patroni
     state: reloaded

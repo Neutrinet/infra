@@ -31,7 +31,7 @@
     validate: patroni --validate-config %s
   vars:
     patroni_current_member: "{{ etcd_members | selectattr('name', '==', ansible_hostname) | first }}"
-  notify: reload patroni
+  notify: Reload patroni
 
 - name: Activation de Patroni au démarrage
   ansible.builtin.service:

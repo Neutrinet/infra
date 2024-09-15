@@ -25,7 +25,7 @@
     mode: "u=rw,g=r,o="
     owner: haproxy
     group: haproxy
-  notify: reload haproxy
+  notify: Reload haproxy
 
 - name: Création du dossier des pages d'erreur personnalisées
   ansible.builtin.file:
@@ -44,7 +44,7 @@
     delete: true
   become: true
   become_user: haproxy
-  notify: reload haproxy
+  notify: Reload haproxy
 
 - name: Config de haproxy
   ansible.builtin.template:
@@ -54,7 +54,7 @@
     group: root
     mode: "u=rw,g=r,o="
     validate: "haproxy -f %s -c -q"
-  notify: reload haproxy
+  notify: Reload haproxy
 
 - name: Activation de haproxy au démarrage
   ansible.builtin.service:
