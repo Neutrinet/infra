@@ -6,12 +6,12 @@ Documentation=https://docs.ansible-semaphore.com/
 Wants=network-online.target
 After=network-online.target
 After=postgresql.service
-ConditionPathExists=/usr/bin/semaphore
+ConditionPathExists=/usr/local/bin/semaphore
 ConditionPathExists=/etc/semaphore/config.json
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/semaphore server --config /etc/semaphore/config.json
+ExecStart=/usr/local/bin/semaphore server --config /etc/semaphore/config.json
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=10s

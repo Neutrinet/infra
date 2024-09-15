@@ -14,6 +14,21 @@
     group: "{{ semaphore_owner }}"
     mode: "u=rwx,go=rx"
 
+- name: Création des dossiers d'installation de Semaphore v{{ semaphore_version }}
+  ansible.builtin.file:
+    path: "{{ install_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+  loop:
+    - /opt/semaphore
+    - /opt/semaphore/{{ semaphore_version }}
+    - /usr/local/src/semaphore
+    - /usr/local/src/semaphore/{{ semaphore_version }}
+  loop_control:
+    loop_var: install_dir
+
 - name: Configuration de la base de données PostgreSQL
   ansible.builtin.import_role:
     name: postgres_db
@@ -24,17 +39,28 @@
 
 - name: Téléchargement de l'archive Semaphore v{{ semaphore_version }}
   ansible.builtin.get_url:
-    url: https://github.com/semaphoreui/semaphore/releases/download/v{{ semaphore_version }}/semaphore_{{ semaphore_version }}_linux_amd64.deb
-    dest: /usr/local/src/semaphore-{{ semaphore_version }}.deb
+    url: https://github.com/semaphoreui/semaphore/releases/download/v{{ semaphore_version }}/semaphore_{{ semaphore_version }}_linux_amd64.tar.gz
+    dest: /usr/local/src/semaphore/{{ semaphore_version }}.tar.gz
     checksum: sha256:https://github.com/semaphoreui/semaphore/releases/download/v{{ semaphore_version }}/semaphore_{{ semaphore_version }}_checksums.txt
     owner: root
     group: root
     mode: "u=rw,go=r"
 
-- name: Installation de Semaphore
-  ansible.builtin.apt:
-    deb: /usr/local/src/semaphore-{{ semaphore_version }}.deb
-    state: present
+- name: Décompression de l'archive Semaphore v{{ semaphore_version }}
+  ansible.builtin.unarchive:
+    src: /usr/local/src/semaphore/{{ semaphore_version }}.tar.gz
+    dest: /opt/semaphore/{{ semaphore_version }}
+    remote_src: true
+    include: semaphore
+    creates: /opt/semaphore/{{ semaphore_version }}/semaphore
+    owner: root
+    group: root
+
+- name: Création du lien symbolique pour le binaire semaphore
+  ansible.builtin.file:
+    src: /opt/semaphore/{{ semaphore_version }}/semaphore
+    dest: /usr/local/bin/semaphore
+    state: link
 
 - name: Configuration de Semaphore
   ansible.builtin.template:
@@ -67,7 +93,11 @@
 
 - name: Post-installation de Semaphore
   ansible.builtin.import_tasks: postinstall.yml
-  tags: [semaphore_postinstall]
+  tags: ['semaphore_postinstall']
+
+- name: Nettoyage des anciennes versions
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ['cleanup']
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:

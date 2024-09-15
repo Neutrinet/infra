@@ -1,0 +1,44 @@
+- name: Récupération de la liste des dossiers d'installation
+  ansible.builtin.find:
+    path: /opt/semaphore
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _semaphore_installed_dirs
+
+- name: Récupération de la liste des archives
+  ansible.builtin.find:
+    path: /usr/local/src/semaphore
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _semaphore_archives
+
+- name: Récupération de la plus ancienne version et de la version courante
+  ansible.builtin.set_fact:
+    semaphore_oldest_archive: "{{ semaphore_sorted_archives | first }}"
+    semaphore_oldest_install_dir: "{{ semaphore_sorted_install_dirs | first }}"
+    semaphore_oldest_version: "{{ semaphore_sorted_install_dirs | first | basename }}"
+  vars:
+    semaphore_sorted_archives: |-
+      {{ _semaphore_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    semaphore_sorted_install_dirs: |-
+      {{ _semaphore_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: Suppression de la plus ancienne version (v{{ semaphore_oldest_version }})
+  ansible.builtin.file:
+    state: absent
+    path: "{{ semaphore_oldest_install_dir }}"
+  when: _semaphore_installed_dirs.files | length > 5
+
+- name: Suppression de la plus ancienne archive
+  ansible.builtin.file:
+    state: absent
+    path: "{{ semaphore_oldest_archive }}"
+  when: _semaphore_archives.files | length > 5
