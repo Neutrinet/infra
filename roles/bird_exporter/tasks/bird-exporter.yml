@@ -55,7 +55,7 @@
     src: /opt/bird-exporter/{{ bird_exporter_version }}/bird_exporter
     dest: /usr/local/bin/bird-exporter
     state: link
-  notify: restart bird-exporter
+  notify: Restart bird-exporter
 
 - name: Configuration du service systemd
   ansible.builtin.template:
@@ -64,7 +64,7 @@
     owner: root
     group: root
     mode: "ugo=r"
-  notify: restart bird-exporter
+  notify: Restart bird-exporter
 
 - name: Activation de Bird exporter au démarrage
   ansible.builtin.service:

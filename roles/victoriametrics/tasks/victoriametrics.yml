@@ -70,7 +70,7 @@
     - vmrestore-prod
   loop_control:
     loop_var: victoriametrics_bin
-  notify: restart victoriametrics
+  notify: Restart victoriametrics
 
 - name: Configuration de VictoriaMetrics
   ansible.builtin.template:
@@ -80,7 +80,7 @@
     group: victoriametrics
     mode: "u=rw,g=r,o="
     validate: victoria-metrics -dryRun -promscrape.config=%s
-  notify: reload victoriametrics
+  notify: Reload victoriametrics
 
 - name: Création du répertoire des jobs
   ansible.builtin.file:
@@ -106,7 +106,7 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - restart victoriametrics
+    - Restart victoriametrics
 
 - name: Activation de victoriametrics au démarrage
   ansible.builtin.service:

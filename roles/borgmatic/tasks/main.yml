@@ -71,7 +71,7 @@
     group: root
     mode: u=rw,go=
     validate: borgmatic config validate --show -c %s
-  notify: init borgmatic
+  notify: Init borgmatic
 
 - name: Création d'un timer pour créer et vérifier les backups périodiquement
   ansible.builtin.copy:
@@ -87,7 +87,7 @@
     - borgmatic-check.service
   loop_control:
     loop_var: systemd_unit
-  notify: reload systemd
+  notify: Reload systemd
 
 - name: Activation du timer borgmatic
   ansible.builtin.service:

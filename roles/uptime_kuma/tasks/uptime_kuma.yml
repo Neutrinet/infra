@@ -44,6 +44,7 @@
     cmd: npm install
     chdir: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
     creates: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/node_modules
+  become: true
   become_user: "{{ uptime_kuma_owner }}"
 
 - name: Configuration du service systemd
@@ -54,22 +55,22 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
-    - restart uptime-kuma
+    - Reload systemd
+    - Restart uptime-kuma
 
 - name: Création du lien symbolique vers la dernière version de Uptime-Kuma
   ansible.builtin.file:
     src: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
     dest: /var/www/{{ uptime_kuma_owner }}/dist
     state: link
-  notify: restart uptime-kuma
+  notify: Restart uptime-kuma
 
 - name: Création du lien symbolique vers les données
   ansible.builtin.file:
     src: /var/lib/uptime-kuma
     dest: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/data
     state: link
-  notify: restart uptime-kuma
+  notify: Restart uptime-kuma
 
 - name: Activation de Uptime-Kuma au démarrage
   ansible.builtin.service:

@@ -53,7 +53,7 @@
     src: /opt/blackbox-exporter/{{ blackbox_exporter_version }}/blackbox_exporter
     dest: /usr/local/bin/blackbox-exporter
     state: link
-  notify: restart blackbox-exporter
+  notify: Restart blackbox-exporter
 
 - name: Configuration du service systemd
   ansible.builtin.template:
@@ -62,7 +62,7 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
-  notify: restart blackbox-exporter
+  notify: Restart blackbox-exporter
 
 - name: Configuration de Blackbox exporter
   ansible.builtin.template:
@@ -72,7 +72,7 @@
     group: blackbox-exporter
     mode: "u=rw,g=r,o="
     validate: blackbox-exporter --config.check --config.file %s
-  notify: reload blackbox-exporter
+  notify: Reload blackbox-exporter
 
 - name: Activation de Blackbox exporter au démarrage
   ansible.builtin.service:

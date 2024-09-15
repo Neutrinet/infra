@@ -81,7 +81,7 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload php-fpm
+    - Reload php-fpm
   tags: ['php_config']
 
 - name: Activation de {{ php_fpm_executable }} au démarrage

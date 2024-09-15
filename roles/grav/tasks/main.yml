@@ -4,7 +4,7 @@
     name: caddy_server
   tags: ['caddy']
 
-- name: Installation de PHP FPM  # noqa var-naming[no-role-prefix]
+- name: Installation de PHP FPM
   ansible.builtin.import_role:
     name: php_fpm
   vars:
@@ -26,7 +26,7 @@
     name: sendmail
     state: present
 
-- name: Configuration du site (caddy, php-fpm, etc.)  # noqa var-naming[no-role-prefix]
+- name: Configuration du site (caddy, php-fpm, etc.)
   ansible.builtin.import_role:
     name: web_app
   vars:

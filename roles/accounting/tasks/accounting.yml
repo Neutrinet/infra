@@ -9,9 +9,10 @@
     version: main
     dest: /var/www/{{ accounting_owner }}/dist
     single_branch: true
+  become: true
   become_user: "{{ accounting_owner }}"
   register: _accounting_repo_cloned
-  notify: restart accounting
+  notify: Restart accounting
 
 - name: Configuration de Accounting
   ansible.builtin.template:
@@ -20,7 +21,7 @@
     owner: "{{ accounting_owner }}"
     group: "{{ accounting_owner }}"
     mode: "u=rw,g=r,o="
-  notify: restart accounting
+  notify: Restart accounting
 
 - name: Installation de Accounting  # noqa no-handler
   ansible.builtin.shell:
@@ -29,7 +30,9 @@
     executable: /bin/bash
   environment:
     RAILS_ENV: production
+  changed_when: true
   when: _accounting_repo_cloned is changed
+  become: true
   become_user: "{{ accounting_owner }}"
 
 - name: Configuration du service systemd
@@ -40,8 +43,8 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
-    - restart accounting
+    - Reload systemd
+    - Restart accounting
 
 - name: Activation de Accounting au démarrage
   ansible.builtin.service:

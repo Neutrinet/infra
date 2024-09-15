@@ -44,7 +44,7 @@
     virtualenv_python: python3
     state: "latest"
     chdir: /opt/matrix-alertbot
-  notify: restart matrix-alertbot
+  notify: Restart matrix-alertbot
 
 - name: Création du lien symbolique pour le binaire matrix-alertbot
   ansible.builtin.file:
@@ -62,7 +62,7 @@
     owner: matrix-alertbot
     group: matrix-alertbot
     mode: "u=rw,g=r,o="
-  notify: restart matrix-alertbot
+  notify: Restart matrix-alertbot
 
 - name: Configuration de logrotate
   ansible.builtin.copy:
@@ -81,8 +81,8 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
-    - restart matrix-alertbot
+    - Reload systemd
+    - Restart matrix-alertbot
 
 - name: Activation de matrix-alertbot au démarrage
   ansible.builtin.service:
@@ -97,4 +97,4 @@
     owner: victoriametrics
     group: victoriametrics
     mode: "u=rw,go=r"
-  notify: reload victoriametrics
+  notify: Reload victoriametrics

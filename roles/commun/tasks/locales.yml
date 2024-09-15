@@ -7,7 +7,7 @@
   tags: locales
 
 - name: Génération des locales
-  ansible.builtin.locale_gen:
+  community.general.locale_gen:
     name: "{{ locale }}.UTF-8"
     state: present
   loop:

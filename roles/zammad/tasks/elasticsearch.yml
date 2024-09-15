@@ -31,7 +31,7 @@
     owner: root
     group: elasticsearch
     mode: "u=rw,g=r,o="
-  notify: restart elasticsearch
+  notify: Restart elasticsearch
 
 - name: Limitation de la mémoire utilisée par ElasticSearch
   ansible.builtin.template:
@@ -46,7 +46,7 @@
     name: ingest-attachment
     state: present
     force: true
-  notify: restart elasticsearch
+  notify: Restart elasticsearch
 
 - name: Activation de ElasticSearch au démarrage
   ansible.builtin.service:

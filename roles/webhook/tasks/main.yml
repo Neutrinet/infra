@@ -35,7 +35,7 @@
     owner: "{{ webhook_owner }}"
     group: "{{ webhook_group }}"
     mode: "u=rw,g=r,o="
-  notify: reload webhook
+  notify: Reload webhook
 
 - name: Configuration du service systemd
   ansible.builtin.template:
@@ -45,8 +45,8 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
-    - restart webhook
+    - Reload systemd
+    - Restart webhook
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:

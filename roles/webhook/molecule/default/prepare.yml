@@ -32,4 +32,5 @@
         dest: /var/www/webhook/dist
         single_branch: true
         version: master
+      become: true
       become_user: webhook

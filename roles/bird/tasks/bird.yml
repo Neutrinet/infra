@@ -44,7 +44,7 @@
     - 20_bgp_rpki.conf
   loop_control:
     loop_var: bird_conf
-  notify: reload bird
+  notify: Reload bird
   tags: ['bird_config']
 
 - name: Configuration de base de bird
@@ -54,7 +54,7 @@
     owner: bird
     group: bird
     mode: "ug=r,o="
-  notify: reload bird
+  notify: Reload bird
   tags: ['bird_config']
 
 - name: Configuration des variables d'environement pour bird
@@ -75,7 +75,7 @@
     group: bird
     mode: "ug=r,o="
   loop: "{{ bird_peers_upstreams }}"
-  notify: reload bird
+  notify: Reload bird
   tags: ['bird_config']
 
 - name: Configuration des peers downstream de bird
@@ -86,7 +86,7 @@
     group: bird
     mode: "ug=r,o="
   loop: "{{ bird_peers_downstreams }}"
-  notify: reload bird
+  notify: Reload bird
   tags: ['bird_config']
 
 - name: Configuration des l'export dans le kernel
@@ -96,7 +96,7 @@
     owner: bird
     group: bird
     mode: "ug=r,o="
-  notify: reload bird
+  notify: Reload bird
   when: bird_role != 'route-reflector'
   tags: ['bird_config']
 
@@ -107,7 +107,7 @@
     owner: bird
     group: bird
     mode: "ug=r,o="
-  notify: reload bird
+  notify: Reload bird
   tags: ['bird_config']
 
 - name: Activation du service bird au démarage

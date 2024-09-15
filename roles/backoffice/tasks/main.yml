@@ -20,7 +20,7 @@
     group: root
     mode: "u=rw,go=r"
     validate: caddy validate --adapter caddyfile --config %s
-  notify: reload caddy
+  notify: Reload caddy
   tags: ['caddy_config']
 
 - name: Configuration de la base de données PostgreSQL

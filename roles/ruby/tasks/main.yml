@@ -23,6 +23,7 @@
   ansible.builtin.lineinfile:
     line: eval "$(rbenv init -)"
     dest: ~/.bashrc
+  become: true
   become_user: "{{ ruby_owner }}"
 
 - name: Installation de rbenv-build  # noqa latest[git]
@@ -30,12 +31,14 @@
     repo: https://github.com/rbenv/ruby-build.git
     dest: ~/.rbenv/plugins/ruby-build
     single_branch: true
+  become: true
   become_user: "{{ ruby_owner }}"
 
 - name: Installation de ruby {{ ruby_version }}
   ansible.builtin.command:
     cmd: rbenv install {{ ruby_version }}
     creates: ~/.rbenv/versions/{{ ruby_version }}/bin/ruby
+  become: true
   become_user: "{{ ruby_owner }}"
 
 - name: Configuration de ruby {{ ruby_version }} comme version par défaut
@@ -45,6 +48,7 @@
     owner: "{{ ruby_owner }}"
     group: "{{ ruby_owner }}"
     mode: "u=rw,go=r"
+  become: true
   become_user: "{{ ruby_owner }}"
 
 - name: Installation de la gem bundler
@@ -53,4 +57,5 @@
     state: latest
     norc: true
     executable: ~/.rbenv/versions/{{ ruby_version }}/bin/gem
+  become: true
   become_user: "{{ ruby_owner }}"

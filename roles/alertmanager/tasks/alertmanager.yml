@@ -52,7 +52,7 @@
     - amtool
   loop_control:
     loop_var: alertmanager_bin
-  notify: restart alertmanager
+  notify: Restart alertmanager
 
 - name: Configuration d'Alertmanager
   ansible.builtin.template:
@@ -62,7 +62,7 @@
     group: alertmanager
     mode: "u=rw,g=r,o="
     validate: amtool check-config %s
-  notify: reload alertmanager
+  notify: Reload alertmanager
 
 - name: Configuration du service systemd
   ansible.builtin.template:
@@ -72,8 +72,8 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
-    - restart alertmanager
+    - Reload systemd
+    - Restart alertmanager
 
 - name: Activation d'Alertmanager au démarrage
   ansible.builtin.service:
@@ -88,4 +88,4 @@
     owner: victoriametrics
     group: victoriametrics
     mode: "u=rw,go=r"
-  notify: reload victoriametrics
+  notify: Reload victoriametrics
