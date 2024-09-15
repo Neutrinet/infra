@@ -30,21 +30,21 @@
   when: ssh_host_key_file.stat.exists
 
 - name: Création de la clé SSH ed25519
-  ansible.builtin.openssh_keypair:
+  community.crypto.openssh_keypair:
     path: /etc/ssh/ssh_host_ed25519_key
     owner: root
     group: root
     type: ed25519
-  notify: restart ssh
+  notify: Restart ssh
 
 - name: Création de la clé SSH rsa4096
-  ansible.builtin.openssh_keypair:
+  community.crypto.openssh_keypair:
     path: /etc/ssh/ssh_host_rsa_key
     owner: root
     group: root
     type: rsa
     size: 4096
-  notify: restart ssh
+  notify: Restart ssh
 
 - name: Vérification des modulos du serveur OpenSSH
   ansible.builtin.raw: awk '$5 <= 2000' /etc/ssh/moduli
@@ -55,8 +55,9 @@
   ansible.builtin.raw: >-
     awk '$5 > 2000' /etc/ssh/moduli > /tmp/moduli &&
     mv /tmp/moduli /etc/ssh/moduli
-  when: ssh_obsolete_moduli.changed
-  notify: restart ssh
+  changed_when: true
+  when: ssh_obsolete_moduli is changed
+  notify: Restart ssh
 
 - name: Copie du fichier de configuration du serveur OpenSSH
   ansible.builtin.template:
@@ -66,7 +67,7 @@
     group: root
     mode: "u=rw,go=r"
     validate: 'sshd -t -f %s'
-  notify: restart ssh
+  notify: Restart ssh
 
 - name: Activation du service SSH au démarrage
   ansible.builtin.service:

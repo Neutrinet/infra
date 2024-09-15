@@ -5,6 +5,7 @@ warn_list:  # or 'skip_list' to silence them completely
 
 skip_list:
   - name[template]
+  - var-naming[no-role-prefix]
 
 exclude_paths:
   - roles/*/molecule/*/molecule.yml

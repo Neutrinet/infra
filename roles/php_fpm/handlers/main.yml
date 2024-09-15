@@ -1,4 +1,4 @@
-- name: reload php-fpm
+- name: Reload php-fpm
   ansible.builtin.service:
     name: "{{ php_fpm_executable }}"
     state: reloaded

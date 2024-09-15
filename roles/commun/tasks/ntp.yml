@@ -30,7 +30,7 @@
     group: root
     mode: "u=rw,go=r"
   when: ntp_hosts | length > 0
-  notify: restart systemd-timesyncd
+  notify: Restart systemd-timesyncd
 
 - name: Activation de systemd-timesyncd au démarrage
   ansible.builtin.service:

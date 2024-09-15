@@ -8,7 +8,7 @@
     mode: "u=rw,go=r"
   vars:
     etcd_current_member: "{{ etcd_members | selectattr('name', '==', ansible_hostname) | first }}"
-  notify: restart etcd
+  notify: Restart etcd
 
 - name: Installation de etcd
   ansible.builtin.package:
@@ -32,5 +32,5 @@
     group: telegraf
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
-  notify: restart telegraf
+  notify: Restart telegraf
   tags: ['telegraf_config']

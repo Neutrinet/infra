@@ -59,7 +59,7 @@
     mode: "u=rw,g=r,o="
   notify:
     - Migration de la DB
-    - restart mobilizon
+    - Restart mobilizon
 
 - name: Configuration du service systemd
   ansible.builtin.template:
@@ -69,15 +69,15 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
-    - restart mobilizon
+    - Reload systemd
+    - Restart mobilizon
 
 - name: Création du lien symbolique vers la dernière version de Mobilizon
   ansible.builtin.file:
     src: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
     dest: /var/www/{{ mobilizon_owner }}/dist
     state: link
-  notify: restart mobilizon
+  notify: Restart mobilizon
 
 - name: Activation de Mobilizon au démarrage
   ansible.builtin.service:

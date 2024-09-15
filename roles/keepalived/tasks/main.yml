@@ -12,7 +12,7 @@
     group: root
     mode: "u=rw,g=r,o="
     validate: keepalived -t -f %s
-  notify: reload keepalived
+  notify: Reload keepalived
 
 - name: Autorisation écoute sur l'ip VIP
   ansible.posix.sysctl:

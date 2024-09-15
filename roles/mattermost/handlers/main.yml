@@ -1,10 +1,10 @@
-- name: restart mattermost
+- name: Restart mattermost
   ansible.builtin.systemd:
     name: mattermost
     daemon_reload: true
     state: restarted
 
-- name: restart matterbridge
+- name: Restart matterbridge
   ansible.builtin.systemd:
     name: matterbridge
     daemon_reload: true

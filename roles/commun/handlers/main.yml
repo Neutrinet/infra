@@ -1,34 +1,35 @@
 ---
 
-- name: update apt cache
+- name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
 
-- name: restart ssh
+- name: Restart ssh
   ansible.builtin.service:
     name: ssh
     state: restarted
 
-- name: restart unbound
+- name: Restart unbound
   ansible.builtin.service:
     name: unbound
     state: restarted
 
-- name: restart sshguard
+- name: Restart sshguard
   ansible.builtin.service:
     name: sshguard
     state: restarted
 
-- name: restart systemd-journald
+- name: Restart systemd-journald
   ansible.builtin.service:
     name: systemd-journald
     state: restarted
 
-- name: restart systemd-timesyncd
+- name: Restart systemd-timesyncd
   ansible.builtin.service:
     name: systemd-timesyncd
     state: restarted
 
-- name: update grub  # noqa command-instead-of-shell
+- name: Update grub  # noqa command-instead-of-shell
   ansible.builtin.shell:
     cmd: "grub-mkconfig -o /boot/grub/grub.cfg"
+  changed_when: true
