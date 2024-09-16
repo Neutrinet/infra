@@ -19,14 +19,13 @@ RestartSec=10s
 User={{ semaphore_owner }}
 Group={{ semaphore_owner }}
 WorkingDirectory=/etc/semaphore
-ReadOnlyPaths=/etc/semaphore
 
 # Systemd hardening
 PrivateDevices=true
 ProtectControlGroups=true
 ProtectHome=true
 ProtectKernelTunables=true
-ProtectSystem=strict
+ProtectSystem=full
 ProtectKernelModules=true
 ProtectKernelLogs=true
 ProtectClock=true
