@@ -1,6 +1,5 @@
 letsencrypt_domains_ovh:
   - neutrinet.be
-letsencrypt_domains_gandi: []
 
 haproxy:
   - hostname: grafana.neutrinet.be

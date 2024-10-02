@@ -18,7 +18,6 @@
   with_items:
     - /etc/letsencrypt
     - /etc/letsencrypt/ovh
-    - /etc/letsencrypt/gandi
     - /opt/letsencrypt
 
 - name: Installation de pip et certbot  # noqa package-latest
@@ -27,7 +26,6 @@
       - pip
       - certbot
       - certbot-dns-ovh
-      - certbot-plugin-gandi
     virtualenv: /opt/letsencrypt
     virtualenv_python: python3
     state: latest
@@ -68,16 +66,6 @@
   no_log: true
   when: letsencrypt_domains_ovh | length > 0
 
-- name: Config de Gandi pour Let's Encrypt
-  ansible.builtin.template:
-    dest: /etc/letsencrypt/gandi/gandi.ini
-    src: gandi.ini.j2
-    owner: root
-    group: root
-    mode: "u=rw,go="
-  no_log: true
-  when: letsencrypt_domains_gandi | length > 0
-
 - name: Placement du hook pour HAproxy
   ansible.builtin.copy:
     src: haproxy.py
@@ -95,18 +83,5 @@
 - name: Création des certificats ecdsa par challenge ovh
   ansible.builtin.include_tasks: letsencrypt-ovh-ecdsa.yml
   loop: "{{ letsencrypt_domains_ovh }}"
-  loop_control:
-    loop_var: domain
-
-
-- name: Création des certificats rsa par challenge gandi
-  ansible.builtin.include_tasks: letsencrypt-gandi-rsa.yml
-  loop: "{{ letsencrypt_domains_gandi }}"
-  loop_control:
-    loop_var: domain
-
-- name: Création des certificats ecdsa par challenge gandi
-  ansible.builtin.include_tasks: letsencrypt-gandi-ecdsa.yml
-  loop: "{{ letsencrypt_domains_gandi }}"
   loop_control:
     loop_var: domain
