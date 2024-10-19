@@ -1,0 +1,19 @@
+semaphore_domain: semaphore.neutrinet.be
+semaphore_owner: "{{ semaphore_domain | replace('.', '-') }}"
+semaphore_version: 2.10.22
+
+semaphore_admin_username: admin
+semaphore_admin_password: "{{ vault_semaphore_admin_password }}"
+semaphore_admin_email: hub-infra@neutrinet.be
+
+semaphore_postgresql_password: "{{ vault_semaphore_postgresql_password }}"
+
+semaphore_cookie_hash: "{{ vault_semaphore_cookie_hash }}"
+semaphore_cookie_encryption: "{{ vault_semaphore_cookie_encryption }}"
+semaphore_access_key_encryption: "{{ vault_semaphore_access_key_encryption }}"
+
+semaphore_smtp_enabled: true
+semaphore_smtp_host: mail.neutri.net
+semaphore_smtp_port: 587
+semaphore_smtp_username: semaphore@neutrinet.be
+semaphore_smtp_password: "{{ vault_semaphore_smtp_password }}"

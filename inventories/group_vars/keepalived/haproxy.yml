@@ -145,6 +145,13 @@ haproxy:
     healthcheck: true
     healthcheck_url: "HEAD /status"
 
+  - hostname: semaphore.neutrinet.be
+    target:
+      - semaphore.patata.louise.neutri.net
+    target_port: 3000
+    healthcheck: true
+    healthcheck_url: "HEAD /api/ping"
+
   - hostname: support.neutrinet.be
     target:
       - zammad.patata.louise.neutri.net
