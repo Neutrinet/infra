@@ -15,6 +15,17 @@ haproxy:
     headers:
       Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
 
+  - hostname: beta.neutrinet.be
+    target:
+      - grav.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: GET /healthcheck
+    username: neutrinet
+    password: neutrinet
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
+
   - hostname: mediawiki.neutrinet.be
     target:
       - web-static.patata.louise.neutri.net
@@ -144,13 +155,6 @@ haproxy:
       - /metrics
     healthcheck: true
     healthcheck_url: "HEAD /status"
-
-  - hostname: semaphore.neutrinet.be
-    target:
-      - semaphore.patata.louise.neutri.net
-    target_port: 3000
-    healthcheck: true
-    healthcheck_url: "HEAD /api/ping"
 
   - hostname: support.neutrinet.be
     target:
