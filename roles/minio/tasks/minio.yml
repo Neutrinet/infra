@@ -18,7 +18,7 @@
     owner: root
     group: root
     mode: "u=rwx,go=rx"
-  notify: restart minio
+  notify: Restart minio
 
 - name: Création du lien symbolique pour le binaire minio
   ansible.builtin.file:
@@ -33,7 +33,7 @@
     owner: minio
     group: minio
     mode: "u=rw,g=r,o="
-  notify: restart minio
+  notify: Restart minio
 
 - name: Configuration du service systemd
   ansible.builtin.copy:
@@ -43,8 +43,8 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload systemd
-    - restart minio
+    - Reload systemd
+    - Restart minio
 
 - name: Activation de Minio au démarrage
   ansible.builtin.service:

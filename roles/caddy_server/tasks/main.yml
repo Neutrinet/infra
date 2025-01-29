@@ -10,5 +10,5 @@
     group: telegraf
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
-  notify: restart telegraf
+  notify: Restart telegraf
   tags: ['telegraf_config']

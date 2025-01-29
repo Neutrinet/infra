@@ -1,10 +1,10 @@
 ---
-- name: restart etcd
+- name: Restart etcd
   ansible.builtin.service:
     name: etcd
     state: restarted
 
-- name: restart telegraf
+- name: Restart telegraf
   ansible.builtin.service:
     name: telegraf
     state: restarted

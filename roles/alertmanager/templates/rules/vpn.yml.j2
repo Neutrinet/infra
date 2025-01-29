@@ -23,3 +23,14 @@ groups:
         annotations:
           description: 'There are only {{ $value }} IPv4 left for the VPN'
           summary: 'Few IPv4 left for the VPN'
+
+      - alert: Neutrinet VPN Client Down
+        for: 5m
+        expr: prometheus_neutrinet_vpn_connected != 1
+        labels:
+          severity: critical
+          frequency: daily
+          matrix: dm
+        annotations:
+          description: 'Neutrinet client VPN {{ $labels.client_id }} with IP address {{ $labels.ip_address }}{{ if $labels.reverse }} and reverse DNS {{ $labels.reverse }}{{ end }} is down.'
+          summary: Neutrinet client VPN with IP address {{ $labels.ip_address }}{{ if $labels.reverse }} and reverse DNS {{ $labels.reverse }}{{ end }} is down

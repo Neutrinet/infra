@@ -6,7 +6,7 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - restart victoriametrics-alert
+    - Restart victoriametrics-alert
 
 - name: Activation de victoriametrics-alert au démarrage
   ansible.builtin.service:

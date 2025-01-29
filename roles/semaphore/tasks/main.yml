@@ -1,0 +1,110 @@
+- name: Création de l'utilisateur {{ semaphore_owner }}
+  ansible.builtin.user:
+    name: "{{ semaphore_owner }}"
+    home: /etc/semaphore
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: Création du dossier de config de Semaphore
+  ansible.builtin.file:
+    path: "/etc/semaphore"
+    state: directory
+    owner: "{{ semaphore_owner }}"
+    group: "{{ semaphore_owner }}"
+    mode: "u=rwx,go=rx"
+
+- name: Création des dossiers d'installation de Semaphore v{{ semaphore_version }}
+  ansible.builtin.file:
+    path: "{{ install_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+  loop:
+    - /opt/semaphore
+    - /opt/semaphore/{{ semaphore_version }}
+    - /usr/local/src/semaphore
+    - /usr/local/src/semaphore/{{ semaphore_version }}
+  loop_control:
+    loop_var: install_dir
+
+- name: Configuration de la base de données PostgreSQL
+  ansible.builtin.import_role:
+    name: postgres_db
+  vars:
+    postgresql_db_name: "{{ semaphore_owner }}"
+    postgresql_db_password: "{{ semaphore_postgresql_password }}"
+  tags: ['postgres']
+
+- name: Téléchargement de l'archive Semaphore v{{ semaphore_version }}
+  ansible.builtin.get_url:
+    url: https://github.com/semaphoreui/semaphore/releases/download/v{{ semaphore_version }}/semaphore_{{ semaphore_version }}_linux_amd64.tar.gz
+    dest: /usr/local/src/semaphore/{{ semaphore_version }}.tar.gz
+    checksum: sha256:https://github.com/semaphoreui/semaphore/releases/download/v{{ semaphore_version }}/semaphore_{{ semaphore_version }}_checksums.txt
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: Décompression de l'archive Semaphore v{{ semaphore_version }}
+  ansible.builtin.unarchive:
+    src: /usr/local/src/semaphore/{{ semaphore_version }}.tar.gz
+    dest: /opt/semaphore/{{ semaphore_version }}
+    remote_src: true
+    include: semaphore
+    creates: /opt/semaphore/{{ semaphore_version }}/semaphore
+    owner: root
+    group: root
+
+- name: Création du lien symbolique pour le binaire semaphore
+  ansible.builtin.file:
+    src: /opt/semaphore/{{ semaphore_version }}/semaphore
+    dest: /usr/local/bin/semaphore
+    state: link
+
+- name: Configuration de Semaphore
+  ansible.builtin.template:
+    src: semaphore/config.json.j2
+    dest: /etc/semaphore/config.json
+    owner: "{{ semaphore_owner }}"
+    group: "{{ semaphore_owner }}"
+    mode: "u=rw,go="
+  notify: Restart semaphore
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/semaphore.service.j2
+    dest: /etc/systemd/system/semaphore.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - Reload systemd
+    - Restart semaphore
+
+- name: Activation de Semaphore au démarrage
+  ansible.builtin.service:
+    name: semaphore
+    state: started
+    enabled: true
+
+- name: Trigger Semaphore handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Post-installation de Semaphore
+  ansible.builtin.import_tasks: postinstall.yml
+  tags: ['semaphore_postinstall']
+
+- name: Nettoyage des anciennes versions
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ['cleanup']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/semaphore.yml.j2
+    dest: /etc/borgmatic.d/semaphore.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
+  tags: ['borgmatic_config']

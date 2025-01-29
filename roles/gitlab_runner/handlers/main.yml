@@ -1,14 +1,14 @@
-- name: restart docker
+- name: Restart docker
   ansible.builtin.service:
     name: docker
     state: restarted
 
-- name: restart gitlab-runner
+- name: Restart gitlab-runner
   ansible.builtin.service:
     name: gitlab-runner
     state: restarted
 
-- name: restart telegraf
+- name: Restart telegraf
   ansible.builtin.service:
     name: telegraf
     state: restarted

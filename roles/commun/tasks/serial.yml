@@ -4,14 +4,14 @@
     path: "/etc/default/grub"
     regexp: 'GRUB_CMDLINE_LINUX_DEFAULT="(.*)"'
     line: 'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS{{ serial_number }},115200n8 console=tty0 quiet"'
-  notify: update grub
+  notify: Update grub
 
 - name: Clean option grub
   ansible.builtin.lineinfile:
     path: "/etc/default/grub"
     regexp: 'GRUB_CMDLINE_LINUX="(.*)"'
     line: 'GRUB_CMDLINE_LINUX="{{ grub_option_boot_linux }}"'
-  notify: update grub
+  notify: Update grub
 
 - name: Enable serial and console input grub
   ansible.builtin.lineinfile:
@@ -19,7 +19,7 @@
     line: 'GRUB_TERMINAL_INPUT="console serial"'
     mode: "u=rw,go=r"
     create: true
-  notify: update grub
+  notify: Update grub
 
 - name: Enable serial and console output grub
   ansible.builtin.lineinfile:
@@ -27,7 +27,7 @@
     line: 'GRUB_TERMINAL_OUTPUT="gfxterm serial"'
     mode: "u=rw,go=r"
     create: true
-  notify: update grub
+  notify: Update grub
 
 - name: Config serial speed in grub
   ansible.builtin.lineinfile:
@@ -35,7 +35,7 @@
     line: 'GRUB_SERIAL_COMMAND="serial --speed=115200 --unit={{ serial_number }} --word=8 --parity=no --stop=1"'
     mode: "u=rw,go=r"
     create: true
-  notify: update grub
+  notify: Update grub
 
 - name: Trigger Grub handlers
   ansible.builtin.meta: flush_handlers

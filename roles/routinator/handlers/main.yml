@@ -1,9 +1,9 @@
-- name: restart routinator
+- name: Restart routinator
   ansible.builtin.service:
     name: routinator
     state: restarted
 
-- name: restart telegraf
+- name: Restart telegraf
   ansible.builtin.service:
     name: telegraf
     state: restarted

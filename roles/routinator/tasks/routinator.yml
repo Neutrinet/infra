@@ -43,7 +43,7 @@
     group: routinator
     mode: "ug=r,o="
     validate: routinator --config %s config
-  notify: restart routinator
+  notify: Restart routinator
   tags: ['routinator_config']
 
 - name: Ajout exception Neutrinet pour routinator
@@ -53,7 +53,7 @@
     owner: routinator
     group: routinator
     mode: "ug=r,o="
-  notify: restart routinator
+  notify: Restart routinator
   tags: ['routinator_config']
 
 - name: Initialisation de routinator
@@ -61,6 +61,7 @@
     cmd: /usr/bin/routinator --config /etc/routinator/routinator.conf init --accept-arin-rpa
     creates: /var/lib/routinator/rpki-cache
     chdir: /var/lib/routinator
+  become: true
   become_user: routinator
   tags: ['routinator_config']
 

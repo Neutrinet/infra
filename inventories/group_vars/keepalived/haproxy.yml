@@ -3,7 +3,6 @@ letsencrypt_domains_ovh:
   - labriqueinter.net
   - internetcu.be
   - teamrecup.be
-letsencrypt_domains_gandi:
   - mobilizon.be
 
 haproxy:
@@ -13,6 +12,17 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
+
+  - hostname: beta.neutrinet.be
+    target:
+      - grav.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: GET /healthcheck
+    username: neutrinet
+    password: neutrinet
     headers:
       Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
 

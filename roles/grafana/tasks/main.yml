@@ -31,7 +31,7 @@
     owner: grafana
     group: grafana
     mode: "u=rw,g=r,o="
-  notify: restart grafana
+  notify: Restart grafana
 
 - name: Activation de Grafana au démarrage
   ansible.builtin.service:
@@ -46,7 +46,7 @@
     owner: victoriametrics
     group: victoriametrics
     mode: "u=rw,go=r"
-  notify: reload victoriametrics
+  notify: Reload victoriametrics
 
 - name: Vérification du mot de passe admin
   ansible.builtin.uri:

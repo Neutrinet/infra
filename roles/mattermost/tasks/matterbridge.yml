@@ -31,7 +31,7 @@
     owner: root
     group: root
     mode: "u=rwx,go=rx"
-  notify: restart matterbridge
+  notify: Restart matterbridge
 
 - name: Création du dossier de configuration de Matterbridge
   ansible.builtin.file:
@@ -48,7 +48,7 @@
     owner: matterbridge
     group: matterbridge
     mode: "u=rw,g=r,o="
-  notify: restart matterbridge
+  notify: Restart matterbridge
 
 - name: Configuration du service systemd
   ansible.builtin.template:
@@ -58,7 +58,7 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - restart matterbridge
+    - Restart matterbridge
 
 - name: Activation de Matterbridge au démarrage
   ansible.builtin.service:

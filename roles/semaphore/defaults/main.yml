@@ -1,0 +1,23 @@
+semaphore_domain: semaphore.example.com
+semaphore_owner: "{{ semaphore_domain | replace('.', '-') }}"
+semaphore_version: 2.10.22
+
+semaphore_admin_username: admin
+semaphore_admin_password: neutrinet
+semaphore_admin_email: semaphore@example.com
+
+postgresql_host: localhost
+
+semaphore_postgresql_password: neutrinet
+
+# Generated with openssl rand -base64 32. Must be changed in production!
+semaphore_cookie_hash: "96TYDZZI738IG5bq0oefFLoFHc/VKoUNSpB8ZOmQoAg="
+semaphore_cookie_encryption: "1ij8l55dBCimFHOe8iQ5UEFq1GmiDr9hZCcAD1FfK80="
+semaphore_access_key_encryption: "xzcClw1qu8y69EMQ0QVb78TEltUojmg856WBKzFbDFM="
+
+semaphore_smtp_enabled: false
+semaphore_smtp_host: localhost
+semaphore_smtp_port: 25
+semaphore_smtp_username: ""
+semaphore_smtp_password: ""
+semaphore_smtp_sender: semaphore@example.com

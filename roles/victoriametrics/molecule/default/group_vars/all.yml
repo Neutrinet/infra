@@ -1,5 +1,4 @@
 letsencrypt_domains_ovh: []
-letsencrypt_domains_gandi: []
 haproxy_redirect: []
 haproxy_postgresql: []
 haproxy:

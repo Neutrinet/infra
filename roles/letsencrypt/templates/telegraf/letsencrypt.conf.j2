@@ -5,7 +5,7 @@
   ## List certificate sources
   ## Prefix your entry with 'file://' if you intend to use relative paths
   sources = [
-{% for domain in letsencrypt_domains_ovh + letsencrypt_domains_gandi %}
+{% for domain in letsencrypt_domains_ovh %}
     "/etc/letsencrypt/live/{{ domain | replace('.', '-') }}/fullchain.pem",
     "/etc/letsencrypt/live/{{ domain | replace('.', '-') }}-ecdsa/fullchain.pem"{% if not loop.last %},{% endif %}
 

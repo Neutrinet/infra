@@ -41,7 +41,7 @@
     group: root
     mode: "u=rw,go=r"
     validate: caddy validate --adapter caddyfile --config %s
-  notify: reload caddy
+  notify: Reload caddy
 
 - name: Copie de la config du healthcheck
   ansible.builtin.template:
@@ -51,7 +51,7 @@
     group: root
     mode: "u=rw,go=r"
     validate: caddy validate --adapter caddyfile --config %s
-  notify: reload caddy
+  notify: Reload caddy
 
 - name: Création du dossier des logs
   ansible.builtin.file:

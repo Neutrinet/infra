@@ -23,6 +23,9 @@
 - name: Déploiement du cluster Ceph S3
   import_playbook: apps/ceph_s3.yml
 
+- name: Déploiement de Semaphore
+  import_playbook: apps/semaphore.yml
+
 - name: Déploiement de HedgeDoc
   import_playbook: apps/hedgedoc.yml
 

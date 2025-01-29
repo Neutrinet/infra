@@ -49,7 +49,7 @@
     group: telegraf
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
-  notify: restart telegraf
+  notify: Restart telegraf
   tags: ['telegraf_config']
 
 - name: Désactivation de la sortie influxdb
@@ -58,7 +58,7 @@
     regexp: '^\[\[outputs\.influxdb\]\]'
     line: '# [[outputs.influxdb]]'
     validate: telegraf --config %s --test
-  notify: restart telegraf
+  notify: Restart telegraf
 
 - name: Activation de Telegraf au démarrage
   ansible.builtin.service:

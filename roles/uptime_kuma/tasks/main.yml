@@ -23,7 +23,7 @@
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
   when: uptime_kuma_api_token != ""
-  notify: restart telegraf
+  notify: Restart telegraf
   no_log: true
   tags: ['telegraf']
 

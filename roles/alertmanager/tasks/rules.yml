@@ -13,5 +13,5 @@
   loop_control:
     loop_var: rule_group
   notify:
-    - reload victoriametrics
-    - reload victoriametrics-alert
+    - Reload victoriametrics
+    - Reload victoriametrics-alert

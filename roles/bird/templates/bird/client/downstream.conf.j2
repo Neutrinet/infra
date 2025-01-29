@@ -1,4 +1,4 @@
-{% if item.type in ['client-gw','client-full'] %}
+{% if item.type == ('client-gw' or 'client-full') %}
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v4 {
    bgp_large_community.delete([(my_asn, 0, *)]);
 
@@ -30,7 +30,7 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v6 {
 }
 {% endif %}
 
-{% if item.type 'client-full' %}
+{% if item.type == 'client-full' %}
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v4 {
    if (bgp_large_community ~ [(my_asn, 0, 30)]) then {
       if reject_bogon_asns("import", "{{ item.type }}")           then reject;
@@ -84,7 +84,7 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v6 {
 }
 {% endif %}
 
-{% if item.type 'client-gw' %}
+{% if item.type == 'client-gw' %}
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v4 {
    if (proto = "default_gw_v4") then accept;
    reject;

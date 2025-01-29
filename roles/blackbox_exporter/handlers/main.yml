@@ -1,15 +1,15 @@
-- name: restart blackbox-exporter
+- name: Restart blackbox-exporter
   ansible.builtin.systemd:
     name: blackbox-exporter
     daemon_reload: true
     state: restarted
 
-- name: reload blackbox-exporter
+- name: Reload blackbox-exporter
   ansible.builtin.service:
     name: blackbox-exporter
     state: reloaded
 
-- name: restart telegraf
+- name: Restart telegraf
   ansible.builtin.service:
     name: telegraf
     state: restarted

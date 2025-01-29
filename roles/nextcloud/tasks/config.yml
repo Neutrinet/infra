@@ -5,4 +5,4 @@
     owner: "{{ nextcloud_owner }}"
     group: "{{ web_app_group }}"
     mode: "u=rw,g=r,o="
-  notify: config nextcloud
+  notify: Config nextcloud

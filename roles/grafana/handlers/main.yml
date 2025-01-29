@@ -1,9 +1,9 @@
-- name: restart grafana
+- name: Restart grafana
   ansible.builtin.service:
     name: grafana-server
     state: restarted
 
-- name: reload victoriametrics
+- name: Reload victoriametrics
   ansible.builtin.service:
     name: victoriametrics
     state: reloaded

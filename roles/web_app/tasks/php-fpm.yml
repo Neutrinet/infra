@@ -6,7 +6,7 @@
     group: root
     mode: "u=rw,go=r"
   notify:
-    - reload php-fpm
+    - Reload php-fpm
   tags: ['php_config']
 
 - name: Création du dossier tmp pour php-fpm
@@ -28,7 +28,7 @@
     group: telegraf
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
-  notify: restart telegraf
+  notify: Restart telegraf
   tags: ['telegraf_config']
 
 - name: Ajout de l'utilisateur telegraf au groupe caddy
@@ -36,5 +36,5 @@
     name: telegraf
     groups: caddy
     append: true
-  notify: restart telegraf
+  notify: Restart telegraf
   tags: ['telegraf_config']

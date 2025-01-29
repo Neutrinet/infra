@@ -29,6 +29,20 @@ matrix:
   allowed_rooms:
     - "{{ alertmanager_matrix_alertbot_room }}"
 
+dm:
+  filter_labels:
+    matrix: dm
+  select_label: user_id
+  room_title: Neutrinet Alerts for {user}
+  users:
+{% for user in alertmanager_matrix_alertbot_users %}
+    - matrix_id: "{{ user.matrix_id }}"
+      select_values:
+{% for vpn_uuid in user.vpn_uuids %}
+        - "{{ vpn_uuid }}"
+{% endfor %}
+{% endfor %}
+
 webhook:
   # Address and port for which the bot should listen to
   address: localhost

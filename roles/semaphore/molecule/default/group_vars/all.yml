@@ -1,0 +1,16 @@
+letsencrypt_domains_ovh: []
+letsencrypt_domains_gandi: []
+
+letsencrypt_post_hook: 'systemctl restart haproxy'
+letsencrypt_deploy_hook: '/etc/letsencrypt/haproxy.py'
+
+haproxy_redirect: []
+haproxy_postgresql: []
+
+haproxy:
+  - hostname: semaphore.example.com
+    target:
+      - 127.0.0.1
+    target_port: 3000
+    healthcheck: false
+    healthcheck_url: "HEAD /api/ping"

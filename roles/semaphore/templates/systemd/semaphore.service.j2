@@ -1,0 +1,49 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Ansible Semaphore
+Documentation=https://docs.ansible-semaphore.com/
+Wants=network-online.target
+After=network-online.target
+After=postgresql.service
+ConditionPathExists=/usr/local/bin/semaphore
+ConditionPathExists=/etc/semaphore/config.json
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/semaphore server --config /etc/semaphore/config.json
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10s
+
+User={{ semaphore_owner }}
+Group={{ semaphore_owner }}
+WorkingDirectory=/etc/semaphore
+
+# Systemd hardening
+PrivateDevices=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectSystem=full
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+CapabilityBoundingSet=
+NoNewPrivileges=true
+RestrictNamespaces=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+PrivateTmp=true
+PrivateUsers=true
+RemoveIPC=true
+LockPersonality=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target
