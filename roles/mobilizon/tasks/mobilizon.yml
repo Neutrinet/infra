@@ -8,7 +8,7 @@
 
 - name: Téléchargement de Mobilizon v{{ mobilizon_version }}
   ansible.builtin.unarchive:
-    src: https://packages.joinmobilizon.org/{{ mobilizon_version }}/mobilizon_{{ mobilizon_version }}_amd64-debian-{{ ansible_distribution_release }}.tar.gz
+    src: https://packages.joinmobilizon.org/{{ mobilizon_version }}/mobilizon_{{ mobilizon_version }}_debian-{{ ansible_distribution_release }}_amd64.tar.gz
     dest: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}
     creates: /var/www/{{ mobilizon_owner }}/mobilizon-{{ mobilizon_version }}/bin/mobilizon
     remote_src: true
