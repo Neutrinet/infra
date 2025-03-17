@@ -4,13 +4,15 @@ from pprint import pprint
 from collections import Counter
 from slugify import slugify
 import yaml
+import sys
 
 
 def make_request(url):
-    api_key = ""
+    api_key = "MbXFfQsw.Co3YlLDuf98yIqAjYSaR7KV4ohlfYIW0"
     headers = {"Authorization": "Api-Key " + api_key}
 
     try:
+        print(url, file=sys.stderr)
         response = requests.get(url=url, headers=headers)
 
         # Check the HTTP status code
@@ -78,28 +80,28 @@ for peer in all_peers_in_ix:
         if peering_data_get_asn:
             data = peering_data_get_asn.get("data")
             if data:
-                if data[0]["policy_general"] == "Open":
-                    name = data[0]["name"]
-                    request_peers = {}
-                    request_peers["asn"] = peer.get("asn")
-                    request_peers["passive"] = True
-                    request_peers["neighbor_ipv4"] = peer.get("ipaddr4")
-                    request_peers["neighbor_ipv6"] = peer.get("ipaddr6")
-                    if peer.get("asn") in duplicate_asns:
-                        if peer.get("ipaddr6") is None:
-                            index_from_ip = get_last_segment_v4(peer.get("ipaddr4"))
-                        else:
-                            index_from_ip = get_last_segment_v6(peer.get("ipaddr6"))
-                        request_peers["name"] = name + " " + index_from_ip
-                        request_peers["slug"] = (
-                            slugify(name).replace("-", "_") + "_" + index_from_ip
-                        )
+                name = data[0]["name"]
+                request_peers = {}
+                request_peers["asn"] = peer.get("asn")
+                request_peers["passive"] = True
+                request_peers["neighbor_ipv4"] = peer.get("ipaddr4")
+                request_peers["neighbor_ipv6"] = peer.get("ipaddr6")
+                if peer.get("asn") in duplicate_asns:
+                    if peer.get("ipaddr6") is None:
+                        index_from_ip = get_last_segment_v4(peer.get("ipaddr4"))
                     else:
-                        request_peers["name"] = name
-                        request_peers["slug"] = slugify(name).replace("-", "_")
-                    request_peers["type"] = "peering"
+                        index_from_ip = get_last_segment_v6(peer.get("ipaddr6"))
+                    request_peers["name"] = name + " " + index_from_ip
+                    request_peers["slug"] = (
+                        slugify(name).replace("-", "_") + "_" + index_from_ip
+                    )
+                else:
+                    request_peers["name"] = name
+                    request_peers["slug"] = slugify(name).replace("-", "_")
+                request_peers["type"] = "peering"
+                request_peers["peering_policy"] = data[0]["policy_general"]
 
-                    new_bird_peers_upstreams.append(request_peers)
+                new_bird_peers_upstreams.append(request_peers)
 
 new_bird_peers_upstreams.sort(key=lambda x: x["asn"])
 yaml_data = yaml.dump(new_bird_peers_upstreams, default_flow_style=False)

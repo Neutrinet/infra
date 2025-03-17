@@ -24,6 +24,7 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
    if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
    if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then accept;
    reject;
 }
 {% endif %}

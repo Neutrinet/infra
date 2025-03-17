@@ -19,6 +19,17 @@ filter kernel_v4_export {
       accept;
    }
 
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then {
+      if reject_bogon_asns("import", "kernel")           then reject;
+      if reject_long_aspaths("import", "kernel")         then reject;
+      if reject_v4_bogon_prefixes("import", "kernel")    then reject;
+      if reject_v4_small_prefixes("import", "kernel")    then reject;
+      if reject_v4_default_route("import", "kernel")     then reject;
+      if reject_v4_invalid_rpki("import", "kernel")      then reject;
+      accept;
+   }
+
+
    reject;
 }
 
@@ -42,8 +53,34 @@ filter kernel_v6_export {
       if reject_v6_invalid_rpki("import", "kernel")      then reject;
       accept;
    }
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then {
+      if reject_bogon_asns("import", "kernel")           then reject;
+      if reject_long_aspaths("import", "kernel")         then reject;
+      if reject_v6_bogon_prefixes("import", "kernel")    then reject;
+      if reject_v6_small_prefixes("import", "kernel")    then reject;
+      if reject_v6_default_route("import", "kernel")     then reject;
+      if reject_v6_invalid_rpki("import", "kernel")      then reject;
+      accept;
+   }
 
    reject;
+}
+
+
+filter kernel_v4_import {
+   if (net ~ neutrinet_network_v4) then {
+      bgp_large_community.add((my_asn, 0, 40));
+      bgp_local_pref = 190;
+      accept;
+   }
+}
+
+filter kernel_v6_import {
+   if (net ~ neutrinet_network_v6) then {
+      bgp_large_community.add((my_asn, 0, 40));
+      bgp_local_pref = 190;
+      accept;
+   }
 }
 
 protocol kernel kernel_v4 {
@@ -54,7 +91,7 @@ protocol kernel kernel_v4 {
    graceful restart yes;
 
    ipv4 {
-      import none;
+      import filter kernel_v4_import;
       export filter kernel_v4_export;
    };
 }
@@ -67,7 +104,7 @@ protocol kernel kernel_v6 {
    graceful restart yes;
 
    ipv6 {
-      import none;
+      import filter kernel_v6_import;
       export filter kernel_v6_export;
    };
 }

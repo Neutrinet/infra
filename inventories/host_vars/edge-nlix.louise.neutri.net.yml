@@ -7,85 +7,5309 @@ bird_server_rpki_02: 2001:913:1000:10::191
 bird_role: edge
 bird_peers_upstreams:
   - asn: 34307
+    name: NL-ix Route Servers 01
     neighbor_ipv4: 193.239.116.255
     neighbor_ipv6: 2001:7f8:13::a503:4307:1
-    name: "NLIX 01"
-    slug: nlix_01
-    type: route-server
+    passive: false
+    peering_policy: Open
+    slug: nl_ix_route_servers_01
+    type: peering
   - asn: 34307
+    name: NL-ix Route Servers 02
     neighbor_ipv4: 193.239.117.0
     neighbor_ipv6: 2001:7f8:13::a503:4307:2
-    name: "NLIX 02"
-    slug: nlix_02
-    type: route-server
-
-  - asn: 13335
-    neighbor_ipv4: 193.239.117.114
-    neighbor_ipv6: 2001:7f8:13::a501:3335:1
-    name: "cloudflare 01"
-    slug: cloudflare_01
-    type: peering
-  - asn: 13335
-    neighbor_ipv4: 193.239.118.138
-    neighbor_ipv6: 2001:7f8:13::a501:3335:2
-    name: "cloudflare 02"
-    slug: cloudflare_02
-    type: peering
-  - asn: 13335
-    neighbor_ipv4: 193.239.117.14
-    neighbor_ipv6: 2001:7f8:13::a501:3335:3
-    name: "cloudflare 03"
-    slug: cloudflare_03
+    passive: false
+    peering_policy: Open
+    slug: nl_ix_route_servers_02
     type: peering
 
-  - asn: 202218
-    neighbor_ipv4: 193.239.116.160
-    neighbor_ipv6: 2001:7f8:13::a520:2218:1
-    name: "ridiehosting"
-    slug: ridiehosting
+  - asn: 42
+    name: PCH AS42 01
+    neighbor_ipv4: 193.239.116.123
+    neighbor_ipv6: 2001:7f8:13::a500:42:1
+    passive: true
+    peering_policy: Open
+    slug: pch_as42_01
+    type: peering
+  - asn: 42
+    name: PCH AS42 02
+    neighbor_ipv4: 193.239.117.91
+    neighbor_ipv6: 2001:7f8:13::a500:42:2
+    passive: true
+    peering_policy: Open
+    slug: pch_as42_02
     type: peering
 
-  - asn: 204092
-    neighbor_ipv4: 193.239.117.189
-    neighbor_ipv6: 2001:7f8:13::a520:4092:1
-    name: "grifon"
-    slug: grifon
+  - asn: 72
+    name: Schlumberger Limited 191
+    neighbor_ipv4: 193.239.117.191
+    passive: true
+    peering_policy: Selective
+    slug: schlumberger_limited_191
+    type: peering
+  - asn: 72
+    name: Schlumberger Limited 190
+    neighbor_ipv4: 193.239.117.190
+    passive: true
+    peering_policy: Selective
+    slug: schlumberger_limited_190
     type: peering
 
-  - asn: 32934
-    neighbor_ipv4: 193.239.116.147
-    neighbor_ipv6: 2001:7f8:13::a503:2934:1
-    name: "Facebook 01"
-    slug: facebook_01
+  - asn: 250
+    name: AS250.net
+    neighbor_ipv4: 193.239.118.38
+    neighbor_ipv6: 2001:7f8:13::a500:250:1
+    passive: true
+    peering_policy: Open
+    slug: as250_net
     type: peering
-  - asn: 32934
-    neighbor_ipv4: 193.239.116.148
-    neighbor_ipv6: 2001:7f8:13::a503:2934:2
-    name: "Facebook 02"
-    slug: facebook_02
+
+  - asn: 714
+    name: Apple Inc. 01
+    neighbor_ipv4: 193.239.117.112
+    neighbor_ipv6: 2001:7f8:13::a500:714:1
+    passive: true
+    peering_policy: Selective
+    slug: apple_inc_01
+    type: peering
+  - asn: 714
+    name: Apple Inc. 02
+    neighbor_ipv4: 193.239.117.113
+    neighbor_ipv6: 2001:7f8:13::a500:714:2
+    passive: true
+    peering_policy: Selective
+    slug: apple_inc_02
+    type: peering
+
+  - asn: 917
+    name: Misaka.io
+    neighbor_ipv4: 193.239.116.48
+    neighbor_ipv6: 2001:7f8:13::a500:917:1
+    passive: true
+    peering_policy: Open
+    slug: misaka_io
+    type: peering
+
+  - asn: 983
+    name: Akari Networks
+    neighbor_ipv4: 193.239.116.109
+    neighbor_ipv6: 2001:7f8:13::a503:8136:1
+    passive: true
+    peering_policy: Open
+    slug: akari_networks
+    type: peering
+
+  - asn: 1101
+    name: Not SURF Net
+    neighbor_ipv4: 193.239.119.114
+    neighbor_ipv6: 2001:7f8:13::a500:1101:1
+    passive: true
+    peering_policy: Open
+    slug: not_surf_net
+    type: peering
+
+  - asn: 1103
+    name: SURF 01
+    neighbor_ipv4: 193.239.116.243
+    neighbor_ipv6: 2001:7f8:13::a500:1103:1
+    passive: true
+    peering_policy: Open
+    slug: surf_01
+    type: peering
+  - asn: 1103
+    name: SURF 02
+    neighbor_ipv4: 193.239.117.149
+    neighbor_ipv6: 2001:7f8:13::a500:1103:2
+    passive: true
+    peering_policy: Open
+    slug: surf_02
+    type: peering
+
+  - asn: 1104
+    name: Nikhef 01
+    neighbor_ipv4: 193.239.118.4
+    neighbor_ipv6: 2001:7f8:13::a500:1104:1
+    passive: true
+    peering_policy: Selective
+    slug: nikhef_01
+    type: peering
+  - asn: 1104
+    name: Nikhef 02
+    neighbor_ipv4: 193.239.118.5
+    neighbor_ipv6: 2001:7f8:13::a500:1104:2
+    passive: true
+    peering_policy: Selective
+    slug: nikhef_02
+    type: peering
+
+  - asn: 1126
+    name: VANCIS 01
+    neighbor_ipv4: 193.239.116.252
+    neighbor_ipv6: 2001:7f8:13::a500:1126:1
+    passive: true
+    peering_policy: Open
+    slug: vancis_01
+    type: peering
+  - asn: 1126
+    name: VANCIS 02
+    neighbor_ipv4: 193.239.117.232
+    neighbor_ipv6: 2001:7f8:13::a500:1126:2
+    passive: true
+    peering_policy: Open
+    slug: vancis_02
+    type: peering
+
+  - asn: 1136
+    name: KPN NL 01
+    neighbor_ipv4: 193.239.117.66
+    neighbor_ipv6: 2001:7f8:13::a500:1136:1
+    passive: true
+    peering_policy: Selective
+    slug: kpn_nl_01
+    type: peering
+  - asn: 1136
+    name: KPN NL 02
+    neighbor_ipv4: 193.239.117.67
+    neighbor_ipv6: 2001:7f8:13::a500:1136:2
+    passive: true
+    peering_policy: Selective
+    slug: kpn_nl_02
+    type: peering
+
+  - asn: 1140
+    name: SIDN - Stichting Internet Domeinregistratie Nederland 01
+    neighbor_ipv4: 193.239.116.38
+    neighbor_ipv6: 2001:7f8:13::a500:1140:1
+    passive: true
+    peering_policy: Selective
+    slug: domeinregistratie_nederland_01
+    type: peering
+  - asn: 1140
+    name: SIDN - Stichting Internet Domeinregistratie Nederland 02
+    neighbor_ipv4: 193.239.119.111
+    neighbor_ipv6: 2001:7f8:13::a500:1140:2
+    passive: true
+    peering_policy: Selective
+    slug: domeinregistratie_nederland_02
+    type: peering
+
+  - asn: 1257
+    name: TELE2
+    neighbor_ipv4: 193.239.118.67
+    neighbor_ipv6: 2001:7f8:13::a500:1257:1
+    passive: true
+    peering_policy: Selective
+    slug: tele2
+    type: peering
+
+  - asn: 1547
+    name: JSC InterDnestrCom (IDC)
+    neighbor_ipv4: 193.239.117.123
+    neighbor_ipv6: 2001:7f8:13::a500:1547:1
+    passive: true
+    peering_policy: Open
+    slug: jsc_interdnestrcom_idc
+    type: peering
+
+  - asn: 1680
+    name: Cellcom Israel
+    neighbor_ipv4: 193.239.118.147
+    neighbor_ipv6: 2001:7f8:13::a500:1680:1
+    passive: true
+    peering_policy: Selective
+    slug: cellcom_israel
+    type: peering
+
+  - asn: 1820
+    name: Wnet Telecom USA
+    neighbor_ipv4: 193.239.118.196
+    neighbor_ipv6: 2001:7f8:13::a500:1820:1
+    passive: true
+    peering_policy: Selective
+    slug: wnet_telecom_usa
+    type: peering
+
+  - asn: 2484
+    name: FR-NIC-DNS-ANYCAST (AFNIC > NIC-FR > Anycast DNS)
+    neighbor_ipv4: 193.239.116.211
+    neighbor_ipv6: 2001:7f8:13::a500:2484:1
+    passive: true
+    peering_policy: Open
+    slug: fr_nic_dns_anycast_afnic_nic_fr_anycast_dns
+    type: peering
+
+  - asn: 2603
+    name: NORDUnet
+    neighbor_ipv4: 193.239.116.53
+    neighbor_ipv6: 2001:7f8:13::a500:2603:1
+    passive: true
+    peering_policy: Selective
+    slug: nordunet
+    type: peering
+
+  - asn: 2635
+    name: Automattic
+    neighbor_ipv4: 193.239.117.171
+    neighbor_ipv6: 2001:7f8:13::a500:2635:1
+    passive: true
+    peering_policy: Open
+    slug: automattic
+    type: peering
+
+  - asn: 3209
+    name: Vodafone Germany
+    neighbor_ipv4: 193.239.118.156
+    neighbor_ipv6: 2001:7f8:13::a501:3209:1
+    passive: true
+    peering_policy: Selective
+    slug: vodafone_germany
+    type: peering
+
+  - asn: 3212
+    name: Telemach Slovenia
+    neighbor_ipv4: 193.239.119.62
+    neighbor_ipv6: 2001:7f8:13::a500:3212:1
+    passive: true
+    peering_policy: Open
+    slug: telemach_slovenia
+    type: peering
+
+  - asn: 3216
+    name: VimpelCom
+    neighbor_ipv4: 193.239.118.254
+    neighbor_ipv6: 2001:7f8:13::a500:3216:1
+    passive: true
+    peering_policy: Selective
+    slug: vimpelcom
+    type: peering
+
+  - asn: 3292
+    name: TDC A/S
+    neighbor_ipv4: 193.239.117.228
+    neighbor_ipv6: 2001:7f8:13::a500:3292:1
+    passive: true
+    peering_policy: Selective
+    slug: tdc_a_s
+    type: peering
+
+  - asn: 3320
+    name: Deutsche Telekom 01
+    neighbor_ipv4: 193.239.116.83
+    neighbor_ipv6: 2001:7f8:13::a500:3320:1
+    passive: true
+    peering_policy: Restrictive
+    slug: deutsche_telekom_01
+    type: peering
+  - asn: 3320
+    name: Deutsche Telekom 02
+    neighbor_ipv4: 193.239.116.84
+    neighbor_ipv6: 2001:7f8:13::a500:3320:2
+    passive: true
+    peering_policy: Restrictive
+    slug: deutsche_telekom_02
+    type: peering
+
+  - asn: 3326
+    name: Datagroup
+    neighbor_ipv4: 193.239.116.143
+    neighbor_ipv6: 2001:7f8:13::a500:3326:1
+    passive: true
+    peering_policy: Open
+    slug: datagroup
+    type: peering
+
+  - asn: 3333
+    name: RIPE NCC 01
+    neighbor_ipv4: 193.239.117.25
+    neighbor_ipv6: 2001:7f8:13::a500:3333:1
+    passive: true
+    peering_policy: Selective
+    slug: ripe_ncc_01
+    type: peering
+  - asn: 3333
+    name: RIPE NCC 02
+    neighbor_ipv4: 193.239.118.84
+    neighbor_ipv6: 2001:7f8:13::a500:3333:2
+    passive: true
+    peering_policy: Selective
+    slug: ripe_ncc_02
+    type: peering
+
+  - asn: 3856
+    name: PCH AS3856 01
+    neighbor_ipv4: 193.239.116.122
+    neighbor_ipv6: 2001:7f8:13::a500:3856:1
+    passive: true
+    peering_policy: Open
+    slug: pch_as3856_01
+    type: peering
+
+  - asn: 3856
+    name: PCH AS3856 90
+    neighbor_ipv4: 193.239.117.90
+    passive: true
+    peering_policy: Open
+    slug: pch_as3856_90
+    type: peering
+
+  - asn: 3856
+    name: PCH AS3856 92
+    neighbor_ipv4: 193.239.117.92
+    passive: true
+    peering_policy: Open
+    slug: pch_as3856_92
+    type: peering
+
+  - asn: 3920
+    name: ESTOXY-OU
+    neighbor_ipv4: 193.239.118.63
+    neighbor_ipv6: 2001:7f8:13::a500:3920:1
+    passive: true
+    peering_policy: Open
+    slug: estoxy_ou
+    type: peering
+
+  - asn: 4601
+    name: DaKnObNET
+    neighbor_ipv4: 193.239.117.60
+    neighbor_ipv6: 2001:7f8:13::a500:4601:1
+    passive: true
+    peering_policy: Open
+    slug: daknobnet
+    type: peering
+
+  - asn: 4651
+    name: NT(CAT) IIG
+    neighbor_ipv4: 193.239.117.159
+    neighbor_ipv6: 2001:7f8:13::a500:4651:1
+    passive: true
+    peering_policy: Open
+    slug: nt_cat_iig
+    type: peering
+
+  - asn: 4657
+    name: StarHub AS4657
+    neighbor_ipv4: 193.239.117.248
+    neighbor_ipv6: 2001:7f8:13::a500:4657:1
+    passive: true
+    peering_policy: Selective
+    slug: starhub_as4657
+    type: peering
+
+  - asn: 4766
+    name: KT Corporation (Korea Telecom)
+    neighbor_ipv4: 193.239.118.191
+    neighbor_ipv6: 2001:7f8:13::a500:4766:1
+    passive: true
+    peering_policy: Selective
+    slug: kt_corporation_korea_telecom
+    type: peering
+
+  - asn: 4775
+    name: Globe Telecom
+    neighbor_ipv4: 193.239.118.107
+    neighbor_ipv6: 2001:7f8:13::a500:4775:1
+    passive: true
+    peering_policy: Open
+    slug: globe_telecom
+    type: peering
+
+  - asn: 5398
+    name: AS5398
+    neighbor_ipv4: 193.239.119.135
+    neighbor_ipv6: 2001:7f8:13::a500:5398:1
+    passive: true
+    peering_policy: Selective
+    slug: as5398
+    type: peering
+
+  - asn: 5405
+    name: Inter.link
+    neighbor_ipv4: 193.239.119.107
+    neighbor_ipv6: 2001:7f8:13::a502:5405:1
+    passive: true
+    peering_policy: Selective
+    slug: inter_link
+    type: peering
+
+  - asn: 5418
+    name: NerdNet 01
+    neighbor_ipv4: 193.239.119.5
+    neighbor_ipv6: 2001:7f8:13::a500:5418:1
+    passive: true
+    peering_policy: Open
+    slug: nerdnet_01
+    type: peering
+  - asn: 5418
+    name: NerdNet 02
+    neighbor_ipv4: 193.239.119.6
+    neighbor_ipv6: 2001:7f8:13::a500:5418:2
+    passive: true
+    peering_policy: Open
+    slug: nerdnet_02
+    type: peering
+
+  - asn: 5713
+    name: Telkom SA
+    neighbor_ipv4: 193.239.118.189
+    neighbor_ipv6: 2001:7f8:13::a500:5713:1
+    passive: true
+    peering_policy: Selective
+    slug: telkom_sa
+    type: peering
+
+  - asn: 6204
+    name: ZET.NET 01
+    neighbor_ipv4: 193.239.117.63
+    neighbor_ipv6: 2001:7f8:13::a500:6204:1
+    passive: true
+    peering_policy: Selective
+    slug: zet_net_01
+    type: peering
+  - asn: 6204
+    name: ZET.NET 02
+    neighbor_ipv4: 193.239.118.9
+    neighbor_ipv6: 2001:7f8:13::a500:6204:2
+    passive: true
+    peering_policy: Selective
+    slug: zet_net_02
+    type: peering
+
+  - asn: 6424
+    name: EDGOO NETWORKS
+    neighbor_ipv4: 193.239.119.37
+    neighbor_ipv6: 2001:7f8:13::a500:6424:1
+    passive: true
+    peering_policy: Selective
+    slug: edgoo_networks
+    type: peering
+
+  - asn: 6461
+    name: Zayo 02
+    neighbor_ipv4: 193.239.119.162
+    neighbor_ipv6: 2001:7f8:13::a500:6461:2
+    passive: true
+    peering_policy: Restrictive
+    slug: zayo_02
+    type: peering
+
+  - asn: 6507
+    name: Riot Games 01
+    neighbor_ipv4: 193.239.117.105
+    neighbor_ipv6: 2001:7f8:13::a500:6507:1
+    passive: true
+    peering_policy: Selective
+    slug: riot_games_01
+    type: peering
+  - asn: 6507
+    name: Riot Games 02
+    neighbor_ipv4: 193.239.117.106
+    neighbor_ipv6: 2001:7f8:13::a500:6507:2
+    passive: true
+    peering_policy: Selective
+    slug: riot_games_02
+    type: peering
+
+  - asn: 6696
+    name: VERIXI
+    neighbor_ipv4: 193.239.119.166
+    neighbor_ipv6: 2001:7f8:13::a500:6696:1
+    passive: true
+    peering_policy: Selective
+    slug: verixi
+    type: peering
+
+  - asn: 6774
+    name: BICS 02
+    neighbor_ipv4: 193.239.117.211
+    neighbor_ipv6: 2001:7f8:13::a500:6774:2
+    passive: true
+    peering_policy: Selective
+    slug: bics_02
+    type: peering
+  - asn: 6774
+    name: BICS 01
+    neighbor_ipv4: 193.239.117.210
+    neighbor_ipv6: 2001:7f8:13::a500:6774:1
+    passive: true
+    peering_policy: Selective
+    slug: bics_01
+    type: peering
+
+  - asn: 6774
+    name: BICS 03
+    neighbor_ipv4: 193.239.117.212
+    neighbor_ipv6: 2001:7f8:13::a500:6774:3
+    passive: true
+    peering_policy: Selective
+    slug: bics_03
+    type: peering
+
+  - asn: 6830
+    name: Liberty Global
+    neighbor_ipv4: 193.239.118.146
+    neighbor_ipv6: 2001:7f8:13::a500:6830:2
+    passive: true
+    peering_policy: Restrictive
+    slug: liberty_global
     type: peering
 
   - asn: 6939
+    name: Hurricane Electric
     neighbor_ipv4: 193.239.116.14
     neighbor_ipv6: 2001:7f8:13::a500:6939:1
-    name: "Hurricane Electric"
+    passive: false
+    peering_policy: Open
     slug: hurricane_electric
     type: peering
 
+  - asn: 7500
+    name: M-ROOT DNS Server
+    neighbor_ipv4: 193.239.116.217
+    neighbor_ipv6: 2001:7f8:13::a500:7500:1
+    passive: true
+    peering_policy: Open
+    slug: m_root_dns_server
+    type: peering
+
+  - asn: 8075
+    name: Microsoft 01
+    neighbor_ipv4: 193.239.117.16
+    neighbor_ipv6: 2001:7f8:13::a500:8075:1
+    passive: true
+    peering_policy: Selective
+    slug: microsoft_01
+    type: peering
+  - asn: 8075
+    name: Microsoft 04
+    neighbor_ipv4: 193.239.118.172
+    neighbor_ipv6: 2001:7f8:13::a500:8075:4
+    passive: true
+    peering_policy: Selective
+    slug: microsoft_04
+    type: peering
+  - asn: 8075
+    name: Microsoft 02
+    neighbor_ipv4: 193.239.118.163
+    neighbor_ipv6: 2001:7f8:13::a500:8075:2
+    passive: true
+    peering_policy: Selective
+    slug: microsoft_02
+    type: peering
+  - asn: 8075
+    name: Microsoft 05
+    neighbor_ipv4: 193.239.118.173
+    neighbor_ipv6: 2001:7f8:13::a500:8075:5
+    passive: true
+    peering_policy: Selective
+    slug: microsoft_05
+    type: peering
+
+  - asn: 8218
+    name: Zayo Europe 01
+    neighbor_ipv4: 193.239.116.173
+    neighbor_ipv6: 2001:7f8:13::a500:8218:1
+    passive: true
+    peering_policy: Selective
+    slug: zayo_europe_01
+    type: peering
+  - asn: 8218
+    name: Zayo Europe 02
+    neighbor_ipv4: 193.239.119.161
+    neighbor_ipv6: 2001:7f8:13::a500:8218:2
+    passive: true
+    peering_policy: Selective
+    slug: zayo_europe_02
+    type: peering
+
+  - asn: 8283
+    name: Netwerkvereniging ColoClue
+    neighbor_ipv4: 193.239.117.203
+    neighbor_ipv6: 2001:7f8:13::a500:8283:2
+    passive: true
+    peering_policy: Open
+    slug: netwerkvereniging_coloclue
+    type: peering
+
+  - asn: 8298
+    name: IPng Networks GmbH
+    neighbor_ipv4: 193.239.118.28
+    neighbor_ipv6: 2001:7f8:13::a500:8298:1
+    passive: true
+    peering_policy: Open
+    slug: ipng_networks_gmbh
+    type: peering
+
+  - asn: 8302
+    name: Zattoo
+    neighbor_ipv4: 193.239.117.130
+    neighbor_ipv6: 2001:7f8:13::a500:8302:3
+    passive: true
+    peering_policy: Selective
+    slug: zattoo
+    type: peering
+
+  - asn: 8315
+    name: Accenture Backbone
+    neighbor_ipv4: 193.239.116.161
+    neighbor_ipv6: 2001:7f8:13::a500:8315:1
+    passive: true
+    peering_policy: Open
+    slug: accenture_backbone
+    type: peering
+
+  - asn: 8328
+    name: SaaSplaza Nederland
+    neighbor_ipv4: 193.239.116.168
+    neighbor_ipv6: 2001:7f8:13::a500:8328:1
+    passive: true
+    peering_policy: Selective
+    slug: saasplaza_nederland
+    type: peering
+
+  - asn: 8368
+    name: DSTNY
+    neighbor_ipv4: 193.239.117.9
+    neighbor_ipv6: 2001:7f8:13::a500:8368:1
+    passive: true
+    peering_policy: Selective
+    slug: dstny
+    type: peering
+
+  - asn: 8455
+    name: atom86
+    neighbor_ipv4: 193.239.117.99
+    neighbor_ipv6: 2001:7f8:13::a500:8455:1
+    passive: true
+    peering_policy: Selective
+    slug: atom86
+    type: peering
+
+  - asn: 8529
+    name: Zain Omantel International 01
+    neighbor_ipv4: 193.239.117.224
+    neighbor_ipv6: 2001:7f8:13::a500:8529:1
+    passive: true
+    peering_policy: Open
+    slug: zain_omantel_international_01
+    type: peering
+  - asn: 8529
+    name: Zain Omantel International 02
+    neighbor_ipv4: 193.239.118.210
+    neighbor_ipv6: 2001:7f8:13::a500:8529:2
+    passive: true
+    peering_policy: Open
+    slug: zain_omantel_international_02
+    type: peering
+
+  - asn: 8560
+    name: IONOS SE
+    neighbor_ipv4: 193.239.116.37
+    neighbor_ipv6: 2001:7f8:13::a500:6724:1
+    passive: true
+    peering_policy: Open
+    slug: ionos_se
+    type: peering
+
+  - asn: 8587
+    name: Infracom Internet B.V.
+    neighbor_ipv4: 193.239.119.113
+    neighbor_ipv6: 2001:7f8:13::a500:8587:2
+    passive: true
+    peering_policy: Open
+    slug: infracom_internet_b_v
+    type: peering
+
+  - asn: 8632
+    name: Luxembourg Online SA
+    neighbor_ipv4: 193.239.116.64
+    neighbor_ipv6: 2001:7f8:13::a500:8632:1
+    passive: true
+    peering_policy: Open
+    slug: luxembourg_online_sa
+    type: peering
+
+  - asn: 8641
+    name: Nauka-Svyaz
+    neighbor_ipv4: 193.239.119.8
+    neighbor_ipv6: 2001:7f8:13::a500:8641:1
+    passive: true
+    peering_policy: Selective
+    slug: nauka_svyaz
+    type: peering
+
+  - asn: 8674
+    name: Netnod
+    neighbor_ipv4: 193.239.117.43
+    neighbor_ipv6: 2001:7f8:13::a500:8674:2
+    passive: true
+    peering_policy: Open
+    slug: netnod
+    type: peering
+
+  - asn: 8881
+    name: 1&1 Versatel Deutschland 01
+    neighbor_ipv4: 193.239.116.228
+    neighbor_ipv6: 2001:7f8:13::a500:8881:1
+    passive: true
+    peering_policy: Selective
+    slug: 1_1_versatel_deutschland_01
+    type: peering
+
+  - asn: 8881
+    name: 1&1 Versatel Deutschland 03
+    neighbor_ipv4: 193.239.117.101
+    neighbor_ipv6: 2001:7f8:13::a500:8881:3
+    passive: true
+    peering_policy: Selective
+    slug: 1_1_versatel_deutschland_03
+    type: peering
+  - asn: 8881
+    name: 1&1 Versatel Deutschland 02
+    neighbor_ipv4: 193.239.117.102
+    neighbor_ipv6: 2001:7f8:13::a500:8881:2
+    passive: true
+    peering_policy: Selective
+    slug: 1_1_versatel_deutschland_02
+    type: peering
+
+  - asn: 8932
+    name: UCOM AS8932
+    neighbor_ipv4: 193.239.117.155
+    neighbor_ipv6: 2001:7f8:13::a500:8932:1
+    passive: true
+    peering_policy: Open
+    slug: ucom_as8932
+    type: peering
+
+  - asn: 9008
+    name: Visual Online S.A.
+    neighbor_ipv4: 193.239.119.130
+    neighbor_ipv6: 2001:7f8:13::a500:9008:1
+    passive: true
+    peering_policy: Selective
+    slug: visual_online_s_a
+    type: peering
+
+  - asn: 9119
+    name: Softnet Europe
+    neighbor_ipv4: 193.239.118.57
+    neighbor_ipv6: 2001:7f8:13::a500:9119:1
+    passive: true
+    peering_policy: Open
+    slug: softnet_europe
+    type: peering
+
+  - asn: 9120
+    name: Keepit DK-CO
+    neighbor_ipv4: 193.239.118.161
+    neighbor_ipv6: 2001:7f8:13::a500:9120:1
+    passive: true
+    peering_policy: Open
+    slug: keepit_dk_co
+    type: peering
+
+  - asn: 9150
+    name: Interconnect Services BV
+    neighbor_ipv4: 193.239.118.177
+    neighbor_ipv6: 2001:7f8:13::a500:9150:2
+    passive: true
+    peering_policy: Selective
+    slug: interconnect_services_bv
+    type: peering
+
+  - asn: 9158
+    name: Telenor Denmark 01
+    neighbor_ipv4: 193.239.118.75
+    neighbor_ipv6: 2001:7f8:13::a500:9158:1
+    passive: true
+    peering_policy: Selective
+    slug: telenor_denmark_01
+    type: peering
+  - asn: 9158
+    name: Telenor Denmark 02
+    neighbor_ipv4: 193.239.118.155
+    neighbor_ipv6: 2001:7f8:13::a500:9158:2
+    passive: true
+    peering_policy: Selective
+    slug: telenor_denmark_02
+    type: peering
+
+  - asn: 9299
+    name: Philippine Long Distance Company
+    neighbor_ipv4: 193.239.118.242
+    neighbor_ipv6: 2001:7f8:13::a500:9299:1
+    passive: true
+    peering_policy: Selective
+    slug: philippine_long_distance_company
+    type: peering
+
+  - asn: 9498
+    name: Bharti Airtel Limited
+    neighbor_ipv4: 193.239.119.121
+    neighbor_ipv6: 2001:7f8:13::a500:9498:1
+    passive: true
+    peering_policy: Open
+    slug: bharti_airtel_limited
+    type: peering
+
+  - asn: 10122
+    name: NETSTAR
+    neighbor_ipv4: 193.239.118.206
+    neighbor_ipv6: 2001:7f8:13::a501:122:1
+    passive: true
+    peering_policy: Open
+    slug: netstar
+    type: peering
+
+  - asn: 10310
+    name: Yahoo! 09
+    neighbor_ipv4: 193.239.116.216
+    neighbor_ipv6: 2001:7f8:13::a501:310:9
+    passive: true
+    peering_policy: Selective
+    slug: yahoo_09
+    type: peering
+
+  - asn: 10310
+    name: Yahoo! 10
+    neighbor_ipv4: 193.239.116.231
+    neighbor_ipv6: 2001:7f8:13::a501:310:10
+    passive: true
+    peering_policy: Selective
+    slug: yahoo_10
+    type: peering
+
+  - asn: 12041
+    name: Afilias
+    neighbor_ipv4: 193.239.116.185
+    neighbor_ipv6: 2001:7f8:13::a501:2041:1
+    passive: true
+    peering_policy: Selective
+    slug: afilias
+    type: peering
+
+  - asn: 12297
+    name: TELECOM ARMENIA
+    neighbor_ipv4: 193.239.119.53
+    neighbor_ipv6: 2001:7f8:13::a501:2297:1
+    passive: true
+    peering_policy: Open
+    slug: telecom_armenia
+    type: peering
+
+  - asn: 12360
+    name: KEVAG Telekom GmbH
+    neighbor_ipv4: 193.239.117.98
+    neighbor_ipv6: 2001:7f8:13::a501:2360:1
+    passive: true
+    peering_policy: Selective
+    slug: kevag_telekom_gmbh
+    type: peering
+
+  - asn: 12389
+    name: Rostelecom
+    neighbor_ipv4: 193.239.118.50
+    neighbor_ipv6: 2001:7f8:13::a501:2389:1
+    passive: true
+    peering_policy: Selective
+    slug: rostelecom
+    type: peering
+
+  - asn: 12392
+    name: Brutele SC / Voo
+    neighbor_ipv4: 193.239.117.236
+    neighbor_ipv6: 2001:7f8:13::a501:2392:1
+    passive: true
+    peering_policy: Selective
+    slug: brutele_sc_voo
+    type: peering
+
+  - asn: 12414
+    name: Solcon Internetdiensten
+    neighbor_ipv4: 193.239.116.72
+    neighbor_ipv6: 2001:7f8:13::a501:2414:1
+    passive: true
+    peering_policy: Open
+    slug: solcon_internetdiensten
+    type: peering
+
+  - asn: 12440
+    name: Hughes Network Systems
+    neighbor_ipv4: 193.239.118.170
+    neighbor_ipv6: 2001:7f8:13::a501:2440:1
+    passive: true
+    peering_policy: Open
+    slug: hughes_network_systems
+    type: peering
+
+  - asn: 12654
+    name: RIPE NCC RIS Project
+    neighbor_ipv4: 193.239.116.45
+    neighbor_ipv6: 2001:7f8:13::a501:2654:1
+    passive: true
+    peering_policy: Selective
+    slug: ripe_ncc_ris_project
+    type: peering
+
+  - asn: 12741
+    name: Netia
+    neighbor_ipv4: 193.239.118.72
+    neighbor_ipv6: 2001:7f8:13::a501:2741:1
+    passive: true
+    peering_policy: Selective
+    slug: netia
+    type: peering
+
+  - asn: 12759
+    name: SOCO Network Solutions GmbH
+    neighbor_ipv4: 193.239.118.110
+    neighbor_ipv6: 2001:7f8:13::a501:2759:1
+    passive: true
+    peering_policy: Open
+    slug: soco_network_solutions_gmbh
+    type: peering
+
+  - asn: 12859
+    name: BIT BV 01
+    neighbor_ipv4: 193.239.116.33
+    neighbor_ipv6: 2001:7f8:13::a501:2859:1
+    passive: true
+    peering_policy: Open
+    slug: bit_bv_01
+    type: peering
+  - asn: 12859
+    name: BIT BV 02
+    neighbor_ipv4: 193.239.116.19
+    neighbor_ipv6: 2001:7f8:13::a501:2859:2
+    passive: true
+    peering_policy: Open
+    slug: bit_bv_02
+    type: peering
+
+  - asn: 12883
+    name: Ucomline LTD
+    neighbor_ipv4: 193.239.118.152
+    neighbor_ipv6: 2001:7f8:13::a501:2883:1
+    passive: true
+    peering_policy: Selective
+    slug: ucomline_ltd
+    type: peering
+
+  - asn: 12902
+    name: Luna.nl B.V.
+    neighbor_ipv4: 193.239.116.65
+    neighbor_ipv6: 2001:7f8:13::a501:2902:1
+    passive: true
+    peering_policy: Open
+    slug: luna_nl_b_v
+    type: peering
+
+  - asn: 13002
+    name: ISIX Communications
+    neighbor_ipv4: 193.239.116.22
+    neighbor_ipv6: 2001:7f8:13::a501:3002:1
+    passive: true
+    peering_policy: Open
+    slug: isix_communications
+    type: peering
+
+  - asn: 13006
+    name: DID Logic
+    neighbor_ipv4: 193.239.117.240
+    passive: true
+    peering_policy: Selective
+    slug: did_logic
+    type: peering
+
+  - asn: 13101
+    name: TNG Stadtnetz GmbH
+    neighbor_ipv4: 193.239.116.27
+    neighbor_ipv6: 2001:7f8:13::a501:3101:1
+    passive: true
+    peering_policy: Open
+    slug: tng_stadtnetz_gmbh
+    type: peering
+
+  - asn: 13132
+    name: cyberways GmbH
+    neighbor_ipv4: 193.239.118.36
+    neighbor_ipv6: 2001:7f8:13::a501:3132:1
+    passive: true
+    peering_policy: Open
+    slug: cyberways_gmbh
+    type: peering
+
+  - asn: 13194
+    name: Bite Lietuva
+    neighbor_ipv4: 193.239.118.197
+    neighbor_ipv6: 2001:7f8:13::a501:3194:1
+    passive: true
+    peering_policy: Selective
+    slug: bite_lietuva
+    type: peering
+
+  - asn: 13249
+    name: IT Systems(UA)
+    neighbor_ipv4: 193.239.118.21
+    neighbor_ipv6: 2001:7f8:13::a501:3249:1
+    passive: true
+    peering_policy: Selective
+    slug: it_systems_ua
+    type: peering
+
+  - asn: 13335
+    name: Cloudflare 03
+    neighbor_ipv4: 193.239.117.14
+    neighbor_ipv6: 2001:7f8:13::a501:3335:3
+    passive: false
+    peering_policy: Open
+    slug: cloudflare_03
+    type: peering
+  - asn: 13335
+    name: Cloudflare 01
+    neighbor_ipv4: 193.239.117.114
+    neighbor_ipv6: 2001:7f8:13::a501:3335:1
+    passive: false
+    peering_policy: Open
+    slug: cloudflare_01
+    type: peering
+  - asn: 13335
+    name: Cloudflare 02
+    neighbor_ipv4: 193.239.118.138
+    neighbor_ipv6: 2001:7f8:13::a501:3335:2
+    passive: false
+    peering_policy: Open
+    slug: cloudflare_02
+    type: peering
+  - asn: 13335
+    name: Cloudflare 04
+    neighbor_ipv4: 193.239.119.101
+    neighbor_ipv6: 2001:7f8:13::a501:3335:4
+    passive: true
+    peering_policy: Open
+    slug: cloudflare_04
+    type: peering
+
+  - asn: 13360
+    name: Triton Digital
+    neighbor_ipv4: 193.239.117.188
+    passive: true
+    peering_policy: Selective
+    slug: triton_digital
+    type: peering
+
+  - asn: 13445
+    name: WebEx Communications
+    neighbor_ipv4: 193.239.118.217
+    neighbor_ipv6: 2001:7f8:13::a501:3445:1
+    passive: true
+    peering_policy: Selective
+    slug: webex_communications
+    type: peering
+
+  - asn: 14061
+    name: DigitalOcean 01
+    neighbor_ipv4: 193.239.119.174
+    neighbor_ipv6: 2001:7f8:13::a501:4061:1
+    passive: true
+    peering_policy: Selective
+    slug: digitalocean_01
+    type: peering
+  - asn: 14061
+    name: DigitalOcean 02
+    neighbor_ipv4: 193.239.119.175
+    neighbor_ipv6: 2001:7f8:13::a501:4061:2
+    passive: true
+    peering_policy: Selective
+    slug: digitalocean_02
+    type: peering
+
+  - asn: 14593
+    name: SpaceX Starlink
+    neighbor_ipv4: 193.239.117.8
+    neighbor_ipv6: 2001:7f8:13::a501:4593:1
+    passive: true
+    peering_policy: Open
+    slug: spacex_starlink
+    type: peering
+
+  - asn: 14907
+    name: Wikimedia Foundation
+    neighbor_ipv4: 193.239.119.50
+    neighbor_ipv6: 2001:7f8:13::a501:4907:1
+    passive: true
+    peering_policy: Open
+    slug: wikimedia_foundation
+    type: peering
+
+  - asn: 15133
+    name: Edgio (Edgecast) -  AS15133 01
+    neighbor_ipv4: 193.239.118.157
+    neighbor_ipv6: 2001:7f8:13::a501:5133:1
+    passive: true
+    peering_policy: Selective
+    slug: edgio_edgecast_as15133_01
+    type: peering
+  - asn: 15133
+    name: Edgio (Edgecast) -  AS15133 02
+    neighbor_ipv4: 193.239.118.158
+    neighbor_ipv6: 2001:7f8:13::a501:5133:2
+    passive: true
+    peering_policy: Selective
+    slug: edgio_edgecast_as15133_02
+    type: peering
+
   - asn: 15169
+    name: Google LLC
     neighbor_ipv4: 193.239.117.141
     neighbor_ipv4_password: jutran7dEbUwr6c9
     neighbor_ipv6: 2001:7f8:13::a501:5169:1
     neighbor_ipv6_password: jutran7dEbUwr6c9
-    name: "Google LLC"
-    slug: google
+    passive: false
+    peering_policy: Open
+    slug: google_llc
+    type: peering
+
+  - asn: 15435
+    name: DELTA Fiber - AS15435 01
+    neighbor_ipv4: 193.239.116.29
+    neighbor_ipv6: 2001:7f8:13::a501:5435:1
+    passive: true
+    peering_policy: Selective
+    slug: delta_fiber_as15435_01
+    type: peering
+  - asn: 15435
+    name: DELTA Fiber - AS15435 02
+    neighbor_ipv4: 193.239.116.55
+    neighbor_ipv6: 2001:7f8:13::a501:5435:2
+    passive: true
+    peering_policy: Selective
+    slug: delta_fiber_as15435_02
+    type: peering
+
+  - asn: 15447
+    name: CM.com Netherlands B.V. 03
+    neighbor_ipv4: 193.239.117.97
+    neighbor_ipv6: 2001:7f8:13::a501:5447:3
+    passive: true
+    peering_policy: Open
+    slug: cm_com_netherlands_b_v_03
+    type: peering
+  - asn: 15447
+    name: CM.com Netherlands B.V. 02
+    neighbor_ipv4: 193.239.118.10
+    neighbor_ipv6: 2001:7f8:13::a501:5447:2
+    passive: true
+    peering_policy: Open
+    slug: cm_com_netherlands_b_v_02
+    type: peering
+
+  - asn: 15447
+    name: CM.com Netherlands B.V. 01
+    neighbor_ipv4: 193.239.116.78
+    neighbor_ipv6: 2001:7f8:13::a501:5447:1
+    passive: true
+    peering_policy: Open
+    slug: cm_com_netherlands_b_v_01
+    type: peering
+
+  - asn: 15693
+    name: BusinessConnect 01
+    neighbor_ipv4: 193.239.117.46
+    neighbor_ipv6: 2001:7f8:13::a501:5693:1
+    passive: true
+    peering_policy: Open
+    slug: businessconnect_01
+    type: peering
+  - asn: 15693
+    name: BusinessConnect 02
+    neighbor_ipv4: 193.239.119.95
+    neighbor_ipv6: 2001:7f8:13::a501:5693:2
+    passive: true
+    peering_policy: Open
+    slug: businessconnect_02
+    type: peering
+
+  - asn: 15830
+    name: Equinix as15830 01
+    neighbor_ipv4: 193.239.116.207
+    neighbor_ipv6: 2001:7f8:13::a501:5830:1
+    passive: true
+    peering_policy: Selective
+    slug: equinix_as15830_01
+    type: peering
+  - asn: 15830
+    name: Equinix as15830 02
+    neighbor_ipv4: 193.239.116.208
+    neighbor_ipv6: 2001:7f8:13::a501:5830:2
+    passive: true
+    peering_policy: Selective
+    slug: equinix_as15830_02
+    type: peering
+
+  - asn: 15943
+    name: wilhelm.tel 01
+    neighbor_ipv4: 193.239.118.187
+    neighbor_ipv6: 2001:7f8:13::a501:5943:1
+    passive: true
+    peering_policy: Selective
+    slug: wilhelm_tel_01
+    type: peering
+  - asn: 15943
+    name: wilhelm.tel 02
+    neighbor_ipv4: 193.239.118.202
+    neighbor_ipv6: 2001:7f8:13::a501:5943:2
+    passive: true
+    peering_policy: Selective
+    slug: wilhelm_tel_02
+    type: peering
+
+  - asn: 16218
+    name: Internet Access Center Duesseldorf
+    neighbor_ipv4: 193.239.118.39
+    neighbor_ipv6: 2001:7f8:13::a501:6218:1
+    passive: true
+    peering_policy: Open
+    slug: internet_access_center_duesseldorf
+    type: peering
+
+  - asn: 16265
+    name: LeaseWeb Network
+    neighbor_ipv4: 193.239.116.221
+    neighbor_ipv6: 2001:7f8:13::a501:6265:1
+    passive: true
+    peering_policy: Open
+    slug: leaseweb_network
+    type: peering
+
+  - asn: 16276
+    name: OVHcloud 03
+    neighbor_ipv4: 193.239.118.128
+    neighbor_ipv6: 2001:7f8:13::a501:6276:3
+    passive: true
+    peering_policy: Open
+    slug: ovhcloud_03
+    type: peering
+
+  - asn: 16276
+    name: OVHcloud 01
+    neighbor_ipv4: 193.239.119.12
+    neighbor_ipv6: 2001:7f8:13::a501:6276:1
+    passive: true
+    peering_policy: Open
+    slug: ovhcloud_01
+    type: peering
+  - asn: 16276
+    name: OVHcloud 02
+    neighbor_ipv4: 193.239.119.13
+    neighbor_ipv6: 2001:7f8:13::a501:6276:2
+    passive: true
+    peering_policy: Open
+    slug: ovhcloud_02
+    type: peering
+
+  - asn: 16298
+    name: InterBox Internet
+    neighbor_ipv4: 193.239.116.187
+    neighbor_ipv6: 2001:7f8:13::a501:6298:1
+    passive: true
+    peering_policy: Open
+    slug: interbox_internet
+    type: peering
+
+  - asn: 16350
+    name: Root
+    neighbor_ipv4: 193.239.118.49
+    neighbor_ipv6: 2001:7f8:13::a501:6350:1
+    passive: true
+    peering_policy: Open
+    slug: root
+    type: peering
+
+  - asn: 16509
+    name: Amazon.com 01
+    neighbor_ipv4: 193.239.119.131
+    neighbor_ipv6: 2001:7f8:13::a501:6509:1
+    passive: true
+    peering_policy: Selective
+    slug: amazon_com_01
+    type: peering
+  - asn: 16509
+    name: Amazon.com 02
+    neighbor_ipv4: 193.239.119.132
+    neighbor_ipv6: 2001:7f8:13::a501:6509:2
+    passive: true
+    peering_policy: Selective
+    slug: amazon_com_02
+    type: peering
+
+  - asn: 17639
+    name: CONVERGE ICT SOLUTION
+    neighbor_ipv4: 193.239.117.51
+    neighbor_ipv6: 2001:7f8:13::a501:7639:1
+    passive: true
+    peering_policy: Open
+    slug: converge_ict_solution
+    type: peering
+
+  - asn: 19551
+    name: Thales/Imperva
+    neighbor_ipv4: 193.239.118.123
+    neighbor_ipv6: 2001:7f8:13::a501:9551:1
+    passive: true
+    peering_policy: Open
+    slug: thales_imperva
+    type: peering
+
+  - asn: 19679
+    name: Dropbox 01
+    neighbor_ipv4: 193.239.118.43
+    neighbor_ipv6: 2001:7f8:13::a501:9679:1
+    passive: true
+    peering_policy: Open
+    slug: dropbox_01
+    type: peering
+  - asn: 19679
+    name: Dropbox 02
+    neighbor_ipv4: 193.239.118.52
+    neighbor_ipv6: 2001:7f8:13::a501:9679:2
+    passive: true
+    peering_policy: Open
+    slug: dropbox_02
+    type: peering
+
+  - asn: 20326
+    name: Teraswitch Inc
+    neighbor_ipv4: 193.239.119.142
+    neighbor_ipv6: 2001:7f8:13::a502:326:1
+    passive: true
+    peering_policy: Open
+    slug: teraswitch_inc
+    type: peering
+
+  - asn: 20485
+    name: TransTelecom
+    neighbor_ipv4: 193.239.119.66
+    neighbor_ipv6: 2001:7f8:13::a502:485:1
+    passive: true
+    peering_policy: Selective
+    slug: transtelecom
+    type: peering
+
+  - asn: 20495
+    name: WD6.net B.V.
+    neighbor_ipv4: 193.239.117.233
+    neighbor_ipv6: 2001:7f8:13::a502:495:1
+    passive: true
+    peering_policy: Open
+    slug: wd6_net_b_v
+    type: peering
+
+  - asn: 20559
+    name: Fundaments
+    neighbor_ipv4: 193.239.117.3
+    neighbor_ipv6: 2001:7f8:13::a502:559:1
+    passive: true
+    peering_policy: Open
+    slug: fundaments
+    type: peering
+
+  - asn: 20562
+    name: Open Peering 02
+    neighbor_ipv4: 193.239.116.3
+    neighbor_ipv6: 2001:7f8:13::a502:562:2
+    passive: true
+    peering_policy: Open
+    slug: open_peering_02
+    type: peering
+  - asn: 20562
+    name: Open Peering 01
+    neighbor_ipv4: 193.239.116.17
+    neighbor_ipv6: 2001:7f8:13::a502:562:1
+    passive: true
+    peering_policy: Open
+    slug: open_peering_01
+    type: peering
+  - asn: 20562
+    name: Open Peering 03
+    neighbor_ipv4: 193.239.117.31
+    neighbor_ipv6: 2001:7f8:13::a502:562:3
+    passive: true
+    peering_policy: Open
+    slug: open_peering_03
+    type: peering
+  - asn: 20562
+    name: Open Peering 04
+    neighbor_ipv4: 193.239.117.35
+    neighbor_ipv6: 2001:7f8:13::a502:562:4
+    passive: true
+    peering_policy: Open
+    slug: open_peering_04
+    type: peering
+  - asn: 20562
+    name: Open Peering 05
+    neighbor_ipv4: 193.239.117.53
+    neighbor_ipv6: 2001:7f8:13::a502:562:5
+    passive: true
+    peering_policy: Open
+    slug: open_peering_05
+    type: peering
+  - asn: 20562
+    name: Open Peering 06
+    neighbor_ipv4: 193.239.116.46
+    neighbor_ipv6: 2001:7f8:13::a502:562:6
+    passive: true
+    peering_policy: Open
+    slug: open_peering_06
+    type: peering
+  - asn: 20562
+    name: Open Peering 07
+    neighbor_ipv4: 193.239.119.84
+    neighbor_ipv6: 2001:7f8:13::a502:562:7
+    passive: true
+    peering_policy: Open
+    slug: open_peering_07
+    type: peering
+
+  - asn: 20647
+    name: IPB Internet Provider Berlin GmbH
+    neighbor_ipv4: 193.239.116.234
+    neighbor_ipv6: 2001:7f8:13::a502:647:1
+    passive: true
+    peering_policy: Open
+    slug: ipb_internet_provider_berlin_gmbh
+    type: peering
+
+  - asn: 20766
+    name: Association Gitoyen
+    neighbor_ipv4: 193.239.117.27
+    neighbor_ipv6: 2001:7f8:13::a502:766:1
+    passive: true
+    peering_policy: Open
+    slug: association_gitoyen
+    type: peering
+
+  - asn: 20847
+    name: Previder BV 01
+    neighbor_ipv4: 193.239.116.86
+    neighbor_ipv6: 2001:7f8:13::a502:847:1
+    passive: true
+    peering_policy: Open
+    slug: previder_bv_01
+    type: peering
+  - asn: 20847
+    name: Previder BV 02
+    neighbor_ipv4: 193.239.116.85
+    neighbor_ipv6: 2001:7f8:13::a502:847:2
+    passive: true
+    peering_policy: Open
+    slug: previder_bv_02
+    type: peering
+
+  - asn: 20857
+    name: TransIP BV
+    neighbor_ipv4: 193.239.116.115
+    neighbor_ipv6: 2001:7f8:13::a502:857:1
+    passive: true
+    peering_policy: Open
+    slug: transip_bv
+    type: peering
+
+  - asn: 20932
+    name: SIG Telecom
+    neighbor_ipv4: 193.239.116.144
+    neighbor_ipv6: 2001:7f8:13::a502:932:1
+    passive: true
+    peering_policy: Open
+    slug: sig_telecom
+    type: peering
+
+  - asn: 20940
+    name: Akamai Technologies 01
+    neighbor_ipv4: 193.239.116.226
+    neighbor_ipv6: 2001:7f8:13::a502:940:1
+    passive: true
+    peering_policy: Open
+    slug: akamai_technologies_01
+    type: peering
+
+  - asn: 20940
+    name: Akamai Technologies 03
+    neighbor_ipv4: 193.239.117.166
+    neighbor_ipv6: 2001:7f8:13::a502:940:3
+    passive: true
+    peering_policy: Open
+    slug: akamai_technologies_03
+    type: peering
+
+  - asn: 20940
+    name: Akamai Technologies 04
+    neighbor_ipv4: 193.239.119.163
+    neighbor_ipv6: 2001:7f8:13::a502:940:4
+    passive: true
+    peering_policy: Open
+    slug: akamai_technologies_04
+    type: peering
+
+  - asn: 20940
+    name: Akamai Technologies 05
+    neighbor_ipv4: 193.239.119.164
+    neighbor_ipv6: 2001:7f8:13::a502:940:5
+    passive: true
+    peering_policy: Open
+    slug: akamai_technologies_05
+    type: peering
+
+  - asn: 20969
+    name: Ericsson Broadcast Services Netherlands
+    neighbor_ipv4: 193.239.116.63
+    passive: true
+    peering_policy: Open
+    slug: ericsson_broadcast_services_netherlands
+    type: peering
+
+  - asn: 21221
+    name: Infopact Netwerk & Communicatie
+    neighbor_ipv4: 193.239.117.135
+    neighbor_ipv6: 2001:7f8:13::a502:1221:2
+    passive: true
+    peering_policy: Restrictive
+    slug: infopact_netwerk_communicatie
+    type: peering
+
+  - asn: 21859
+    name: Zenlayer Inc 02
+    neighbor_ipv4: 193.239.117.220
+    neighbor_ipv6: 2001:7f8:13::a502:1859:2
+    passive: true
+    peering_policy: Open
+    slug: zenlayer_inc_02
+    type: peering
+  - asn: 21859
+    name: Zenlayer Inc 01
+    neighbor_ipv4: 193.239.118.219
+    neighbor_ipv6: 2001:7f8:13::a502:1859:1
+    passive: true
+    peering_policy: Open
+    slug: zenlayer_inc_01
+    type: peering
+
+  - asn: 22822
+    name: Edgio - AS22822 01
+    neighbor_ipv4: 193.239.116.59
+    neighbor_ipv6: 2001:7f8:13::a502:2822:1
+    passive: true
+    peering_policy: Selective
+    slug: edgio_as22822_01
+    type: peering
+  - asn: 22822
+    name: Edgio - AS22822 02
+    neighbor_ipv4: 193.239.116.128
+    neighbor_ipv6: 2001:7f8:13::a502:2822:2
+    passive: true
+    peering_policy: Selective
+    slug: edgio_as22822_02
+    type: peering
+
+  - asn: 23344
+    name: Disney Streaming Edge 01
+    neighbor_ipv4: 193.239.118.102
+    neighbor_ipv6: 2001:7f8:13::a502:3344:1
+    passive: true
+    peering_policy: Open
+    slug: disney_streaming_edge_01
+    type: peering
+  - asn: 23344
+    name: Disney Streaming Edge 02
+    neighbor_ipv4: 193.239.119.106
+    neighbor_ipv6: 2001:7f8:13::a502:3344:2
+    passive: true
+    peering_policy: Open
+    slug: disney_streaming_edge_02
+    type: peering
+
+  - asn: 23764
+    name: CTGNet
+    neighbor_ipv4: 193.239.118.168
+    neighbor_ipv6: 2001:7f8:13::a502:3764:1
+    passive: true
+    peering_policy: Selective
+    slug: ctgnet
+    type: peering
+
+  - asn: 24429
+    name: Alibaba Cloud CDN
+    neighbor_ipv4: 193.239.118.245
+    passive: true
+    peering_policy: Open
+    slug: alibaba_cloud_cdn
+    type: peering
+
+  - asn: 24482
+    name: SG.GS
+    neighbor_ipv4: 193.239.117.61
+    neighbor_ipv6: 2001:7f8:13::a502:4482:1
+    passive: true
+    peering_policy: Open
+    slug: sg_gs
+    type: peering
+
+  - asn: 24586
+    name: Intermax Cloudsourcing B.V. 01
+    neighbor_ipv4: 193.239.117.251
+    neighbor_ipv6: 2001:7f8:13::a502:4586:1
+    passive: true
+    peering_policy: Open
+    slug: intermax_cloudsourcing_b_v_01
+    type: peering
+  - asn: 24586
+    name: Intermax Cloudsourcing B.V. 02
+    neighbor_ipv4: 193.239.116.62
+    neighbor_ipv6: 2001:7f8:13::a502:4586:2
+    passive: true
+    peering_policy: Open
+    slug: intermax_cloudsourcing_b_v_02
+    type: peering
+
+  - asn: 24637
+    name: WEBDISCOUNT
+    neighbor_ipv4: 193.239.117.37
+    passive: true
+    peering_policy: Selective
+    slug: webdiscount
+    type: peering
+
+  - asn: 24753
+    name: Globecomm Europe
+    neighbor_ipv4: 193.239.116.5
+    passive: true
+    peering_policy: Open
+    slug: globecomm_europe
+    type: peering
+
+  - asn: 24785
+    name: Joint Transit 01
+    neighbor_ipv4: 193.239.118.193
+    neighbor_ipv6: 2001:7f8:13::a502:4785:1
+    passive: true
+    peering_policy: Restrictive
+    slug: joint_transit_01
+    type: peering
+  - asn: 24785
+    name: Joint Transit 02
+    neighbor_ipv4: 193.239.118.194
+    neighbor_ipv6: 2001:7f8:13::a502:4785:2
+    passive: true
+    peering_policy: Restrictive
+    slug: joint_transit_02
+    type: peering
+
+  - asn: 24785
+    name: Joint Transit 03
+    neighbor_ipv4: 193.239.118.195
+    neighbor_ipv6: 2001:7f8:13::a502:4785:3
+    passive: true
+    peering_policy: Restrictive
+    slug: joint_transit_03
+    type: peering
+
+  - asn: 24875
+    name: NovoServe B.V. 02
+    neighbor_ipv4: 193.239.117.82
+    neighbor_ipv6: 2001:7f8:13::a502:4875:2
+    passive: true
+    peering_policy: Open
+    slug: novoserve_b_v_02
+    type: peering
+  - asn: 24875
+    name: NovoServe B.V. 01
+    neighbor_ipv4: 193.239.118.68
+    neighbor_ipv6: 2001:7f8:13::a502:4875:1
+    passive: true
+    peering_policy: Open
+    slug: novoserve_b_v_01
+    type: peering
+
+  - asn: 24940
+    name: Hetzner Online
+    neighbor_ipv4: 193.239.117.110
+    neighbor_ipv6: 2001:7f8:13::a502:4940:1
+    passive: true
+    peering_policy: Open
+    slug: hetzner_online
+    type: peering
+
+  - asn: 25091
+    name: IP-Max SA
+    neighbor_ipv4: 193.239.118.22
+    neighbor_ipv6: 2001:7f8:13::a502:5091:1
+    passive: true
+    peering_policy: Open
+    slug: ip_max_sa
+    type: peering
+
+  - asn: 25152
+    name: RIPE NCC K-Root Operations
+    neighbor_ipv4: 193.239.116.80
+    neighbor_ipv6: 2001:7f8:13::a502:5152:1
+    passive: true
+    peering_policy: Open
+    slug: ripe_ncc_k_root_operations
+    type: peering
+
+  - asn: 25182
+    name: NPO (Nederlandse Publieke Omroep) 01
+    neighbor_ipv4: 193.239.117.40
+    neighbor_ipv6: 2001:7f8:13::a502:5182:1
+    passive: true
+    peering_policy: Selective
+    slug: npo_nederlandse_publieke_omroep_01
+    type: peering
+  - asn: 25182
+    name: NPO (Nederlandse Publieke Omroep) 02
+    neighbor_ipv4: 193.239.116.94
+    neighbor_ipv6: 2001:7f8:13::a502:5182:2
+    passive: true
+    peering_policy: Selective
+    slug: npo_nederlandse_publieke_omroep_02
+    type: peering
+
+  - asn: 25818
+    name: CMC Networks 01
+    neighbor_ipv4: 193.239.116.225
+    neighbor_ipv6: 2001:7f8:13::a502:5818:1
+    passive: true
+    peering_policy: Selective
+    slug: cmc_networks_01
+    type: peering
+  - asn: 25818
+    name: CMC Networks 02
+    neighbor_ipv4: 193.239.116.229
+    neighbor_ipv6: 2001:7f8:13::a502:5818:2
+    passive: true
+    peering_policy: Selective
+    slug: cmc_networks_02
+    type: peering
+
+  - asn: 26667
+    name: Magnite
+    neighbor_ipv4: 193.239.119.7
+    neighbor_ipv6: 2001:7f8:13::a502:6667:1
+    passive: true
+    peering_policy: Restrictive
+    slug: magnite
+    type: peering
+
+  - asn: 28788
+    name: Unilogic Networks B.V.
+    neighbor_ipv4: 193.239.116.102
+    neighbor_ipv6: 2001:7f8:13::a502:8788:1
+    passive: true
+    peering_policy: Open
+    slug: unilogic_networks_b_v
+    type: peering
+
+  - asn: 29001
+    name: DMA computer services
+    neighbor_ipv4: 193.239.116.58
+    neighbor_ipv6: 2001:7f8:13::a502:9001:1
+    passive: true
+    peering_policy: Open
+    slug: dma_computer_services
+    type: peering
+
+  - asn: 29028
+    name: DirectVPS 01
+    neighbor_ipv4: 193.239.116.191
+    neighbor_ipv6: 2001:7f8:13::a502:9028:1
+    passive: true
+    peering_policy: Selective
+    slug: directvps_01
+    type: peering
+  - asn: 29028
+    name: DirectVPS 02
+    neighbor_ipv4: 193.239.119.90
+    neighbor_ipv6: 2001:7f8:13::a502:9028:2
+    passive: true
+    peering_policy: Selective
+    slug: directvps_02
+    type: peering
+
+  - asn: 29311
+    name: SOLVINITY-NL 02
+    neighbor_ipv4: 193.239.118.18
+    neighbor_ipv6: 2001:7f8:13::a502:9311:2
+    passive: true
+    peering_policy: Open
+    slug: solvinity_nl_02
+    type: peering
+  - asn: 29311
+    name: SOLVINITY-NL 01
+    neighbor_ipv4: 193.239.118.17
+    neighbor_ipv6: 2001:7f8:13::a502:9311:1
+    passive: true
+    peering_policy: Open
+    slug: solvinity_nl_01
+    type: peering
+
+  - asn: 29632
+    name: NetAssist
+    neighbor_ipv4: 193.239.118.149
+    neighbor_ipv6: 2001:7f8:13::a502:9632:1
+    passive: true
+    peering_policy: Open
+    slug: netassist
+    type: peering
+
+  - asn: 29670
+    name: Individual Network Berlin e.V. 01
+    neighbor_ipv4: 193.239.117.245
+    neighbor_ipv6: 2001:7f8:13::a502:9670:1
+    passive: true
+    peering_policy: Open
+    slug: individual_network_berlin_e_v_01
+    type: peering
+  - asn: 29670
+    name: Individual Network Berlin e.V. 02
+    neighbor_ipv4: 193.239.118.15
+    neighbor_ipv6: 2001:7f8:13::a502:9670:2
+    passive: true
+    peering_policy: Open
+    slug: individual_network_berlin_e_v_02
+    type: peering
+
+  - asn: 30058
+    name: FDCServers.Net
+    neighbor_ipv4: 193.239.119.140
+    neighbor_ipv6: 2001:7f8:13::a503:58:1
+    passive: true
+    peering_policy: Open
+    slug: fdcservers_net
+    type: peering
+
+  - asn: 30132
+    name: ISC F-ROOT AMS1 01
+    neighbor_ipv4: 193.239.116.112
+    neighbor_ipv6: 2001:7f8:13::a503:132:1
+    passive: true
+    peering_policy: Open
+    slug: isc_f_root_ams1_01
+    type: peering
+  - asn: 30132
+    name: ISC F-ROOT AMS1 02
+    neighbor_ipv4: 193.239.116.113
+    neighbor_ipv6: 2001:7f8:13::a503:132:2
+    passive: true
+    peering_policy: Open
+    slug: isc_f_root_ams1_02
+    type: peering
+
+  - asn: 30736
+    name: ASERGO
+    neighbor_ipv4: 193.239.118.94
+    neighbor_ipv6: 2001:7f8:13::a503:736:1
+    passive: true
+    peering_policy: Open
+    slug: asergo
+    type: peering
+
+  - asn: 30925
+    name: DELTA Fiber Nederland
+    neighbor_ipv4: 193.239.116.245
+    neighbor_ipv6: 2001:7f8:13::a503:925:1
+    passive: true
+    peering_policy: Open
+    slug: delta_fiber_nederland
+    type: peering
+
+  - asn: 30999
+    name: Emtel
+    neighbor_ipv4: 193.239.118.74
+    neighbor_ipv6: 2001:7f8:13::a503:999:1
+    passive: true
+    peering_policy: Open
+    slug: emtel
+    type: peering
+
+  - asn: 31019
+    name: Meanie
+    neighbor_ipv4: 193.239.117.202
+    neighbor_ipv6: 2001:7f8:13::a503:1019:1
+    passive: true
+    peering_policy: Open
+    slug: meanie
+    type: peering
+
+  - asn: 31042
+    name: Serbia BroadBand
+    neighbor_ipv4: 193.239.118.185
+    neighbor_ipv6: 2001:7f8:13::a503:1042:1
+    passive: true
+    peering_policy: Open
+    slug: serbia_broadband
+    type: peering
+
+  - asn: 31084
+    name: Magrathea Telecommunications
+    neighbor_ipv4: 193.239.119.137
+    neighbor_ipv6: 2001:7f8:13::a503:1084:1
+    passive: true
+    peering_policy: Open
+    slug: magrathea_telecommunications
+    type: peering
+
+  - asn: 31133
+    name: MegaFon
+    neighbor_ipv4: 193.239.117.183
+    neighbor_ipv6: 2001:7f8:13::a503:1133:1
+    passive: true
+    peering_policy: Selective
+    slug: megafon
+    type: peering
+
+  - asn: 31477
+    name: Duocast
+    neighbor_ipv4: 193.239.116.132
+    neighbor_ipv6: 2001:7f8:13::a503:1477:1
+    passive: true
+    peering_policy: Open
+    slug: duocast
+    type: peering
+
+  - asn: 31529
+    name: DENIC Anycast 01
+    neighbor_ipv4: 193.239.118.153
+    neighbor_ipv6: 2001:7f8:13::a503:1529:1
+    passive: true
+    peering_policy: Open
+    slug: denic_anycast_01
+    type: peering
+  - asn: 31529
+    name: DENIC Anycast 02
+    neighbor_ipv4: 193.239.118.154
+    neighbor_ipv6: 2001:7f8:13::a503:1529:2
+    passive: true
+    peering_policy: Open
+    slug: denic_anycast_02
+    type: peering
+
+  - asn: 31673
+    name: Uniserver Internet BV
+    neighbor_ipv4: 193.239.116.100
+    neighbor_ipv6: 2001:7f8:13::a503:1673:1
+    passive: true
+    peering_policy: Restrictive
+    slug: uniserver_internet_bv
+    type: peering
+
+  - asn: 31800
+    name: DALnet IRC Network
+    neighbor_ipv4: 193.239.116.162
+    passive: true
+    peering_policy: Open
+    slug: dalnet_irc_network
+    type: peering
+
+  - asn: 31898
+    name: Oracle Cloud Infrastructure 01
+    neighbor_ipv4: 193.239.119.93
+    neighbor_ipv6: 2001:7f8:13::a503:1898:1
+    passive: true
+    peering_policy: Open
+    slug: oracle_cloud_infrastructure_01
+    type: peering
+  - asn: 31898
+    name: Oracle Cloud Infrastructure 02
+    neighbor_ipv4: 193.239.119.94
+    neighbor_ipv6: 2001:7f8:13::a503:1898:2
+    passive: true
+    peering_policy: Open
+    slug: oracle_cloud_infrastructure_02
+    type: peering
+
+  - asn: 32035
+    name: NetFortris
+    neighbor_ipv4: 193.239.118.83
+    neighbor_ipv6: 2001:7f8:13::a503:2035:1
+    passive: true
+    peering_policy: Open
+    slug: netfortris
+    type: peering
+
+  - asn: 32261
+    name: Subspace
+    neighbor_ipv4: 193.239.118.236
+    neighbor_ipv6: 2001:7f8:13::a503:2261:1
+    passive: true
+    peering_policy: Restrictive
+    slug: subspace
+    type: peering
+
+  - asn: 32590
+    name: Valve Corporation 02
+    neighbor_ipv4: 193.239.118.129
+    neighbor_ipv6: 2001:7f8:13::a503:2590:2
+    passive: true
+    peering_policy: Open
+    slug: valve_corporation_02
+    type: peering
+  - asn: 32590
+    name: Valve Corporation 03
+    neighbor_ipv4: 193.239.116.199
+    neighbor_ipv6: 2001:7f8:13::a503:2590:3
+    passive: true
+    peering_policy: Open
+    slug: valve_corporation_03
+    type: peering
+
+  - asn: 32934
+    name: Meta 01
+    neighbor_ipv4: 193.239.116.147
+    neighbor_ipv6: 2001:7f8:13::a503:2934:1
+    passive: false
+    peering_policy: Selective
+    slug: meta_01
+    type: peering
+  - asn: 32934
+    name: Meta 02
+    neighbor_ipv4: 193.239.116.148
+    neighbor_ipv6: 2001:7f8:13::a503:2934:2
+    passive: false
+    peering_policy: Selective
+    slug: meta_02
+    type: peering
+
+  - asn: 34019
+    name: Hivane
+    neighbor_ipv4: 193.239.116.118
+    neighbor_ipv6: 2001:7f8:13::a503:4019:1
+    passive: true
+    peering_policy: Open
+    slug: hivane
+    type: peering
+
+  - asn: 34233
+    name: Superior B.V.
+    neighbor_ipv4: 193.239.116.106
+    neighbor_ipv6: 2001:7f8:13::a503:4233:1
+    passive: true
+    peering_policy: Open
+    slug: superior_b_v
+    type: peering
+
+  - asn: 34428
+    name: 8ROUTE
+    neighbor_ipv4: 193.239.117.184
+    neighbor_ipv6: 2001:7f8:13::a503:4428:1
+    passive: true
+    peering_policy: Open
+    slug: 8route
+    type: peering
+
+  - asn: 34465
+    name: NCRYPTD
+    neighbor_ipv4: 193.239.118.6
+    neighbor_ipv6: 2001:7f8:13::a503:4465:1
+    passive: true
+    peering_policy: Selective
+    slug: ncryptd
+    type: peering
+
+  - asn: 34756
+    name: NEP Connect 01
+    neighbor_ipv4: 193.239.116.180
+    neighbor_ipv6: 2001:7f8:13::a503:4756:1
+    passive: true
+    peering_policy: Selective
+    slug: nep_connect_01
+    type: peering
+  - asn: 34756
+    name: NEP Connect 02
+    neighbor_ipv4: 193.239.116.181
+    neighbor_ipv6: 2001:7f8:13::a503:4756:2
+    passive: true
+    peering_policy: Selective
+    slug: nep_connect_02
+    type: peering
+
+  - asn: 34766
+    name: Layer23 BV
+    neighbor_ipv4: 193.239.117.216
+    neighbor_ipv6: 2001:7f8:13::a503:4766:2
+    passive: true
+    peering_policy: Open
+    slug: layer23_bv
+    type: peering
+
+  - asn: 34779
+    name: T-2 d.o.o.
+    neighbor_ipv4: 193.239.117.237
+    neighbor_ipv6: 2001:7f8:13::a503:4779:1
+    passive: true
+    peering_policy: Open
+    slug: t_2_d_o_o
+    type: peering
+
+  - asn: 34927
+    name: FogNet - iFog GmbH 01
+    neighbor_ipv4: 193.239.118.216
+    neighbor_ipv6: 2001:7f8:13::a503:4927:1
+    passive: true
+    peering_policy: Open
+    slug: fognet_ifog_gmbh_01
+    type: peering
+  - asn: 34927
+    name: FogNet - iFog GmbH 02
+    neighbor_ipv4: 193.239.118.54
+    neighbor_ipv6: 2001:7f8:13::a503:4927:2
+    passive: true
+    peering_policy: Open
+    slug: fognet_ifog_gmbh_02
+    type: peering
+
+  - asn: 34942
+    name: Vivor B.V.
+    neighbor_ipv4: 193.239.116.121
+    neighbor_ipv6: 2001:7f8:13::a503:4942:1
+    passive: true
+    peering_policy: Open
+    slug: vivor_b_v
+    type: peering
+
+  - asn: 34968
+    name: iunxi BV
+    neighbor_ipv4: 193.239.116.146
+    neighbor_ipv6: 2001:7f8:13::a503:4968:1
+    passive: true
+    peering_policy: Open
+    slug: iunxi_bv
+    type: peering
+
+  - asn: 35224
+    name: PLINQ 52
+    neighbor_ipv4: 193.239.116.52
+    passive: true
+    peering_policy: Open
+    slug: plinq_52
+    type: peering
+
+  - asn: 35297
+    name: Dataline Net
+    neighbor_ipv4: 193.239.118.101
+    neighbor_ipv6: 2001:7f8:13::a503:5297:1
+    passive: true
+    peering_policy: Open
+    slug: dataline_net
+    type: peering
+
+  - asn: 35332
+    name: DataWeb B.V.
+    neighbor_ipv4: 193.239.116.10
+    neighbor_ipv6: 2001:7f8:13::a503:5332:1
+    passive: true
+    peering_policy: Selective
+    slug: dataweb_b_v
+    type: peering
+
+  - asn: 35467
+    name: DDFR IT Infra & Security B.V.
+    neighbor_ipv4: 193.239.117.89
+    neighbor_ipv6: 2001:7f8:13::a503:5467:1
+    passive: true
+    peering_policy: Selective
+    slug: ddfr_it_infra_security_b_v
+    type: peering
+
+  - asn: 35625
+    name: Eurofiber France
+    neighbor_ipv4: 193.239.117.170
+    neighbor_ipv6: 2001:7f8:13::a503:5625:1
+    passive: true
+    peering_policy: Open
+    slug: eurofiber_france
+    type: peering
+
+  - asn: 35709
+    name: TRIX
+    neighbor_ipv4: 193.239.118.181
+    neighbor_ipv6: 2001:7f8:13::a503:5709:1
+    passive: true
+    peering_policy: Selective
+    slug: trix
+    type: peering
+
+  - asn: 36351
+    name: SoftLayer Technologies, Inc. (an IBM Company)
+    neighbor_ipv4: 193.239.117.47
+    neighbor_ipv6: 2001:7f8:13::a503:6351:1
+    passive: true
+    peering_policy: Selective
+    slug: softlayer_technologies_inc_an_ibm_company
+    type: peering
+
+  - asn: 37100
+    name: SEACOM
+    neighbor_ipv4: 193.239.117.234
+    neighbor_ipv6: 2001:7f8:13::a503:7100:1
+    passive: true
+    peering_policy: Selective
+    slug: seacom
+    type: peering
+
+  - asn: 37468
+    name: Angola Cables
+    neighbor_ipv4: 193.239.119.54
+    neighbor_ipv6: 2001:7f8:13::a503:7468:1
+    passive: true
+    peering_policy: Selective
+    slug: angola_cables
+    type: peering
+
+  - asn: 37662
+    name: WIOCC 01
+    neighbor_ipv4: 193.239.118.40
+    neighbor_ipv6: 2001:7f8:13::a503:7662:1
+    passive: true
+    peering_policy: Selective
+    slug: wiocc_01
+    type: peering
+  - asn: 37662
+    name: WIOCC 02
+    neighbor_ipv4: 193.239.118.203
+    neighbor_ipv6: 2001:7f8:13::a503:7662:2
+    passive: true
+    peering_policy: Selective
+    slug: wiocc_02
+    type: peering
+
+  - asn: 37693
+    name: Ooredoo Tunisia
+    neighbor_ipv4: 193.239.117.107
+    neighbor_ipv6: 2001:7f8:13::a503:7693:1
+    passive: true
+    peering_policy: Open
+    slug: ooredoo_tunisia
+    type: peering
+
+  - asn: 37721
+    name: Virtual Technologies and Solutions
+    neighbor_ipv4: 193.239.118.238
+    neighbor_ipv6: 2001:7f8:13::a503:7721:1
+    passive: true
+    peering_policy: Open
+    slug: virtual_technologies_and_solutions
+    type: peering
+
+  - asn: 38230
+    name: Navice Communications LLC
+    neighbor_ipv4: 193.239.116.76
+    neighbor_ipv6: 2001:7f8:13::a503:8230:1
+    passive: true
+    peering_policy: Open
+    slug: navice_communications_llc
+    type: peering
+
+  - asn: 38880
+    name: Micron21 Datacentre and Colocation
+    neighbor_ipv4: 193.239.117.217
+    neighbor_ipv6: 2001:7f8:13::a503:8880:1
+    passive: true
+    peering_policy: Open
+    slug: micron21_datacentre_and_colocation
+    type: peering
+
+  - asn: 38915
+    name: Solido
+    neighbor_ipv4: 193.239.116.35
+    neighbor_ipv6: 2001:7f8:13::a503:8915:1
+    passive: true
+    peering_policy: Open
+    slug: solido
+    type: peering
+
+  - asn: 39063
+    name: Leitwert
+    neighbor_ipv4: 193.239.118.208
+    neighbor_ipv6: 2001:7f8:13::a503:9063:1
+    passive: true
+    peering_policy: Open
+    slug: leitwert
+    type: peering
+
+  - asn: 39180
+    name: LASOTEL
+    neighbor_ipv4: 193.239.118.119
+    neighbor_ipv6: 2001:7f8:13::a503:9180:1
+    passive: true
+    peering_policy: Open
+    slug: lasotel
+    type: peering
+
+  - asn: 39326
+    name: Syntura Group Limited
+    neighbor_ipv4: 193.239.116.120
+    neighbor_ipv6: 2001:7f8:13::a503:9326:1
+    passive: true
+    peering_policy: Selective
+    slug: syntura_group_limited
+    type: peering
+
+  - asn: 39351
+    name: 31173 Services
+    neighbor_ipv4: 193.239.116.34
+    neighbor_ipv6: 2001:7f8:13::a503:9351:1
+    passive: true
+    peering_policy: Open
+    slug: 31173_services
+    type: peering
+
+  - asn: 39386
+    name: Saudi Telecom Company (STC IGW) 02
+    neighbor_ipv4: 193.239.117.6
+    neighbor_ipv6: 2001:7f8:13::a503:9386:2
+    passive: true
+    peering_policy: Selective
+    slug: saudi_telecom_company_stc_igw_02
+    type: peering
+  - asn: 39386
+    name: Saudi Telecom Company (STC IGW) 01
+    neighbor_ipv4: 193.239.118.151
+    neighbor_ipv6: 2001:7f8:13::a503:9386:1
+    passive: true
+    peering_policy: Selective
+    slug: saudi_telecom_company_stc_igw_01
+    type: peering
+
+  - asn: 39526
+    name: MAO
+    neighbor_ipv4: 193.239.118.212
+    neighbor_ipv6: 2001:7f8:13::a503:9526:1
+    passive: true
+    peering_policy: Open
+    slug: mao
+    type: peering
+
+  - asn: 39591
+    name: Global-e Datacenter
+    neighbor_ipv4: 193.239.116.98
+    neighbor_ipv6: 2001:7f8:13::a503:9591:1
+    passive: true
+    peering_policy: Open
+    slug: global_e_datacenter
+    type: peering
+
+  - asn: 39614
+    name: Dawico
+    neighbor_ipv4: 193.239.118.251
+    neighbor_ipv6: 2001:7f8:13::a503:9614:1
+    passive: true
+    peering_policy: Open
+    slug: dawico
+    type: peering
+
+  - asn: 39642
+    name: Norlys Fibernet
+    neighbor_ipv4: 193.239.118.42
+    neighbor_ipv6: 2001:7f8:13::a503:9642:1
+    passive: true
+    peering_policy: Selective
+    slug: norlys_fibernet
+    type: peering
+
+  - asn: 39647
+    name: Redhosting 02
+    neighbor_ipv4: 193.239.116.91
+    neighbor_ipv6: 2001:7f8:13::a503:9647:2
+    passive: true
+    peering_policy: Open
+    slug: redhosting_02
+    type: peering
+  - asn: 39647
+    name: Redhosting 01
+    neighbor_ipv4: 193.239.116.201
+    neighbor_ipv6: 2001:7f8:13::a503:9647:1
+    passive: true
+    peering_policy: Open
+    slug: redhosting_01
+    type: peering
+
+  - asn: 39702
+    name: S-IT Informationstechnologie Betreiber GmbH & Co. KG
+    neighbor_ipv4: 193.239.116.110
+    neighbor_ipv6: 2001:7f8:13::a503:9702:1
+    passive: true
+    peering_policy: Open
+    slug: s_it
+    type: peering
+
+  - asn: 39704
+    name: CJ2 Hosting
+    neighbor_ipv4: 193.239.116.178
+    neighbor_ipv6: 2001:7f8:13::a503:9704:1
+    passive: true
+    peering_policy: Open
+    slug: cj2_hosting
+    type: peering
+
+  - asn: 41047
+    name: MLaB NL
+    neighbor_ipv4: 193.239.117.30
+    neighbor_ipv6: 2001:7f8:13::a504:1047:1
+    passive: true
+    peering_policy: Open
+    slug: mlab_nl
+    type: peering
+
+  - asn: 41480
+    name: Systemec 02
+    neighbor_ipv4: 193.239.116.242
+    neighbor_ipv6: 2001:7f8:13::a504:1480:2
+    passive: true
+    peering_policy: Selective
+    slug: systemec_02
+    type: peering
+  - asn: 41480
+    name: Systemec 01
+    neighbor_ipv4: 193.239.116.9
+    neighbor_ipv6: 2001:7f8:13::a504:1480:1
+    passive: true
+    peering_policy: Selective
+    slug: systemec_01
+    type: peering
+
+  - asn: 41529
+    name: MediaServe International 01
+    neighbor_ipv4: 193.239.117.147
+    neighbor_ipv6: 2001:7f8:13::a504:1529:1
+    passive: true
+    peering_policy: Selective
+    slug: mediaserve_international_01
+    type: peering
+  - asn: 41529
+    name: MediaServe International 02
+    neighbor_ipv4: 193.239.118.150
+    neighbor_ipv6: 2001:7f8:13::a504:1529:2
+    passive: true
+    peering_policy: Selective
+    slug: mediaserve_international_02
+    type: peering
+
+  - asn: 41552
+    name: Adevinta
+    neighbor_ipv4: 193.239.116.154
+    neighbor_ipv6: 2001:7f8:13::a504:1552:1
+    passive: true
+    peering_policy: "No"
+    slug: adevinta
+    type: peering
+
+  - asn: 41666
+    name: Institute for Pyrotechnical Cleaning
+    neighbor_ipv4: 193.239.118.164
+    neighbor_ipv6: 2001:7f8:13::a504:1666:1
+    passive: true
+    peering_policy: Open
+    slug: institute_for_pyrotechnical_cleaning
+    type: peering
+
+  - asn: 41887
+    name: Prolocation
+    neighbor_ipv4: 193.239.116.205
+    neighbor_ipv6: 2001:7f8:13::a504:1887:1
+    passive: true
+    peering_policy: Open
+    slug: prolocation
+    type: peering
+
+  - asn: 41960
+    name: Nextpertise
+    neighbor_ipv4: 193.239.117.163
+    neighbor_ipv6: 2001:7f8:13::a504:1960:1
+    passive: true
+    peering_policy: Selective
+    slug: nextpertise
+    type: peering
+
+  - asn: 42156
+    name: GNX
+    neighbor_ipv4: 193.239.117.13
+    neighbor_ipv6: 2001:7f8:13::a504:2156:1
+    passive: true
+    peering_policy: Open
+    slug: gnx
+    type: peering
+
+  - asn: 42541
+    name: Fiberby
+    neighbor_ipv4: 193.239.118.106
+    neighbor_ipv6: 2001:7f8:13::a504:2541:1
+    passive: true
+    peering_policy: Open
+    slug: fiberby
+    type: peering
+
+  - asn: 42707
+    name: e-Quest IT Diensten 01
+    neighbor_ipv4: 193.239.116.248
+    neighbor_ipv6: 2001:7f8:13::a504:2707:1
+    passive: true
+    peering_policy: Open
+    slug: e_quest_it_diensten_01
+    type: peering
+  - asn: 42707
+    name: e-Quest IT Diensten 02
+    neighbor_ipv4: 193.239.117.174
+    neighbor_ipv6: 2001:7f8:13::a504:2707:2
+    passive: true
+    peering_policy: Open
+    slug: e_quest_it_diensten_02
+    type: peering
+
+  - asn: 42708
+    name: Portlane
+    neighbor_ipv4: 193.239.119.147
+    neighbor_ipv6: 2001:7f8:13::a524:2708:1
+    passive: true
+    peering_policy: Selective
+    slug: portlane
+    type: peering
+
+  - asn: 42755
+    name: DataFiber
+    neighbor_ipv4: 193.239.116.32
+    neighbor_ipv6: 2001:7f8:13::a504:2755:1
+    passive: true
+    peering_policy: Selective
+    slug: datafiber
+    type: peering
+
+  - asn: 43190
+    name: Gelderland Internet Exchange
+    neighbor_ipv4: 193.239.117.59
+    neighbor_ipv6: 2001:7f8:13::a504:3190:1
+    passive: true
+    peering_policy: Open
+    slug: gelderland_internet_exchange
+    type: peering
+
+  - asn: 43350
+    name: "NFOrce Internet Services :: 43350 01"
+    neighbor_ipv4: 193.239.116.142
+    neighbor_ipv6: 2001:7f8:13::a504:3350:1
+    passive: true
+    peering_policy: Selective
+    slug: nforce_internet_services_43350_01
+    type: peering
+  - asn: 43350
+    name: "NFOrce Internet Services :: 43350 02"
+    neighbor_ipv4: 193.239.116.214
+    neighbor_ipv6: 2001:7f8:13::a504:3350:2
+    passive: true
+    peering_policy: Selective
+    slug: nforce_internet_services_43350_02
+    type: peering
+
+  - asn: 43996
+    name: Booking.com
+    neighbor_ipv4: 193.239.117.70
+    neighbor_ipv6: 2001:7f8:13::a504:3996:1
+    passive: true
+    peering_policy: Open
+    slug: booking_com
+    type: peering
+
+  - asn: 44134
+    name: "BOLIG\u2219NET A/S"
+    neighbor_ipv4: 193.239.118.160
+    neighbor_ipv6: 2001:7f8:13::a504:4134:1
+    passive: true
+    peering_policy: Open
+    slug: bolig_net_a_s
+    type: peering
+
+  - asn: 44444
+    name: Forcepoint Cloud
+    neighbor_ipv4: 193.239.117.64
+    neighbor_ipv6: 2001:7f8:13::a504:4444:1
+    passive: true
+    peering_policy: Selective
+    slug: forcepoint_cloud
+    type: peering
+
+  - asn: 44592
+    name: SkyLink Data Center
+    neighbor_ipv4: 193.239.116.89
+    neighbor_ipv6: 2001:7f8:13::a504:4592:1
+    passive: true
+    peering_policy: Open
+    slug: skylink_data_center
+    type: peering
+
+  - asn: 44600
+    name: Gigatrans LTD
+    neighbor_ipv4: 193.239.116.92
+    neighbor_ipv6: 2001:7f8:13::a504:4600:1
+    passive: true
+    peering_policy: Open
+    slug: gigatrans_ltd
+    type: peering
+
+  - asn: 44608
+    name: United Broadcast Facilities
+    neighbor_ipv4: 193.239.116.171
+    passive: true
+    peering_policy: Selective
+    slug: united_broadcast_facilities
+    type: peering
+
+  - asn: 44854
+    name: ERITAP 01
+    neighbor_ipv4: 193.239.117.85
+    neighbor_ipv6: 2001:7f8:13::a504:4854:1
+    passive: true
+    peering_policy: Open
+    slug: eritap_01
+    type: peering
+
+  - asn: 44858
+    name: PROXSYS
+    neighbor_ipv4: 193.239.117.5
+    neighbor_ipv6: 2001:7f8:13::a504:4858:1
+    passive: true
+    peering_policy: Selective
+    slug: proxsys
+    type: peering
+
+  - asn: 45489
+    name: Sri Lanka Telecom Global
+    neighbor_ipv4: 193.239.119.251
+    neighbor_ipv6: 2001:7f8:13::a504:5489:1
+    passive: true
+    peering_policy: Selective
+    slug: sri_lanka_telecom_global
+    type: peering
+
+  - asn: 45701
+    name: GlobalXtreme
+    neighbor_ipv4: 193.239.119.97
+    neighbor_ipv6: 2001:7f8:13::a504:5701:1
+    passive: true
+    peering_policy: Open
+    slug: globalxtreme
+    type: peering
+
+  - asn: 45758
+    name: TripleT Broadband(AIS|3BB)
+    neighbor_ipv4: 193.239.118.82
+    neighbor_ipv6: 2001:7f8:13::a504:5758:1
+    passive: true
+    peering_policy: Selective
+    slug: triplet_broadband_ais_3bb
+    type: peering
+
+  - asn: 46489
+    name: Amazon IVS
+    neighbor_ipv4: 193.239.117.161
+    neighbor_ipv6: 2001:7f8:13::a504:6489:2
+    passive: true
+    peering_policy: Selective
+    slug: amazon_ivs
+    type: peering
+
+  - asn: 47272
+    name: HYEHOST
+    neighbor_ipv4: 193.239.119.14
+    neighbor_ipv6: 2001:7f8:13::a504:7272:1
+    passive: true
+    peering_policy: Open
+    slug: hyehost
+    type: peering
+
+  - asn: 47536
+    name: PathConnect
+    neighbor_ipv4: 193.239.119.73
+    neighbor_ipv6: 2001:7f8:13::a504:7536:1
+    passive: true
+    peering_policy: Open
+    slug: pathconnect
+    type: peering
+
+  - asn: 47628
+    name: Divider B.V. 237
+    neighbor_ipv4: 193.239.116.237
+    passive: true
+    peering_policy: Selective
+    slug: divider_b_v_237
+    type: peering
+
+  - asn: 47628
+    name: Divider B.V. 238
+    neighbor_ipv4: 193.239.116.238
+    passive: true
+    peering_policy: Selective
+    slug: divider_b_v_238
+    type: peering
+
+  - asn: 47836
+    name: SC Web Software Development SRL
+    neighbor_ipv4: 193.239.117.24
+    neighbor_ipv6: 2001:7f8:13::a504:7836:1
+    passive: true
+    peering_policy: Open
+    slug: sc_web_software_development_srl
+    type: peering
+
+  - asn: 47957
+    name: Ingenico Solutions and Transaction Services
+    neighbor_ipv4: 193.239.118.37
+    neighbor_ipv6: 2001:7f8:13::a504:7957:1
+    passive: true
+    peering_policy: Open
+    slug: ingenico_solutions_and_transaction_services
+    type: peering
+
+  - asn: 48200
+    name: Opteamax GmbH
+    neighbor_ipv4: 193.239.117.252
+    neighbor_ipv6: 2001:7f8:13::a504:8200:1
+    passive: true
+    peering_policy: Open
+    slug: opteamax_gmbh
+    type: peering
+
+  - asn: 48297
+    name: Penguin Networks
+    neighbor_ipv4: 193.239.119.29
+    neighbor_ipv6: 2001:7f8:13::a504:8297:1
+    passive: true
+    peering_policy: Open
+    slug: penguin_networks
+    type: peering
+
+  - asn: 48345
+    name: Abavia S.r.l.
+    neighbor_ipv4: 193.239.118.122
+    neighbor_ipv6: 2001:7f8:13::a504:8345:1
+    passive: true
+    peering_policy: Selective
+    slug: abavia_s_r_l
+    type: peering
+
+  - asn: 48374
+    name: gobler.net
+    neighbor_ipv4: 193.239.118.95
+    neighbor_ipv6: 2001:7f8:13::a504:8374:1
+    passive: true
+    peering_policy: Open
+    slug: gobler_net
+    type: peering
+
+  - asn: 48596
+    name: InterNetworX Management GmbH
+    neighbor_ipv4: 193.239.116.184
+    neighbor_ipv6: 2001:7f8:13::a504:8596:1
+    passive: true
+    peering_policy: Open
+    slug: internetworx_management_gmbh
+    type: peering
+
+  - asn: 48635
+    name: CLDIN
+    neighbor_ipv4: 193.239.117.68
+    neighbor_ipv6: 2001:7f8:13::a504:8635:1
+    passive: true
+    peering_policy: Open
+    slug: cldin
+    type: peering
+
+  - asn: 48646
+    name: Stefan Dunkel
+    neighbor_ipv4: 193.239.118.143
+    neighbor_ipv6: 2001:7f8:13::a504:8646:1
+    passive: true
+    peering_policy: Open
+    slug: stefan_dunkel
+    type: peering
+
+  - asn: 48886
+    name: CSNet 209
+    neighbor_ipv4: 193.239.116.209
+    passive: true
+    peering_policy: Open
+    slug: csnet_209
+    type: peering
+
+  - asn: 48886
+    name: CSNet 19
+    neighbor_ipv4: 193.239.117.19
+    passive: true
+    peering_policy: Open
+    slug: csnet_19
+    type: peering
+
+  - asn: 48925
+    name: VibeGAMES B.V. 01
+    neighbor_ipv4: 193.239.117.221
+    neighbor_ipv6: 2001:7f8:13::a504:8925:1
+    passive: true
+    peering_policy: Open
+    slug: vibegames_b_v_01
+    type: peering
+  - asn: 48925
+    name: VibeGAMES B.V. 02
+    neighbor_ipv4: 193.239.119.133
+    neighbor_ipv6: 2001:7f8:13::a504:8925:2
+    passive: true
+    peering_policy: Open
+    slug: vibegames_b_v_02
+    type: peering
+
+  - asn: 48972
+    name: BetterBe 01
+    neighbor_ipv4: 193.239.117.246
+    neighbor_ipv6: 2001:7f8:13::a504:8972:1
+    passive: true
+    peering_policy: Open
+    slug: betterbe_01
+    type: peering
+  - asn: 48972
+    name: BetterBe 02
+    neighbor_ipv4: 193.239.117.79
+    neighbor_ipv6: 2001:7f8:13::a504:8972:2
+    passive: true
+    peering_policy: Open
+    slug: betterbe_02
+    type: peering
+
+  - asn: 49127
+    name: Asimo Networks
+    neighbor_ipv4: 193.239.119.19
+    neighbor_ipv6: 2001:7f8:13::a504:9127:1
+    passive: true
+    peering_policy: Open
+    slug: asimo_networks
+    type: peering
+
+  - asn: 49206
+    name: PeakFactory 02
+    neighbor_ipv4: 193.239.117.200
+    neighbor_ipv6: 2001:7f8:13::a504:9206:2
+    passive: true
+    peering_policy: Open
+    slug: peakfactory_02
+    type: peering
+  - asn: 49206
+    name: PeakFactory 03
+    neighbor_ipv4: 193.239.119.105
+    neighbor_ipv6: 2001:7f8:13::a504:9206:3
+    passive: true
+    peering_policy: Open
+    slug: peakfactory_03
+    type: peering
+
+  - asn: 49362
+    name: DSV Panalpina
+    neighbor_ipv4: 193.239.118.96
+    neighbor_ipv6: 2001:7f8:13::a504:9362:1
+    passive: true
+    peering_policy: Selective
+    slug: dsv_panalpina
+    type: peering
+
+  - asn: 49405
+    name: Motto VoIP
+    neighbor_ipv4: 193.239.116.198
+    passive: true
+    peering_policy: Open
+    slug: motto_voip
+    type: peering
+
+  - asn: 49453
+    name: Global Layer BV
+    neighbor_ipv4: 193.239.117.148
+    neighbor_ipv6: 2001:7f8:13::a504:9453:1
+    passive: true
+    peering_policy: Open
+    slug: global_layer_bv
     type: peering
 
   - asn: 49544
+    name: i3D.net
     neighbor_ipv4: 193.239.117.76
     neighbor_ipv6: 2001:7f8:13::a504:9544:1
-    name: "i3D.net"
-    slug: 13d_net
+    passive: false
+    peering_policy: Selective
+    slug: i3d_net
+    type: peering
+
+  - asn: 49600
+    name: NEAR IP
+    neighbor_ipv4: 193.239.118.104
+    neighbor_ipv6: 2001:7f8:13::a504:9600:1
+    passive: true
+    peering_policy: Open
+    slug: near_ip
+    type: peering
+
+  - asn: 49627
+    name: Speakup BV 01
+    neighbor_ipv4: 193.239.116.158
+    neighbor_ipv6: 2001:7f8:13::a504:9627:1
+    passive: true
+    peering_policy: Selective
+    slug: speakup_bv_01
+    type: peering
+  - asn: 49627
+    name: Speakup BV 02
+    neighbor_ipv4: 193.239.117.39
+    neighbor_ipv6: 2001:7f8:13::a504:9627:2
+    passive: true
+    peering_policy: Selective
+    slug: speakup_bv_02
+    type: peering
+
+  - asn: 49666
+    name: TIC AS49666 02
+    neighbor_ipv4: 193.239.116.61
+    neighbor_ipv6: 2001:7f8:13::a504:9666:2
+    passive: true
+    peering_policy: Selective
+    slug: tic_as49666_02
+    type: peering
+  - asn: 49666
+    name: TIC AS49666 01
+    neighbor_ipv4: 193.239.117.207
+    neighbor_ipv6: 2001:7f8:13::a504:9666:1
+    passive: true
+    peering_policy: Selective
+    slug: tic_as49666_01
+    type: peering
+
+  - asn: 49697
+    name: Joey-Network
+    neighbor_ipv4: 193.239.118.222
+    neighbor_ipv6: 2001:7f8:13::a504:9697:1
+    passive: true
+    peering_policy: Open
+    slug: joey_network
+    type: peering
+
+  - asn: 49981
+    name: Worldstream BV 01
+    neighbor_ipv4: 193.239.116.249
+    neighbor_ipv6: 2001:7f8:13::a504:9981:1
+    passive: true
+    peering_policy: Open
+    slug: worldstream_bv_01
+    type: peering
+  - asn: 49981
+    name: Worldstream BV 02
+    neighbor_ipv4: 193.239.119.21
+    neighbor_ipv6: 2001:7f8:13::a504:9981:2
+    passive: true
+    peering_policy: Open
+    slug: worldstream_bv_02
+    type: peering
+
+  - asn: 50050
+    name: NU Informationssysteme
+    neighbor_ipv4: 193.239.116.174
+    passive: true
+    peering_policy: Open
+    slug: nu_informationssysteme
+    type: peering
+
+  - asn: 50072
+    name: SBS Broadcasting B.V. 238
+    neighbor_ipv4: 193.239.117.238
+    passive: true
+    peering_policy: Selective
+    slug: sbs_broadcasting_b_v_238
+    type: peering
+
+  - asn: 50072
+    name: SBS Broadcasting B.V. 239
+    neighbor_ipv4: 193.239.117.239
+    passive: true
+    peering_policy: Selective
+    slug: sbs_broadcasting_b_v_239
+    type: peering
+
+  - asn: 50083
+    name: Hermes Telecom
+    neighbor_ipv4: 193.239.119.10
+    neighbor_ipv6: 2001:7f8:13::a505:83:1
+    passive: true
+    peering_policy: Selective
+    slug: hermes_telecom
+    type: peering
+
+  - asn: 50245
+    name: Serverel Inc. 01
+    neighbor_ipv4: 193.239.117.162
+    neighbor_ipv6: 2001:7f8:13::a505:245:1
+    passive: true
+    peering_policy: Open
+    slug: serverel_inc_01
+    type: peering
+  - asn: 50245
+    name: Serverel Inc. 02
+    neighbor_ipv4: 193.239.117.172
+    neighbor_ipv6: 2001:7f8:13::a505:245:2
+    passive: true
+    peering_policy: Open
+    slug: serverel_inc_02
+    type: peering
+
+  - asn: 50295
+    name: Triple IT
+    neighbor_ipv4: 193.239.116.57
+    neighbor_ipv6: 2001:7f8:13::a505:295:1
+    passive: true
+    peering_policy: Open
+    slug: triple_it
+    type: peering
+
+  - asn: 50324
+    name: Campus, Hofnetz & Events GmbH
+    neighbor_ipv4: 193.239.117.208
+    neighbor_ipv6: 2001:7f8:13::a505:324:1
+    passive: true
+    peering_policy: Open
+    slug: campus_hofnetz_events_gmbh
+    type: peering
+
+  - asn: 50391
+    name: DIVERGENT NETWORKS
+    neighbor_ipv4: 193.239.116.16
+    neighbor_ipv6: 2001:7f8:13::a505:391:1
+    passive: true
+    peering_policy: Open
+    slug: divergent_networks
+    type: peering
+
+  - asn: 50414
+    name: CodeBGP Monitor
+    neighbor_ipv4: 193.239.119.110
+    neighbor_ipv6: 2001:7f8:13::a505:414:1
+    passive: true
+    peering_policy: Open
+    slug: codebgp_monitor
+    type: peering
+
+  - asn: 50472
+    name: Chaos Computer Club e.V.
+    neighbor_ipv4: 193.239.117.108
+    neighbor_ipv6: 2001:7f8:13::a505:472:1
+    passive: true
+    peering_policy: Open
+    slug: chaos_computer_club_e_v
+    type: peering
+
+  - asn: 50509
+    name: Transroute Telecom main AS
+    neighbor_ipv4: 193.239.117.137
+    neighbor_ipv6: 2001:7f8:13::a05:509:1
+    passive: true
+    peering_policy: Open
+    slug: transroute_telecom_main_as
+    type: peering
+
+  - asn: 50522
+    name: Sewan Nederland BV
+    neighbor_ipv4: 193.239.116.114
+    neighbor_ipv6: 2001:7f8:13::a505:522:1
+    passive: true
+    peering_policy: Selective
+    slug: sewan_nederland_bv
+    type: peering
+
+  - asn: 50581
+    name: UTG
+    neighbor_ipv4: 193.239.118.103
+    neighbor_ipv6: 2001:7f8:13::a505:581:1
+    passive: true
+    peering_policy: Selective
+    slug: utg
+    type: peering
+
+  - asn: 50629
+    name: LWLcom
+    neighbor_ipv4: 193.239.116.56
+    neighbor_ipv6: 2001:7f8:13::a505:629:2
+    passive: true
+    peering_policy: Selective
+    slug: lwlcom
+    type: peering
+
+  - asn: 50673
+    name: Serverius 01
+    neighbor_ipv4: 193.239.116.25
+    neighbor_ipv6: 2001:7f8:13::a505:673:1
+    passive: true
+    peering_policy: Selective
+    slug: serverius_01
+    type: peering
+  - asn: 50673
+    name: Serverius 02
+    neighbor_ipv4: 193.239.117.58
+    neighbor_ipv6: 2001:7f8:13::a505:673:2
+    passive: true
+    peering_policy: Selective
+    slug: serverius_02
+    type: peering
+
+  - asn: 50673
+    name: Serverius 03
+    neighbor_ipv4: 193.239.118.31
+    neighbor_ipv6: 2001:7f8:13::a505:673:3
+    passive: true
+    peering_policy: Selective
+    slug: serverius_03
+    type: peering
+
+  - asn: 50673
+    name: Serverius 04
+    neighbor_ipv4: 193.239.118.32
+    neighbor_ipv6: 2001:7f8:13::a505:673:4
+    passive: true
+    peering_policy: Selective
+    slug: serverius_04
+    type: peering
+
+  - asn: 50737
+    name: ASR Service Maatschappij
+    neighbor_ipv4: 193.239.117.28
+    passive: true
+    peering_policy: Open
+    slug: asr_service_maatschappij
+    type: peering
+
+  - asn: 50889
+    name: NVIDIA GFN EMEA
+    neighbor_ipv4: 193.239.119.177
+    passive: true
+    peering_policy: Open
+    slug: nvidia_gfn_emea
+    type: peering
+
+  - asn: 51154
+    name: pCloud
+    neighbor_ipv4: 193.239.119.169
+    passive: true
+    peering_policy: Open
+    slug: pcloud
+    type: peering
+
+  - asn: 51185
+    name: MainStreaming 01
+    neighbor_ipv4: 193.239.119.22
+    neighbor_ipv6: 2001:7f8:13::a505:1185:1
+    passive: true
+    peering_policy: Open
+    slug: mainstreaming_01
+    type: peering
+  - asn: 51185
+    name: MainStreaming 02
+    neighbor_ipv4: 193.239.119.149
+    neighbor_ipv6: 2001:7f8:13::a505:1185:2
+    passive: true
+    peering_policy: Open
+    slug: mainstreaming_02
+    type: peering
+
+  - asn: 51185
+    name: MainStreaming 03
+    neighbor_ipv4: 193.239.119.153
+    neighbor_ipv6: 2001:7f8:13::a505:1185:3
+    passive: true
+    peering_policy: Open
+    slug: mainstreaming_03
+    type: peering
+
+  - asn: 51276
+    name: Limited Responsibility Society 'KomProektServis'
+    neighbor_ipv4: 193.239.119.165
+    neighbor_ipv6: 2001:7f8:13::a505:1276:1
+    passive: true
+    peering_policy: Open
+    slug: komproektservis
+    type: peering
+
+  - asn: 51333
+    name: Arcolink Telecomunicazioni S.r.l.
+    neighbor_ipv4: 193.239.117.182
+    neighbor_ipv6: 2001:7f8:13::a505:1333:1
+    passive: true
+    peering_policy: Open
+    slug: arcolink_telecomunicazioni_s_r_l
+    type: peering
+
+  - asn: 51514
+    name: Spotler
+    neighbor_ipv4: 193.239.117.4
+    neighbor_ipv6: 2001:7f8:13::a505:1514:1
+    passive: true
+    peering_policy: Selective
+    slug: spotler
+    type: peering
+
+  - asn: 51752
+    name: WTBTS-NLD
+    neighbor_ipv4: 193.239.116.165
+    neighbor_ipv6: 2001:7f8:13::a505:1752:1
+    passive: true
+    peering_policy: Selective
+    slug: wtbts_nld
+    type: peering
+
+  - asn: 51758
+    name: ProcoliX 02
+    neighbor_ipv4: 193.239.118.13
+    neighbor_ipv6: 2001:7f8:13::a505:1758:2
+    passive: true
+    peering_policy: Open
+    slug: procolix_02
+    type: peering
+  - asn: 51758
+    name: ProcoliX 03
+    neighbor_ipv4: 193.239.119.155
+    neighbor_ipv6: 2001:7f8:13::a505:1758:3
+    passive: true
+    peering_policy: Open
+    slug: procolix_03
+    type: peering
+
+  - asn: 52025
+    name: ParadoxNetworks Limited
+    neighbor_ipv4: 193.239.116.41
+    neighbor_ipv6: 2001:7f8:13::a505:2025:1
+    passive: true
+    peering_policy: Open
+    slug: paradoxnetworks_limited
+    type: peering
+
+  - asn: 52075
+    name: Wifirst
+    neighbor_ipv4: 193.239.116.192
+    neighbor_ipv6: 2001:7f8:13::a505:2075:1
+    passive: true
+    peering_policy: Open
+    slug: wifirst
+    type: peering
+
+  - asn: 53334
+    name: Total Uptime Technologies
+    neighbor_ipv4: 193.239.118.80
+    neighbor_ipv6: 2001:7f8:13::a505:3334:1
+    passive: true
+    peering_policy: Selective
+    slug: total_uptime_technologies
+    type: peering
+
+  - asn: 53563
+    name: X+1 Solutions, Inc.
+    neighbor_ipv4: 193.239.117.84
+    passive: true
+    peering_policy: Open
+    slug: x_1_solutions_inc
+    type: peering
+
+  - asn: 54113
+    name: Fastly, Inc. 01
+    neighbor_ipv4: 193.239.118.126
+    neighbor_ipv6: 2001:7f8:13::a505:4113:1
+    passive: true
+    peering_policy: Selective
+    slug: fastly_inc_01
+    type: peering
+  - asn: 54113
+    name: Fastly, Inc. 02
+    neighbor_ipv4: 193.239.118.130
+    neighbor_ipv6: 2001:7f8:13::a505:4113:2
+    passive: true
+    peering_policy: Selective
+    slug: fastly_inc_02
+    type: peering
+  - asn: 54113
+    name: Fastly, Inc. 03
+    neighbor_ipv4: 193.239.118.162
+    neighbor_ipv6: 2001:7f8:13::a505:4113:3
+    passive: true
+    peering_policy: Selective
+    slug: fastly_inc_03
+    type: peering
+
+  - asn: 55256
+    name: Netskope 01
+    neighbor_ipv4: 193.239.116.95
+    neighbor_ipv6: 2001:7f8:13::a505:5256:1
+    passive: true
+    peering_policy: Open
+    slug: netskope_01
+    type: peering
+  - asn: 55256
+    name: Netskope 03
+    neighbor_ipv4: 193.239.117.201
+    neighbor_ipv6: 2001:7f8:13::a505:5256:3
+    passive: true
+    peering_policy: Open
+    slug: netskope_03
+    type: peering
+  - asn: 55256
+    name: Netskope 04
+    neighbor_ipv4: 193.239.118.142
+    neighbor_ipv6: 2001:7f8:13::a505:5256:4
+    passive: true
+    peering_policy: Open
+    slug: netskope_04
+    type: peering
+  - asn: 55256
+    name: Netskope 02
+    neighbor_ipv4: 193.239.117.93
+    neighbor_ipv6: 2001:7f8:13::a505:5256:2
+    passive: true
+    peering_policy: Open
+    slug: netskope_02
+    type: peering
+
+  - asn: 55285
+    name: Serverside.com
+    neighbor_ipv4: 193.239.119.154
+    neighbor_ipv6: 2001:7f8:13::a505:5285:1
+    passive: true
+    peering_policy: Open
+    slug: serverside_com
+    type: peering
+
+  - asn: 56382
+    name: vServer.site
+    neighbor_ipv4: 193.239.117.71
+    neighbor_ipv6: 2001:7f8:13::a505:6382:1
+    passive: true
+    peering_policy: Open
+    slug: vserver_site
+    type: peering
+
+  - asn: 56630
+    name: Melbikomas 04
+    neighbor_ipv4: 193.239.118.77
+    neighbor_ipv6: 2001:7f8:13::a505:6630:4
+    passive: true
+    peering_policy: Open
+    slug: melbikomas_04
+    type: peering
+  - asn: 56630
+    name: Melbikomas 03
+    neighbor_ipv4: 193.239.118.135
+    neighbor_ipv6: 2001:7f8:13::a505:6630:3
+    passive: true
+    peering_policy: Open
+    slug: melbikomas_03
+    type: peering
+  - asn: 56630
+    name: Melbikomas 02
+    neighbor_ipv4: 193.239.118.118
+    neighbor_ipv6: 2001:7f8:13::a505:6630:2
+    passive: true
+    peering_policy: Open
+    slug: melbikomas_02
+    type: peering
+  - asn: 56630
+    name: Melbikomas 01
+    neighbor_ipv4: 193.239.118.117
+    neighbor_ipv6: 2001:7f8:13::a505:6630:1
+    passive: true
+    peering_policy: Open
+    slug: melbikomas_01
+    type: peering
+
+  - asn: 56665
+    name: Proximus Luxembourg
+    neighbor_ipv4: 193.239.116.116
+    neighbor_ipv6: 2001:7f8:13::a505:6665:1
+    passive: true
+    peering_policy: Selective
+    slug: proximus_luxembourg
+    type: peering
+
+  - asn: 56987
+    name: Abaclouda
+    neighbor_ipv4: 193.239.118.46
+    neighbor_ipv6: 2001:7f8:13::a505:6987:1
+    passive: true
+    peering_policy: Open
+    slug: abaclouda
+    type: peering
+
+  - asn: 57029
+    name: Bitbunker BV
+    neighbor_ipv4: 193.239.116.66
+    neighbor_ipv6: 2001:7f8:13::a505:7029:1
+    passive: true
+    peering_policy: Open
+    slug: bitbunker_bv
+    type: peering
+
+  - asn: 57112
+    name: F2X Operator B.V.
+    neighbor_ipv4: 193.239.118.182
+    neighbor_ipv6: 2001:7f8:13::a505:7112:1
+    passive: true
+    peering_policy: Open
+    slug: f2x_operator_b_v
+    type: peering
+
+  - asn: 57118
+    name: CommunityRack.org
+    neighbor_ipv4: 193.239.117.22
+    neighbor_ipv6: 2001:7f8:13::a505:7118:1
+    passive: true
+    peering_policy: Open
+    slug: communityrack_org
+    type: peering
+
+  - asn: 57124
+    name: Gemeente Maastricht
+    neighbor_ipv4: 193.239.116.253
+    neighbor_ipv6: 2001:7f8:13::a505:7124:1
+    passive: true
+    peering_policy: Open
+    slug: gemeente_maastricht
+    type: peering
+
+  - asn: 57344
+    name: Telehouse
+    neighbor_ipv4: 193.239.116.88
+    neighbor_ipv6: 2001:7f8:13::a505:7344:1
+    passive: true
+    peering_policy: Open
+    slug: telehouse
+    type: peering
+
+  - asn: 57406
+    name: Zero Distance
+    neighbor_ipv4: 193.239.116.239
+    neighbor_ipv6: 2001:7f8:13::a505:7406:1
+    passive: true
+    peering_policy: Open
+    slug: zero_distance
+    type: peering
+
+  - asn: 57758
+    name: CBWS
+    neighbor_ipv4: 193.239.116.182
+    neighbor_ipv6: 2001:7f8:13::a505:7758:1
+    passive: true
+    peering_policy: Open
+    slug: cbws
+    type: peering
+
+  - asn: 57976
+    name: Blizzard Entertainment
+    neighbor_ipv4: 193.239.117.120
+    neighbor_ipv6: 2001:7f8:13::a505:7976:1
+    passive: true
+    peering_policy: Open
+    slug: blizzard_entertainment
+    type: peering
+
+  - asn: 58075
+    name: X2com BV 01
+    neighbor_ipv4: 193.239.117.140
+    neighbor_ipv6: 2001:7f8:13::a505:8075:1
+    passive: true
+    peering_policy: Restrictive
+    slug: x2com_bv_01
+    type: peering
+  - asn: 58075
+    name: X2com BV 02
+    neighbor_ipv4: 193.239.119.58
+    neighbor_ipv6: 2001:7f8:13::a505:8075:2
+    passive: true
+    peering_policy: Restrictive
+    slug: x2com_bv_02
+    type: peering
+
+  - asn: 58138
+    name: Korton Internet BV 01
+    neighbor_ipv4: 193.239.116.137
+    neighbor_ipv6: 2001:7f8:13::a505:8138:1
+    passive: true
+    peering_policy: Open
+    slug: korton_internet_bv_01
+    type: peering
+  - asn: 58138
+    name: Korton Internet BV 02
+    neighbor_ipv4: 193.239.117.17
+    neighbor_ipv6: 2001:7f8:13::a505:8138:2
+    passive: true
+    peering_policy: Open
+    slug: korton_internet_bv_02
+    type: peering
+
+  - asn: 58291
+    name: ColoCenter
+    neighbor_ipv4: 193.239.117.29
+    neighbor_ipv6: 2001:7f8:13::a505:8291:1
+    passive: true
+    peering_policy: Open
+    slug: colocenter
+    type: peering
+
+  - asn: 58299
+    name: Openfactory GmbH
+    neighbor_ipv4: 193.239.118.73
+    neighbor_ipv6: 2001:7f8:13::a505:8299:1
+    passive: true
+    peering_policy: Open
+    slug: openfactory_gmbh
+    type: peering
+
+  - asn: 58511
+    name: Anycast Global Backbone
+    neighbor_ipv4: 193.239.117.241
+    neighbor_ipv6: 2001:7f8:13::a505:8511:1
+    passive: true
+    peering_policy: Open
+    slug: anycast_global_backbone
+    type: peering
+
+  - asn: 59545
+    name: Vertixo B.V 01
+    neighbor_ipv4: 193.239.117.119
+    neighbor_ipv6: 2001:7f8:13::a505:9545:1
+    passive: true
+    peering_policy: Selective
+    slug: vertixo_b_v_01
+    type: peering
+  - asn: 59545
+    name: Vertixo B.V 02
+    neighbor_ipv4: 193.239.117.124
+    neighbor_ipv6: 2001:7f8:13::a505:9545:2
+    passive: true
+    peering_policy: Selective
+    slug: vertixo_b_v_02
+    type: peering
+
+  - asn: 59560
+    name: World-ICT B.V.
+    neighbor_ipv4: 193.239.117.21
+    passive: true
+    peering_policy: Open
+    slug: world_ict_b_v
+    type: peering
+
+  - asn: 59570
+    name: Hostingstudio AS59570
+    neighbor_ipv4: 193.239.118.51
+    neighbor_ipv6: 2001:7f8:13::a505:9570:1
+    passive: true
+    peering_policy: Open
+    slug: hostingstudio_as59570
+    type: peering
+
+  - asn: 59655
+    name: ForexTime
+    neighbor_ipv4: 193.239.118.76
+    neighbor_ipv6: 2001:7f8:13::a505:9655:1
+    passive: true
+    peering_policy: Selective
+    slug: forextime
+    type: peering
+
+  - asn: 59776
+    name: Liberty Global CDN
+    neighbor_ipv4: 193.239.116.247
+    neighbor_ipv6: 2001:7f8:13::a505:9776:1
+    passive: true
+    peering_policy: "No"
+    slug: liberty_global_cdn
+    type: peering
+
+  - asn: 59827
+    name: Futureweb
+    neighbor_ipv4: 193.239.118.64
+    neighbor_ipv6: 2001:7f8:13::a505:9827:1
+    passive: true
+    peering_policy: Open
+    slug: futureweb
+    type: peering
+
+  - asn: 59865
+    name: iVent Mobile
+    neighbor_ipv4: 193.239.117.151
+    neighbor_ipv6: 2001:7f8:13::a505:9865:1
+    passive: true
+    peering_policy: Open
+    slug: ivent_mobile
+    type: peering
+
+  - asn: 59900
+    name: Balkan Internet Exchange
+    neighbor_ipv4: 193.239.116.153
+    neighbor_ipv6: 2001:7f8:13::a505:9900:1
+    passive: true
+    peering_policy: Open
+    slug: balkan_internet_exchange
+    type: peering
+
+  - asn: 59985
+    name: SAM Office
+    neighbor_ipv4: 193.239.118.204
+    neighbor_ipv6: 2001:7f8:13::a505:9985:1
+    passive: true
+    peering_policy: Open
+    slug: sam_office
+    type: peering
+
+  - asn: 59993
+    name: UNLIMITED IS LIMITED, LLC
+    neighbor_ipv4: 193.239.119.145
+    neighbor_ipv6: 2001:7f8:13::a505:9993:1
+    passive: true
+    peering_policy: Open
+    slug: unlimited_is_limited_llc
+    type: peering
+
+  - asn: 60064
+    name: HOSTPALACE
+    neighbor_ipv4: 193.239.116.93
+    neighbor_ipv6: 2001:7f8:13::a506:64:1
+    passive: true
+    peering_policy: Selective
+    slug: hostpalace
+    type: peering
+
+  - asn: 60111
+    name: ASOM-Net
+    neighbor_ipv4: 193.239.118.192
+    neighbor_ipv6: 2001:7f8:13::a506:111:1
+    passive: true
+    peering_policy: Open
+    slug: asom_net
+    type: peering
+
+  - asn: 60167
+    name: Savotex / Hansa IT
+    neighbor_ipv4: 193.239.117.56
+    neighbor_ipv6: 2001:7f8:13::a506:167:1
+    passive: true
+    peering_policy: Open
+    slug: savotex_hansa_it
+    type: peering
+
+  - asn: 60326
+    name: MrSheepNET AS60326
+    neighbor_ipv4: 193.239.116.213
+    neighbor_ipv6: 2001:7f8:13::a506:326:1
+    passive: true
+    peering_policy: Open
+    slug: mrsheepnet_as60326
+    type: peering
+
+  - asn: 60876
+    name: Gigabit ApS
+    neighbor_ipv4: 193.239.116.152
+    neighbor_ipv6: 2001:7f8:13::a506:876:1
+    passive: true
+    peering_policy: Open
+    slug: gigabit_aps
+    type: peering
+
+  - asn: 61200
+    name: MediaMonks Multimedia Holding B.V.
+    neighbor_ipv4: 193.239.117.250
+    neighbor_ipv6: 2001:7f8:13::a506:1200:1
+    passive: true
+    peering_policy: Selective
+    slug: mediamonks_multimedia_holding_b_v
+    type: peering
+
+  - asn: 62105
+    name: Jonaz
+    neighbor_ipv4: 193.239.116.188
+    neighbor_ipv6: 2001:7f8:13::a506:2105:1
+    passive: true
+    peering_policy: Open
+    slug: jonaz
+    type: peering
+
+  - asn: 62113
+    name: Kracon
+    neighbor_ipv4: 193.239.118.100
+    neighbor_ipv6: 2001:7f8:13::a506:2113:1
+    passive: true
+    peering_policy: Open
+    slug: kracon
+    type: peering
+
+  - asn: 62167
+    name: Tismi
+    neighbor_ipv4: 193.239.118.60
+    neighbor_ipv6: 2001:7f8:13::a506:2167:1
+    passive: true
+    peering_policy: Selective
+    slug: tismi
+    type: peering
+
+  - asn: 62240
+    name: Clouvider
+    neighbor_ipv4: 193.239.117.146
+    neighbor_ipv6: 2001:7f8:13::a506:2240:1
+    passive: true
+    peering_policy: Open
+    slug: clouvider
+    type: peering
+
+  - asn: 62955
+    name: eBay 00
+    neighbor_ipv4: 193.239.118.61
+    neighbor_ipv6: 2001:7f8:13::a504:1552:2
+    passive: true
+    peering_policy: Open
+    slug: ebay_00
+    type: peering
+  - asn: 62955
+    name: eBay 01
+    neighbor_ipv4: 193.239.118.132
+    neighbor_ipv6: 2001:7f8:13::a506:2955:1
+    passive: true
+    peering_policy: Open
+    slug: ebay_01
+    type: peering
+  - asn: 62955
+    name: eBay 02
+    neighbor_ipv4: 193.239.118.133
+    neighbor_ipv6: 2001:7f8:13::a506:2955:2
+    passive: true
+    peering_policy: Open
+    slug: ebay_02
+    type: peering
+
+  - asn: 64049
+    name: Reliance Jio Infocomm Singapore 02
+    neighbor_ipv4: 193.239.116.135
+    neighbor_ipv6: 2001:7f8:13::a506:4049:2
+    passive: true
+    peering_policy: Selective
+    slug: reliance_jio_infocomm_singapore_02
+    type: peering
+  - asn: 64049
+    name: Reliance Jio Infocomm Singapore 01
+    neighbor_ipv4: 193.239.117.247
+    neighbor_ipv6: 2001:7f8:13::a506:4049:1
+    passive: true
+    peering_policy: Selective
+    slug: reliance_jio_infocomm_singapore_01
+    type: peering
+
+  - asn: 64114
+    name: TecnoWeb
+    neighbor_ipv4: 193.239.118.241
+    neighbor_ipv6: 2001:7f8:13::a506:4114:1
+    passive: true
+    peering_policy: Open
+    slug: tecnoweb
+    type: peering
+
+  - asn: 64289
+    name: Macarne - AS64289
+    neighbor_ipv4: 193.239.119.136
+    neighbor_ipv6: 2001:7f8:13::a506:4289:1
+    passive: true
+    peering_policy: Open
+    slug: macarne_as64289
+    type: peering
+
+  - asn: 64404
+    name: EventInfra
+    neighbor_ipv4: 193.239.117.244
+    neighbor_ipv6: 2001:7f8:13::a506:4404:1
+    passive: true
+    peering_policy: Open
+    slug: eventinfra
+    type: peering
+
+  - asn: 64475
+    name: Freifunk Frankfurt am Main
+    neighbor_ipv4: 193.239.117.128
+    neighbor_ipv6: 2001:7f8:13::a506:4475:1
+    passive: true
+    peering_policy: Open
+    slug: freifunk_frankfurt_am_main
+    type: peering
+
+  - asn: 132203
+    name: Tencent Global
+    neighbor_ipv4: 193.239.118.200
+    passive: true
+    peering_policy: Open
+    slug: tencent_global
+    type: peering
+
+  - asn: 132337
+    name: Axclusive
+    neighbor_ipv4: 193.239.118.225
+    neighbor_ipv6: 2001:7f8:13::a513:2337:1
+    passive: true
+    peering_policy: Open
+    slug: axclusive
+    type: peering
+
+  - asn: 136907
+    name: Huawei Cloud Global 01
+    neighbor_ipv4: 193.239.116.44
+    neighbor_ipv6: 2001:7f8:13::a513:6907:1
+    passive: true
+    peering_policy: Selective
+    slug: huawei_cloud_global_01
+    type: peering
+  - asn: 136907
+    name: Huawei Cloud Global 02
+    neighbor_ipv4: 193.239.116.136
+    neighbor_ipv6: 2001:7f8:13::a513:6907:2
+    passive: true
+    peering_policy: Selective
+    slug: huawei_cloud_global_02
+    type: peering
+  - asn: 136907
+    name: Huawei Cloud Global 04
+    neighbor_ipv4: 193.239.117.122
+    neighbor_ipv6: 2001:7f8:13::a513:6907:4
+    passive: true
+    peering_policy: Selective
+    slug: huawei_cloud_global_04
+    type: peering
+  - asn: 136907
+    name: Huawei Cloud Global 03
+    neighbor_ipv4: 193.239.117.121
+    neighbor_ipv6: 2001:7f8:13::a513:6907:3
+    passive: true
+    peering_policy: Selective
+    slug: huawei_cloud_global_03
+    type: peering
+
+  - asn: 137409
+    name: Global Secure Layer
+    neighbor_ipv4: 193.239.117.133
+    neighbor_ipv6: 2001:7f8:13::a513:7409:1
+    passive: true
+    peering_policy: Open
+    slug: global_secure_layer
+    type: peering
+
+  - asn: 137490
+    name: Navice Consulting 02
+    neighbor_ipv4: 193.239.117.69
+    neighbor_ipv6: 2001:7f8:13::a513:7490:2
+    passive: true
+    peering_policy: Open
+    slug: navice_consulting_02
+    type: peering
+  - asn: 137490
+    name: Navice Consulting 01
+    neighbor_ipv4: 193.239.117.136
+    neighbor_ipv6: 2001:7f8:13::a513:7490:1
+    passive: true
+    peering_policy: Open
+    slug: navice_consulting_01
+    type: peering
+
+  - asn: 139057
+    name: EdgeNext
+    neighbor_ipv4: 193.239.119.86
+    neighbor_ipv6: 2001:7f8:13::a513:9057:1
+    passive: true
+    peering_policy: Open
+    slug: edgenext
+    type: peering
+
+  - asn: 139321
+    name: Dennis Przytarski
+    neighbor_ipv6: 2001:7f8:13::a513:9321:1
+    passive: true
+    peering_policy: Selective
+    slug: dennis_przytarski
+    type: peering
+
+  - asn: 139341
+    name: ACE CDN 01
+    neighbor_ipv4: 193.239.116.99
+    neighbor_ipv6: 2001:7f8:13::a513:9341:1
+    passive: true
+    peering_policy: Open
+    slug: ace_cdn_01
+    type: peering
+
+  - asn: 139341
+    name: ACE CDN 03
+    neighbor_ipv4: 193.239.119.178
+    neighbor_ipv6: 2001:7f8:13::a513:9341:3
+    passive: true
+    peering_policy: Open
+    slug: ace_cdn_03
+    type: peering
+
+  - asn: 140731
+    name: TOHUNET
+    neighbor_ipv4: 193.239.117.195
+    neighbor_ipv6: 2001:7f8:13::a514:731:1
+    passive: true
+    peering_policy: Selective
+    slug: tohunet
+    type: peering
+
+  - asn: 140984
+    name: WTW HIGHTECH
+    neighbor_ipv4: 193.239.117.32
+    neighbor_ipv6: 2001:7f8:13::a514:984:1
+    passive: true
+    peering_policy: Open
+    slug: wtw_hightech
+    type: peering
+
+  - asn: 150000
+    name: Data-Beam Business Solution
+    neighbor_ipv4: 193.239.119.158
+    neighbor_ipv6: 2001:7f8:13::a515:0:1
+    passive: true
+    peering_policy: Open
+    slug: data_beam_business_solution
+    type: peering
+
+  - asn: 151420
+    name: Rapid-Fire-y
+    neighbor_ipv4: 193.239.116.21
+    neighbor_ipv6: 2001:7f8:13::a515:1420:1
+    passive: true
+    peering_policy: Open
+    slug: rapid_fire_y
+    type: peering
+
+  - asn: 196997
+    name: Uni-tel
+    neighbor_ipv4: 193.239.118.99
+    neighbor_ipv6: 2001:7f8:13::a519:6997:1
+    passive: true
+    peering_policy: Open
+    slug: uni_tel
+    type: peering
+
+  - asn: 197000
+    name: RIPE NCC Authoritative DNS
+    neighbor_ipv4: 193.239.116.223
+    neighbor_ipv6: 2001:7f8:13::a519:7000:1
+    passive: true
+    peering_policy: Open
+    slug: ripe_ncc_authoritative_dns
+    type: peering
+
+  - asn: 197301
+    name: Parknet
+    neighbor_ipv4: 193.239.118.134
+    neighbor_ipv6: 2001:7f8:13::a519:7301:1
+    passive: true
+    peering_policy: Open
+    slug: parknet
+    type: peering
+
+  - asn: 197727
+    name: KPN Werkplek 01
+    neighbor_ipv4: 193.239.117.179
+    neighbor_ipv6: 2001:7f8:13::a519:7727:1
+    passive: true
+    peering_policy: Selective
+    slug: kpn_werkplek_01
+    type: peering
+
+  - asn: 198016
+    name: KSS
+    neighbor_ipv4: 193.239.118.205
+    neighbor_ipv6: 2001:7f8:13::a519:8016:1
+    passive: true
+    peering_policy: Open
+    slug: kss
+    type: peering
+
+  - asn: 198203
+    name: WeservIT
+    neighbor_ipv4: 193.239.117.116
+    neighbor_ipv6: 2001:7f8:13::a519:8203:1
+    passive: true
+    peering_policy: Open
+    slug: weservit
+    type: peering
+
+  - asn: 198225
+    name: MDDSL
+    neighbor_ipv4: 193.239.116.77
+    neighbor_ipv6: 2001:7f8:13::a519:8225:1
+    passive: true
+    peering_policy: Open
+    slug: mddsl
+    type: peering
+
+  - asn: 198334
+    name: Redwood
+    neighbor_ipv4: 193.239.118.53
+    passive: true
+    peering_policy: Open
+    slug: redwood
+    type: peering
+
+  - asn: 198468
+    name: DutchIS
+    neighbor_ipv4: 193.239.119.28
+    neighbor_ipv6: 2001:7f8:13::a519:8468:1
+    passive: true
+    peering_policy: Selective
+    slug: dutchis
+    type: peering
+
+  - asn: 199095
+    name: Citymesh
+    neighbor_ipv4: 193.239.119.82
+    neighbor_ipv6: 2001:7f8:13::a519:9095:1
+    passive: true
+    peering_policy: Open
+    slug: citymesh
+    type: peering
+
+  - asn: 199332
+    name: Digifoon Group AS199332 03
+    neighbor_ipv4: 193.239.118.98
+    neighbor_ipv6: 2001:7f8:13::a519:9322:3
+    passive: true
+    peering_policy: Open
+    slug: digifoon_group_as199332_03
+    type: peering
+
+  - asn: 199471
+    name: S5B
+    neighbor_ipv4: 193.239.119.16
+    neighbor_ipv6: 2001:7f8:13::a519:9471:1
+    passive: true
+    peering_policy: Open
+    slug: s5b
+    type: peering
+
+  - asn: 199522
+    name: Tedas
+    neighbor_ipv4: 193.239.117.194
+    passive: true
+    peering_policy: Open
+    slug: tedas
+    type: peering
+
+  - asn: 199524
+    name: G-Core Labs
+    neighbor_ipv4: 193.239.118.26
+    neighbor_ipv6: 2001:7f8:13::a519:9524:1
+    passive: true
+    peering_policy: Selective
+    slug: g_core_labs
+    type: peering
+
+  - asn: 199670
+    name: DNS Belgium VZW - Anycast 01
+    neighbor_ipv4: 193.239.118.12
+    neighbor_ipv6: 2001:7f8:13::a519:9670:1
+    passive: true
+    peering_policy: Selective
+    slug: dns_belgium_vzw_anycast_01
+    type: peering
+  - asn: 199670
+    name: DNS Belgium VZW - Anycast 02
+    neighbor_ipv4: 193.239.118.86
+    neighbor_ipv6: 2001:7f8:13::a519:9670:2
+    passive: true
+    peering_policy: Selective
+    slug: dns_belgium_vzw_anycast_02
+    type: peering
+
+  - asn: 199752
+    name: Go-Trex
+    neighbor_ipv4: 193.239.119.148
+    neighbor_ipv6: 2001:7f8:13::a519:9752:1
+    passive: true
+    peering_policy: Open
+    slug: go_trex
+    type: peering
+
+  - asn: 199937
+    name: ANWB B.V.
+    neighbor_ipv4: 193.239.116.124
+    neighbor_ipv6: 2001:7f8:13::a519:9937:1
+    passive: true
+    peering_policy: Restrictive
+    slug: anwb_b_v
+    type: peering
+
+  - asn: 199939
+    name: KeenSystems B.V. 01
+    neighbor_ipv4: 193.239.117.80
+    neighbor_ipv6: 2001:7f8:13::a519:9939:1
+    passive: true
+    peering_policy: Open
+    slug: keensystems_b_v_01
+    type: peering
+  - asn: 199939
+    name: KeenSystems B.V. 02
+    neighbor_ipv4: 193.239.117.81
+    neighbor_ipv6: 2001:7f8:13::a519:9939:2
+    passive: true
+    peering_policy: Open
+    slug: keensystems_b_v_02
+    type: peering
+
+  - asn: 200020
+    name: NBIP 01
+    neighbor_ipv4: 193.239.118.113
+    neighbor_ipv6: 2001:7f8:13::a520:20:1
+    passive: true
+    peering_policy: Open
+    slug: nbip_01
+    type: peering
+  - asn: 200020
+    name: NBIP 02
+    neighbor_ipv4: 193.239.118.131
+    neighbor_ipv6: 2001:7f8:13::a520:20:2
+    passive: true
+    peering_policy: Open
+    slug: nbip_02
+    type: peering
+
+  - asn: 200023
+    name: Qonnected
+    neighbor_ipv4: 193.239.116.219
+    neighbor_ipv6: 2001:7f8:13::a520:23:1
+    passive: true
+    peering_policy: Open
+    slug: qonnected
+    type: peering
+
+  - asn: 200052
+    name: Feral Hosting
+    neighbor_ipv4: 193.239.117.86
+    passive: true
+    peering_policy: Open
+    slug: feral_hosting
+    type: peering
+
+  - asn: 200132
+    name: NetOne NL
+    neighbor_ipv4: 193.239.119.76
+    neighbor_ipv6: 2001:7f8:13::a520:132:1
+    passive: true
+    peering_policy: Open
+    slug: netone_nl
+    type: peering
+
+  - asn: 200149
+    name: Project NIX
+    neighbor_ipv4: 193.239.118.109
+    neighbor_ipv6: 2001:7f8:13::a520:149:1
+    passive: true
+    peering_policy: Selective
+    slug: project_nix
+    type: peering
+
+  - asn: 200191
+    name: RAFFEL-INTERNET
+    neighbor_ipv4: 193.239.117.103
+    passive: true
+    peering_policy: Open
+    slug: raffel_internet
+    type: peering
+
+  - asn: 200242
+    name: de.theirs
+    neighbor_ipv4: 193.239.118.234
+    neighbor_ipv6: 2001:7f8:13::a520:242:1
+    passive: true
+    peering_policy: Open
+    slug: de_theirs
+    type: peering
+
+  - asn: 200249
+    name: ProductsUp
+    neighbor_ipv4: 193.239.119.40
+    neighbor_ipv6: 2001:7f8:13::a520:249:1
+    passive: true
+    peering_policy: Open
+    slug: productsup
+    type: peering
+
+  - asn: 200360
+    name: Folf Systems
+    neighbor_ipv4: 193.239.116.232
+    neighbor_ipv6: 2001:7f8:13::a520:360:1
+    passive: true
+    peering_policy: Open
+    slug: folf_systems
+    type: peering
+
+  - asn: 200372
+    name: Lars Ewald
+    neighbor_ipv6: 2001:7f8:13::a520:372:1
+    passive: true
+    peering_policy: Open
+    slug: lars_ewald
+    type: peering
+
+  - asn: 200373
+    name: 3xK Tech
+    neighbor_ipv4: 193.239.119.108
+    neighbor_ipv6: 2001:7f8:13::a520:377:1
+    passive: true
+    peering_policy: Open
+    slug: 3xk_tech
+    type: peering
+
+  - asn: 200428
+    name: SouthernHill
+    neighbor_ipv4: 193.239.117.186
+    neighbor_ipv6: 2001:7f8:13::a520:428:1
+    passive: true
+    peering_policy: Selective
+    slug: southernhill
+    type: peering
+
+  - asn: 200781
+    name: Tampnet
+    neighbor_ipv4: 193.239.118.144
+    neighbor_ipv6: 2001:7f8:13::a520:781:1
+    passive: true
+    peering_policy: Open
+    slug: tampnet
+    type: peering
+
+  - asn: 201290
+    name: BlackGATE
+    neighbor_ipv4: 193.239.117.153
+    neighbor_ipv6: 2001:7f8:13::a520:1290:1
+    passive: true
+    peering_policy: Open
+    slug: blackgate
+    type: peering
+
+  - asn: 201335
+    name: Seven Networking UK
+    neighbor_ipv4: 193.239.119.176
+    neighbor_ipv6: 2001:7f8:13::a520:1335:1
+    passive: true
+    peering_policy: Open
+    slug: seven_networking_uk
+    type: peering
+
+  - asn: 201372
+    name: Mezzami
+    neighbor_ipv4: 193.239.117.131
+    neighbor_ipv6: 2001:7f8:13::a520:1372:1
+    passive: true
+    peering_policy: Open
+    slug: mezzami
+    type: peering
+
+  - asn: 201401
+    name: NewVM
+    neighbor_ipv4: 193.239.117.167
+    neighbor_ipv6: 2001:7f8:13::a520:1401:1
+    passive: true
+    peering_policy: Open
+    slug: newvm
+    type: peering
+
+  - asn: 201502
+    name: Societa Cooperativa JCom
+    neighbor_ipv4: 193.239.119.34
+    neighbor_ipv6: 2001:7f8:13::a520:1502:1
+    passive: true
+    peering_policy: Open
+    slug: societa_cooperativa_jcom
+    type: peering
+
+  - asn: 201701
+    name: Freifunk Rheinland e.V. 01
+    neighbor_ipv4: 193.239.117.204
+    neighbor_ipv6: 2001:7f8:13::a520:1701:1
+    passive: true
+    peering_policy: Open
+    slug: freifunk_rheinland_e_v_01
+    type: peering
+  - asn: 201701
+    name: Freifunk Rheinland e.V. 02
+    neighbor_ipv4: 193.239.117.205
+    neighbor_ipv6: 2001:7f8:13::a520:1701:2
+    passive: true
+    peering_policy: Open
+    slug: freifunk_rheinland_e_v_02
+    type: peering
+
+  - asn: 201791
+    name: VoIPGRID
+    neighbor_ipv4: 193.239.117.173
+    neighbor_ipv6: 2001:7f8:13::a520:1791:1
+    passive: true
+    peering_policy: Selective
+    slug: voipgrid
+    type: peering
+
+  - asn: 202022
+    name: Flexyz
+    neighbor_ipv4: 193.239.118.81
+    passive: true
+    peering_policy: Open
+    slug: flexyz
+    type: peering
+
+  - asn: 202224
+    name: Giannis Kontos
+    neighbor_ipv4: 193.239.119.23
+    neighbor_ipv6: 2001:7f8:13::a520:2224:1
+    passive: true
+    peering_policy: Open
+    slug: giannis_kontos
+    type: peering
+
+  - asn: 202427
+    name: Ursin Filli
+    neighbor_ipv4: 193.239.116.200
+    neighbor_ipv6: 2001:7f8:13::a520:2427:1
+    passive: true
+    peering_policy: Open
+    slug: ursin_filli
+    type: peering
+
+  - asn: 202591
+    name: Nefos IT bv
+    neighbor_ipv4: 193.239.116.133
+    neighbor_ipv6: 2001:7f8:13::a520:2591:1
+    passive: true
+    peering_policy: Selective
+    slug: nefos_it_bv
+    type: peering
+
+  - asn: 202827
+    name: EXAGROUP
+    neighbor_ipv4: 193.239.119.171
+    neighbor_ipv6: 2001:7f8:13::a520:2827:1
+    passive: true
+    peering_policy: Open
+    slug: exagroup
+    type: peering
+
+  - asn: 202855
+    name: Galactic Group B.V.
+    neighbor_ipv4: 193.239.119.91
+    neighbor_ipv6: 2001:7f8:13::a520:2855:1
+    passive: true
+    peering_policy: Selective
+    slug: galactic_group_b_v
+    type: peering
+
+  - asn: 202914
+    name: Adeo DC
+    neighbor_ipv4: 193.239.118.159
+    passive: true
+    peering_policy: Open
+    slug: adeo_dc
+    type: peering
+
+  - asn: 202954
+    name: Rapiddot 01
+    neighbor_ipv4: 193.239.116.160
+    neighbor_ipv6: 2001:7f8:13::a520:2954:1
+    passive: true
+    peering_policy: Open
+    slug: rapiddot_01
+    type: peering
+  - asn: 202954
+    name: Rapiddot 02
+    neighbor_ipv4: 193.239.118.62
+    neighbor_ipv6: 2001:7f8:13::a520:2954:2
+    passive: true
+    peering_policy: Open
+    slug: rapiddot_02
+    type: peering
+
+  - asn: 203180
+    name: Bluwifi
+    neighbor_ipv4: 193.239.119.39
+    neighbor_ipv6: 2001:7f8:13::a520:3180:1
+    passive: true
+    peering_policy: Open
+    slug: bluwifi
+    type: peering
+
+  - asn: 203269
+    name: Malte Nagel
+    neighbor_ipv6: 2001:7f8:13::a520:3369:1
+    passive: true
+    peering_policy: Open
+    slug: malte_nagel
+    type: peering
+
+  - asn: 203314
+    name: HATS NETWORK
+    neighbor_ipv4: 193.239.117.235
+    neighbor_ipv6: 2001:7f8:13::a520:3314:1
+    passive: true
+    peering_policy: Open
+    slug: hats_network
+    type: peering
+
+  - asn: 203932
+    name: PricewaterhouseCoopers NL 203
+    neighbor_ipv4: 193.239.116.203
+    passive: true
+    peering_policy: Open
+    slug: pricewaterhousecoopers_nl_203
+    type: peering
+
+  - asn: 203932
+    name: PricewaterhouseCoopers NL 104
+    neighbor_ipv4: 193.239.116.104
+    passive: true
+    peering_policy: Open
+    slug: pricewaterhousecoopers_nl_104
+    type: peering
+
+  - asn: 204092
+    name: GRIFON
+    neighbor_ipv4: 193.239.117.189
+    neighbor_ipv6: 2001:7f8:13::a520:4092:1
+    passive: false
+    peering_policy: Open
+    slug: grifon
+    type: peering
+
+  - asn: 204151
+    name: Kviknet.dk
+    neighbor_ipv4: 193.239.118.33
+    neighbor_ipv6: 2001:7f8:13::a520:4151:1
+    passive: true
+    peering_policy: Selective
+    slug: kviknet_dk
+    type: peering
+
+  - asn: 204174
+    name: Fifth Dog Network Limited
+    neighbor_ipv4: 193.239.119.85
+    neighbor_ipv6: 2001:7f8:13::a520:4174:1
+    passive: true
+    peering_policy: Selective
+    slug: fifth_dog_network_limited
+    type: peering
+
+  - asn: 204805
+    name: Voiped Wholesale 02
+    neighbor_ipv4: 193.239.116.159
+    neighbor_ipv6: 2001:7f8:13::a520:4805:2
+    passive: true
+    peering_policy: Open
+    slug: voiped_wholesale_02
+    type: peering
+  - asn: 204805
+    name: Voiped Wholesale 01
+    neighbor_ipv4: 193.239.118.167
+    neighbor_ipv6: 2001:7f8:13::a520:4805:1
+    passive: true
+    peering_policy: Open
+    slug: voiped_wholesale_01
+    type: peering
+
+  - asn: 204911
+    name: Systemlos
+    neighbor_ipv4: 193.239.118.183
+    neighbor_ipv6: 2001:7f8:13::a520:4911:1
+    passive: true
+    peering_policy: Open
+    slug: systemlos
+    type: peering
+
+  - asn: 205103
+    name: Telegraph42
+    neighbor_ipv4: 193.239.119.24
+    neighbor_ipv6: 2001:7f8:13::a520:5103:1
+    passive: true
+    peering_policy: Selective
+    slug: telegraph42
+    type: peering
+
+  - asn: 205206
+    name: Netsite
+    neighbor_ipv4: 193.239.117.18
+    neighbor_ipv6: 2001:7f8:13::a520:5206:1
+    passive: true
+    peering_policy: Open
+    slug: netsite
+    type: peering
+
+  - asn: 205254
+    name: Valin
+    neighbor_ipv4: 193.239.116.177
+    neighbor_ipv6: 2001:7f8:13::a520:5254:1
+    passive: true
+    peering_policy: Open
+    slug: valin
+    type: peering
+
+  - asn: 205329
+    name: Muilties Network
+    neighbor_ipv4: 193.239.119.31
+    neighbor_ipv6: 2001:7f8:13::a520:5329:1
+    passive: true
+    peering_policy: Open
+    slug: muilties_network
+    type: peering
+
+  - asn: 205915
+    name: Pinkroccade HealthCare 01
+    neighbor_ipv4: 193.239.116.167
+    neighbor_ipv6: 2001:7f8:13::a520:5915:1
+    passive: true
+    peering_policy: Open
+    slug: pinkroccade_healthcare_01
+    type: peering
+  - asn: 205915
+    name: Pinkroccade HealthCare 02
+    neighbor_ipv4: 193.239.116.169
+    neighbor_ipv6: 2001:7f8:13::a520:5915:2
+    passive: true
+    peering_policy: Open
+    slug: pinkroccade_healthcare_02
+    type: peering
+
+  - asn: 206264
+    name: Amarutu Technology Ltd.
+    neighbor_ipv4: 193.239.117.57
+    neighbor_ipv6: 2001:7f8:13::a520:6264:1
+    passive: true
+    peering_policy: Open
+    slug: amarutu_technology_ltd
+    type: peering
+
+  - asn: 206281
+    name: Vimexx
+    neighbor_ipv4: 193.239.118.27
+    passive: true
+    peering_policy: Open
+    slug: vimexx
+    type: peering
+
+  - asn: 206292
+    name: Gerdriaan Mulder
+    neighbor_ipv4: 193.239.119.30
+    neighbor_ipv6: 2001:7f8:13::a520:6292:1
+    passive: true
+    peering_policy: Open
+    slug: gerdriaan_mulder
+    type: peering
+
+  - asn: 206313
+    name: Freifunk Nordwest
+    neighbor_ipv4: 193.239.118.105
+    neighbor_ipv6: 2001:7f8:13::a520:6313:1
+    passive: true
+    peering_policy: Open
+    slug: freifunk_nordwest
+    type: peering
+
+  - asn: 206813
+    name: 4830.org e. V.
+    neighbor_ipv4: 193.239.116.215
+    neighbor_ipv6: 2001:7f8:13::a520:6813:1
+    passive: true
+    peering_policy: Open
+    slug: 4830_org_e_v
+    type: peering
+
+  - asn: 207176
+    name: OpenFiber NL 01
+    neighbor_ipv4: 193.239.119.26
+    neighbor_ipv6: 2001:7f8:13::a520:7176:1
+    passive: true
+    peering_policy: Open
+    slug: openfiber_nl_01
+    type: peering
+  - asn: 207176
+    name: OpenFiber NL 02
+    neighbor_ipv4: 193.239.119.27
+    neighbor_ipv6: 2001:7f8:13::a520:7176:2
+    passive: true
+    peering_policy: Open
+    slug: openfiber_nl_02
+    type: peering
+
+  - asn: 207424
+    name: Hyena Network
+    neighbor_ipv6: 2001:7f8:13::a520:7424:1
+    passive: true
+    peering_policy: Open
+    slug: hyena_network
+    type: peering
+
+  - asn: 207866
+    name: InCompanyMedia
+    neighbor_ipv4: 193.239.118.198
+    neighbor_ipv6: 2001:7f8:13::a520:7866:1
+    passive: true
+    peering_policy: Open
+    slug: incompanymedia
+    type: peering
+
+  - asn: 208034
+    name: Rono-IT
+    neighbor_ipv4: 193.239.118.48
+    passive: true
+    peering_policy: Open
+    slug: rono_it
+    type: peering
+
+  - asn: 208164
+    name: Formicidae Holdings
+    neighbor_ipv4: 193.239.116.119
+    neighbor_ipv6: 2001:7f8:13::a520:8164:1
+    passive: true
+    peering_policy: Open
+    slug: formicidae_holdings
+    type: peering
+
+  - asn: 208434
+    name: Martin Jahn
+    neighbor_ipv6: 2001:7f8:13::a520:8434:1
+    passive: true
+    peering_policy: Open
+    slug: martin_jahn
+    type: peering
+
+  - asn: 208814
+    name: Tilman Schaefers
+    neighbor_ipv4: 193.239.116.227
+    neighbor_ipv6: 2001:7f8:13::a520:8814:1
+    passive: true
+    peering_policy: Open
+    slug: tilman_schaefers
+    type: peering
+
+  - asn: 208972
+    name: GIBIRNET
+    neighbor_ipv4: 193.239.119.151
+    neighbor_ipv6: 2001:7f8:13::a520:8972:1
+    passive: true
+    peering_policy: Open
+    slug: gibirnet
+    type: peering
+
+  - asn: 208976
+    name: FS IT-Systeme
+    neighbor_ipv4: 193.239.117.144
+    neighbor_ipv6: 2001:7f8:13::a520:8976:1
+    passive: true
+    peering_policy: Open
+    slug: fs_it_systeme
+    type: peering
+
+  - asn: 209039
+    name: BENOCS
+    neighbor_ipv4: 193.239.116.250
+    neighbor_ipv6: 2001:7f8:13::a520:9039:1
+    passive: true
+    peering_policy: Open
+    slug: benocs
+    type: peering
+
+  - asn: 209528
+    name: MyWebCity Denmark
+    neighbor_ipv4: 193.239.118.178
+    neighbor_ipv6: 2001:7f8:13::a520:9528:1
+    passive: true
+    peering_policy: Open
+    slug: mywebcity_denmark
+    type: peering
+
+  - asn: 209619
+    name: Marius Rennmann
+    neighbor_ipv4: 193.239.118.223
+    neighbor_ipv6: 2001:7f8:13::a520:9619:1
+    passive: true
+    peering_policy: Open
+    slug: marius_rennmann
+    type: peering
+
+  - asn: 209650
+    name: Wu Zhiyuan
+    neighbor_ipv4: 193.239.118.220
+    neighbor_ipv6: 2001:7f8:13::a520:9650:1
+    passive: true
+    peering_policy: Open
+    slug: wu_zhiyuan
+    type: peering
+
+  - asn: 209768
+    name: white2net
+    neighbor_ipv4: 193.239.119.112
+    neighbor_ipv6: 2001:7f8:13::a520:9768:1
+    passive: true
+    peering_policy: Open
+    slug: white2net
+    type: peering
+
+  - asn: 209784
+    name: WIFISAX AS209784
+    neighbor_ipv4: 193.239.116.233
+    passive: true
+    peering_policy: Open
+    slug: wifisax_as209784
+    type: peering
+
+  - asn: 209823
+    name: Enki Multimedia
+    neighbor_ipv4: 193.239.119.72
+    neighbor_ipv6: 2001:7f8:13::a520:9823:1
+    passive: true
+    peering_policy: Open
+    slug: enki_multimedia
+    type: peering
+
+  - asn: 209833
+    name: Aroga GmbH
+    neighbor_ipv4: 193.239.118.165
+    neighbor_ipv6: 2001:7f8:13::a520:9833:1
+    passive: true
+    peering_policy: Selective
+    slug: aroga_gmbh
+    type: peering
+
+  - asn: 209859
+    name: Florian Martin Esser
+    neighbor_ipv4: 193.239.119.51
+    neighbor_ipv6: 2001:7f8:13::a520:9859:1
+    passive: true
+    peering_policy: Open
+    slug: florian_martin_esser
+    type: peering
+
+  - asn: 209933
+    name: DANDRI
+    neighbor_ipv6: 2001:7f8:13::a520:9933:1
+    passive: true
+    peering_policy: Open
+    slug: dandri
+    type: peering
+
+  - asn: 210036
+    name: Rayhaan Networks
+    neighbor_ipv4: 193.239.117.206
+    neighbor_ipv6: 2001:7f8:13::a521:36:1
+    passive: true
+    peering_policy: Open
+    slug: rayhaan_networks
+    type: peering
+
+  - asn: 210152
+    name: Jon Arve Vanvik
+    neighbor_ipv4: 193.239.118.145
+    neighbor_ipv6: 2001:7f8:13::a521:152:1
+    passive: true
+    peering_policy: Open
+    slug: jon_arve_vanvik
+    type: peering
+
+  - asn: 210645
+    name: dcloud.cx
+    neighbor_ipv4: 193.239.117.223
+    neighbor_ipv6: 2001:7f8:13::a521:645:1
+    passive: true
+    peering_policy: Selective
+    slug: dcloud_cx
+    type: peering
+
+  - asn: 210890
+    name: Kristiaan De Rocker
+    neighbor_ipv4: 193.239.117.52
+    neighbor_ipv6: 2001:7f8:13::a521:890:1
+    passive: true
+    peering_policy: Open
+    slug: kristiaan_de_rocker
+    type: peering
+
+  - asn: 210897
+    name: Teleperformance Netherlands B.V. 139
+    neighbor_ipv4: 193.239.117.139
+    passive: true
+    peering_policy: Open
+    slug: teleperformance_netherlands_b_v_139
+    type: peering
+  - asn: 210897
+    name: Teleperformance Netherlands B.V. 145
+    neighbor_ipv4: 193.239.117.145
+    passive: true
+    peering_policy: Open
+    slug: teleperformance_netherlands_b_v_145
+    type: peering
+
+  - asn: 211024
+    name: devplayer0
+    neighbor_ipv4: 193.239.116.145
+    neighbor_ipv6: 2001:7f8:13::a521:1024:1
+    passive: true
+    peering_policy: Open
+    slug: devplayer0
+    type: peering
+
+  - asn: 211037
+    name: 1Ago
+    neighbor_ipv4: 193.239.116.39
+    neighbor_ipv6: 2001:7f8:13::a521:1037:1
+    passive: true
+    peering_policy: Open
+    slug: 1ago
+    type: peering
+
+  - asn: 211275
+    name: Thomas Rogdakis
+    neighbor_ipv6: 2001:7f8:13::a521:1275:1
+    passive: true
+    peering_policy: Open
+    slug: thomas_rogdakis
+    type: peering
+
+  - asn: 211286
+    name: measurement.network
+    neighbor_ipv4: 193.239.119.46
+    neighbor_ipv6: 2001:7f8:13::a521:1286:1
+    passive: true
+    peering_policy: Open
+    slug: measurement_network
+    type: peering
+
+  - asn: 211358
+    name: PP-Networks Solutions, IT
+    neighbor_ipv4: 193.239.118.201
+    neighbor_ipv6: 2001:7f8:13::a521:1358:1
+    passive: true
+    peering_policy: Open
+    slug: pp_networks_solutions_it
+    type: peering
+
+  - asn: 211588
+    name: Xyphen IT
+    neighbor_ipv4: 193.239.119.122
+    neighbor_ipv6: 2001:7f8:13::a521:1588:1
+    passive: true
+    peering_policy: Open
+    slug: xyphen_it
+    type: peering
+
+  - asn: 211826
+    name: Istqrar for Servers Services
+    neighbor_ipv4: 193.239.118.47
+    neighbor_ipv6: 2001:7f8:13::a521:1826:1
+    passive: true
+    peering_policy: Open
+    slug: istqrar_for_servers_services
+    type: peering
+
+  - asn: 211882
+    name: Aquilenet Paris
+    neighbor_ipv4: 193.239.117.26
+    neighbor_ipv6: 2001:7f8:13::a521:1882:1
+    passive: true
+    peering_policy: Open
+    slug: aquilenet_paris
+    type: peering
+
+  - asn: 211960
+    name: Meis Space
+    neighbor_ipv4: 193.239.117.77
+    neighbor_ipv6: 2001:7f8:13::a521:1960:1
+    passive: true
+    peering_policy: Open
+    slug: meis_space
+    type: peering
+
+  - asn: 212027
+    name: PebbleHost
+    neighbor_ipv4: 193.239.119.152
+    neighbor_ipv6: 2001:7f8:13::a521:2027:1
+    passive: true
+    peering_policy: Open
+    slug: pebblehost
+    type: peering
+
+  - asn: 212232
+    name: BGP.Tools Route Collector
+    neighbor_ipv4: 193.239.118.186
+    neighbor_ipv6: 2001:7f8:13::a521:2232:1
+    passive: true
+    peering_policy: Open
+    slug: bgp_tools_route_collector
+    type: peering
+
+  - asn: 212477
+    name: RoyaleHosting
+    neighbor_ipv4: 193.239.119.83
+    neighbor_ipv6: 2001:7f8:13::a521:2477:1
+    passive: true
+    peering_policy: Open
+    slug: royalehosting
+    type: peering
+
+  - asn: 212483
+    name: Level 86
+    neighbor_ipv4: 193.239.116.134
+    neighbor_ipv6: 2001:7f8:13::a521:2483:1
+    passive: true
+    peering_policy: Open
+    slug: level_86
+    type: peering
+
+  - asn: 212635
+    name: AS212635
+    neighbor_ipv4: 193.239.117.55
+    neighbor_ipv6: 2001:7f8:13::a521:2635:1
+    passive: true
+    peering_policy: Selective
+    slug: as212635
+    type: peering
+
+  - asn: 212703
+    name: Bontekoe Technology
+    neighbor_ipv4: 193.239.119.65
+    neighbor_ipv6: 2001:7f8:13::a521:2703:1
+    passive: true
+    peering_policy: Open
+    slug: bontekoe_technology
+    type: peering
+
+  - asn: 212793
+    name: Xiwei Ye
+    neighbor_ipv4: 193.239.116.138
+    neighbor_ipv6: 2001:7f8:13::a521:2793:1
+    passive: true
+    peering_policy: Open
+    slug: xiwei_ye
+    type: peering
+
+  - asn: 212828
+    name: twopeaks digital e.U.
+    neighbor_ipv4: 193.239.116.202
+    neighbor_ipv6: 2001:7f8:13::a521:2828:1
+    passive: true
+    peering_policy: Open
+    slug: twopeaks_digital_e_u
+    type: peering
+
+  - asn: 212864
+    name: Lukas Michaels
+    neighbor_ipv4: 193.239.117.185
+    neighbor_ipv6: 2001:7f8:13::a521:2864:1
+    passive: true
+    peering_policy: Open
+    slug: lukas_michaels
+    type: peering
+
+  - asn: 212895
+    name: ROUTE64.ORG
+    neighbor_ipv4: 193.239.117.127
+    neighbor_ipv6: 2001:7f8:13::a521:2895:1
+    passive: true
+    peering_policy: Open
+    slug: route64_org
+    type: peering
+
+  - asn: 213050
+    name: Nedap N.V. 01
+    neighbor_ipv4: 193.239.118.140
+    neighbor_ipv6: 2001:7f8:13::a521:3050:1
+    passive: true
+    peering_policy: Open
+    slug: nedap_n_v_01
+    type: peering
+
+  - asn: 213052
+    name: BittenBytes
+    neighbor_ipv4: 193.239.116.193
+    neighbor_ipv6: 2001:7f8:13::a521:3052:1
+    passive: true
+    peering_policy: Open
+    slug: bittenbytes
+    type: peering
+
+  - asn: 213065
+    name: UWV 3065
+    neighbor_ipv4: 193.239.118.247
+    neighbor_ipv6: 2001:7f8:13::a521:3065
+    passive: true
+    peering_policy: Selective
+    slug: uwv_3065
+    type: peering
+  - asn: 213065
+    name: UWV 02
+    neighbor_ipv4: 193.239.118.248
+    neighbor_ipv6: 2001:7f8:13::a521:3065:2
+    passive: true
+    peering_policy: Selective
+    slug: uwv_02
+    type: peering
+
+  - asn: 213092
+    name: MarbleISL Network
+    neighbor_ipv6: 2001:7f8:13::a521:3092:1
+    passive: true
+    peering_policy: Open
+    slug: marbleisl_network
+    type: peering
+
+  - asn: 213216
+    name: LuxChan
+    neighbor_ipv6: 2001:7f8:13::a521:3216:1
+    passive: true
+    peering_policy: Open
+    slug: luxchan
+    type: peering
+
+  - asn: 213279
+    name: Reliably Coded
+    neighbor_ipv4: 193.239.117.125
+    neighbor_ipv6: 2001:7f8:13::a521:3279:1
+    passive: true
+    peering_policy: Open
+    slug: reliably_coded
+    type: peering
+
+  - asn: 213392
+    name: Tom Siewert
+    neighbor_ipv4: 193.239.117.196
+    neighbor_ipv6: 2001:7f8:13::a521:3392:1
+    passive: true
+    peering_policy: Open
+    slug: tom_siewert
+    type: peering
+
+  - asn: 214145
+    name: SPMZT
+    neighbor_ipv4: 193.239.119.170
+    neighbor_ipv6: 2001:7f8:13::a521:4145:1
+    passive: true
+    peering_policy: Open
+    slug: spmzt
+    type: peering
+
+  - asn: 214223
+    name: FPNET
+    neighbor_ipv4: 193.239.119.159
+    neighbor_ipv6: 2001:7f8:13::a521:4223:1
+    passive: true
+    peering_policy: Open
+    slug: fpnet
+    type: peering
+
+  - asn: 214294
+    name: NOOB-RP.COM
+    neighbor_ipv4: 193.239.119.150
+    neighbor_ipv6: 2001:7f8:13::a521:4294:1
+    passive: true
+    peering_policy: Open
+    slug: noob_rp_com
+    type: peering
+
+  - asn: 214643
+    name: Starina Inc
+    neighbor_ipv4: 193.239.119.156
+    neighbor_ipv6: 2001:7f8:13::a521:4643:1
+    passive: true
+    peering_policy: Open
+    slug: starina_inc
+    type: peering
+
+  - asn: 215011
+    name: NXTHDR
+    neighbor_ipv6: 2001:7f8:13::a521:5011:1
+    passive: true
+    peering_policy: Open
+    slug: nxthdr
+    type: peering
+
+  - asn: 215248
+    name: BastiaanBrink
+    neighbor_ipv4: 193.239.119.252
+    neighbor_ipv6: 2001:7f8:13::a521:5248:1
+    passive: true
+    peering_policy: Open
+    slug: bastiaanbrink
+    type: peering
+
+  - asn: 215250
+    name: V4LESS-AS
+    neighbor_ipv6: 2001:7f8:13::a521:5250:1
+    passive: true
+    peering_policy: Open
+    slug: v4less_as
+    type: peering
+
+  - asn: 215649
+    name: SN-TUX-AS
+    neighbor_ipv4: 193.239.119.115
+    neighbor_ipv6: 2001:7f8:13::a521:5649:1
+    passive: true
+    peering_policy: Open
+    slug: sn_tux_as
+    type: peering
+
+  - asn: 215751
+    name: Mikhail Fedorov
+    neighbor_ipv4: 193.239.119.92
+    neighbor_ipv6: 2001:7f8:13::a521:5751:1
+    passive: true
+    peering_policy: Open
+    slug: mikhail_fedorov
+    type: peering
+
+  - asn: 215788
+    name: MADH
+    neighbor_ipv4: 193.239.119.47
+    neighbor_ipv6: 2001:7f8:13::a521:5788:1
+    passive: true
+    peering_policy: Open
+    slug: madh
+    type: peering
+
+  - asn: 215828
+    name: TMW Global Networks 01
+    neighbor_ipv4: 193.239.119.75
+    neighbor_ipv6: 2001:7f8:13::a521:5828:1
+    passive: true
+    peering_policy: Open
+    slug: tmw_global_networks_01
+    type: peering
+  - asn: 215828
+    name: TMW Global Networks 02
+    neighbor_ipv4: 193.239.119.119
+    neighbor_ipv6: 2001:7f8:13::a521:5828:2
+    passive: true
+    peering_policy: Open
+    slug: tmw_global_networks_02
+    type: peering
+
+  - asn: 215887
+    name: baragoon networks
+    neighbor_ipv4: 193.239.119.100
+    neighbor_ipv6: 2001:7f8:13::a521:5887:2
+    passive: true
+    peering_policy: Open
+    slug: baragoon_networks
+    type: peering
+
+  - asn: 216066
+    name: X2com Belgie B.V.
+    neighbor_ipv4: 193.239.119.57
+    neighbor_ipv6: 2001:7f8:13::a521:6066:1
+    passive: true
+    peering_policy: Selective
+    slug: x2com_belgie_b_v
+    type: peering
+
+  - asn: 216084
+    name: KemmIT Einzelunternehmen 01
+    neighbor_ipv4: 193.239.119.36
+    neighbor_ipv6: 2001:7f8:13::a521:6084:1
+    passive: true
+    peering_policy: Open
+    slug: kemmit_einzelunternehmen_01
+    type: peering
+  - asn: 216084
+    name: KemmIT Einzelunternehmen 02
+    neighbor_ipv4: 193.239.119.70
+    neighbor_ipv6: 2001:7f8:13::a521:6084:2
+    passive: true
+    peering_policy: Open
+    slug: kemmit_einzelunternehmen_02
+    type: peering
+
+  - asn: 216107
+    name: Frumentum Media
+    neighbor_ipv4: 193.239.119.18
+    neighbor_ipv6: 2001:7f8:13::a521:6107:1
+    passive: true
+    peering_policy: Open
+    slug: frumentum_media
+    type: peering
+
+  - asn: 216251
+    name: SvS net
+    neighbor_ipv4: 193.239.119.48
+    neighbor_ipv6: 2001:7f8:13::a521:6251:1
+    passive: true
+    peering_policy: Open
+    slug: svs_net
+    type: peering
+
+  - asn: 216425
+    name: Hanarin LTD.
+    neighbor_ipv4: 193.239.119.173
+    neighbor_ipv6: 2001:7f8:13::a521:6425:1
+    passive: true
+    peering_policy: Open
+    slug: hanarin_ltd
+    type: peering
+
+  - asn: 327813
+    name: Web4Africa
+    neighbor_ipv4: 193.239.118.16
+    neighbor_ipv6: 2001:7f8:13::a532:7813:1
+    passive: true
+    peering_policy: Open
+    slug: web4africa
+    type: peering
+
+  - asn: 328112
+    name: AllWorldIT ZA
+    neighbor_ipv4: 193.239.119.96
+    neighbor_ipv6: 2001:7f8:13::a532:8112:1
+    passive: true
+    peering_policy: Open
+    slug: allworldit_za
+    type: peering
+
+  - asn: 394354
+    name: CIRA-CLOUD2
+    neighbor_ipv4: 193.239.118.169
+    neighbor_ipv6: 2001:7f8:13::a539:4354:1
+    passive: true
+    peering_policy: Open
+    slug: cira_cloud2
+    type: peering
+
+  - asn: 397601
+    name: Catchpoint
+    neighbor_ipv4: 193.239.118.124
+    neighbor_ipv6: 2001:7f8:13::a539:7601:1
+    passive: true
+    peering_policy: Open
+    slug: catchpoint
+    type: peering
+
+  - asn: 399580
+    name: RADISH NETWORKS
+    neighbor_ipv4: 193.239.116.60
+    neighbor_ipv6: 2001:7f8:13::a539:9580:1
+    passive: true
+    peering_policy: Open
+    slug: radish_networks
+    type: peering
+
+  - asn: 399606
+    name: Imaging Bay
+    neighbor_ipv4: 193.239.117.157
+    neighbor_ipv6: 2001:7f8:13::a539:9606:1
+    passive: true
+    peering_policy: Open
+    slug: imaging_bay
     type: peering
 
 bird_peers_downstreams:

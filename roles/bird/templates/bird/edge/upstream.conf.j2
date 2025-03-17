@@ -52,9 +52,37 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v4 {
       if reject_v4_bogon_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v4_small_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v4_default_route("import", "{{ item.type }}")     then reject;
-      #if reject_v4_invalid_rpki("import", "{{ item.type }}")      then reject;
 
       bgp_large_community.delete([(my_asn, 0, *)]);
+
+{% if item.type == 'route-server' %}
+      bgp_large_community.add((204059, 0, 6696));
+      if (net ~ global_ns_network_v4) then bgp_large_community.add((35137, 0, 6696));
+      if (net ~ global_ns_network_v4) then bgp_large_community.add((35137, 0, 6939));
+{% endif%}
+
+      accept;
+   }
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then {
+{% if item.asn == 6939 %}
+      if (net ~ global_ns_network_v4)                             then reject;
+{% endif %}
+      if reject_bogon_asns("import", "{{ item.type }}")           then reject;
+      if reject_long_aspaths("import", "{{ item.type }}")         then reject;
+      if reject_v4_bogon_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v4_small_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v4_default_route("import", "{{ item.type }}")     then reject;
+      if reject_v4_invalid_rpki("import", "{{ item.type }}")      then reject;
+
+      bgp_large_community.delete([(my_asn, 0, *)]);
+
+
+{% if item.type == 'route-server' %}
+      bgp_large_community.add((204059, 0, 6696));
+      if (net ~ global_ns_network_v4) then bgp_large_community.add((35137, 0, 6696));
+      if (net ~ global_ns_network_v4) then bgp_large_community.add((35137, 0, 6939));
+{% endif%}
+
       accept;
    }
    reject;
@@ -107,15 +135,43 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v6 {
 }
 
 filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v6 {
+
    if (bgp_large_community ~ [(my_asn, 0, 30)]) then {
       if reject_bogon_asns("import", "{{ item.type }}")           then reject;
       if reject_long_aspaths("import", "{{ item.type }}")         then reject;
       if reject_v6_bogon_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v6_small_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v6_default_route("import", "{{ item.type }}")     then reject;
-      #if reject_v6_invalid_rpki("import", "{{ item.type }}")      then reject;
 
       bgp_large_community.delete([(my_asn, 0, *)]);
+
+{% if item.type == 'route-server' %}
+      bgp_large_community.add((204059, 0, 6696));
+      if (net ~ global_ns_network_v4) then bgp_large_community.add((35137, 0, 6696));
+      if (net ~ global_ns_network_v4) then bgp_large_community.add((35137, 0, 6939));
+{% endif%}
+
+      accept;
+   }
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then {
+{% if item.asn == 6939 %}
+      if (net ~ global_ns_network_v6)                             then reject;
+{% endif %}
+      if reject_bogon_asns("import", "{{ item.type }}")           then reject;
+      if reject_long_aspaths("import", "{{ item.type }}")         then reject;
+      if reject_v6_bogon_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v6_small_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v6_default_route("import", "{{ item.type }}")     then reject;
+      if reject_v6_invalid_rpki("import", "{{ item.type }}")      then reject;
+
+      bgp_large_community.delete([(my_asn, 0, *)]);
+
+{% if item.type == 'route-server' %}
+      bgp_large_community.add((204059, 0, 6696));
+      if (net ~ global_ns_network_v4) then bgp_large_community.add((35137, 0, 6696));
+      if (net ~ global_ns_network_v4) then bgp_large_community.add((35137, 0, 6939));
+{% endif%}
+
       accept;
    }
    reject;

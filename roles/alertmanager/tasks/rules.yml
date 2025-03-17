@@ -10,6 +10,7 @@
     - vpn
     - patroni
     - hardware
+    - bgp
   loop_control:
     loop_var: rule_group
   notify:

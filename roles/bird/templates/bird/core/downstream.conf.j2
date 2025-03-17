@@ -9,7 +9,8 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v4 {
    if reject_v4_default_route("import", "{{ item.type }}")     then reject;
    if reject_v4_invalid_rpki("import", "{{ item.type }}")      then reject;
 
-   bgp_large_community.add((my_asn, 0, 30));
+   bgp_large_community.add((my_asn, 0, 50));
+   bgp_local_pref = 190;
 
    accept;
 }
@@ -24,7 +25,8 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v6 {
    if reject_v6_default_route("import", "{{ item.type }}")     then reject;
    if reject_v6_invalid_rpki("import", "{{ item.type }}")      then reject;
 
-   bgp_large_community.add((my_asn, 0, 30));
+   bgp_large_community.add((my_asn, 0, 50));
+   bgp_local_pref = 190;
 
    accept;
 }
@@ -38,12 +40,21 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v4 {
       if reject_v4_bogon_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v4_small_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v4_default_route("import", "{{ item.type }}")     then reject;
-      #if reject_v4_invalid_rpki("import", "{{ item.type }}")      then reject;
 
       bgp_large_community.delete([(my_asn, 0, *)]);
       accept;
    }
    if (bgp_large_community ~ [(my_asn, 0, 20)]) then {
+      if reject_bogon_asns("import", "{{ item.type }}")           then reject;
+      if reject_long_aspaths("import", "{{ item.type }}")         then reject;
+      if reject_v4_bogon_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v4_small_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v4_default_route("import", "{{ item.type }}")     then reject;
+
+      bgp_large_community.delete([(my_asn, 0, *)]);
+      accept;
+   }
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then {
       if reject_bogon_asns("import", "{{ item.type }}")           then reject;
       if reject_long_aspaths("import", "{{ item.type }}")         then reject;
       if reject_v4_bogon_prefixes("import", "{{ item.type }}")    then reject;
@@ -64,12 +75,21 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export_v6 {
       if reject_v6_bogon_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v6_small_prefixes("import", "{{ item.type }}")    then reject;
       if reject_v6_default_route("import", "{{ item.type }}")     then reject;
-      #if reject_v6_invalid_rpki("import", "{{ item.type }}")      then reject;
 
       bgp_large_community.delete([(my_asn, 0, *)]);
       accept;
    }
    if (bgp_large_community ~ [(my_asn, 0, 20)]) then {
+      if reject_bogon_asns("import", "{{ item.type }}")           then reject;
+      if reject_long_aspaths("import", "{{ item.type }}")         then reject;
+      if reject_v6_bogon_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v6_small_prefixes("import", "{{ item.type }}")    then reject;
+      if reject_v6_default_route("import", "{{ item.type }}")     then reject;
+
+      bgp_large_community.delete([(my_asn, 0, *)]);
+      accept;
+   }
+   if (bgp_large_community ~ [(my_asn, 0, 50)]) then {
       if reject_bogon_asns("import", "{{ item.type }}")           then reject;
       if reject_long_aspaths("import", "{{ item.type }}")         then reject;
       if reject_v6_bogon_prefixes("import", "{{ item.type }}")    then reject;
@@ -105,6 +125,13 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
          bgp_local_pref = 190;
          accept;
       }
+{% if 'bra' in ansible_fqdn %}
+      if (net ~ [100.126.255.0/24+]) then {
+         bgp_large_community.add((my_asn, 0, 40));
+         bgp_local_pref = 190;
+         accept;
+      }
+{% endif %}
    }
    if (net.type = NET_IP6) then {
       if (net ~ neutrinet_network_v6) then {
@@ -124,21 +151,6 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
       if (proto = "default_gw_v6") then accept;
    }
    reject;
-}
-{% endif %}
-
-{% if item.type == 'client' %}
-filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import {
-   if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
-   reject;
-
-}
-filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_export {
-
-   if (bgp_large_community ~ [(my_asn, 0, 20)]) then accept;
-   if (bgp_large_community ~ [(my_asn, 0, 30)]) then accept;
-   reject;
-
 }
 {% endif %}
 

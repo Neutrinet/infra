@@ -26,5 +26,13 @@ bird_peers_downstreams:
     slug: verixi
     type: neutrinet
 
-bird_static_route_v4: []
-bird_static_route_v6: []
+bird_static_route_v4:
+  - prefix: 80.67.191.2/32
+    unreachable: false
+    via: '"gre-tharyrok"'
+    is_public_exportable: false
+bird_static_route_v6:
+  - prefix: 2001:0913:1d00:0100::/56
+    unreachable: false
+    via: '"gre-tharyrok"'
+    is_public_exportable: false

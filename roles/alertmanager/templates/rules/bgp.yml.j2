@@ -1,0 +1,29 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+- name: BGP_Sessions
+  rules:
+  - alert: BGPStateDown
+    expr: prometheus_bird_protocol_up{proto="BGP"} == 0 and label_replace(prometheus_bird_protocol_up{state!="Passive", proto="BGP"}, "current_state", "$1", "state", "(.*)")
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Session BGP {{ $labels.name }} - Down"
+      description: |
+        Session: {{ $labels.name }}
+        State: {{ $labels.state }}
+        Instance: {{ $labels.instance }}
+
+  - alert: BGPStateRecovered
+    expr: prometheus_bird_protocol_up{proto="BGP"} == 1 and changes(prometheus_bird_protocol_up{proto="BGP"}[5m]) > 0
+    for: 5m
+    labels:
+      severity: info
+    annotations:
+      summary: "Session BGP {{ $labels.name }} - Recovered"
+      description: |
+        Session: {{ $labels.name }}
+        State: {{ $labels.state }}
+        Instance: {{ $labels.instance }}
