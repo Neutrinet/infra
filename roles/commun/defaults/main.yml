@@ -13,11 +13,9 @@ users:
 grub_option_boot_linux: ''
 
 commun_ntp_clients:
+  - address: pool.ntp.org
+    nts: false
+    pool: true
   - address: nts.teambelgium.net
     nts: true
-  - address: paris.time.system76.com
-    nts: true
-  - address: ptbtime4.ptb.de
-    nts: true
-  - address: ntppool2.time.nl
-    nts: true
+    pool: false
