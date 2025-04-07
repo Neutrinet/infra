@@ -1,39 +1,45 @@
 ---
-- name: Désinstallation de NTP et Chrony
+- name: Désinstallation de ntp et timesyncd
   # See https://github.com/ilri/rmg-ansible-public/issues/46
   ansible.builtin.package:
     name:
       - ntp
-      - chrony
+      - systemd-timesyncd
     state: absent
 
-- name: Installation de systemd-timesyncd
+- name: Installation de chrony
   ansible.builtin.package:
-    name: systemd-timesyncd
+    name: chrony
     state: present
-  when: ansible_distribution_major_version is version(11, '>=')
 
-- name: Création du dossier de configuration de systemd-timesyncd
-  ansible.builtin.file:
-    path: /etc/systemd/timesyncd.conf.d
-    state: directory
-    owner: root
-    group: root
-    mode: "u=rwx,go=rx"
-  when: ntp_hosts | length > 0
-
-- name: Configuration du client NTP
+- name: Création de la configuration de chrony
   ansible.builtin.template:
-    src: ntp/timesyncd.conf.j2
-    dest: /etc/systemd/timesyncd.conf.d/local.conf
+    src: ntp/chrony.conf.j2
+    dest: /etc/chrony/chrony.conf
     owner: root
     group: root
-    mode: "u=rw,go=r"
-  when: ntp_hosts | length > 0
-  notify: Restart systemd-timesyncd
+    mode: "ugo=r"
+  notify: Restart chrony
 
-- name: Activation de systemd-timesyncd au démarrage
+- name: Création du dossier client pour chrony
+  ansible.builtin.file:
+    path: /etc/chrony/sources.d/
+    state: directory
+    mode: "u=rwX,go=rX"
+    owner: root
+    group: root
+
+- name: Configuration du client NTP pour chrony
+  ansible.builtin.template:
+    src: ntp/clients.sources.j2
+    dest: /etc/chrony/sources.d/clients.sources
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart chrony
+
+- name: Activation de chrony au démarrage
   ansible.builtin.service:
-    name: systemd-timesyncd
+    name: chrony
     state: started
     enabled: true
