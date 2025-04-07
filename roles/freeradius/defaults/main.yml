@@ -1,0 +1,7 @@
+---
+
+freeradius_database_name: freeradius
+freeradius_database_user: freeradius
+freeradius_database_password: freeradius
+freeradius_database_host: localhost
+freeradius_database_port: 5432

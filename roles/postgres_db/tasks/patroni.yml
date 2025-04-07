@@ -11,7 +11,7 @@
   ansible.builtin.set_fact:
     postgresql_patroni_primary_hosts: >-
       {{ _postgresql_patroni_health.results
-        | selectattr("json.role", "==", "master")
+        | selectattr("json.role", "==", "primary")
         | map(attribute="host")
         | list }}
 

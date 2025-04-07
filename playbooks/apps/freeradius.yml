@@ -1,0 +1,6 @@
+- name: Déploiement de freeradius
+  hosts: freeradius
+  become: true
+
+  roles:
+    - freeradius

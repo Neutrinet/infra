@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from Etcd
+  urls = ["http://localhost:2379/metrics"]
+  metric_version = 2

@@ -1,0 +1,87 @@
+server pppoe {
+    listen {
+        type = auth
+        ipaddr = *
+        port = 1812
+        limit {
+            max_connections = 16
+            lifetime = 0
+            idle_timeout = 30
+        }
+    }
+
+    listen {
+        type = acct
+        ipaddr = *
+        port = 1813
+        limit {
+            max_connections = 16
+            lifetime = 0
+            idle_timeout = 30
+        }
+    }
+
+    authorize {
+        # Vérifie si le format est xxx@NEUTRINET
+        if (!("%{User-Name}" =~ /.+@NEUTRINET$/i)) {
+            update reply {
+                Reply-Message = "Username must be in the format @NEUTRINET"
+            }
+            reject
+        }
+
+        # Vérifie si l'utilisateur a déjà une session active
+        sql
+        if ("%{sql: SELECT COUNT(*) FROM radacct WHERE username = '%{tolower:%{User-Name}}' AND acctstoptime IS NULL}" > 0) {
+            update reply {
+                Reply-Message = "Multiple simultaneous logins not allowed"
+            }
+            reject
+        }
+
+        # Récupération des groupes depuis la base de données
+        sql
+
+        # Traitement des groupes
+        group
+        pap
+    }
+
+    authenticate {
+        Auth-Type PAP {
+            pap
+        }
+    }
+
+    preacct {
+        preprocess
+        acct_unique
+        suffix
+    }
+
+    accounting {
+        sql
+        exec
+        attr_filter.accounting_response
+    }
+
+    session {
+        sql
+    }
+
+    post-auth {
+        update {
+            &reply: += &session-state:
+        }
+
+        # Limiter à une session PPPoE à la fois
+        sql
+        exec
+        remove_reply_message_if_eap
+        Post-Auth-Type REJECT {
+            attr_filter.access_reject
+            eap
+            remove_reply_message_if_eap
+        }
+    }
+}

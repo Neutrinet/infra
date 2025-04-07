@@ -1,0 +1,85 @@
+---
+
+- name: Configuration de la base de données PostgreSQL
+  ansible.builtin.import_role:
+    name: postgres_db
+  vars:
+    postgresql_db_name: "{{ freeradius_database_name }}"
+    postgresql_db_user: "{{ freeradius_database_user }}"
+    postgresql_db_password: "{{ freeradius_database_password }}"
+  tags: ['postgres']
+
+- name: Installation de FreeRADIUS
+  ansible.builtin.package:
+    name:
+      - freeradius
+      - freeradius-postgresql
+      - freeradius-utils
+      - python3-psycopg2
+    state: present
+
+- name: Créer les table clasique pour FreeRADIUS
+  community.postgresql.postgresql_query:
+    host: "{{ freeradius_database_host }}"
+    port: "{{ freeradius_database_port }}"
+    login_user: "{{ freeradius_database_user }}"
+    login_password: "{{ freeradius_database_password }}"
+    db: "{{ freeradius_database_name }}"
+    query: "{{ lookup('file', 'sql/schema.sql') }}"
+  notify: Restart FreeRADIUS
+
+- name: Config SQL de FreeRADIUS
+  ansible.builtin.template:
+    src: sql.j2
+    dest: /etc/freeradius/3.0/mods-available/sql
+    owner: freerad
+    group: freerad
+    mode: "ug=r,o="
+  notify: Restart FreeRADIUS
+
+- name: Enable module sql.j2
+  ansible.builtin.file:
+    src: /etc/freeradius/3.0/mods-available/sql
+    dest: /etc/freeradius/3.0/mods-enabled/sql
+    state: link
+    owner: freerad
+    group: freerad
+    mode: "ug=r,o="
+  notify: Restart FreeRADIUS
+
+
+# - name: Config de etcd
+#   ansible.builtin.template:
+#     src: etcd.j2
+#     dest: /etc/default/etcd
+#     owner: root
+#     group: root
+#     mode: "u=rw,go=r"
+#   vars:
+#     etcd_current_member: "{{ etcd_members | selectattr('name', '==', ansible_hostname) | first }}"
+#   notify: Restart etcd
+#
+# - name: Installation de etcd
+#   ansible.builtin.package:
+#     name:
+#       - etcd
+#       - etcd-client
+#       - etcd-server
+#     state: present
+#
+# - name: Activation de etcd au démarrage
+#   ansible.builtin.service:
+#     name: etcd
+#     state: started
+#     enabled: true
+#
+# - name: Installation des plugins Telegraf
+#   ansible.builtin.template:
+#     src: telegraf/etcd.conf.j2
+#     dest: /etc/telegraf/telegraf.d/etcd.conf
+#     owner: telegraf
+#     group: telegraf
+#     mode: "u=rw,g=r,o="
+#     validate: telegraf --config %s --test
+#   notify: Restart telegraf
+#   tags: ['telegraf_config']

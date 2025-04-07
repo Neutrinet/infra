@@ -1,0 +1,10 @@
+---
+- name: Restart FreeRADIUS
+  ansible.builtin.service:
+    name: freeradius
+    state: restarted
+
+- name: Restart telegraf
+  ansible.builtin.service:
+    name: telegraf
+    state: restarted
