@@ -1,0 +1,63 @@
+---
+- name: install | Créer l'utilisateur unix Stalwart
+  ansible.builtin.user:
+    name: stalwart
+    home: /opt/stalwart
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: install | Création de dossiers Stalwart
+  ansible.builtin.file:
+    path: "{{ stalwart_dir }}"
+    owner: stalwart
+    group: stalwart
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/stalwart
+    - /opt/stalwart/{{ stalwart_version }}
+    - /etc/stalwart
+    - "{{ stalwart_storage_path }}"
+  loop_control:
+    loop_var: stalwart_dir
+
+- name: install | Création du dossier d'archives Stalwart
+  ansible.builtin.file:
+    path: /usr/local/src/stalwart
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: install | Téléchargement de l'archive Stalwart
+  ansible.builtin.get_url:
+    url: https://github.com/stalwartlabs/mail-server/releases/download/v{{ stalwart_version }}/stalwart-mail-x86_64-unknown-linux-gnu.tar.gz
+    dest: /usr/local/src/stalwart/{{ stalwart_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: install | Dézipper l'archive Stalwart
+  ansible.builtin.unarchive:
+    src: /usr/local/src/stalwart/{{ stalwart_version }}.tar.gz
+    dest: /opt/stalwart/{{ stalwart_version }}
+    creates: /opt/stalwart/{{ stalwart_version }}/stalwart-mail
+    remote_src: true
+    owner: stalwart
+    group: stalwart
+
+- name: install | Défini le binaire stalwart executable
+  ansible.builtin.file:
+    path: /opt/stalwart/{{ stalwart_version }}/stalwart-mail
+    owner: stalwart
+    group: stalwart
+    mode: "u=rx,g=rx,o="
+    state: file
+
+- name: install | Création d'un lien symbolique pour le binaire Stalwart
+  ansible.builtin.file:
+    src: /opt/stalwart/{{ stalwart_version }}/stalwart-mail
+    dest: /usr/local/bin/stalwart
+    state: link
+  notify: Restart stalwart

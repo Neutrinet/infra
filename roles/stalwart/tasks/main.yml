@@ -1,0 +1,17 @@
+---
+
+- name: Install Stalwart
+  ansible.builtin.import_tasks:
+    file: install.yml
+
+- name: Config Stalwart
+  ansible.builtin.import_tasks:
+    file: config.yml
+
+- name: Enable service Stalwart
+  ansible.builtin.import_tasks:
+    file: service.yml
+
+- name: Cleanup
+  ansible.builtin.import_tasks:
+    file: cleanup.yml
