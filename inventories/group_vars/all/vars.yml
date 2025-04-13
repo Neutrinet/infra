@@ -4,6 +4,16 @@ letsencrypt_mail_notification: "{{ mail_notification }}"
 postgresql_patroni_hosts: "{{ groups.postgres_patroni }}"
 postgresql_host: haproxy-00.patata.louise.neutri.net
 
+commun_ntp_clients:
+  - address: nts.teambelgium.net
+    nts: true
+  - address: paris.time.system76.com
+    nts: true
+  - address: ptbtime4.ptb.de
+    nts: true
+  - address: ntppool2.time.nl
+    nts: true
+
 caddy_trusted_proxies:
   - 10.0.11.11
   - 2001:913:1000:11::11

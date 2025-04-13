@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+
+{% for client in commun_ntp_clients %}
+{% if 'pool' in client and client.pool %}
+pool {{ client.address }} iburst maxsources 4
+
+{% else %}
+server {{ client.address }} iburst {% if 'nts' in client and client.nts %}nts{% endif %}
+
+{% endif %}
+{% endfor %}

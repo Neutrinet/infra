@@ -24,9 +24,9 @@
     name: systemd-journald
     state: restarted
 
-- name: Restart systemd-timesyncd
+- name: Restart chrony
   ansible.builtin.service:
-    name: systemd-timesyncd
+    name: chrony
     state: restarted
 
 - name: Update grub  # noqa command-instead-of-shell
