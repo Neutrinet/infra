@@ -1,3 +1,8 @@
+# Use pfsense hosts as NTP servers
+commun_ntp_clients:
+  - address: 2001:913:1000:10::61
+  - address: 2001:913:1000:10::62
+
 bird_router_id: 169.254.0.190
 bird_my_asn: 204059
 bird_router_source_ipv4: 169.254.0.190
