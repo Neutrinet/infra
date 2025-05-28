@@ -15,6 +15,15 @@ haproxy:
     headers:
       Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
 
+  - hostname: teamrecup.be
+    target:
+      - grav.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
+
   - hostname: beta.neutrinet.be
     target:
       - grav.patata.louise.neutri.net
@@ -130,9 +139,9 @@ haproxy:
 
   - hostname: s3.neutrinet.be
     target:
-      - ceph-s3-01.patata.louise.neutri.net
-      - ceph-s3-02.patata.louise.neutri.net
-      - ceph-s3-03.patata.louise.neutri.net
+      - topi.louise.neutri.net
+      - nam.louise.neutri.net
+      - bour.louise.neutri.net
     target_port: 7480
     healthcheck: true
     healthcheck_url: HEAD /
