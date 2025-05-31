@@ -15,9 +15,8 @@
 - name: Installation des dépendances python
   ansible.builtin.package:
     name:
-      - python3-virtualenv
+      - python3-venv
       - python3-llfuse
-      - virtualenv
     state: present
 
 - name: Installation de Borgmatic  # noqa package-latest
