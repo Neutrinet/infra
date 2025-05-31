@@ -7,3 +7,4 @@ molecule-plugins[vagrant]~=23.7
 pre-commit~=4.2
 python-vagrant~=1.0.0
 mitogen~=0.3
+passlib~=1.7.4
