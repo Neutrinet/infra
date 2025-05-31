@@ -12,6 +12,7 @@
     php_extra_modules:
       - yaml
       - sqlite3
+      - intl
     # Grav handles php session name by itself
     php_fpm_session_name: ""
   tags: ['php_fpm']
