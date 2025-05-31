@@ -8,15 +8,9 @@
     mode: "ugo=r"
     force: true
 
-- name: Suppression de l'ancien dépôt APT pour NodeJS
-  ansible.builtin.apt_repository:
-    repo: deb https://deb.nodesource.com/node_{{ nodejs_major_version }}.x {{ ansible_distribution_release }} main
-    filename: nodejs
-    state: absent
-
 - name: Ajout du dépôt APT pour NodeJS
   ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/nodejs.asc] https://deb.nodesource.com/node_{{ nodejs_major_version }}.x {{ ansible_distribution_release }} main
+    repo: deb [signed-by=/etc/apt/keyrings/nodejs.asc] https://deb.nodesource.com/node_{{ nodejs_major_version }}.x nodistro main
     filename: nodejs
     state: present
 
