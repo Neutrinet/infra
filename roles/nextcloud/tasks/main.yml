@@ -37,10 +37,6 @@
     postgresql_db_password: "{{ nextcloud_postgresql_password }}"
   tags: ['postgres']
 
-- name: Configuration de Nextcloud
-  ansible.builtin.import_tasks: config.yml
-  tags: ['nextcloud_config']
-
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:
     src: borgmatic/nextcloud.yml.j2
