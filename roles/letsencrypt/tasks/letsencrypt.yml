@@ -22,9 +22,16 @@
 
 - name: Installation de certbot
   ansible.builtin.pip:
-    name:
-      - certbot
-      - certbot-dns-ovh
+    name: certbot
+    virtualenv: /opt/letsencrypt
+    virtualenv_python: python3
+    state: present
+    version: "{{ letsencrypt_certbot_version }}"
+    chdir: /opt/letsencrypt
+
+- name: Installation de certbot-dns-ovh
+  ansible.builtin.pip:
+    name: certbot-dns-ovh
     virtualenv: /opt/letsencrypt
     virtualenv_python: python3
     state: present
