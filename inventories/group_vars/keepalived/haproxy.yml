@@ -13,16 +13,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' 'unsafe-eval'; font-src 'self'; connect-src 'self';"
-
-  - hostname: teamrecup.be
-    target:
-      - grav.patata.louise.neutri.net
-    target_port: 80
-    healthcheck: true
-    healthcheck_url: GET /healthcheck
-    headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
+      Content-Security-Policy: "default-src 'none'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self';"
 
   - hostname: beta.neutrinet.be
     target:
