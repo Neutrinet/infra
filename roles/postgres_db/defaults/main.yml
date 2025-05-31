@@ -1,3 +1,4 @@
+postgresql_major_version: 17
 postgresql_patroni_hosts: []
 postgresql_db_name: neutrinet
 postgresql_db_password: neutrinet
