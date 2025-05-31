@@ -26,7 +26,7 @@
   become: true
   become_user: "{{ ruby_owner }}"
 
-- name: Installation de rbenv-build  # noqa latest[git]
+- name: Installation de ruby-build  # noqa latest[git]
   ansible.builtin.git:
     repo: https://github.com/rbenv/ruby-build.git
     dest: ~/.rbenv/plugins/ruby-build
