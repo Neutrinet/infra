@@ -8,6 +8,8 @@
     mode: "ugo=r"
     force: true
 
+- name: Suppres
+
 - name: Ajout du dépôt APT pour NodeJS
   ansible.builtin.apt_repository:
     repo: deb [signed-by=/etc/apt/keyrings/nodejs.asc] https://deb.nodesource.com/node_{{ nodejs_major_version }}.x nodistro main

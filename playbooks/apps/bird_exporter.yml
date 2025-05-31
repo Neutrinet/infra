@@ -1,0 +1,6 @@
+- name: Déploiement de Bird Exporter
+  hosts: bird_exporter
+  become: true
+
+  roles:
+    - bird_exporter
