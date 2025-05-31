@@ -7,15 +7,9 @@
     mode: "ugo=r"
     force: true
 
-- name: Suppression de l'ancien dépôt APT pour ElasticSearch
-  ansible.builtin.apt_repository:
-    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
-    filename: elasticsearch
-    state: absent
-
 - name: Ajout du dépôt APT pour ElasticSearch
   ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/elasticsearch.asc] https://artifacts.elastic.co/packages/7.x/apt stable main
+    repo: deb [signed-by=/etc/apt/keyrings/elasticsearch.asc] https://artifacts.elastic.co/packages/{{ zammad_elasticsearch_major_version }}.x/apt stable main
     filename: elasticsearch
     state: present
 

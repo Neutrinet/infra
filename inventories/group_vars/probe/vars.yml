@@ -1,5 +1,3 @@
-blackbox_exporter_version: 0.25.0
-
 zammad_monitoring_token: "{{ vault_zammad_monitoring_token }}"
 blackbox_exporter_http_probes:
   # Grav

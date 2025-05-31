@@ -4,4 +4,6 @@ zammad_owner: "{{ zammad_domain | replace('.', '-') }}"
 postgresql_host: localhost
 
 zammad_postgresql_password: neutrinet
+
+zammad_elasticsearch_major_version: 9
 zammad_elasticsearch_memory_limit: 512m

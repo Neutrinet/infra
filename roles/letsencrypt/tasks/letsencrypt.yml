@@ -20,15 +20,14 @@
     - /etc/letsencrypt/ovh
     - /opt/letsencrypt
 
-- name: Installation de pip et certbot  # noqa package-latest
+- name: Installation de certbot
   ansible.builtin.pip:
     name:
-      - pip
       - certbot
       - certbot-dns-ovh
     virtualenv: /opt/letsencrypt
     virtualenv_python: python3
-    state: latest
+    state: "{{ letsencrypt_certbot_version }}"
     chdir: /opt/letsencrypt
 
 - name: Création d'un lien symbolique pour le binaire certbot

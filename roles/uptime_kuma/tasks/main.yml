@@ -3,7 +3,7 @@
   ansible.builtin.import_role:
     name: nodejs
   vars:
-    nodejs_major_version: 18
+    nodejs_major_version: 22
   tags: ['nodejs']
 
 - name: Création de l'utilisateur

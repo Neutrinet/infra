@@ -14,18 +14,11 @@
     postgresql_db_password: "{{ accounting_postgresql_password }}"
   tags: ['postgres']
 
-- name: Installation de NodeJS
-  ansible.builtin.import_role:
-    name: nodejs
-  vars:
-    nodejs_major_version: 14
-  tags: ['nodejs']
-
 - name: Installation de Ruby
   ansible.builtin.import_role:
     name: ruby
   vars:
-    ruby_version: 3.1.3
+    ruby_version: 3.1.7
     ruby_owner: "{{ accounting_owner }}"
   tags: ['ruby']
 

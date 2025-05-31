@@ -1,3 +1,4 @@
+borgmatic_version: 2.0.6
 borgmatic_repositories:
   - host: "{{ inventory_hostname }}"
     path: /media/data/backups

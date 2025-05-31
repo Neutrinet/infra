@@ -1,4 +1,6 @@
 ---
+letsencrypt_certbot_version: 4.0.0
+
 letsencrypt_mail_notification: letsencrypt@exemple.com
 
 letsencrypt_post_hook: ''
