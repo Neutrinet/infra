@@ -1,4 +1,3 @@
-ceph_proxmox_version: squid
 ceph_cluster: proxmox-patata
 
 # Use pfsense hosts as NTP servers
