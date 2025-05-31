@@ -27,7 +27,8 @@
       - certbot-dns-ovh
     virtualenv: /opt/letsencrypt
     virtualenv_python: python3
-    state: "{{ letsencrypt_certbot_version }}"
+    state: present
+    version: "{{ letsencrypt_certbot_version }}"
     chdir: /opt/letsencrypt
 
 - name: Création d'un lien symbolique pour le binaire certbot

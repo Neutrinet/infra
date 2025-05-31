@@ -23,7 +23,8 @@
 - name: Installation de Borgmatic  # noqa package-latest
   ansible.builtin.pip:
     name: borgmatic
-    state: "{{ borgmatic_version }}"
+    state: present
+    version: "{{ borgmatic_version }}"
     virtualenv: /opt/borgmatic
     virtualenv_python: python3
     chdir: /opt/borgmatic
