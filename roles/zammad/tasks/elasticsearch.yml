@@ -35,13 +35,6 @@
     group: elasticsearch
     mode: "u=rw,g=r,o="
 
-- name: Installation des plugins ElasticSearch
-  community.general.elasticsearch_plugin:
-    name: ingest-attachment
-    state: present
-    force: true
-  notify: Restart elasticsearch
-
 - name: Activation de ElasticSearch au démarrage
   ansible.builtin.service:
     name: elasticsearch
