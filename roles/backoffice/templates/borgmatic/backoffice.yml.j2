@@ -5,7 +5,7 @@
 source_directories: !retain
   - "/etc/caddy/conf.d/{{ backoffice_owner }}.conf"
   - "/etc/caddy/conf.d/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.conf"
-  - "{{ web_app_dist_dir }}"
+  - "/var/www/{{ backoffice_owner }}/dist"
   - "/etc/systemd/system/backoffice.service"
 
 archive_name_format: backoffice-{{ backoffice_owner }}_{hostname}-{now}

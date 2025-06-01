@@ -5,10 +5,10 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: buster-backoffice-molecule
-    box: debian/buster64
+  - name: bullseye-backoffice-molecule
+    box: debian/bullseye64
     cpu: 2
-    memory: 512
+    memory: 1024
     interfaces:
       - network_name: private_network
         type: dhcp

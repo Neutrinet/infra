@@ -1,26 +1,40 @@
 - name: Installation de pip2 et ses dépendances
   ansible.builtin.package:
     name:
-      - python-pip
       - virtualenv
       - libpq-dev
-      - python-dev
+      - python2-dev
       - gcc
     state: present
+
+- name: Téléchargement de get-pip2
+  ansible.builtin.get_url:
+    url: https://bootstrap.pypa.io/pip/2.7/get-pip.py
+    dest: /opt/get-pip.py
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+  register: download_get_pip2
+
+- name: Exécution de get-pip2  # noqa no-handler
+  ansible.builtin.command:
+    cmd: python2 /opt/get-pip.py
+  changed_when: true
+  when: download_get_pip2 is changed
 
 - name: Récupération du dépôt git de backoffice  # noqa latest[git]
   ansible.builtin.git:
     repo: https://gitlab.domainepublic.net/Neutrinet/backoffice.git
-    dest: "{{ web_app_dist_dir }}"
+    dest: /var/www/{{ backoffice_owner }}/dist
     single_branch: true
   become: true
-  become_user: "{{ web_app_owner }}"
+  become_user: "{{ backoffice_owner }}"
   notify: Restart backoffice
 
 - name: Configuration de backoffice
   ansible.builtin.template:
     src: backoffice/settings_local.py.j2
-    dest: "{{ web_app_dist_dir }}/backoffice/settings_local.py"
+    dest: /var/www/{{ backoffice_owner }}/dist/backoffice/settings_local.py
     owner: "{{ backoffice_owner }}"
     group: "{{ backoffice_owner }}"
     mode: "u=rw,g=r,o="
@@ -28,12 +42,12 @@
 
 - name: Création du virtualenv python
   ansible.builtin.pip:
-    requirements: "{{ web_app_dist_dir }}/requirements.txt"
+    requirements: /var/www/{{ backoffice_owner }}/dist/requirements.txt
     state: present
-    virtualenv: "{{ web_app_dist_dir }}/env"
+    virtualenv: /var/www/{{ backoffice_owner }}/dist/env
     virtualenv_python: python2
   become: true
-  become_user: "{{ web_app_owner }}"
+  become_user: "{{ backoffice_owner }}"
   notify: Restart backoffice
 
 - name: Configuration du service systemd
