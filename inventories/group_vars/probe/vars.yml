@@ -16,7 +16,7 @@ blackbox_exporter_http_probes:
   - url: https://internetcu.be
     check_cert_expiry: true
   - name: https://sync.labriqueinter.net
-    url: https://sync.labriqueinter.net/hooks/health
+    url: https://sync.labriqueinter.net
   # Mobilizon
   - url: https://mobilizon.be
     check_cert_expiry: true
