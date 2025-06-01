@@ -19,6 +19,18 @@
       - python3-llfuse
     state: present
 
+- name: Vérifier si la version Python de venv correspond au système actuel
+  ansible.builtin.stat:
+    path: "/opt/borgmatic/lib/python{{ ansible_python.version.major }}.{{ ansible_python.version.minor }}"
+  register: python_version_match
+
+- name: Supprimer l'environnement virtuel incompatible
+  ansible.builtin.file:
+    path: "/opt/borgmatic"
+    state: absent
+  when:
+    - not python_version_match.stat.exists
+
 - name: Installation de Borgmatic  # noqa package-latest
   ansible.builtin.pip:
     name: borgmatic

@@ -3,7 +3,7 @@ blackbox_exporter_http_probes:
   # Grav
   - name: https://neutrinet.be
     url: https://neutrinet.be/en
-    body: Neutral, Decentralized, And you ?
+    body: Local Internet Producer
     check_cert_expiry: true
   # Archived wikis
   - url: https://mediawiki.neutrinet.be
@@ -19,7 +19,6 @@ blackbox_exporter_http_probes:
     url: https://sync.labriqueinter.net/hooks/health
   # Mobilizon
   - url: https://mobilizon.be
-    ip_version: 4  # At the moment mobilizon.be is only available in IPv4
     check_cert_expiry: true
   # Mattermost
   - name: https://chat.neutrinet.be

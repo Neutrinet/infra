@@ -12,6 +12,16 @@
     name: chrony
     state: present
 
+- name: Création de la configuration de chrony (old)
+  ansible.builtin.template:
+    src: ntp/chrony_old.conf.j2
+    dest: /etc/chrony/chrony.conf
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart chrony
+  when: ansible_distribution_major_version | int <= 10
+
 - name: Création de la configuration de chrony
   ansible.builtin.template:
     src: ntp/chrony.conf.j2
@@ -20,6 +30,7 @@
     group: root
     mode: "ugo=r"
   notify: Restart chrony
+  when: ansible_distribution_major_version | int >= 11
 
 - name: Création du dossier client pour chrony
   ansible.builtin.file:
@@ -37,6 +48,7 @@
     group: root
     mode: "ugo=r"
   notify: Restart chrony
+  when: ansible_distribution_major_version | int >= 11
 
 - name: Activation de chrony au démarrage
   ansible.builtin.service:

@@ -22,6 +22,7 @@
     repo: deb [signed-by=/etc/apt/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
     filename: postgresql
     state: present
+  when: ansible_distribution_major_version | int >= 11
 
 - name: Installation des dépendences
   ansible.builtin.package:
@@ -29,6 +30,15 @@
       - postgresql-client-{{ postgresql_major_version }}
       - acl
     state: present
+  when: ansible_distribution_major_version | int >= 11
+
+- name: Installation des dépendences (old)
+  ansible.builtin.package:
+    name:
+      - postgresql-client
+      - acl
+    state: present
+  when: ansible_distribution_major_version | int <= 10
 
 - name: Création de la base de données PostgreSQL {{ postgresql_db_name }}
   community.postgresql.postgresql_db:
