@@ -8,12 +8,6 @@
     mode: "ugo=r"
     force: true
 
-- name: Suppression de l'ancien dépôt APT pour Caddy
-  ansible.builtin.apt_repository:
-    repo: deb https://dl.cloudsmith.io/public/caddy/stable/deb/{{ ansible_distribution | lower }} any-version main
-    filename: caddy-stable
-    state: absent
-
 - name: Ajout du dépôt APT pour Caddy
   ansible.builtin.apt_repository:
     repo: deb [signed-by=/etc/apt/keyrings/caddy.asc] https://dl.cloudsmith.io/public/caddy/stable/deb/{{ ansible_distribution | lower }} any-version main
