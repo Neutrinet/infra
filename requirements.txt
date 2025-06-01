@@ -2,7 +2,8 @@ ansible~=10.0
 ansible-core~=2.17
 ansible-lint~=25.5
 ansible-compat~=25.5
-molecule~=25.5
+# See https://github.com/ansible-community/molecule-plugins/issues/301
+molecule~=25.1.0
 molecule-plugins[vagrant]~=23.7
 pre-commit~=4.2
 python-vagrant~=1.0.0
