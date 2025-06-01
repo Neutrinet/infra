@@ -68,6 +68,19 @@
   become_user: postgres
   delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
 
+# See https://stackoverflow.com/questions/22483555/postgresql-give-all-permissions-to-a-user-on-a-postgresql-database
+- name: Octroi du privilège CREATE sur le schéma public à l'utilisateur PostgreSQL {{ postgresql_db_name }}
+  community.postgresql.postgresql_privs:
+    db: "{{ postgresql_db_name }}"
+    priv: CREATE
+    type: schema
+    objs: public
+    role: "{{ postgresql_db_name }}"
+    state: present
+  become: true
+  become_user: postgres
+  delegate_to: "{{ postgresql_patroni_primary_host | default(inventory_hostname) }}"
+
 - name: Changement du propriétaire de la base de données
   community.postgresql.postgresql_db:
     db: "{{ postgresql_db_name }}"
