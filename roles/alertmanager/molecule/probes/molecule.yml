@@ -3,26 +3,26 @@ dependency:
 driver:
   name: vagrant
   provider:
-    name: virtualbox
+    name: libvirt
 platforms:
-  - name: bullseye-alertmanager-molecule
-    box: debian/bullseye64
+  - name: bookworm-alertmanager-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 1024
     interfaces:
       - network_name: private_network
         ip: 172.29.129.50
         auto_config: true
-  - name: bullseye-probe-01-molecule
-    box: debian/bullseye64
+  - name: bookworm-probe-01-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 512
     interfaces:
       - network_name: private_network
         ip: 172.29.129.51
         auto_config: true
-  - name: bullseye-probe-02-molecule
-    box: debian/bullseye64
+  - name: bookworm-probe-02-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 512
     interfaces:

@@ -3,7 +3,7 @@ dependency:
 driver:
   name: vagrant
   provider:
-    name: virtualbox
+    name: libvirt
 platforms:
   - name: bookworm-semaphore-molecule
     box: debian/bookworm64

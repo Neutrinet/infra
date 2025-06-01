@@ -3,7 +3,7 @@ dependency:
 driver:
   name: vagrant
   provider:
-    name: virtualbox
+    name: libvirt
 platforms:
   - name: buster-backoffice-molecule
     box: debian/buster64

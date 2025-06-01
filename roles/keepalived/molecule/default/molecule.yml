@@ -3,18 +3,18 @@ dependency:
 driver:
   name: vagrant
   provider:
-    name: virtualbox
+    name: libvirt
 platforms:
-  - name: bullseye-keepalived-01-molecule
-    box: debian/bullseye64
+  - name: bookworm-keepalived-01-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 512
     interfaces:
       - network_name: private_network
         ip: 172.29.129.21
         auto_config: true
-  - name: bullseye-keepalived-02-molecule
-    box: debian/bullseye64
+  - name: bookworm-keepalived-02-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 512
     interfaces:

@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bullseye-zammad-molecule
-    box: debian/bullseye64
+  - name: bookworm-zammad-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 2048
 provisioner:

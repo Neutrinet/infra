@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bullseye-blackbox-exporter-molecule
-    box: debian/bullseye64
+  - name: bookworm-blackbox-exporter-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 512
 provisioner:
