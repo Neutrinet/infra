@@ -28,6 +28,17 @@
     mode: "u=rw,g=r,o="
   notify: Restart backoffice
 
+- name: Vérifier si la version Python de venv correspond au système actuel
+  ansible.builtin.stat:
+    path: "/var/www/{{ backoffice_owner }}/dist/env/lib/python{{ ansible_python.version.major }}.{{ ansible_python.version.minor }}"
+  register: python_version_match
+
+- name: Supprimer l'environnement virtuel incompatible
+  ansible.builtin.file:
+    path: "/var/www/{{ backoffice_owner }}/dist/env"
+    state: absent
+  when: not python_version_match.stat.exists
+
 - name: Création du virtualenv python
   ansible.builtin.pip:
     requirements: /var/www/{{ backoffice_owner }}/dist/requirements.txt
