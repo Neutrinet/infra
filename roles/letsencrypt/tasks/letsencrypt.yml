@@ -18,6 +18,8 @@
   with_items:
     - /etc/letsencrypt
     - /etc/letsencrypt/ovh
+    - /etc/letsencrypt/live
+    - /etc/letsencrypt/archive
     - /opt/letsencrypt
 
 - name: Vérifier si la version Python de venv correspond au système actuel
