@@ -1,34 +1,22 @@
-- name: Installation de pip2 et ses dépendances
+- name: Installation de pip3 et ses dépendances
   ansible.builtin.package:
     name:
       - virtualenv
       - libpq-dev
-      - python2-dev
+      - python3-dev
       - gcc
+      - python3-pip
     state: present
-
-- name: Téléchargement de get-pip2
-  ansible.builtin.get_url:
-    url: https://bootstrap.pypa.io/pip/2.7/get-pip.py
-    dest: /opt/get-pip.py
-    owner: root
-    group: root
-    mode: "u=rwx,go=rx"
-  register: download_get_pip2
-
-- name: Exécution de get-pip2  # noqa no-handler
-  ansible.builtin.command:
-    cmd: python2 /opt/get-pip.py
-  changed_when: true
-  when: download_get_pip2 is changed
 
 - name: Récupération du dépôt git de backoffice  # noqa latest[git]
   ansible.builtin.git:
     repo: https://gitlab.domainepublic.net/Neutrinet/backoffice.git
     dest: /var/www/{{ backoffice_owner }}/dist
     single_branch: true
+    version: master
   become: true
   become_user: "{{ backoffice_owner }}"
+  register: _backoffice_git_clone
   notify: Restart backoffice
 
 - name: Configuration de backoffice
@@ -45,10 +33,37 @@
     requirements: /var/www/{{ backoffice_owner }}/dist/requirements.txt
     state: present
     virtualenv: /var/www/{{ backoffice_owner }}/dist/env
-    virtualenv_python: python2
   become: true
   become_user: "{{ backoffice_owner }}"
   notify: Restart backoffice
+
+- name: Configuration du virtualenv pour l'utilisateur {{ backoffice_owner }}
+  ansible.builtin.lineinfile:
+    line: source ~/dist/env/bin/activate
+    dest: ~/.bashrc
+  become: true
+  become_user: "{{ backoffice_owner }}"
+
+- name: Création des migrations de la base de données  # noqa no-handler
+  ansible.builtin.command:
+    cmd: ./env/bin/python ./manage.py makemigrations
+    chdir: /var/www/{{ backoffice_owner }}/dist
+  changed_when: true
+  when: _backoffice_git_clone is changed
+
+- name: Migration de la base de données  # noqa no-handler
+  ansible.builtin.command:
+    cmd: ./env/bin/python ./manage.py migrate
+    chdir: /var/www/{{ backoffice_owner }}/dist
+  changed_when: true
+  when: _backoffice_git_clone is changed
+
+- name: Génération des fichiers statiques  # noqa no-handler
+  ansible.builtin.command:
+    cmd: ./env/bin/python ./manage.py collectstatic --no-input
+    chdir: /var/www/{{ backoffice_owner }}/dist
+  changed_when: true
+  when: _backoffice_git_clone is changed
 
 - name: Configuration du service systemd
   ansible.builtin.template:

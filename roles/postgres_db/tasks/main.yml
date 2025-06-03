@@ -11,25 +11,11 @@
     mode: "ugo=r"
     force: true
 
-- name: Suppresion de l'ancien dépôt APT pour PostgreSQL
-  ansible.builtin.apt_repository:
-    repo: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
-    filename: postgresql
-    state: absent
-
 - name: Ajout du dépôt APT pour PostgreSQL
   ansible.builtin.apt_repository:
     repo: deb [signed-by=/etc/apt/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
     filename: postgresql
     state: present
-  when: ansible_distribution_major_version | int >= 11
-
-- name: Ajout du dépôt APT pour PostgreSQL
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/postgresql.asc] http://apt-archive.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg-archive main
-    filename: postgresql
-    state: present
-  when: ansible_distribution_major_version | int <= 10
 
 - name: Installation des dépendences
   ansible.builtin.package:
