@@ -1,4 +1,4 @@
-php_version: 8.2
+php_version: 8.3
 php_config_dir: "/etc/php/{{ php_version }}"
 php_extra_modules: []
 

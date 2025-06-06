@@ -213,7 +213,7 @@ haproxy:
       - web-static.patata.louise.neutri.net
     target_port: 9000
     healthcheck: true
-    healthcheck_url: GET /hooks/health
+    healthcheck_url: HEAD /
     headers:
       Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 

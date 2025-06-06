@@ -1,6 +1,5 @@
 mobilizon_domain: mobilizon.be
 mobilizon_owner: "{{ mobilizon_domain | replace('.', '-') }}"
-mobilizon_version: 5.1.2
 
 mobilizon_postgresql_password: "{{ vault_mobilizon_postgresql_password }}"
 

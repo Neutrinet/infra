@@ -1,40 +1,80 @@
-- name: Installation de pip2 et ses dépendances
+- name: Installation de pip3 et ses dépendances
   ansible.builtin.package:
     name:
-      - python-pip
       - virtualenv
       - libpq-dev
-      - python-dev
+      - python3-dev
       - gcc
+      - python3-pip
     state: present
 
 - name: Récupération du dépôt git de backoffice  # noqa latest[git]
   ansible.builtin.git:
     repo: https://gitlab.domainepublic.net/Neutrinet/backoffice.git
-    dest: "{{ web_app_dist_dir }}"
+    dest: /var/www/{{ backoffice_owner }}/dist
     single_branch: true
+    version: master
   become: true
-  become_user: "{{ web_app_owner }}"
+  become_user: "{{ backoffice_owner }}"
+  register: _backoffice_git_clone
   notify: Restart backoffice
 
 - name: Configuration de backoffice
   ansible.builtin.template:
     src: backoffice/settings_local.py.j2
-    dest: "{{ web_app_dist_dir }}/backoffice/settings_local.py"
+    dest: /var/www/{{ backoffice_owner }}/dist/backoffice/settings_local.py
     owner: "{{ backoffice_owner }}"
     group: "{{ backoffice_owner }}"
     mode: "u=rw,g=r,o="
   notify: Restart backoffice
 
+- name: Vérifier si la version Python de venv correspond au système actuel
+  ansible.builtin.stat:
+    path: "/var/www/{{ backoffice_owner }}/dist/env/lib/python{{ ansible_python.version.major }}.{{ ansible_python.version.minor }}"
+  register: python_version_match
+
+- name: Supprimer l'environnement virtuel incompatible
+  ansible.builtin.file:
+    path: "/var/www/{{ backoffice_owner }}/dist/env"
+    state: absent
+  when: not python_version_match.stat.exists
+
 - name: Création du virtualenv python
   ansible.builtin.pip:
-    requirements: "{{ web_app_dist_dir }}/requirements.txt"
+    requirements: /var/www/{{ backoffice_owner }}/dist/requirements.txt
     state: present
-    virtualenv: "{{ web_app_dist_dir }}/env"
-    virtualenv_python: python2
+    virtualenv: /var/www/{{ backoffice_owner }}/dist/env
   become: true
-  become_user: "{{ web_app_owner }}"
+  become_user: "{{ backoffice_owner }}"
   notify: Restart backoffice
+
+- name: Configuration du virtualenv pour l'utilisateur {{ backoffice_owner }}
+  ansible.builtin.lineinfile:
+    line: source ~/dist/env/bin/activate
+    dest: ~/.bashrc
+  become: true
+  become_user: "{{ backoffice_owner }}"
+
+- name: Création des migrations de la base de données  # noqa no-handler
+  ansible.builtin.command:
+    cmd: ./env/bin/python ./manage.py makemigrations
+    chdir: /var/www/{{ backoffice_owner }}/dist
+  changed_when: true
+  when: _backoffice_git_clone is changed
+
+- name: Migration de la base de données  # noqa no-handler
+  ansible.builtin.command:
+    cmd: ./env/bin/python ./manage.py migrate
+    chdir: /var/www/{{ backoffice_owner }}/dist
+  changed_when: true
+  when: _backoffice_git_clone is changed
+
+- name: Génération des fichiers statiques  # noqa no-handler
+  ansible.builtin.command:
+    cmd: ./env/bin/python ./manage.py collectstatic --no-input
+    chdir: /var/www/{{ backoffice_owner }}/dist
+  changed_when: true
+  when: _backoffice_git_clone is changed
 
 - name: Configuration du service systemd
   ansible.builtin.template:
