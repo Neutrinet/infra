@@ -1,6 +1,5 @@
 semaphore_domain: semaphore.neutrinet.be
 semaphore_owner: "{{ semaphore_domain | replace('.', '-') }}"
-semaphore_version: 2.10.22
 
 semaphore_admin_username: admin
 semaphore_admin_password: "{{ vault_semaphore_admin_password }}"

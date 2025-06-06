@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bullseye-nagios-openvpn-molecule
-    box: debian/bullseye64
+  - name: bookworm-nagios-openvpn-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 512
 provisioner:
