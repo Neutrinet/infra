@@ -2,7 +2,7 @@
 
 - name: Installation de Collectd exporter
   ansible.builtin.import_tasks: collectd_exporter.yml
-  tags: ['bird_exporter']
+  tags: ['collectd_exporter']
 
 - name: Nettoyage des archives de Collectd exporter
   ansible.builtin.import_tasks: cleanup.yml
