@@ -14,8 +14,9 @@ haproxy:
     target_port: 8428
     healthcheck: true
     healthcheck_url: GET /-/healthy
-    username: "{{ victoriametrics_username }}"
-    password: "{{ victoriametrics_password }}"
+    users:
+      - username: "{{ victoriametrics_username }}"
+        password: "{{ victoriametrics_password }}"
 
 haproxy_redirect: []
 haproxy_postgresql: []
