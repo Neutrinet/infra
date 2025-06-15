@@ -22,9 +22,9 @@
     ruby_owner: "{{ accounting_owner }}"
   tags: ['ruby']
 
-- name: Installation de Accounting
-  ansible.builtin.import_tasks: accounting.yml
-  tags: ['accounting']
+# - name: Installation de Accounting
+#   ansible.builtin.import_tasks: accounting.yml
+#   tags: ['accounting']
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:

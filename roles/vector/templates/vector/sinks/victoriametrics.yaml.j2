@@ -1,0 +1,19 @@
+{{ ansible_managed | comment }}
+
+type: "prometheus_remote_write"
+inputs:
+  - "common_labels"
+
+endpoint: "{{ victoriametrics_url }}/api/v1/write"
+auth:
+    strategy: "basic"
+    user: "{{ victoriametrics_username }}"
+    password: "{{ victoriametrics_password }}"
+
+buffer:
+    type: "disk"
+    max_size: 1073741952
+    when_full: "block"
+
+healthcheck:
+    enabled: false

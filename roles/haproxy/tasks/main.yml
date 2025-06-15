@@ -19,13 +19,15 @@
   notify: Restart telegraf
   tags: ['telegraf_config']
 
-- name: Ajout de l'utilisateur telegraf au groupe haproxy
-  ansible.builtin.user:
-    name: telegraf
-    groups: haproxy
-    append: true
-  notify: Restart telegraf
-  tags: ['telegraf_config']
+- name: Configuration de vector
+  ansible.builtin.template:
+    src: vector/prometheus_haproxy_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_haproxy_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:

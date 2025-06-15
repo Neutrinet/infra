@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+
+[Service]
+
+ExecStartPre=
+ExecStart=
+ExecReload=
+
+ExecStartPre=/usr/bin/vector validate --config-dir /etc/vector
+ExecStart=/usr/bin/vector --config-dir /etc/vector
+ExecReload=/usr/bin/vector validate --no-environment --config-dir /etc/vector

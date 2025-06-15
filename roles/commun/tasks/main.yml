@@ -51,15 +51,25 @@
   tags: ['network']
   when: ansible_virtualization_type != "lxc"
 
+- name: Installation de Vector
+  ansible.builtin.import_role:
+    name: vector
+  tags: ['vector']
+
+- name: Installation de Node exporter
+  ansible.builtin.import_role:
+    name: node_exporter
+  tags: ['node_exporter']
+
 - name: Installation de Telegraf
   ansible.builtin.import_role:
     name: telegraf
   tags: ['telegraf']
 
-- name: Installation de Borgmatic
-  ansible.builtin.import_role:
-    name: borgmatic
-  tags: ['borgmatic']
+# - name: Installation de Borgmatic
+#   ansible.builtin.import_role:
+#     name: borgmatic
+#   tags: ['borgmatic']
 
 - name: Configuration du port série
   ansible.builtin.include_tasks: serial.yml

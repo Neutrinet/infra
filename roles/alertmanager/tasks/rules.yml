@@ -9,9 +9,85 @@
     - base
     - vpn
     - patroni
-    - hardware
   loop_control:
     loop_var: rule_group
+  notify:
+    - Reload victoriametrics
+    - Reload victoriametrics-alert
+
+- name: Récuperation de regle node-exporter de la communauté
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/samber/awesome-prometheus-alerts/master/dist/rules/host-and-hardware/node-exporter.yml
+    dest: /etc/victoriametrics/rules.d/node-exporter.yml
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify:
+    - Reload victoriametrics
+    - Reload victoriametrics-alert
+
+- name: Récuperation de regle blackbox-exporter de la communauté
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/samber/awesome-prometheus-alerts/master/dist/rules/blackbox/blackbox-exporter.yml
+    dest: /etc/victoriametrics/rules.d/blackbox-exporter.yml
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify:
+    - Reload victoriametrics
+    - Reload victoriametrics-alert
+
+- name: Récuperation de regle caddy-exporter de la communauté
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/samber/awesome-prometheus-alerts/master/dist/rules/caddy/embedded-exporter.yml
+    dest: /etc/victoriametrics/rules.d/caddy-exporter.yml
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify:
+    - Reload victoriametrics
+    - Reload victoriametrics-alert
+
+- name: Récuperation de regle ceph-exporter de la communauté
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/samber/awesome-prometheus-alerts/master/dist/rules/ceph/embedded-exporter.yml
+    dest: /etc/victoriametrics/rules.d/ceph-exporter.yml
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify:
+    - Reload victoriametrics
+    - Reload victoriametrics-alert
+
+- name: Récuperation de regle etcd-exporter de la communauté
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/samber/awesome-prometheus-alerts/master/dist/rules/etcd/embedded-exporter.yml
+    dest: /etc/victoriametrics/rules.d/etcd-exporter.yml
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify:
+    - Reload victoriametrics
+    - Reload victoriametrics-alert
+
+- name: Récuperation de regle haproxy-exporter de la communauté
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/samber/awesome-prometheus-alerts/master/dist/rules/haproxy/embedded-exporter-v2.yml
+    dest: /etc/victoriametrics/rules.d/haproxy-exporter.yml
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify:
+    - Reload victoriametrics
+    - Reload victoriametrics-alert
+
+- name: Récuperation de regle haproxy-exporter de la communauté
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/samber/awesome-prometheus-alerts/master/dist/rules/haproxy/embedded-exporter-v2.yml
+    dest: /etc/victoriametrics/rules.d/haproxy-exporter.yml
+    owner: root
+    group: root
+    mode: "ugo=r"
   notify:
     - Reload victoriametrics
     - Reload victoriametrics-alert
