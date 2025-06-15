@@ -1,0 +1,94 @@
+---
+- name: Installation de GPG
+  ansible.builtin.package:
+    name:
+      - gpg
+      - gpg-agent
+      - dirmngr
+    state: present
+
+- name: Création du répertoire pour les clés GPG
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: Ajout de la clé GPG de Datadog
+  ansible.builtin.get_url:
+    url: https://keys.datadoghq.com/DATADOG_APT_KEY_C0962C7D.public
+    dest: /etc/apt/keyrings/datadog.asc
+    owner: root
+    group: root
+    mode: "ugo=r"
+
+- name: Ajout du dépôt APT pour Vector
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/datadog.asc] https://apt.vector.dev/ stable vector-0
+    state: absent
+    filename: telegraf
+
+- name: Ajout du dépôt APT pour Vector
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/datadog.asc] https://apt.vector.dev/ stable vector-0
+    state: present
+    filename: vector
+
+- name: Installation de Vector
+  ansible.builtin.package:
+    name: vector
+    state: present
+
+- name: Créer du dossier pour systemd
+  ansible.builtin.file:
+    path: "/etc/systemd/system/vector.service.d"
+    state: directory
+    owner: root
+    group: root
+    mode: u=Xrw,go=Xr
+
+- name: Config vector pour utiliser un dossier de configuration
+  ansible.builtin.template:
+    src: systemd/override.conf.j2
+    dest: /etc/systemd/system/vector.service.d/override.conf
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify:
+    - Reload systemd
+    - Restart vector
+
+- name: Créer des dossier pour vector
+  ansible.builtin.file:
+    path: "/etc/vector/{{ item }}"
+    state: directory
+    owner: vector
+    group: vector
+    mode: ug=Xr,o=
+  loop:
+    - sources
+    - transforms
+    - sinks
+
+- name: Copie des plugins globaux de Vector
+  ansible.builtin.template:
+    src: vector/{{ item }}.j2
+    dest: /etc/vector/{{ item }}
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  loop:
+    - vector.yaml
+    - sinks/victoriametrics.yaml
+    - sources/prometheus_static_heartbeat.yaml
+    - transforms/common_labels.yaml
+  notify: Restart vector
+  tags: ['vector_config']
+
+- name: Activation de Vector au démarrage
+  ansible.builtin.systemd:
+    name: vector
+    state: started
+    enabled: true
+    daemon_reload: true

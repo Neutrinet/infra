@@ -1,0 +1,65 @@
+{{ ansible_managed | comment }}
+
+[global_tags]
+  dc = {{ datacenter_name | to_json }}
+
+  ## Prometehus compatibility
+  job = "telegraf-{{ inventory_hostname | replace('.', '-') }}"
+  instance = "{{ inventory_hostname }}"
+  monitor = "{{ inventory_hostname }}"
+
+[agent]
+  ## Override default hostname, if empty use os.Hostname()
+  hostname = "{{ inventory_hostname }}"
+  interval = "15s"
+
+
+###############################################################################
+#                            OUTPUT PLUGINS                                   #
+###############################################################################
+
+{% if victoriametrics_url is defined and (victoriametrics_url | length > 0) %}
+[[outputs.influxdb]]
+  urls = ["{{ victoriametrics_url }}"]
+
+  ## Use HTTP Basic Authentication.
+  username = {{ victoriametrics_username | string | to_json }}
+  password = {{ victoriametrics_password | string | to_json }}
+{% else %}
+[[outputs.prometheus_client]]
+  listen = "localhost:9273"
+  metric_version = 2
+{% endif %}
+
+###############################################################################
+#                            INPUT PLUGINS                                    #
+###############################################################################
+
+
+# # Collect statistics about itself
+[[inputs.internal]]
+  ## If true, collect telegraf memory stats.
+  # collect_memstats = true
+
+
+# Get kernel statistics from /proc/vmstat
+[[inputs.kernel_vmstat]]
+
+
+# Read metrics about network interface usage
+[[inputs.net]]
+  ignore_protocol_stats = true
+
+# Collect kernel snmp counters and network interface statistics
+[[inputs.nstat]]
+
+# Read TCP metrics such as established, time wait and sockets counts.
+[[inputs.netstat]]
+
+
+# Gather systemd units state
+[[inputs.systemd_units]]
+  ## Filter for a specific unit type, default is "service", other possible
+  ## values are "socket", "target", "device", "mount", "automount", "swap",
+  ## "timer", "path", "slice" and "scope ":
+  unittype = "service"

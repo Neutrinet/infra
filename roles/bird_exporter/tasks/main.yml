@@ -8,13 +8,12 @@
   ansible.builtin.import_tasks: cleanup.yml
   tags: ['cleanup']
 
-- name: Installation des plugins Telegraf
+- name: Configuration de vector
   ansible.builtin.template:
-    src: telegraf/bird-exporter.conf.j2
-    dest: /etc/telegraf/telegraf.d/bird-exporter.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  notify: Restart telegraf
-  tags: ['telegraf_config']
+    src: vector/prometheus_bird_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_bird_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']

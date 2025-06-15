@@ -1,0 +1,87 @@
+- name: Création de l'utilisateur node-exporter
+  ansible.builtin.user:
+    name: node-exporter
+    home: /opt/node-exporter
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+
+- name: Création des dossiers de Node exporter
+  ansible.builtin.file:
+    path: "{{ node_exporter_dir }}"
+    owner: node-exporter
+    group: node-exporter
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/node-exporter
+    - /opt/node-exporter/{{ node_exporter_version }}
+    - /var/lib/node-exporter
+    - /var/lib/node-exporter/textfile_collector
+  loop_control:
+    loop_var: node_exporter_dir
+
+- name: Création du dossier des archives de Node exporter
+  ansible.builtin.file:
+    path: /usr/local/src/node-exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive de Node exporter v{{ node_exporter_version }}
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
+    dest: /usr/local/src/node-exporter/{{ node_exporter_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/sha256sums.txt"
+
+- name: Décompression de l'archive
+  ansible.builtin.unarchive:
+    src: /usr/local/src/node-exporter/{{ node_exporter_version }}.tar.gz
+    dest: /opt/node-exporter/{{ node_exporter_version }}
+    creates: /opt/node-exporter/{{ node_exporter_version }}/node_exporter
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: node-exporter
+    group: node-exporter
+
+- name: Création du lien symbolique pour le binaire de Node exporter
+  ansible.builtin.file:
+    src: /opt/node-exporter/{{ node_exporter_version }}/node_exporter
+    dest: /usr/local/bin/node-exporter
+    state: link
+  notify: Restart node-exporter
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/node-exporter.service.j2
+    dest: /etc/systemd/system/node-exporter.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify: Restart node-exporter
+
+- name: Configuration de Node exporter
+  ansible.builtin.template:
+    src: node-exporter/default.j2
+    dest: /etc/default/node-exporter
+    owner: root
+    group: root
+    mode: "ug=r,o="
+  notify: Reload node-exporter
+
+- name: Activation de Node exporter au démarrage
+  ansible.builtin.service:
+    name: node-exporter
+    state: started
+    enabled: true
+
+- name: Trigger handlers
+  # We need to restart node-exporter to apply the new config
+  # and expose the metrics for telegraf
+  ansible.builtin.meta: flush_handlers

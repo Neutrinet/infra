@@ -8,100 +8,14 @@ groups:
         for: 5m
         expr: |-
 {% for host in groups.all %}
-          absent(system_uptime{host="{{{ host }}}"}) == 1{% if not loop.last %} OR {% endif %}
+          absent(static_heartbeat{instance="{{{ host }}}"}) == 1{% if not loop.last %} OR {% endif %}
 
 {% endfor %}
         labels:
           severity: critical
         annotations:
-          description: 'Instance {{ $labels.host }} is down'
+          description: 'Instance {{ $labels.instance }} is down'
           summary: 'Instance is down'
-
-  - name: Disk Usage
-    rules:
-      - alert: Low Disk Space
-        for: 1h
-        expr: disk_used_percent > 90
-        labels:
-          severity: critical
-        annotations:
-          description: 'Device {{ $labels.device }} mounted on "{{ $labels.path }}" has disk usage > 90% (value = {{ humanize $value }}%)'
-          summary: 'Disk usage is at {{ humanize $value }}%'
-
-      - alert: Disk Full Next Week
-        for: 1h
-        expr: disk_used_percent > 80 and on (instance, host, device) predict_linear(disk_used_percent[2d], 7 * 24 * 3600) > 100
-        labels:
-          severity: warning
-          frequency: daily
-        annotations:
-          description: "Based on disk usage from last 2 days, the {{ $labels.host }} host's device {{ $labels.device }} mounted on \"{{ $labels.path }}\" will be full within the week (current = {{ humanize $value }}%)"
-          summary: 'Disk full within the week (current = {{ humanize $value }}%)'
-
-  - name: Memory Usage
-    rules:
-      - alert: High Memory Usage
-        for: 15m
-        expr: mem_used_percent > 90
-        labels:
-          severity: critical
-        annotations:
-          description: 'Memory usage is higher than 90% (value = {{ humanize $value }}%)'
-          summary: 'Memory usage is at {{ humanize $value }}%'
-
-      - alert: Memory Full Next Week
-        for: 1h
-        expr: mem_used_percent > 80 and on (instance, host) predict_linear(mem_used_percent[2d], 7*24*3600) > 100
-        labels:
-          severity: warning
-          frequency: daily
-        annotations:
-          description: 'Based on memory usage from last 2 days, the host {{ $labels.host }} will be out of memory within the week (current = {{ humanize $value }}%)'
-          summary: 'Memory full within the week (current = {{ humanize $value }}%)'
-
-  - name: CPU Usage
-    rules:
-      - alert: High CPU Usage
-        for: 15m
-        expr: 100 * system_load5 / system_n_cpus > 90
-        labels:
-          severity: warning
-        annotations:
-          description: 'CPU usage is higher than 90% (value = {{ humanize $value }}%)'
-          summary: 'CPU usage is at {{ humanize $value }}%'
-
-  - name: Probe
-    rules:
-      - alert: Certificate Expires Next Month
-        for: 5m
-        expr: round((prometheus_probe_ssl_earliest_cert_expiry{check_cert_expiry="1"} - time()) / 86400) < 28
-        labels:
-          severity: critical
-          frequency: daily
-          category: probe.cert
-        annotations:
-          description: 'Certificate for url {{ $labels.module }} will expire in {{ $value }} days'
-          summary: 'Certificate for url {{ $labels.module }} will expire within the month'
-
-      - alert: Website Down
-        for: 5m
-        expr: prometheus_probe_success{module=~"^http.+"} == 0
-        labels:
-          severity: critical
-          category: probe.http
-        annotations:
-          description: 'Website {{ $labels.module }} is down'
-          summary: 'Website {{ $labels.module }} is down'
-
-      - alert: Ping Down
-        for: 5m
-        expr: prometheus_probe_success{module="icmp"} == 0
-        labels:
-          severity: critical
-          category: probe.icmp
-        annotations:
-          description: "Host {{ $labels.url }} doesn't respond to ping"
-          summary: "Host {{ $labels.url }} doesn't respond to ping"
 
   - name: Backup
     rules:
@@ -110,7 +24,7 @@ groups:
         # We trigger an alert only if several backups failed within 24h.
         # It's not a problem if we miss one or two backups during the day, since we create a backup every 3h.
         # In short, we trigger an alert if more than 4 backups failed (24h / 3h = 8 backups per day)
-        expr: sum by (instance) (count_over_time(systemd_units_active_code{name="borgmatic.service", active="failed"}[1d])) / sum by (instance) (count_over_time(systemd_units_active_code{name="borgmatic.service"}[1d])) > 0.5
+        expr: sum by (instance) (count_over_time(node_systemd_unit_state{name="borgmatic.service", state="failed"}[1d])) / sum by (instance) (count_over_time(node_systemd_unit_state{name="borgmatic.service"}[1d])) > 0.5
         labels:
           severity: warning
           frequency: daily

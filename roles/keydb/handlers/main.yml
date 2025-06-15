@@ -3,7 +3,7 @@
     name: keydb-server@{{ keydb_name_instance }}.service
     state: restarted
 
-- name: Restart telegraf
+- name: Restart vector
   ansible.builtin.service:
-    name: telegraf
+    name: vector
     state: restarted

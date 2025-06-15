@@ -53,23 +53,12 @@
   delay: 2
   until: _ceph_module_prometheus is success
 
-- name: Installation des plugins Telegraf
+- name: Configuration de vector
   ansible.builtin.template:
-    src: telegraf/ceph.conf.j2
-    dest: /etc/telegraf/telegraf.d/ceph.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  notify: Restart telegraf
-  tags: ['telegraf_config']
-
-- name: Configuration des backups Borgmatic
-  ansible.builtin.template:
-    src: borgmatic/ceph.yml.j2
-    dest: /etc/borgmatic.d/ceph.yml
-    owner: root
-    group: root
-    mode: "u=rw,go="
-    validate: borgmatic config validate --show -c %s
-  tags: ['borgmatic_config']
+    src: vector/prometheus_ceph_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_ceph_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']

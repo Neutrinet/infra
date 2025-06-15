@@ -26,7 +26,6 @@
     owner: keydb
     group: keydb
     mode: "u=r,go="
-    # validate: telegraf --config %s --test
   notify: Restart KeyDB
 
 - name: Activation overcommit_memory
