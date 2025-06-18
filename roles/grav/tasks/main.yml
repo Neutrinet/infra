@@ -8,10 +8,11 @@
   ansible.builtin.import_role:
     name: php_fpm
   vars:
-    php_version: 8.2
+    php_version: 8.3
     php_extra_modules:
       - yaml
       - sqlite3
+      - intl
     # Grav handles php session name by itself
     php_fpm_session_name: ""
   tags: ['php_fpm']

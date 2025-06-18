@@ -7,13 +7,13 @@ After=postgresql.service
 Type=simple
 Restart=always
 RestartSec=2s
-ExecStart={{ web_app_dist_dir }}/env/bin/gunicorn backoffice.wsgi:application -b localhost:5005 --workers=2 --timeout 180
+ExecStart=/var/www/{{ backoffice_owner }}/dist/env/bin/gunicorn backoffice.wsgi:application -b localhost:5005 --workers=2 --timeout 180
 ExecReload = /bin/kill -s HUP $MAINPID
 ExecStop = /bin/kill -s TERM $MAINPID
 
 User={{ backoffice_owner }}
 Group={{ backoffice_owner }}
-WorkingDirectory={{ web_app_dist_dir }}
+WorkingDirectory=/var/www/{{ backoffice_owner }}/dist
 
 
 # Systemd hardening

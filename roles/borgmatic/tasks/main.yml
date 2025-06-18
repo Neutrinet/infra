@@ -15,15 +15,28 @@
 - name: Installation des dépendances python
   ansible.builtin.package:
     name:
+      - python3-venv
       - python3-virtualenv
       - python3-llfuse
-      - virtualenv
     state: present
+
+- name: Vérifier si la version Python de venv correspond au système actuel
+  ansible.builtin.stat:
+    path: "/opt/borgmatic/lib/python{{ ansible_python.version.major }}.{{ ansible_python.version.minor }}"
+  register: python_version_match
+
+- name: Supprimer l'environnement virtuel incompatible
+  ansible.builtin.file:
+    path: "/opt/borgmatic"
+    state: absent
+  when:
+    - not python_version_match.stat.exists
 
 - name: Installation de Borgmatic  # noqa package-latest
   ansible.builtin.pip:
     name: borgmatic
-    state: latest
+    state: present
+    version: "{{ borgmatic_version }}"
     virtualenv: /opt/borgmatic
     virtualenv_python: python3
     chdir: /opt/borgmatic

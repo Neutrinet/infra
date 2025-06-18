@@ -1,5 +1,4 @@
 mattermost_domain: chat.neutrinet.be
-mattermost_version: 9.11.7
 mattermost_postgresql_password: "{{ vault_mattermost_postgresql_password }}"
 
 mattermost_s3_enabled: true
@@ -19,7 +18,6 @@ rclone_backup_storage_class: ONEZONE_IA
 rclone_backup_encryption_password: "{{ vault_rclone_backup_encryption_password }}"
 rclone_backup_encryption_salt: "{{ vault_rclone_backup_encryption_salt }}"
 
-matterbridge_version: 1.26.0
 matterbridge_ignore_failure: false
 matterbridge_mattermost_username: neutribot
 matterbridge_mattermost_password: "{{ vault_matterbridge_mattermost_password }}"

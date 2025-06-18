@@ -7,15 +7,9 @@
     mode: "ugo=r"
     force: true
 
-- name: Suppression de l'ancien dépôt APT pour ElasticSearch
-  ansible.builtin.apt_repository:
-    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
-    filename: elasticsearch
-    state: absent
-
 - name: Ajout du dépôt APT pour ElasticSearch
   ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/elasticsearch.asc] https://artifacts.elastic.co/packages/7.x/apt stable main
+    repo: deb [signed-by=/etc/apt/keyrings/elasticsearch.asc] https://artifacts.elastic.co/packages/{{ zammad_elasticsearch_major_version }}.x/apt stable main
     filename: elasticsearch
     state: present
 
@@ -40,13 +34,6 @@
     owner: root
     group: elasticsearch
     mode: "u=rw,g=r,o="
-
-- name: Installation des plugins ElasticSearch
-  community.general.elasticsearch_plugin:
-    name: ingest-attachment
-    state: present
-    force: true
-  notify: Restart elasticsearch
 
 - name: Activation de ElasticSearch au démarrage
   ansible.builtin.service:

@@ -73,7 +73,7 @@
     group: root
     mode: "u=rw,go=r"
     validate: caddy validate --adapter caddyfile --config %s
-  notify: reload caddy
+  notify: Reload caddy
 
 - name: Installation de Mobilizon
   ansible.builtin.import_tasks: mobilizon.yml

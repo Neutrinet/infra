@@ -27,4 +27,5 @@
       - bash-completion
       - psmisc # provide killall
       - kitty-terminfo # terminal Tharyrok
+      - zstd
     state: present

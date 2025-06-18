@@ -7,12 +7,6 @@
     mode: "ugo=r"
     force: true
 
-- name: Suppresion de l'ancien dépôt APT pour Zammad
-  ansible.builtin.apt_repository:
-    repo: deb https://dl.packager.io/srv/deb/zammad/zammad/stable/debian {{ ansible_distribution_major_version }} main
-    filename: zammad
-    state: absent
-
 - name: Ajout du dépôt APT pour Zammad
   ansible.builtin.apt_repository:
     repo: deb [signed-by=/etc/apt/keyrings/zammad.asc] https://dl.packager.io/srv/deb/zammad/zammad/stable/debian {{ ansible_distribution_major_version }} main

@@ -1,4 +1,4 @@
-rclone_version: 1.64.2
+rclone_version: 1.69.3
 
 rclone_src_host: s3.neutrinet.be
 rclone_src_bucket: neutrinet

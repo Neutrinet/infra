@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bullseye-accounting-molecule
-    box: debian/bullseye64
+  - name: bookworm-accounting-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 2048
 provisioner:

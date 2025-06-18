@@ -18,3 +18,10 @@ commun_opensmtpd_root_receiver: root
 
 commun_opensmtpd_stalwart_api_key: api_key
 commun_opensmtpd_stalwart_api_url: http://localhost/api
+commun_ntp_clients:
+  - address: pool.ntp.org
+    nts: false
+    pool: true
+  - address: nts.teambelgium.net
+    nts: true
+    pool: false

@@ -1,4 +1,3 @@
-ceph_proxmox_version: quincy
 ceph_cluster: proxmox-chez-meme
 
 # Use pfsense hosts as NTP servers
