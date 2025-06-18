@@ -1,5 +1,11 @@
 ---
 
+
+- name: Installation des certificats Let's Encrypt
+  ansible.builtin.import_role:
+    name: letsencrypt
+  tags: ['letsencrypt']
+
 - name: Install Stalwart
   ansible.builtin.import_tasks:
     file: install.yml

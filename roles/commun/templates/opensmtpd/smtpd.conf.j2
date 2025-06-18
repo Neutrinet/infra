@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+
+listen on localhost
+
+table aliases file:/etc/aliases
+table secrets file:/etc/smtpd.secret
+
+action "relay" relay host "smtps://label@{{ commun_opensmtpd_relay_server }}:465" auth <secrets> mail-from "{{ _commun_opensmtpd_email }}"
+match for any action "relay"

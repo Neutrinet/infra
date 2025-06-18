@@ -1,13 +1,13 @@
 ---
 
-- name: Supprimer les autres MTA
+- name: Supprimer les autres mta
   ansible.builtin.package:
     name:
       - exim4-base
       - postfix
     state: absent
 
-- name: Installing opensmtpd
+- name: Installation de opensmtpd
   ansible.builtin.package:
     name: opensmtpd
     state: present
@@ -47,7 +47,7 @@
   ansible.builtin.set_fact:
     __stalwart_user_exists: "{{ __stalwart_user_lookup_result.json.data is defined }}"
 
-- name: Stalwart | Créer le principal s'il n'existe pas
+- name: Stalwart | Create principal if it doesn't exist
   ansible.builtin.uri:
     url: "{{ commun_opensmtpd_stalwart_api_url }}/principal"
     method: POST
@@ -74,7 +74,7 @@
 
 - name: Configurer l'alias pour opensmtpd
   ansible.builtin.template:
-    src: aliases.j2
+    src: opensmtpd/aliases.j2
     dest: /etc/aliases
     mode: 'uog=r'
     owner: root
@@ -84,7 +84,7 @@
 
 - name: Configurer le relais utilisateur pour opensmtpd
   ansible.builtin.template:
-    src: smtpd.secret.j2
+    src: opensmtpd/smtpd.secret.j2
     dest: /etc/smtpd.secret
     mode: 'u=r,og='
     owner: root
@@ -103,7 +103,7 @@
 
 - name: Configurer opensmtpd
   ansible.builtin.template:
-    src: smtpd.conf.j2
+    src: opensmtpd/smtpd.conf.j2
     dest: /etc/smtpd.conf
     mode: 'u=r,og='
     owner: root
