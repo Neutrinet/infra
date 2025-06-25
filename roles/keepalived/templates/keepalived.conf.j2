@@ -1,4 +1,3 @@
-{% set interface_info = lookup('vars', 'ansible_' + keepalived_interface) %}
 {{ ansible_managed | comment }}
 
 global_defs {
@@ -17,7 +16,7 @@ vrrp_script {{ script.name }} {
 vrrp_sync_group VG {
   group {
 {% for instance in keepalived_instances %}
-    VI_{{ instance.type }}
+    VI_{{ instance.type }}_{{ loop.index }}
 {% endfor %}
   }
 
@@ -31,19 +30,15 @@ vrrp_sync_group VG {
 }
 
 {% for instance in keepalived_instances %}
-vrrp_instance VI_{{ instance.type }} {
+vrrp_instance VI_{{ instance.type }}_{{ loop.index }} {
   interface {{ keepalived_interface }}
 
   state BACKUP
   priority 100
   advert_int 1
 
-{% if instance.type == 'ipv4' %}
-  unicast_src_ip {{ interface_info.ipv4.address }}
-{% endif %}
-{% if instance.type == 'ipv6' %}
-  unicast_src_ip {{ interface_info.ipv6 | selectattr("scope", "equalto", "global") | map(attribute='address') | reject('equalto', instance.vip.split('/')[0]) | first }}
-{% endif %}
+  unicast_src_ip {{ (instance.addresses | intersect(lookup('vars', 'ansible_all_' + instance.type + '_addresses')) | list | first) }}
+
   unicast_peer {
 {% for ip in instance.addresses if ip not in lookup('vars', 'ansible_all_' + instance.type + '_addresses') %}
     {{ ip }}
@@ -52,6 +47,11 @@ vrrp_instance VI_{{ instance.type }} {
   virtual_router_id {{ keepalived_virtual_router_id | int }}
   virtual_ipaddress {
     {{ instance.vip }}
+{% if 'additional_vip' in instance %}
+{% for ip in instance.additional_vip %}
+    {{ ip }}
+{% endfor %}
+{% endif %}
   }
 }
 {% endfor %}
