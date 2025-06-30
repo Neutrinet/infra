@@ -57,11 +57,15 @@ keepalived_vrrp_scripts:
 
 keepalived_instances:
   - vip: 80.67.181.17/32
+    additional_vip:
+      - 80.67.181.33/32
     addresses:
       - 80.67.181.18
       - 80.67.181.19
     type: ipv4
   - vip: 2001:913:1000:200::17/128
+    additional_vip:
+      - 2001:913:1000:300::33/128
     addresses:
       - 2001:913:1000:200::18
       - 2001:913:1000:200::19
