@@ -4,6 +4,9 @@
 - name: Installation des certificats Let's Encrypt
   ansible.builtin.import_role:
     name: letsencrypt
+  vars:
+    letsencrypt_post_hook: 'systemctl restart stalwart'
+    letsencrypt_deploy_hook: '/etc/letsencrypt/stalwart.py'
   tags: ['letsencrypt']
 
 - name: Install Stalwart

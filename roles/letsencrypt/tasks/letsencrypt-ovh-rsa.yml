@@ -1,5 +1,5 @@
 ---
-- name: Création du certificat {{ domain }} rsa
+- name: Création du certificat {{ domain.name }} rsa
   ansible.builtin.command:
     cmd: >
       /opt/letsencrypt/bin/certbot certonly
@@ -12,7 +12,7 @@
       --dns-ovh-propagation-seconds 30
       --key-type rsa
       --rsa-key-size 4096
-      --cert-name {{ domain | replace('.', '-') }}
-      --domain {{ domain }}
-      --domain *\.{{ domain }}
-    creates: /etc/letsencrypt/live/{{ domain | replace('.', '-') }}/cert.pem
+      --cert-name {{ domain.name | replace('.', '-') }}
+      --domain {{ domain.name }}
+      {% if domain.wildcard %}--domain *\.{{ domain }} {% endif %}
+    creates: /etc/letsencrypt/live/{{ domain.name | replace('.', '-') }}/cert.pem

@@ -42,4 +42,4 @@ tracer.stdout.ansi = false
 tracer.stdout.enable = true
 tracer.stdout.level = "info"
 tracer.stdout.type = "stdout"
-certificate."default".cert = "%{file:/etc/letsencrypt/live/{{ stalwart_hostname }}/fullchain.pem}%"
+certificate."default".cert = "%{file:{{ stalwart_storage_path }}/certificates/{{ stalwart_hostname }}/fullchain.pem}%"

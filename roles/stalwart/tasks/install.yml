@@ -15,6 +15,7 @@
     mode: "u=rwx,g=rx,o="
     state: directory
   loop:
+    - /etc/ssl/stalwart
     - /opt/stalwart
     - /opt/stalwart/{{ stalwart_version }}
     - /etc/stalwart
@@ -32,7 +33,7 @@
 
 - name: install | Téléchargement de l'archive Stalwart
   ansible.builtin.get_url:
-    url: https://github.com/stalwartlabs/mail-server/releases/download/v{{ stalwart_version }}/stalwart-mail-x86_64-unknown-linux-gnu.tar.gz
+    url: https://github.com/stalwartlabs/stalwart/releases/download/v{{ stalwart_version }}/stalwart-x86_64-unknown-linux-gnu.tar.gz
     dest: /usr/local/src/stalwart/{{ stalwart_version }}.tar.gz
     owner: root
     group: root
@@ -42,14 +43,14 @@
   ansible.builtin.unarchive:
     src: /usr/local/src/stalwart/{{ stalwart_version }}.tar.gz
     dest: /opt/stalwart/{{ stalwart_version }}
-    creates: /opt/stalwart/{{ stalwart_version }}/stalwart-mail
+    creates: /opt/stalwart/{{ stalwart_version }}/stalwart
     remote_src: true
     owner: stalwart
     group: stalwart
 
 - name: install | Défini le binaire stalwart executable
   ansible.builtin.file:
-    path: /opt/stalwart/{{ stalwart_version }}/stalwart-mail
+    path: /opt/stalwart/{{ stalwart_version }}/stalwart
     owner: stalwart
     group: stalwart
     mode: "u=rx,g=rx,o="
@@ -57,7 +58,7 @@
 
 - name: install | Création d'un lien symbolique pour le binaire Stalwart
   ansible.builtin.file:
-    src: /opt/stalwart/{{ stalwart_version }}/stalwart-mail
+    src: /opt/stalwart/{{ stalwart_version }}/stalwart
     dest: /usr/local/bin/stalwart
     state: link
   notify: Restart stalwart

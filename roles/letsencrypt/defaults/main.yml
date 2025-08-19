@@ -31,4 +31,5 @@ letsencrypt_dns_ovh_consumer_key: !vault |
           3139323363323237303236343932303035313662386261363264
 letsencrypt_staging: true
 letsencrypt_domains_ovh:
-  - neutrinet.be
+  - name: neutrinet.be
+    wildcard: true

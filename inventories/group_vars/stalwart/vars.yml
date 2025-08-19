@@ -1,4 +1,8 @@
-stalwart_admin_username: admin
-stalwart_admin_password: password
-stalwart_hostname: patata.louise.neutri.net
+stalwart_admin_username: "{{ vault_stalwart_admin_username }}"
+stalwart_admin_password: "{{ vault_stalwart_admin_password }}"
+stalwart_hostname: mail.neutri.net
 stalwart_http_url: "https://stalwart.neutrinet.be"
+
+letsencrypt_dns_ovh_application_key: "{{ vault_dns_ovh_application_key }}"
+letsencrypt_dns_ovh_application_secret: "{{ vault_dns_ovh_application_secret }}"
+letsencrypt_dns_ovh_consumer_key: "{{ vault_dns_ovh_consumer_key }}"
