@@ -1,9 +1,14 @@
 letsencrypt_domains_ovh:
-  - neutrinet.be
-  - labriqueinter.net
-  - internetcu.be
-  - teamrecup.be
-  - mobilizon.be
+  - name: neutrinet.be
+    wildcard: true
+  - name: labriqueinter.net
+    wildcard: true
+  - name: internetcu.be
+    wildcard: true
+  - name: teamrecup.be
+    wildcard: true
+  - name: teamrecup.be
+    wildcard: true
 
 haproxy:
   - hostname: neutrinet.be
@@ -216,6 +221,13 @@ haproxy:
     healthcheck_url: HEAD /
     headers:
       Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
+
+  - hostname: stalwart.neutrinet.be
+    target:
+      - smtp.neutri.net
+    target_port: 8080
+    healthcheck: true
+    healthcheck_url: GET /healthz/ready
 
 haproxy_redirect:
   - from: www.neutrinet.be

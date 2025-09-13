@@ -1,6 +1,10 @@
 ---
 
 
+- name: Install Stalwart
+  ansible.builtin.import_tasks:
+    file: install.yml
+
 - name: Installation des certificats Let's Encrypt
   ansible.builtin.import_role:
     name: letsencrypt
@@ -8,10 +12,6 @@
     letsencrypt_post_hook: 'systemctl restart stalwart'
     letsencrypt_deploy_hook: '/etc/letsencrypt/stalwart.py'
   tags: ['letsencrypt']
-
-- name: Install Stalwart
-  ansible.builtin.import_tasks:
-    file: install.yml
 
 - name: Config Stalwart
   ansible.builtin.import_tasks:

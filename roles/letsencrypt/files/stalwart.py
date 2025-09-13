@@ -5,6 +5,7 @@ import pwd
 import grp
 import re
 import sys
+import shutil
 
 
 def chown(path: str, owner: str, group: str, **kwargs) -> None:
@@ -34,23 +35,23 @@ if not result:
 # Extract the domain name
 domain = result.group(1)
 
-# Define a path for HAproxy where you want to write the .pem file.
-deploy_path = "/etc/ssl/stalwart/" + domain + ".pem"
+# Define a path for stalwart where you want to write the .pem file.
+deploy_cert_path = "/etc/ssl/stalwart/" + domain + ".pem"
+deploy_key_path = "/etc/ssl/stalwart/" + domain + ".key"
 
 # The source files can be found in below paths, constructed with the lineage
 # path
-source_key = lineage + "/privkey.pem"
-source_chain = lineage + "/fullchain.pem"
+source_key_path = lineage + "/privkey.pem"
+source_chain_path = lineage + "/fullchain.pem"
 
-# HAproxy requires to combine the key and chain in one .pem file
-# Open a file descriptor to handle permissions. See https://stackoverflow.com/a/45368120
-deploy_fd = os.open(deploy_path, os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o640)
-with os.fdopen(deploy_fd, "w") as deploy, open(source_key, "r") as key, open(
-    source_chain, "r"
-) as chain:
-    deploy.write(key.read())
-    deploy.write(chain.read())
-chown(deploy_path, "stalwart", "stalwart")
+shutil.copyfile(source_key_path, deploy_key_path)
+shutil.copyfile(source_chain_path, deploy_cert_path)
+
+chown(deploy_key_path, "stalwart", "stalwart")
+chown(deploy_cert_path, "stalwart", "stalwart")
+
+os.chmod(deploy_cert_path, int(str("0400"), base=8))
+os.chmod(deploy_key_path, int(str("0400"), base=8))
 
 # Here you can add your service reload command. Which will be executed after
 # every renewal, which is fine if you only have a few domains.

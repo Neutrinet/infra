@@ -7,6 +7,7 @@
       {% if letsencrypt_staging %}--staging {% endif %}
       {% if letsencrypt_post_hook != "" %}--post-hook '{{ letsencrypt_post_hook }}' {% endif %}
       {% if letsencrypt_deploy_hook != "" %}--deploy-hook {{ letsencrypt_deploy_hook }} {% endif %}
+      --reuse-key
       --authenticator dns-ovh
       --dns-ovh-credentials /etc/letsencrypt/ovh/ovh.ini
       --dns-ovh-propagation-seconds 30
@@ -14,5 +15,5 @@
       --rsa-key-size 4096
       --cert-name {{ domain.name | replace('.', '-') }}
       --domain {{ domain.name }}
-      {% if domain.wildcard %}--domain *\.{{ domain }} {% endif %}
+      {% if domain.wildcard %}--domain *\.{{ domain.name }} {% endif %}
     creates: /etc/letsencrypt/live/{{ domain.name | replace('.', '-') }}/cert.pem
