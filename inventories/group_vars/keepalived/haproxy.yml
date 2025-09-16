@@ -227,19 +227,19 @@ haproxy:
       - autoconfig.mobilizon.be
       - autodiscover.mobilizon.be
       - mta-sts.mobilizon.be
-      - mta-sts.mobilizon.be
+      - mail.mobilizon.be
       - autoconfig.neutri.net
       - autodiscover.neutri.net
       - mta-sts.neutri.net
-      - mta-sts.neutri.net
+      - mail.mobilizon.be
       - autoconfig.neutrinet.be
       - autodiscover.neutrinet.be
       - mta-sts.neutrinet.be
-      - mta-sts.neutrinet.be
+      - mail.mobilizon.be
       - autoconfig.teamrecup.be
       - autodiscover.teamrecup.be
       - mta-sts.teamrecup.be
-      - mta-sts.teamrecup.be
+      - mail.mobilizon.be
     target:
       - smtp.neutri.net
     target_port: 8080
