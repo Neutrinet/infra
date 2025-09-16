@@ -16,3 +16,11 @@
       --domain {{ domain.name }}
       {% if domain.wildcard %}--domain *\.{{ domain.name }} {% endif %}
     creates: /etc/letsencrypt/live/{{ domain.name | replace('.', '-') }}-ecdsa/cert.pem
+
+# Pour les enregistres DANE c'est plus simple de garder la même clé privée
+- name: S'assure de conserver la clé privé
+  ansible.builtin.lineinfile:
+    name: /etc/letsencrypt/renewal/{{ domain.name | replace('.', '-') }}-ecdsa.conf
+    line: "reuse_key = True"
+    state: present
+    insertafter: EOF

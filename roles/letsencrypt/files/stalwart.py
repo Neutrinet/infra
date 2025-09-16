@@ -44,14 +44,11 @@ deploy_key_path = "/etc/ssl/stalwart/" + domain + ".key"
 source_key_path = lineage + "/privkey.pem"
 source_chain_path = lineage + "/fullchain.pem"
 
-shutil.copyfile(source_key_path, deploy_key_path)
-shutil.copyfile(source_chain_path, deploy_cert_path)
+shutil.copy2(source_key_path, deploy_key_path)
+shutil.copy2(source_chain_path, deploy_cert_path)
 
 chown(deploy_key_path, "stalwart", "stalwart")
 chown(deploy_cert_path, "stalwart", "stalwart")
-
-os.chmod(deploy_cert_path, int(str("0400"), base=8))
-os.chmod(deploy_key_path, int(str("0400"), base=8))
 
 # Here you can add your service reload command. Which will be executed after
 # every renewal, which is fine if you only have a few domains.

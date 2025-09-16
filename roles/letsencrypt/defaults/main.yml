@@ -32,5 +32,5 @@ letsencrypt_dns_ovh_consumer_key: !vault |
 letsencrypt_staging: true
 
 letsencrypt_domains_ovh:
-  - name: neutrinet.local
+  - name: neutrinet.be
     wildcard: false
