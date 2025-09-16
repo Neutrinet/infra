@@ -15,9 +15,9 @@ grub_option_boot_linux: ''
 commun_opensmtpd_domain: localhost
 commun_opensmtpd_relay_server: localhost
 commun_opensmtpd_root_receiver: "{{ mail_notification }}"
-
 commun_opensmtpd_stalwart_api_key: api_key
 commun_opensmtpd_stalwart_api_url: http://localhost/api
+
 commun_ntp_clients:
   - address: pool.ntp.org
     nts: false
