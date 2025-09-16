@@ -223,11 +223,30 @@ haproxy:
       Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
   - hostname: stalwart.neutrinet.be
+    alt_hostnames:
+      - autoconfig.mobilizon.be
+      - autodiscover.mobilizon.be
+      - mta-sts.mobilizon.be
+      - mta-sts.mobilizon.be
+      - autoconfig.neutri.net
+      - autodiscover.neutri.net
+      - mta-sts.neutri.net
+      - mta-sts.neutri.net
+      - autoconfig.neutrinet.be
+      - autodiscover.neutrinet.be
+      - mta-sts.neutrinet.be
+      - mta-sts.neutrinet.be
+      - autoconfig.teamrecup.be
+      - autodiscover.teamrecup.be
+      - mta-sts.teamrecup.be
+      - mta-sts.teamrecup.be
     target:
       - smtp.neutri.net
     target_port: 8080
     healthcheck: true
     healthcheck_url: GET /healthz/ready
+    deny_paths:
+      - /metrics
 
 haproxy_redirect:
   - from: www.neutrinet.be

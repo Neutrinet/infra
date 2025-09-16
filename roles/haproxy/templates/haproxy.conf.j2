@@ -87,11 +87,21 @@ frontend haproxy-frontend
 
 {% for host in haproxy %}
     acl {{ host.hostname | replace('.', '-') }}-acl hdr(host),field(1,:) {{ host.hostname }}
+{% if 'alt_hostnames' in host %}
+{% for alt_host in host.alt_hostnames %}
+    acl {{ alt_host | replace('.', '-') }}-acl hdr(host),field(1,:) {{ alt_host }}
+{% endfor %}
+{% endif %}
 {% if 'deny_paths' in host %}
 {% for deny_path in host.deny_paths %}
     acl {{ host.hostname | replace('.', '-') }}-deny-acl path_beg {{ deny_path }}
 {% endfor %}
     http-request deny if {{ host.hostname | replace('.', '-') }}-acl {{ host.hostname | replace('.', '-') }}-deny-acl
+{% if 'alt_hostnames' in host %}
+{% for alt_host in host.alt_hostnames %}
+    http-request deny if {{ alt_host | replace('.', '-') }}-acl {{ host.hostname | replace('.', '-') }}-deny-acl
+{% endfor %}
+{% endif %}
 {% endif %}
 
 {% endfor %}
@@ -99,6 +109,11 @@ frontend haproxy-frontend
 
 {% for host in haproxy %}
     use_backend {{ host.hostname | replace('.', '-') }}-backend if {{ host.hostname | replace('.', '-') }}-acl
+{% if 'alt_hostnames' in host %}
+{% for alt_host in host.alt_hostnames %}
+    use_backend {{ host.hostname | replace('.', '-') }}-backend if {{ alt_host | replace('.', '-') }}-acl
+{% endfor %}
+{% endif %}
 {% endfor %}
 
 {% for host in haproxy %}
