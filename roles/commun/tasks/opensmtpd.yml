@@ -52,7 +52,7 @@
   ansible.builtin.set_fact:
     __stalwart_user_exists: "{{ __stalwart_user_lookup_result.json.data is defined }}"
 
-- name: Stalwart | Create principal if it doesn't exist
+- name: Stalwart | Créer l'utilisateur s'il n'existe pas
   ansible.builtin.uri:
     url: "{{ commun_opensmtpd_stalwart_api_url }}/principal"
     method: POST
