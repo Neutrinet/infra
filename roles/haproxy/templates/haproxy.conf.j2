@@ -44,9 +44,11 @@ defaults
     errorfile 503 /etc/haproxy/errors/503.http
     errorfile 504 /etc/haproxy/errors/504.http
 
-{% for host in haproxy if host.username is defined and host.password is defined %}
+{% for host in haproxy if host.users is defined %}
 userlist {{ host.hostname | replace('.', '-') }}-credentials
-  user {{ host.username }} insecure-password {{ host.password }}
+{% for user in host.users %}
+  user {{ user.username }} insecure-password {{ user.password }}
+{% endfor %}
 
 {% endfor %}
 
@@ -125,7 +127,7 @@ backend {{ host.hostname | replace('.', '-') }}-backend
 {% endif %}
     option forwardfor
     option http-server-close
-{% if host.username is defined and host.password is defined %}
+{% if host.users is defined %}
     http-request auth unless { http_auth({{ host.hostname | replace('.', '-') }}-credentials) }
 {% endif %}
 {% if host.headers is defined %}
@@ -137,7 +139,7 @@ backend {{ host.hostname | replace('.', '-') }}-backend
     timeout server {{ host.timeout }}
 {% endif %}
 {% for target in host.target %}
-    server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check{% endif %} cookie sl {% if "ssl" in host %}ssl{% endif %} {% if "ssl_verify" in host and not host.ssl_verify %}verify none{% endif %}
+    server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check port {{ host.target_port }}{% endif %} {% if "ssl" in host %}ssl{% endif %} {% if "ssl_verify" in host and not host.ssl_verify %}verify none{% endif %}
 
 {% endfor %}
 

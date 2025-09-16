@@ -1,0 +1,78 @@
+---
+
+- name: Création de l'utilisateur pour collectd exporter
+  ansible.builtin.user:
+    name: collectd-exporter
+    home: /opt/collectd-exporter
+    shell: /sbin/nologin
+    system: true
+    append: true
+    state: present
+
+- name: Création des dossiers de collectd exporter
+  ansible.builtin.file:
+    path: "{{ collectd_exporter_dir }}"
+    owner: collectd-exporter
+    group: collectd-exporter
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/collectd-exporter
+    - /opt/collectd-exporter/{{ collectd_exporter_version }}
+  loop_control:
+    loop_var: collectd_exporter_dir
+
+- name: Création du dossier des archives de collectd exporter
+  ansible.builtin.file:
+    path: /usr/local/src/collectd-exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive de collectd exporter v{{ collectd_exporter_version }}
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus/collectd_exporter/releases/download/v{{ collectd_exporter_version }}/collectd_exporter-{{ collectd_exporter_version }}.linux-amd64.tar.gz
+    dest: /usr/local/src/collectd-exporter/{{ collectd_exporter_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/prometheus/collectd_exporter/releases/download/v{{ collectd_exporter_version }}/sha256sums.txt"
+
+- name: Décompression de l'archive
+  ansible.builtin.unarchive:
+    src: /usr/local/src/collectd-exporter/{{ collectd_exporter_version }}.tar.gz
+    dest: /opt/collectd-exporter/{{ collectd_exporter_version }}
+    creates: /opt/collectd-exporter/{{ collectd_exporter_version }}/collectd_exporter
+    extra_opts:
+      - --strip-components=1
+    remote_src: true
+    owner: collectd-exporter
+    group: collectd-exporter
+
+- name: Création du lien symbolique pour le binaire de collectd exporter
+  ansible.builtin.file:
+    src: /opt/collectd-exporter/{{ collectd_exporter_version }}/collectd_exporter
+    dest: /usr/local/bin/collectd-exporter
+    state: link
+  notify: Restart collectd-exporter
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/collectd-exporter.service.j2
+    dest: /etc/systemd/system/collectd-exporter.service
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart collectd-exporter
+
+- name: Activation de collectd exporter au démarrage
+  ansible.builtin.service:
+    name: collectd-exporter
+    state: started
+    enabled: true
+
+- name: Trigger handlers
+  # We need to restart collectd-exporter to apply the new config
+  # and expose the metrics for telegraf
+  ansible.builtin.meta: flush_handlers

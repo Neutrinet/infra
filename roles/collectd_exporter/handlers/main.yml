@@ -1,0 +1,15 @@
+- name: Restart collectd-exporter
+  ansible.builtin.systemd:
+    name: collectd-exporter
+    daemon_reload: true
+    state: restarted
+
+- name: Reload collectd-exporter
+  ansible.builtin.service:
+    name: collectd-exporter
+    state: reloaded
+
+- name: Restart telegraf
+  ansible.builtin.service:
+    name: telegraf
+    state: restarted
