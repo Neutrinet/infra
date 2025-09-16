@@ -1,0 +1,20 @@
+---
+
+- name: Installation de Collectd exporter
+  ansible.builtin.import_tasks: collectd_exporter.yml
+  tags: ['collectd_exporter']
+
+- name: Nettoyage des archives de Collectd exporter
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ['cleanup']
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/collectd-exporter.conf.j2
+    dest: /etc/telegraf/telegraf.d/collectd-exporter.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf_config']

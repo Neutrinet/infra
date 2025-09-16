@@ -21,8 +21,9 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
-    username: neutrinet
-    password: neutrinet
+    users:
+      - username: neutrinet
+        password: neutrinet
     headers:
       Content-Security-Policy: "default-src 'none'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self';"
 
@@ -216,6 +217,16 @@ haproxy:
     healthcheck_url: HEAD /
     headers:
       Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
+
+  - hostname: collectd.neutrinet.be
+    target:
+      - collectd.patata.louise.neutri.net
+    target_port: 9103
+    healthcheck: true
+    healthcheck_url: HEAD /
+    users:
+      - username: test
+        password: neutrinet
 
 haproxy_redirect:
   - from: www.neutrinet.be
