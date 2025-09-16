@@ -11,5 +11,5 @@ backoffice_secret_key: neutrinet
 
 backoffice_smtp_host: localhost
 backoffice_smtp_port: 25
-backoffice_smtp_username: ""
-backoffice_smtp_password: ""
+backoffice_email_from: noreply@neutrinet.be
+backoffice_email_reply: hub-cube@neutrinet.be
