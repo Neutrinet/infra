@@ -2,6 +2,7 @@ authentication.fallback-admin.secret = "{{ stalwart_admin_password }}"
 authentication.fallback-admin.user = "{{ stalwart_admin_username }}"
 directory.internal.store = "rocksdb"
 directory.internal.type = "internal"
+metrics.prometheus.enable = true
 server.hostname = "{{ stalwart_hostname }}"
 server.http.use-x-forwarded = true
 server.http.url = "{{ stalwart_http_url }}"

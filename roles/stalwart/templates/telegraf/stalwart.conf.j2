@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from Stalwart
+  urls = ["http://localhost:8080/metrics/prometheus"]
+  metric_version = 2
