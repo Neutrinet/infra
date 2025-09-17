@@ -64,7 +64,7 @@
     cron_file: letsencrypt-update
     special_time: daily
     user: "root"
-    job: "/opt/letsencrypt/bin/certbot renew"
+    job: "/opt/letsencrypt/bin/certbot renew -q"
 
 - name: Enregistrement du compte Let's Encrypt
   ansible.builtin.command:
