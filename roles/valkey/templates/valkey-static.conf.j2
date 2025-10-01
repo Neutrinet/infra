@@ -1,0 +1,48 @@
+{{ ansible_managed | comment }}
+
+# Network
+bind {{ valkey_bind }}
+port {{ valkey_port }}
+{% if valkey_unixsocket is defined %}
+unixsocket {{ valkey_unixsocket }}
+unixsocketperm {{ valkey_unixsocket_perm }}
+{% endif %}
+
+# Authentification
+protected-mode {{ valkey_protected_mode | ternary('yes', 'no') }}
+{% if valkey_protected_mode %}
+aclfile /etc/valkey/valkey-{{ valkey_name_instance }}-acl.conf
+{% if valkey_members | length > 1 %}
+masteruser replication
+masterauth {{ valkey_user_replication_password }}
+{% endif %}
+{% endif %}
+
+# General
+daemonize yes
+pidfile {{ valkey_pidfile }}
+logfile {{ valkey_logfile }}
+dir {{ valkey_dir }}
+databases {{ valkey_databases }}
+
+# Memory
+maxmemory {{ valkey_maxmemory | human_to_bytes }}
+maxmemory-policy {{ valkey_maxmemory_policy }}
+
+# Persistance
+dbfilename {{ valkey_dbfilename }}
+{% for save in valkey_saves %}
+save {{ save.times }} {{ save.number_changed }}
+{% endfor %}
+
+{% if valkey_members | length > 1 %}
+# Replication
+replica-priority {{ valkey_replica_priority }}
+replica-read-only yes
+{% endif %}
+
+# Replication optimization
+repl-diskless-sync yes
+repl-diskless-sync-delay 5
+repl-ping-replica-period 10
+repl-timeout 60

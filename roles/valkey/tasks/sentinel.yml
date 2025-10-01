@@ -1,0 +1,51 @@
+- name: Installation de Valkey Sentinel
+  ansible.builtin.package:
+    name: valkey-sentinel
+    state: present
+
+- name: Création de la configuration dynamique
+  ansible.builtin.template:
+    src: sentinel.conf.j2
+    dest: /etc/valkey/sentinel-{{ valkey_name_instance }}.conf
+    owner: valkey
+    group: valkey
+    mode: "u=rw,go="
+    force: false
+  notify: Restart Valkey Sentinel
+
+- name: Création de la configuration static
+  ansible.builtin.template:
+    src: sentinel-static.conf.j2
+    dest: /etc/valkey/sentinel-{{ valkey_name_instance }}-static.conf
+    owner: valkey
+    group: valkey
+    mode: "u=r,go="
+  notify: Restart Valkey Sentinel
+
+- name: Création de la configuration ACL
+  ansible.builtin.template:
+    src: sentinel-acl.conf.j2
+    dest: /etc/valkey/sentinel-{{ valkey_name_instance }}-acl.conf
+    owner: valkey
+    group: valkey
+    mode: "u=r,go="
+  notify: Restart Valkey Sentinel
+
+- name: Dasactiver le serverValkey Sentinel par default
+  ansible.builtin.service:
+    name: valkey-sentinel.service
+    state: stopped
+    enabled: false
+
+- name: Activation de Valkey Sentinel au démarrage
+  ansible.builtin.service:
+    name: valkey-sentinel@{{ valkey_name_instance }}.service
+    state: started
+    enabled: true
+
+- name: Trigger haproxy handler
+  # We force keydb to restart its config to ensure our config has been applied.
+  # This forced restart is required on debian systems,
+  # because keydb appears to be already started and enabled by apt,
+  # and later in this role, telegraf expects our keydb to be correctly configured.
+  ansible.builtin.meta: flush_handlers

@@ -1,0 +1,11 @@
+valkey_port: 6379
+valkey_bind: '* -::*'
+valkey_protected_mode: true
+
+valkey_members:
+  - name: "bookworm-valkey-01-molecule"
+    ipv4: 172.29.129.31
+  - name: "bookworm-valkey-02-molecule"
+    ipv4: 172.29.129.32
+  - name: "bookworm-valkey-03-molecule"
+    ipv4: 172.29.129.33

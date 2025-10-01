@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+# Network
+port {{ valkey_sentinel_port }}
+bind {{ valkey_bind }}
+
+# Timeouts and configuration
+sentinel down-after-milliseconds {{ valkey_name_instance }} {{ valkey_sentinel_down_after }}
+sentinel parallel-syncs {{ valkey_name_instance }} {{ valkey_sentinel_parallel_syncs }}
+sentinel failover-timeout {{ valkey_name_instance }} {{ valkey_sentinel_failover_timeout }}
+
+# Logs
+logfile /var/log/valkey/sentinel-{{ valkey_name_instance }}.log
+pidfile /var/run/valkey-{{ valkey_name_instance }}/sentinel.pid
+dir {{ valkey_dir }}
+
+# Security
+protected-mode {{ valkey_protected_mode | ternary('yes', 'no') }}
+{% if valkey_protected_mode %}
+requirepass {{ valkey_user_sentinel_password }}
+aclfile /etc/valkey/sentinel-{{ valkey_name_instance }}-acl.conf
+sentinel auth-user {{ valkey_name_instance }} sentinel
+sentinel auth-pass {{ valkey_name_instance }} {{ valkey_user_sentinel_password }}
+{% endif %}
+daemonize yes
+sentinel deny-scripts-reconfig yes

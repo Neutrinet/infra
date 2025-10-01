@@ -1,0 +1,38 @@
+---
+- name: Installation de valkey
+  ansible.builtin.import_tasks: valkey.yml
+  tags: ['valkey']
+
+- name: Installation de Valkey Sentinel
+  ansible.builtin.import_tasks: sentinel.yml
+  when: valkey_members | length > 1
+  tags: ['valkey-sentinel']
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/valkey.conf.j2
+    dest: /etc/telegraf/telegraf.d/valkey.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf_config']
+
+- name: Ajout de l'utilisateur telegraf au groupe keydb
+  ansible.builtin.user:
+    name: telegraf
+    groups: valkey
+    append: true
+  notify: Restart telegraf
+  tags: ['telegraf_config']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/valkey.yml.j2
+    dest: /etc/borgmatic.d/valkey.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
+  tags: ['borgmatic_config']
