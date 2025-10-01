@@ -1,7 +1,9 @@
 {{ ansible_managed | comment }}
 
 # Enter mail aliases below in the format described by aliases(5)
+{% if commun_opensmtpd_relay_server is not equalto 'localhost' %}
 root:       {{ commun_opensmtpd_root_receiver }}
+{% endif %}
 
 # RFC 2142 NETWORK OPERATIONS MAILBOX NAMES
 abuse:		root
