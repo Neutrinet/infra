@@ -22,5 +22,10 @@ haproxy_redirect:
 
 haproxy_postgresql:
   - psql.neutrinet.be
+
 haproxy_listen:
   - "[::]"
+
+haproxy_valkey_password: neutrinet
+haproxy_valkey:
+  - valkey.neutrinet.be

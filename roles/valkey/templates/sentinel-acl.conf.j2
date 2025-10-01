@@ -1,0 +1,4 @@
+user default off
+user monitoring on >{{ valkey_user_monitoring_password }} -@all +ping +info +hello +auth +client|setname +client|getname +sentinel|master +sentinel|masters +sentinel|replicas +sentinel|slaves +sentinel|sentinels +sentinel|get-master-addr-by-name +sentinel|ckquorum +sentinel|is-master-down-by-addr +sentinel|info-cache +command +command|docs +command|list +command|info +command|count
+user sentinel on >>{{ valkey_user_sentinel_password }} ~* &* +@all
+user admin on >{{ valkey_user_admin_password }} ~* &* +@all

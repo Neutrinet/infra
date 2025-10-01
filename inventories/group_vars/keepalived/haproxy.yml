@@ -285,6 +285,12 @@ haproxy_postgresql:
   - pgsql-02.patata.louise.neutri.net
   - pgsql-03.patata.louise.neutri.net
 
+haproxy_valkey_password: "{{ vault_haproxy_valkey_password }}"
+haproxy_valkey:
+  - valkey-01.patata.louise.neutri.net
+  - valkey-02.patata.louise.neutri.net
+  - valkey-03.patata.louise.neutri.net
+
 haproxy_listen:
   - "127.0.0.1"
   - "10.0.11.10"

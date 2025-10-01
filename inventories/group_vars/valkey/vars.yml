@@ -1,0 +1,26 @@
+valkey_port: 6379
+valkey_bind: '* -::*'
+valkey_protected_mode: true
+
+valkey_members:
+  - name: "valkey-01.patata.louise.neutri.net"
+    ipv6: "2001:913:1000:11::51"
+  - name: "valkey-02.patata.louise.neutri.net"
+    ipv6: "2001:913:1000:11::52"
+  - name: "valkey-03.patata.louise.neutri.net"
+    ipv6: "2001:913:1000:11::53"
+
+valkey_maxmemory: 1536MB
+valkey_databases: 32
+
+valkey_user_admin_password: "{{ vault_valkey_user_admin_password }}"
+valkey_user_replication_password: "{{ vault_valkey_user_replication_password }}"
+valkey_user_sentinel_password: "{{ vault_valkey_user_sentinel_password }}"
+valkey_user_monitoring_password: "{{ vault_valkey_user_monitoring_password }}"
+valkey_user_haproxy_password: "{{ vault_valkey_user_haproxy_password }}"
+
+valkey_users_app:
+  - username: 'nextcloud'
+    password: "{{ vault_valkey_user_nextcloud_password }}"
+    rules: '~* -@all +@read +@write +@string +@hash +@list +@set +@sortedset +@transaction +del +exists +expire +expireat +ttl +pexpire +pexpireat +pttl +persist +unlink +scan +type'
+    database: 1 # Cette cles n'est pas utiliser mais nous sert a documenter quel application utilise quel db

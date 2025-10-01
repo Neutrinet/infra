@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+include /etc/valkey/sentinel-{{ valkey_name_instance }}-static.conf
+
+{% if 'ipv6' in valkey_members[0] %}
+sentinel monitor {{ valkey_name_instance }} {{ valkey_members[0].ipv6 }} {{ valkey_port }} {{ valkey_sentinel_quorum }}
+{% endif %}
+{% if 'ipv4' in valkey_members[0] %}
+sentinel monitor {{ valkey_name_instance }} {{ valkey_members[0].ipv4 }} {{ valkey_port }} {{ valkey_sentinel_quorum }}
+{% endif %}

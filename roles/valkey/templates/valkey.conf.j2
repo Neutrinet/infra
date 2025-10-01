@@ -1,0 +1,14 @@
+{{ ansible_managed | comment }}
+
+include /etc/valkey/valkey-{{ valkey_name_instance }}-static.conf
+
+{% if valkey_members | length > 1 %}
+{% if valkey_members[0].name is not equalto inventory_hostname %}
+{% if 'ipv6' in valkey_members[0] %}
+replicaof [{{ valkey_members[0].ipv6 }}] {{ valkey_port }}
+{% endif %}
+{% if 'ipv4' in valkey_members[0] %}
+replicaof {{ valkey_members[0].ipv4 }} {{ valkey_port }}
+{% endif %}
+{% endif %}
+{% endif %}
