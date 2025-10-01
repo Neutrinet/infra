@@ -24,6 +24,7 @@ haproxy:
     users:
       - username: neutrinet
         password: neutrinet
+
     headers:
       Content-Security-Policy: "default-src 'none'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self';"
 
@@ -227,6 +228,8 @@ haproxy:
     users:
       - username: test
         password: neutrinet
+      - username: "{{ vault_username_collectd_occupation_01 }}"
+        password: "{{ vault_password_collectd_occupation_01 }}"
 
 haproxy_redirect:
   - from: www.neutrinet.be
