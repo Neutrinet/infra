@@ -1,0 +1,55 @@
+# Variable par default pour install valkey sans auth et sans cluster
+# Pour avoir un exemple en cluster regarder : roles/valkey/molecule/cluster/group_vars/all.yml
+
+valkey_name_instance: neutrinet
+
+valkey_bind: 'bind 127.0.0.1 -::1'
+valkey_port: 0  # Si la valeur est zero il n'y a que le socket
+valkey_unixsocket: '/var/run/valkey-{{ valkey_name_instance }}/valkey-server.sock'
+valkey_unixsocket_perm: '770'
+
+valkey_members:
+  - name: "{{ inventory_hostname }}"
+    ipv4: "{{ ansible_default_ipv4.address }}"
+
+valkey_dbfilename: "dump-{{ valkey_name_instance }}.rdb"
+valkey_logfile: "/var/log/valkey/valkey-server-{{ valkey_name_instance }}.log"
+valkey_pidfile: "/var/run/valkey-{{ valkey_name_instance }}/valkey-server.pid"
+valkey_dir: "/var/lib/valkey"
+
+valkey_maxmemory: 100MB
+valkey_databases: 16
+valkey_maxmemory_policy: noeviction
+valkey_protected_mode: false
+
+valkey_replica_priority: 100
+
+valkey_sentinel_port: 26379
+valkey_sentinel_quorum: 2
+valkey_sentinel_down_after: 5000
+valkey_sentinel_failover_timeout: 60000
+valkey_sentinel_parallel_syncs: 1
+
+# Défini la politique de sauvegarde sur le disque, exemple:
+# times = 900 et number_changed = 1 cela sauvegarde si apres 900 secondes il y a eu un au moins 1 changement
+# times = 300 et number_changed = 10 cela sauvegarde si apres 300 secondes il y a eu un au moins 10 changement
+# times = 60 et number_changed = 1000 cela sauvegarde si apres 60 secondes il y a eu un au moins 10000 changement
+valkey_saves:
+  - times: 900
+    number_changed: 1
+  - times: 300
+    number_changed: 10
+  - times: 60
+    number_changed: 10000
+
+valkey_user_admin_password: 'neutrinet-admin'
+valkey_user_replication_password: 'neutrinet-replication'
+valkey_user_sentinel_password: 'neutrinet-sentinel'
+valkey_user_monitoring_password: 'neutrinet-monitoring'
+valkey_user_haproxy_password: 'neutrinet-haproxy'
+
+valkey_users_app:
+  - username: 'app_1'
+    password: 'app_1_password'
+    rules: '~* -@all +@read +@write +@string +@hash +@list +@set +@sortedset +@transaction +del +exists +expire +expireat +ttl +pexpire +pexpireat +pttl +persist +unlink +scan +type'
+    database: 1 # Cette cles n'est pas utiliser mais nous sert a documenter quel application utilise quel db

@@ -1,0 +1,21 @@
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+platforms:
+  - name: bookworm-valkey-molecule
+    box: debian/bookworm64
+    cpu: 2
+    memory: 512
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: /usr/bin/python3
+      vault_password_file: "${MOLECULE_PROJECT_DIRECTORY}/../../vault.key"
+    ssh_connection:
+      pipelining: true
+verifier:
+  name: ansible

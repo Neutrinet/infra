@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic.d/common.yml
+
+source_directories: !retain
+  - "/etc/valkey"
+  - "{{ valkey_dir }}"
+
+archive_name_format: valkey_{{ valkey_name_instance }}_{hostname}-{now}
