@@ -1,19 +1,8 @@
 ---
 
-- name: Activation du bbr
-  ansible.posix.sysctl:
-    name: "net.ipv4.tcp_congestion_control"
-    value: 'bbr'
-    sysctl_file: /etc/sysctl.d/80-bbr.conf
-    sysctl_set: true
-    state: present
-    reload: true
-
-- name: Activation du fq
-  ansible.posix.sysctl:
-    name: "net.core.default_qdisc"
-    value: 'fq'
-    sysctl_file: /etc/sysctl.d/80-bbr.conf
+- name: Supression du ficher bbr redondant avec netlink
+  ansible.builtin.file:
+    name: /etc/sysctl.d/80-bbr.conf
     state: absent
 
 - name: Appliquer immédiatement les paramètres sysctl

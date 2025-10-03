@@ -245,15 +245,15 @@ haproxy:
       - autoconfig.neutri.net
       - autodiscover.neutri.net
       - mta-sts.neutri.net
-      - mail.mobilizon.be
+      - mail.neutri.be
       - autoconfig.neutrinet.be
       - autodiscover.neutrinet.be
       - mta-sts.neutrinet.be
-      - mail.mobilizon.be
+      - mail.neutrinet.be
       - autoconfig.teamrecup.be
       - autodiscover.teamrecup.be
       - mta-sts.teamrecup.be
-      - mail.mobilizon.be
+      - mail.teamrecup.be
     target:
       - smtp.neutri.net
     target_port: 8080
