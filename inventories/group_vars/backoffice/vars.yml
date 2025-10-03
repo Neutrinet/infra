@@ -4,8 +4,3 @@ backoffice_ffdnapi_domain: ffdnapi.neutrinet.be
 backoffice_postgresql_password: "{{ vault_backoffice_postgresql_password }}"
 
 backoffice_secret_key: "{{ vault_backoffice_secret_key }}"
-
-backoffice_smtp_host: mail.neutri.net
-backoffice_smtp_port: 587
-backoffice_smtp_username: backoffice@neutrinet.be
-backoffice_smtp_password: "{{ vault_backoffice_smtp_password }}"

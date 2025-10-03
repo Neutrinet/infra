@@ -1,0 +1,7 @@
+stalwart_version: 0.13.3
+stalwart_storage_path: /var/lib/stalwart
+stalwart_admin_username: admin
+# pour générer le mots de passe il faut utiliser "openssl passwd -6"
+stalwart_admin_password: password
+stalwart_hostname: localhost
+stalwart_http_url: "https://{{ stalwart_hostname }}"

@@ -1,0 +1,119 @@
+---
+
+- name: Supprimer les autres mta
+  ansible.builtin.package:
+    name:
+      - exim4-base
+      - postfix
+    state: absent
+
+- name: Installation de opensmtpd
+  ansible.builtin.package:
+    name: opensmtpd
+    state: present
+
+- name: Génère la variable _commun_opensmtpd_hostname
+  ansible.builtin.set_fact:
+    _commun_opensmtpd_hostname: "{{ inventory_hostname | split('.') }}"
+
+- name: Génère la variable _commun_opensmtpd_user
+  ansible.builtin.set_fact:
+    _commun_opensmtpd_user: "{{ _commun_opensmtpd_hostname[:-2] | join('.') }}"
+
+- name: Génère la variable _commun_opensmtpd_email
+  ansible.builtin.set_fact:
+    _commun_opensmtpd_email: "{{ _commun_opensmtpd_user }}@{{ commun_opensmtpd_domain }}"
+
+- name: Génère la variable _commun_opensmtpd_password
+  ansible.builtin.set_fact:
+    _commun_opensmtpd_password: "{{ lookup('ansible.builtin.password', '/dev/null', seed=inventory_hostname, length=24, chars=['ascii_letters', 'digits']) }}"
+
+- name: Génère la variable _commun_opensmtpd_password_hash
+  ansible.builtin.set_fact:
+    _commun_opensmtpd_password_hash: "{{ _commun_opensmtpd_password | password_hash('sha512') }}"
+
+- name: Stalwart | Essayer d'obtenir l'utilisateur directement
+  ansible.builtin.uri:
+    url: "{{ commun_opensmtpd_stalwart_api_url }}/principal/{{ _commun_opensmtpd_user }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ commun_opensmtpd_stalwart_api_key }}"
+    body_format: json
+    status_code: [200]
+    return_content: true
+  register: __stalwart_user_lookup_result
+
+- name: Définir l'existence de l'utilisateur sur la base du résultat de la recherche
+  ansible.builtin.set_fact:
+    __stalwart_user_exists: "{{ __stalwart_user_lookup_result.json.data is defined }}"
+
+- name: Stalwart | Créer l'utilisateur s'il n'existe pas
+  ansible.builtin.uri:
+    url: "{{ commun_opensmtpd_stalwart_api_url }}/principal"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ commun_opensmtpd_stalwart_api_key }}"
+    body_format: json
+    body:
+      type: "individual"
+      quota: 0
+      name: "{{ _commun_opensmtpd_user }}"
+      description: "{{ _commun_opensmtpd_user }}"
+      secrets: ["{{ _commun_opensmtpd_password_hash }}"]
+      emails: ["{{ _commun_opensmtpd_email }}"]
+      urls: []
+      memberOf: []
+      roles: ["user"]
+      lists: []
+      members: []
+      enabledPermissions: []
+      disabledPermissions: []
+      externalMembers: []
+    status_code: [200]
+  register: __stalwart_user_create_result
+  when: not __stalwart_user_exists
+
+- name: Configurer l'alias pour opensmtpd
+  ansible.builtin.template:
+    src: opensmtpd/aliases.j2
+    dest: /etc/aliases
+    mode: 'uog=r'
+    owner: root
+    group: root
+  notify: Restart opensmtpd
+  when: not __stalwart_user_exists
+
+- name: Configurer le relais utilisateur pour opensmtpd
+  ansible.builtin.template:
+    src: opensmtpd/smtpd.secret.j2
+    dest: /etc/smtpd.secret
+    mode: 'u=r,og='
+    owner: root
+    group: root
+  notify: Restart opensmtpd
+
+- name: Configurer le nom de messagerie pour opensmtpd
+  ansible.builtin.lineinfile:
+    line: "{{ inventory_hostname }}"
+    path: /etc/mailname
+    create: true
+    mode: 'ugo=r'
+    owner: root
+    group: root
+  notify: Restart opensmtpd
+
+- name: Configurer opensmtpd
+  ansible.builtin.template:
+    src: opensmtpd/smtpd.conf.j2
+    dest: /etc/smtpd.conf
+    mode: 'u=r,og='
+    owner: root
+    group: root
+    validate: smtpd -n -f %s
+  notify: Restart opensmtpd
+
+- name: Activer le service opensmtpd au démarrage
+  ansible.builtin.service:
+    name: opensmtpd.service
+    state: started
+    enabled: true
