@@ -37,25 +37,26 @@ config :mobilizon, Mobilizon.Web.Email.Mailer,
   adapter: Swoosh.Adapters.SMTP,
   relay: "{{ mobilizon_email_host }}",
   # usually 25 (clear), 465 (TLS) or 587 (STARTTLS)
-  port: 587,
-  username: "{{ mobilizon_email_username }}",
-  password: "{{ mobilizon_email_password }}",
+  port: 25,
+  username: "",
+  password: "",
   # can be `:always` or `:never`
-  tls: :always,
+  tls: :never,
+  # not needed when using STARTTLS
   ssl: false,
   allowed_tls_versions: [:"tlsv1.2", :"tlsv1.3"],
   tls_options: [
     verify: :verify_peer,
     versions: [:"tlsv1.2", :"tlsv1.3"],
     cacerts: :public_key.cacerts_get(),
-    server_name_indication: ~c"{{ mobilizon_email_host }}",
+    server_name_indication: "localhost",
     depth: 99
   ],
   retries: 2,
   # can be `true`
   no_mx_lookups: false,
   # can be `:always`. If your smtp relay requires authentication set it to `:always`.
-  auth: :always
+  auth: :if_available
 
 {% if mobilizon_push_public_key != "" and mobilizon_push_private_key != "" %}
 config :web_push_encryption, :vapid_details,

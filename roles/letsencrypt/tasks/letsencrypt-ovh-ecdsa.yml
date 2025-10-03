@@ -1,5 +1,5 @@
 ---
-- name: Création du certificat {{ domain }} ecdsa
+- name: Création du certificat {{ domain.name }} ecdsa
   ansible.builtin.command:
     cmd: >
       /opt/letsencrypt/bin/certbot certonly
@@ -7,11 +7,20 @@
       {% if letsencrypt_staging %}--staging {% endif %}
       {% if letsencrypt_post_hook != "" %}--post-hook '{{ letsencrypt_post_hook }}' {% endif %}
       {% if letsencrypt_deploy_hook != "" %}--deploy-hook {{ letsencrypt_deploy_hook }} {% endif %}
+      --reuse-key
       --authenticator dns-ovh
       --dns-ovh-credentials /etc/letsencrypt/ovh/ovh.ini
       --dns-ovh-propagation-seconds 30
       --key-type ecdsa
-      --cert-name {{ domain | replace('.', '-') }}-ecdsa
-      --domain {{ domain }}
-      --domain *.{{ domain }}
-    creates: /etc/letsencrypt/live/{{ domain | replace('.', '-') }}-ecdsa/cert.pem
+      --cert-name {{ domain.name | replace('.', '-') }}-ecdsa
+      --domain {{ domain.name }}
+      {% if domain.wildcard %}--domain *\.{{ domain.name }} {% endif %}
+    creates: /etc/letsencrypt/live/{{ domain.name | replace('.', '-') }}-ecdsa/cert.pem
+
+# Pour les enregistres DANE c'est plus simple de garder la même clé privée
+- name: S'assure de conserver la clé privé
+  ansible.builtin.lineinfile:
+    name: /etc/letsencrypt/renewal/{{ domain.name | replace('.', '-') }}-ecdsa.conf
+    line: "reuse_key = True"
+    state: present
+    insertafter: EOF

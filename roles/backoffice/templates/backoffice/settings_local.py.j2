@@ -21,11 +21,10 @@ DATABASES = {
     }
 }
 
-EMAIL_USE_TLS = True
 EMAIL_HOST = '{{ backoffice_smtp_host }}'
-EMAIL_HOST_USER = {{ backoffice_smtp_username | string | to_json }}
-EMAIL_HOST_PASSWORD = {{ backoffice_smtp_password | string | to_json }}
 EMAIL_PORT = {{ backoffice_smtp_port | int }}
+EMAIL_ORDER_ADMIN = '{{ backoffice_email_reply }}'
+EMAIL_FROM = '{{ backoffice_email_from }}'
 
 LOGGING = {
     'version': 1,
