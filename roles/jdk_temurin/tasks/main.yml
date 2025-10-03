@@ -1,0 +1,38 @@
+- name: Installation de GPG
+  ansible.builtin.package:
+    name:
+      - gpg
+      - gpg-agent
+      - dirmngr
+    state: present
+
+- name: Création du répertoire pour les clés GPG
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: Ajout de la clé GPG de Eclipse Temurin
+  ansible.builtin.get_url:
+    url: https://packages.adoptium.net/artifactory/api/gpg/key/public
+    dest: /etc/apt/keyrings/temurin.asc
+    owner: root
+    group: root
+    mode: "ugo=r"
+    force: true
+  tags: ['temurin_install']
+
+- name: Ajout du dépôt APT pour Eclipse Temurin
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/temurin.asc] https://packages.adoptium.net/artifactory/deb {{ ansible_distribution_release }} main"
+    state: present
+    filename: temurin
+  tags: ['temurin_install']
+
+- name: Installation de Eclipse Temurin
+  ansible.builtin.package:
+    name: "temurin-{{ jdk_temurin_major_version }}-jdk"
+    state: present
+  tags: ['temurin_install']
