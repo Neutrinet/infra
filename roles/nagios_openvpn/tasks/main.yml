@@ -18,13 +18,27 @@
     mode: "u=rwx,go=rx"
     state: link
 
-- name: Installation des plugins Telegraf
+- name: Copie du wrapper pour check_openvpn
+  ansible.builtin.copy:
+    src: check_openvpn.sh
+    dest: /opt/check_openvpn.sh
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: Configuration de vector
   ansible.builtin.template:
-    src: telegraf/nagios-openvpn.conf.j2
-    dest: /etc/telegraf/telegraf.d/nagios-openvpn.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  notify: Restart telegraf
-  tags: ['telegraf_config']
+    src: vector/prometheus_nagios_openvpn.yaml.j2
+    dest: /etc/vector/sources/prometheus_check_openvpn_{{ protocol }}_{{ probe.port }}_ipv{{ ip_version }}.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  loop: "{{ nagios_openvpn_probes }}"
+  loop_control:
+    loop_var: probe
+    label: "{{ protocol }}://{{ probe.address }}:{{ probe.port }}"
+  vars:
+    protocol: "{{ 'tcp' if probe.tcp else 'udp' }}"
+    ip_version: "{{ 6 if ':' in probe.address else 4 }}"
+  notify: Restart vector
+  tags: ['vector_config']

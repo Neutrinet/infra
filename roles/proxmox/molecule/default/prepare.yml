@@ -14,5 +14,5 @@
         state: present
 
   roles:
-    - telegraf
+    - vector
     - borgmatic

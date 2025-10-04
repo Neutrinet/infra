@@ -1,0 +1,39 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=smartctl exporter
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/smartctl-exporter --web.listen-address '[::1]:9633'
+Restart=always
+RestartSec=5
+
+# Systemd hardening
+CapabilityBoundingSet=CAP_SYS_RAWIO
+AmbientCapabilities=CAP_SYS_RAWIO
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
+ProtectHostname=true
+ProtectProc=noaccess
+ProtectSystem=full
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target

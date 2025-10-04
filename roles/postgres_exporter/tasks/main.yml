@@ -1,0 +1,19 @@
+---
+
+- name: Installation de PostgreSQL exporter
+  ansible.builtin.import_tasks: postgres_exporter.yml
+  tags: ['postgres_exporter']
+
+- name: Nettoyage des archives de PostgreSQL exporter
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ['cleanup']
+
+- name: Configuration de vector
+  ansible.builtin.template:
+    src: vector/prometheus_postgres_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_postgres_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
