@@ -1,0 +1,43 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=PostgreSQL exporter
+After=network.target
+
+[Service]
+Type=simple
+User=postgres-exporter
+Group=postgres-exporter
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/postgres-exporter --web.listen-address '[::1]:9187'
+Environment= \
+  DATA_SOURCE_NAME="user=postgres-exporter host=/var/run/postgresql/ dbname=postgres sslmode=disable"
+Restart=always
+RestartSec=5
+
+# Systemd hardening
+CapabilityBoundingSet=
+AmbientCapabilities=
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=noaccess
+ProtectSystem=full
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target

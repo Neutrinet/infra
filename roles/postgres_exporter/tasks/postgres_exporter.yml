@@ -1,0 +1,98 @@
+---
+
+- name: Création de l'utilisateur pour PostgreSQL exporter
+  ansible.builtin.user:
+    name: postgres-exporter
+    home: /opt/postgres-exporter
+    shell: /sbin/nologin
+    system: true
+    groups:
+      - postgres
+    append: true
+    state: present
+
+- name: Création des dossiers de PostgreSQL exporter
+  ansible.builtin.file:
+    path: "{{ postgres_exporter_dir }}"
+    owner: postgres-exporter
+    group: postgres-exporter
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/postgres-exporter
+    - /opt/postgres-exporter/{{ postgres_exporter_version }}
+  loop_control:
+    loop_var: postgres_exporter_dir
+
+- name: Création du dossier des archives de PostgreSQL exporter
+  ansible.builtin.file:
+    path: /usr/local/src/postgres-exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive de PostgreSQL exporter v{{ postgres_exporter_version }}
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus-community/postgres_exporter/releases/download/v{{ postgres_exporter_version }}/postgres_exporter-{{ postgres_exporter_version }}.linux-amd64.tar.gz
+    dest: /usr/local/src/postgres-exporter/{{ postgres_exporter_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/prometheus-community/postgres_exporter/releases/download/v{{ postgres_exporter_version }}/sha256sums.txt"
+
+- name: Décompression de l'archive
+  ansible.builtin.unarchive:
+    src: /usr/local/src/postgres-exporter/{{ postgres_exporter_version }}.tar.gz
+    dest: /opt/postgres-exporter/{{ postgres_exporter_version }}
+    creates: /opt/postgres-exporter/{{ postgres_exporter_version }}/postgres_exporter
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: postgres-exporter
+    group: postgres-exporter
+
+- name: Création du lien symbolique pour le binaire de PostgreSQL exporter
+  ansible.builtin.file:
+    src: /opt/postgres-exporter/{{ postgres_exporter_version }}/postgres_exporter
+    dest: /usr/local/bin/postgres-exporter
+    state: link
+  notify: Restart postgres-exporter
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/postgres-exporter.service.j2
+    dest: /etc/systemd/system/postgres-exporter.service
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart postgres-exporter
+
+- name: Création de l'utilisateur PostgreSQL postgres-exporter
+  community.postgresql.postgresql_user:
+    name: postgres-exporter
+  become: true
+  become_user: postgres
+  notify: Restart postgres-exporter
+  when: postgres_role == "primary"
+
+- name: Ajout de l'utilisateur PostgreSQL postgres-exporter au groupe pg_monitor
+  community.postgresql.postgresql_membership:
+    group: pg_monitor
+    target_role: postgres-exporter
+    state: exact
+  become: true
+  become_user: postgres
+  notify: Restart postgres-exporter
+  when: postgres_role == "primary"
+
+- name: Activation de PostgreSQL exporter au démarrage
+  ansible.builtin.service:
+    name: postgres-exporter
+    state: started
+    enabled: true
+
+- name: Trigger handlers
+  # We need to restart postgres-exporter to apply the new config
+  # and expose the metrics for telegraf
+  ansible.builtin.meta: flush_handlers

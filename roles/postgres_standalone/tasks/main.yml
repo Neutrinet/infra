@@ -4,37 +4,13 @@
     name: postgres
   tags: ['postgresql_install']
 
-- name: Création de l'utilisateur PostgreSQL telegraf
-  community.postgresql.postgresql_user:
-    name: telegraf
-  become: true
-  become_user: postgres
-  tags: ['telegraf_config']
-
-- name: Ajout de l'utilisateur PostgreSQL telegraf au groupe pg_monitor
-  community.postgresql.postgresql_membership:
-    group: pg_monitor
-    target_role: telegraf
-    state: exact
-  become: true
-  become_user: postgres
-  tags: ['telegraf_config']
-
-- name: Installation des plugins Telegraf
-  ansible.builtin.template:
-    src: telegraf/postgres.conf.j2
-    dest: /etc/telegraf/telegraf.d/postgres.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    # We don't validate because PostgreSQL expects the user telegraf to connect to the database
-    # but the validation is made as root, so it doesn't work.
-    # validate: telegraf --config %s --test
-  notify: Restart telegraf
-  tags: ['telegraf_config']
-
 - name: Activation de PostgreSQL au démarrage
   ansible.builtin.service:
     name: postgresql@{{ postgresql_major_version }}-main
     enabled: true
   tags: ['postgresql_standalone_install']
+
+- name: Installation de PostgreSQL exporter
+  ansible.builtin.include_role:
+    name: postgres_exporter
+  tags: ['postgres_exporter']

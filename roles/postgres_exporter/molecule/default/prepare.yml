@@ -8,11 +8,6 @@
       ansible.builtin.apt:
         update_cache: true
 
-    - name: Installation de smartctl
-      ansible.builtin.package:
-        name: smartmontools
-        state: present
-
   roles:
     - vector
-    - borgmatic
+    - postgres

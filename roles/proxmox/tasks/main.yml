@@ -45,16 +45,10 @@
     validate: 'visudo -cf %s'
   tags: ['sudo']
 
-- name: Installation des plugins Telegraf
-  ansible.builtin.template:
-    src: telegraf/proxmox.conf.j2
-    dest: /etc/telegraf/telegraf.d/proxmox.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  notify: Restart telegraf
-  tags: ['telegraf_config']
+- name: Installation de smartctl exporter
+  ansible.builtin.import_role:
+    name: smartctl_exporter
+  tags: ['smartctl_exporter']
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:

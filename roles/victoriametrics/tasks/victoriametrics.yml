@@ -28,6 +28,7 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
+    checksum: sha256:https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v{{ victoriametrics_version }}/victoria-metrics-linux-amd64-v{{ victoriametrics_version }}_checksums.txt
 
 - name: Téléchargement de l'archive des outils de VictoriaMetrics v{{ victoriametrics_version }}
   ansible.builtin.get_url:
@@ -36,6 +37,7 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
+    checksum: sha256:https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v{{ victoriametrics_version }}/vmutils-linux-amd64-v{{ victoriametrics_version }}_checksums.txt
 
 - name: Décompression de l'archive VictoriaMetrics
   ansible.builtin.unarchive:

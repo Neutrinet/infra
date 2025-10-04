@@ -12,7 +12,5 @@
       ansible.builtin.package:
         name: smartmontools
         state: present
-
   roles:
     - vector
-    - borgmatic

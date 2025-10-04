@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+type: exec
+command:
+  - /opt/check_openvpn.sh
+{% if probe.tcp %}
+  - -t
+{% endif %}
+  - -p
+  - "{{ probe.port }}"
+  - "{{ probe.address }}"
+
+mode: scheduled
+scheduled:
+  exec_interval_secs: 15
+
+decoding:
+  codec: native_json

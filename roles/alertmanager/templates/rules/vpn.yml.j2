@@ -11,8 +11,8 @@ groups:
           severity: critical
           category: probe.vpn
         annotations:
-          description: 'Unable to reach the VPN server at {{ $labels.address }}:{{ $labels.port }} with {{ $labels.protocol }} from {{ $labels.instance }}.'
           summary: 'VPN server is down.'
+          description: '[{{ $labels.instance }}] Unable to reach the VPN server at {{ $labels.address }}:{{ $labels.port }} with {{ $labels.protocol }}'
 
       - alert: VPN Few IPv4 Left
         for: 5m
@@ -21,8 +21,8 @@ groups:
           severity: warning
           frequency: daily
         annotations:
-          description: 'There are only {{ $value }} IPv4 left for the VPN'
           summary: 'Few IPv4 left for the VPN'
+          description: 'There are only {{ $value }} IPv4 left for the VPN'
 
       - alert: Neutrinet VPN Client Down
         for: 5m
@@ -32,5 +32,5 @@ groups:
           frequency: daily
           matrix: dm
         annotations:
-          description: 'Neutrinet client VPN {{ $labels.client_id }} with IP address {{ $labels.ip_address }}{{ if $labels.reverse }} and reverse DNS {{ $labels.reverse }}{{ end }} is down.'
           summary: Neutrinet client VPN with IP address {{ $labels.ip_address }}{{ if $labels.reverse }} and reverse DNS {{ $labels.reverse }}{{ end }} is down
+          description: 'Neutrinet client VPN {{ $labels.client_id }} with IP address {{ $labels.ip_address }}{{ if $labels.reverse }} and reverse DNS {{ $labels.reverse }}{{ end }} is down.'

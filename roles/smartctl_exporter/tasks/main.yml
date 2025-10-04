@@ -1,0 +1,19 @@
+---
+
+- name: Installation de smartctl exporter
+  ansible.builtin.import_tasks: smartctl_exporter.yml
+  tags: ['smartctl_exporter']
+
+- name: Nettoyage des archives de smartctl exporter
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ['cleanup']
+
+- name: Configuration de vector
+  ansible.builtin.template:
+    src: vector/prometheus_smartctl_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_smartctl_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
