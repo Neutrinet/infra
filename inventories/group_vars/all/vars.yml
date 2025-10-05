@@ -66,3 +66,9 @@ users:
 victoriametrics_url: https://victoriametrics.neutrinet.be
 victoriametrics_username: victoriametrics
 victoriametrics_password: "{{ vault_victoriametrics_password }}"
+
+commun_opensmtpd_domain: neutri.net
+commun_opensmtpd_relay_server: smtp.neutri.net
+commun_opensmtpd_root_receiver: "{{ mail_notification }}"
+commun_opensmtpd_stalwart_api_key: "{{ vault_commun_opensmtpd_stalwart_api_key }}"
+commun_opensmtpd_stalwart_api_url: https://stalwart.neutrinet.be/api

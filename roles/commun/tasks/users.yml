@@ -33,5 +33,25 @@
   when: root_password != ''
   no_log: true
 
+- name: Vérifier si l'utilisateur vagrant existe
+  ansible.builtin.getent:
+    database: passwd
+    key: vagrant
+  failed_when: false
+  register: vagrant_user_check
+
+- name: Mets a jours l'user vagrant
+  ansible.builtin.user:
+    name: vagrant
+    shell: /bin/bash
+    password: '*'
+    groups:
+      - sudo
+      - users
+    append: true
+    state: present
+    update_password: always
+  when: vagrant_user_check.ansible_facts.getent_passwd.vagrant is defined
+
 - name: Trigger SSH handlers
   ansible.builtin.meta: flush_handlers

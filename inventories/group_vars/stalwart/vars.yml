@@ -1,0 +1,12 @@
+stalwart_admin_username: "{{ vault_stalwart_admin_username }}"
+stalwart_admin_password: "{{ vault_stalwart_admin_password }}"
+stalwart_hostname: smtp.neutri.net
+stalwart_http_url: "https://stalwart.neutrinet.be"
+
+letsencrypt_dns_ovh_application_key: "{{ vault_dns_ovh_application_key }}"
+letsencrypt_dns_ovh_application_secret: "{{ vault_dns_ovh_application_secret }}"
+letsencrypt_dns_ovh_consumer_key: "{{ vault_dns_ovh_consumer_key }}"
+letsencrypt_staging: false
+letsencrypt_domains_ovh:
+  - name: "{{ stalwart_hostname }}"
+    wildcard: false
