@@ -1,0 +1,43 @@
+---
+
+- name: Supprimer les autres mta
+  ansible.builtin.package:
+    name:
+      - exim4-base
+      - postfix
+    state: absent
+
+- name: Installation de opensmtpd
+  ansible.builtin.package:
+    name: opensmtpd
+    state: present
+
+- name: Creation de l'utilisateur stalwartt
+  ansible.builtin.include_tasks: opensmtpd_stalwart.yml
+  when: "commun_opensmtpd_relay_server is not equalto 'localhost'"
+
+- name: Configurer le nom de messagerie pour opensmtpd
+  ansible.builtin.lineinfile:
+    line: "{{ inventory_hostname }}"
+    path: /etc/mailname
+    create: true
+    mode: 'ugo=r'
+    owner: root
+    group: root
+  notify: Restart opensmtpd
+
+- name: Configurer opensmtpd
+  ansible.builtin.template:
+    src: opensmtpd/smtpd.conf.j2
+    dest: /etc/smtpd.conf
+    mode: 'u=r,og='
+    owner: root
+    group: root
+    validate: smtpd -n -f %s
+  notify: Restart opensmtpd
+
+- name: Activer le service opensmtpd au démarrage
+  ansible.builtin.service:
+    name: opensmtpd.service
+    state: started
+    enabled: true

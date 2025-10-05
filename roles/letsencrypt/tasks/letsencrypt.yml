@@ -64,7 +64,7 @@
     cron_file: letsencrypt-update
     special_time: daily
     user: "root"
-    job: "/opt/letsencrypt/bin/certbot renew"
+    job: "/opt/letsencrypt/bin/certbot renew -q"
 
 - name: Enregistrement du compte Let's Encrypt
   ansible.builtin.command:
@@ -87,13 +87,16 @@
   no_log: true
   when: letsencrypt_domains_ovh | length > 0
 
-- name: Placement du hook pour HAproxy
+- name: Placement des hook
   ansible.builtin.copy:
-    src: haproxy.py
-    dest: /etc/letsencrypt/haproxy.py
+    src: "{{ item }}.py"
+    dest: "/etc/letsencrypt/{{ item }}.py"
     mode: "ugo=rx"
     owner: root
     group: root
+  loop:
+    - haproxy
+    - stalwart
 
 - name: Création des certificats rsa par challenge ovh
   ansible.builtin.include_tasks: letsencrypt-ovh-rsa.yml

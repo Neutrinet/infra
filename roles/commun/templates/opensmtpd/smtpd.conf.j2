@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+listen on localhost
+
+table aliases file:/etc/aliases
+{% if commun_opensmtpd_relay_server is not equalto 'localhost' %}
+table secrets file:/etc/smtpd.secret
+
+action "relay_noreply" relay host "smtps://label@{{ commun_opensmtpd_relay_server }}:465" auth <secrets>
+action "relay_default" relay host "smtps://label@{{ commun_opensmtpd_relay_server }}:465" auth <secrets> mail-from "{{ _commun_opensmtpd_email }}"
+
+match mail-from "noreply@*" for any action "relay_noreply"
+match for any action "relay_default"
+{% else %}
+
+action "local" maildir "/var/spool/mail/%{user.username}" alias <aliases>
+match for local action "local"
+{% endif %}
