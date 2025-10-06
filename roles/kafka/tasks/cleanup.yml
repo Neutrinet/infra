@@ -1,0 +1,44 @@
+- name: Récupération de la liste des dossiers d'installation
+  ansible.builtin.find:
+    path: /opt/kafka
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _kafka_installed_dirs
+
+- name: Récupération de la liste des archives
+  ansible.builtin.find:
+    path: /usr/local/src/kafka
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _kafka_archives
+
+- name: Récupération de la version la plus ancienne et de la version actuelle
+  ansible.builtin.set_fact:
+    kafka_oldest_archive: "{{ kafka_sorted_archives | first }}"
+    kafka_oldest_install_dir: "{{ kafka_sorted_install_dirs | first }}"
+    kafka_oldest_version: "{{ kafka_sorted_install_dirs | first | basename }}"
+  vars:
+    kafka_sorted_archives: |-
+      {{ _kafka_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    kafka_sorted_install_dirs: |-
+      {{ _kafka_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: Supprimer la version la plus ancienne
+  ansible.builtin.file:
+    state: absent
+    path: "{{ kafka_oldest_install_dir }}"
+  when: _kafka_installed_dirs.files | length > 5
+
+- name: Suppression de l'archive la plus ancienne
+  ansible.builtin.file:
+    state: absent
+    path: "{{ kafka_oldest_archive }}"
+  when: _kafka_archives.files | length > 5

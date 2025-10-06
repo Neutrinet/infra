@@ -1,0 +1,19 @@
+---
+
+- name: service | Créer le service systemd pour Kafka
+  ansible.builtin.template:
+    src: systemd/kafka.service.j2
+    dest: /etc/systemd/system/kafka.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart kafka
+
+- name: service | Activer et démarrer le service Kafka
+  ansible.builtin.systemd:
+    name: kafka
+    enabled: true
+    state: started
+    daemon_reload: true

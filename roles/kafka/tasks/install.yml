@@ -1,0 +1,59 @@
+---
+- name: install | Créer l'utilisateur unix Apache Kafka
+  ansible.builtin.user:
+    name: kafka
+    home: /opt/kafka
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: install | Création de dossiers Apache Kafka
+  ansible.builtin.file:
+    path: "{{ kafka_dir }}"
+    owner: kafka
+    group: kafka
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/kafka
+    - "/opt/kafka/{{ kafka_version }}"
+    - /etc/kafka
+    - "{{ kafka_data_path }}"
+  loop_control:
+    loop_var: kafka_dir
+
+- name: install | Création du dossier d'archives Apache Kafka
+  ansible.builtin.file:
+    path: /usr/local/src/kafka
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: install | Téléchargement de l'archive Apache Kafka
+  ansible.builtin.get_url:
+    url: "https://dlcdn.apache.org/kafka/{{ kafka_version }}/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
+    dest: /usr/local/src/kafka/{{ kafka_version }}.tgz
+    owner: root
+    group: root
+    mode: "ug=r"
+
+- name: install | Dézipper l'archive Apache Kafka
+  ansible.builtin.unarchive:
+    src: /usr/local/src/kafka/{{ kafka_version }}.tgz
+    dest: /opt/kafka/{{ kafka_version }}
+    creates: /opt/kafka/{{ kafka_version }}/LICENSE
+    remote_src: true
+    owner: kafka
+    group: kafka
+    extra_opts:
+      - --strip-components=1
+
+- name: install | Création d'un lien symbolique pour la version courante
+  ansible.builtin.file:
+    src: /opt/kafka/{{ kafka_version }}
+    dest: /opt/kafka/current
+    owner: kafka
+    group: kafka
+    state: link
+  # notify: Restart kafka
