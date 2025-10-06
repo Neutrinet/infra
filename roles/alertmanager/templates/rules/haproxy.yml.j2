@@ -9,6 +9,7 @@ groups:
         expr: sum without (code, server) (rate(haproxy_server_http_responses_total{code="5xx"}[5m])) / sum without (code, server) (rate(haproxy_server_http_responses_total[5m])) > 0.1
         labels:
           severity: critical
+          category: haproxy.http_5xx
         annotations:
           summary: 'HAProxy HTTP 4xx error rate is at {{ humanizePercentage $value }}% for backend {{ $labels.backend }}'
           description: '[{{ $labels.instance }}] [{{ $labels.backend }}] HAProxy HTTP 5xx error rate is > 10% in the last 5 minutes (current = {{ humanizePercentage $value }}%)
@@ -18,6 +19,7 @@ groups:
         expr: sum without (code, server) (rate(haproxy_server_http_responses_total{code="4xx"}[5m])) / sum without (code, server) (rate(haproxy_server_http_responses_total[5m])) > 0.5
         labels:
           severity: warning
+          category: haproxy.http_4xx
         annotations:
           summary: 'HAProxy HTTP 4xx error rate is at {{ humanizePercentage $value }}% for backend {{ $labels.backend }}'
           description: '[{{ $labels.instance }}] [{{ $labels.backend }}] HAProxy HTTP 4xx error rate is > 50% in the last 5 minutes (current = {{ humanizePercentage $value }}%)
@@ -27,6 +29,7 @@ groups:
         for: 15m
         labels:
           severity: critical
+          category: haproxy.health
         annotations:
           summary: HAProxy backend {{ $labels.proxy }} is down.
           description: "[{{ $labels.instance }}] HAProxy backend {{ $labels.proxy }} is down."
