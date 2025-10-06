@@ -1,0 +1,35 @@
+---
+
+- name: Installation de Termin JDK
+  ansible.builtin.import_role:
+    name: jdk_temurin
+  vars:
+    jdk_temurin_major_version: "{{ kafka_java_major_version }}"
+  tags: ['temurin']
+
+- name: Install Apache Kafka
+  ansible.builtin.import_tasks:
+    file: install.yml
+
+- name: Config Apache Kafka
+  ansible.builtin.import_tasks:
+    file: config.yml
+
+- name: Enable service Apache Kafka
+  ansible.builtin.import_tasks:
+    file: service.yml
+
+- name: Cleanup
+  ansible.builtin.import_tasks:
+    file: cleanup.yml
+
+# - name: Installation des plugins Telegraf
+#   ansible.builtin.template:
+#     src: telegraf/kafka.conf.j2
+#     dest: /etc/telegraf/telegraf.d/kafka.conf
+#     owner: telegraf
+#     group: telegraf
+#     mode: "u=rw,g=r,o="
+#     validate: telegraf --config %s --test
+#   notify: Restart telegraf
+#   tags: ['telegraf_config']

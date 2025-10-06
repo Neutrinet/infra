@@ -1,0 +1,44 @@
+---
+
+- name: config | Copier la configuration server.properties
+  ansible.builtin.template:
+    src: server.properties.j2
+    dest: /etc/kafka/server.properties
+    owner: kafka
+    group: kafka
+    mode: "ug=r,o="
+  notify: Restart kafka
+
+- name: config | Générer un UUID de cluster Kafka
+  ansible.builtin.command:
+    cmd: /opt/kafka/current/bin/kafka-storage.sh random-uuid
+  environment:
+    JAVA_HOME: "/usr/lib/jvm/temurin-{{ kafka_java_major_version }}-jdk-amd64"
+  register: kafka_cluster_uuid
+  changed_when: false
+  run_once: true
+
+- name: config | Sauvegarder l'UUID du cluster
+  ansible.builtin.set_fact:
+    kafka_cluster_id: "{{ kafka_cluster_uuid.stdout }}"
+  run_once: true
+
+- name: config | Vérifier si le stockage Kafka est déjà formaté
+  ansible.builtin.stat:
+    path: "{{ kafka_data_path }}/meta.properties"
+  register: kafka_meta_properties
+
+- name: config | Formater le stockage Kafka (KRaft mode)
+  ansible.builtin.command:
+    cmd: >
+      /opt/kafka/current/bin/kafka-storage.sh format
+      -t {{ kafka_cluster_id }}
+      -c /etc/kafka/server.properties
+      --standalone
+  environment:
+    JAVA_HOME: "/usr/lib/jvm/temurin-{{ kafka_java_major_version }}-jdk-amd64"
+  become: true
+  become_user: kafka
+  when: not kafka_meta_properties.stat.exists
+  changed_when: true
+  notify: Restart kafka

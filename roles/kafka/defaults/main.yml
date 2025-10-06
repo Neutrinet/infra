@@ -1,0 +1,6 @@
+kafka_version: 4.1.0
+kafka_scala_version: 2.13
+kafka_java_major_version: 21
+kafka_data_path: /opt/kafka/data
+kafka_heap_size: 512M
+kafka_listen_local_only: true

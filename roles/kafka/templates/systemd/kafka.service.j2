@@ -1,0 +1,33 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Apache Kafka Server (KRaft mode)
+Documentation=https://kafka.apache.org/documentation/
+After=network.target
+
+[Service]
+Type=simple
+User=kafka
+Group=kafka
+
+Environment="JAVA_HOME=/usr/lib/jvm/temurin-{{ kafka_java_major_version }}-jdk-amd64"
+Environment="PATH=/usr/lib/jvm/temurin-{{ kafka_java_major_version }}-jdk-amd64/bin:{{ ansible_env.PATH }}"
+Environment="KAFKA_HEAP_OPTS=-Xmx{{ kafka_heap_size }} -Xms{{ kafka_heap_size }}"
+Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
+
+ExecStart=/opt/kafka/current/bin/kafka-server-start.sh /etc/kafka/server.properties
+ExecStop=/opt/kafka/current/bin/kafka-server-stop.sh
+
+Restart=on-failure
+RestartSec=10
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kafka
+
+# Limites de ressources
+LimitNOFILE=100000
+TimeoutStopSec=180
+
+[Install]
+WantedBy=multi-user.target
