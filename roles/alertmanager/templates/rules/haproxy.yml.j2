@@ -1,0 +1,50 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+  - name: HAProxy
+    rules:
+      - alert: HAProxy High HTTP 5xx Error Rate
+        for: 0m
+        expr: sum without (code, server) (rate(haproxy_server_http_responses_total{code="5xx"}[5m])) / sum without (code, server) (rate(haproxy_server_http_responses_total[5m])) > 0.1
+        labels:
+          severity: critical
+        annotations:
+          summary: 'HAProxy HTTP 4xx error rate is at {{ humanizePercentage $value }}% for backend {{ $labels.backend }}'
+          description: '[{{ $labels.instance }}] [{{ $labels.backend }}] HAProxy HTTP 5xx error rate is > 10% in the last 5 minutes (current = {{ humanizePercentage $value }}%)
+
+      - alert: HAProxy High HTTP 4xx Error Rate
+        for: 0m
+        expr: sum without (code, server) (rate(haproxy_server_http_responses_total{code="4xx"}[5m])) / sum without (code, server) (rate(haproxy_server_http_responses_total[5m])) > 0.5
+        labels:
+          severity: warning
+        annotations:
+          summary: 'HAProxy HTTP 4xx error rate is at {{ humanizePercentage $value }}% for backend {{ $labels.backend }}'
+          description: '[{{ $labels.instance }}] [{{ $labels.backend }}] HAProxy HTTP 4xx error rate is > 50% in the last 5 minutes (current = {{ humanizePercentage $value }}%)
+
+      - alert: HAProxy Backend Down
+        expr: haproxy_backend_active_servers + haproxy_backend_backup_servers == 0
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: HAProxy backend {{ $labels.proxy }} is down.
+          description: "[{{ $labels.instance }}] HAProxy backend {{ $labels.proxy }} is down."
+
+      - alert: HAProxy Backend High Active Session
+        expr: (haproxy_backend_current_sessions > 0) / (haproxy_backend_limit_sessions > 0) > 0.8
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: HAProxy active sessions is at {{ humanizePercentage $value }}% from its limit.
+          description: "[{{ $labels.instance }}] Number of active sessions from backend {{ $labels.proxy }} is > 80% from its limit (current = {{ humanizePercentage $value }}%)"
+
+      - alert: HAProxy Backend Slow
+        expr: haproxy_backend_total_time_average_seconds > 10
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: HAProxy average request time is at {{ humanize $value }}s for backend {{ $labels.proxy }}.
+          description: "[{{ $labels.instance }}] Average request time is > 10s for backend {{ $labels.proxy }} (current = {{ humanize $value }}s)"

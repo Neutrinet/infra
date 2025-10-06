@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+type: "remap"
+inputs:
+  - "blackbox_exporter_icmp_{{ probe | replace(".", "_") }}"
+source: |
+  .tags.url = "{{ probe }}"
+  .tags.module = "icmp"
+  .tags.type = "icmp"
+  .

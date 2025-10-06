@@ -6,15 +6,62 @@
   ansible.builtin.import_tasks: cleanup.yml
   tags: ['cleanup']
 
-- name: Configuration de vector
+- name: Configuration de vector pour les probes http
+  ansible.builtin.include_tasks:
+    file: probe_http.yml
+  loop: "{{ blackbox_exporter_http_probes }}"
+  loop_control:
+    loop_var: probe
+    label: "{{ probe_name }}"
+  vars:
+    probe_name: "{{ probe.name | default(probe.url) }}"
+    probe_hostname: "{{ probe_name | urlsplit('hostname') }}"
+    probe_source_path: "blackbox_exporter_http_{{ probe_hostname | replace('.', '_') }}.yaml"
+    probe_transform_path: "prometheus_blackbox_exporter_http_{{ probe_hostname | replace('.', '_') }}.yaml"
+  tags: ['vector_config']
+
+- name: Configuration de vector pour les probes icmp
+  ansible.builtin.include_tasks:
+    file: probe_icmp.yml
+  loop: "{{ blackbox_exporter_icmp_probes }}"
+  loop_control:
+    loop_var: probe
+  vars:
+    probe_source_path: "blackbox_exporter_icmp_{{ probe | replace('.', '_') }}.yaml"
+    probe_transform_path: "prometheus_blackbox_exporter_icmp_{{ probe | replace('.', '_') }}.yaml"
+  tags: ['vector_config']
+
+- name: Configuration de vector pour blackbox-exporter
   ansible.builtin.template:
-    src: vector/prometheus_blackbox_exporter_{{ item }}.yaml.j2
-    dest: /etc/vector/sources/prometheus_blackbox_exporter_{{ item }}.yaml
+    src: vector/prometheus_blackbox_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_blackbox_exporter.yaml
     owner: vector
     group: vector
     mode: "ug=r,o="
-  loop:
-    - http
-    - icmp
   notify: Restart vector
   tags: ['vector_config']
+
+- name: Recherche des configs vector pour les probes
+  ansible.builtin.find:
+    path:
+      - /etc/vector/sources
+      - /etc/vector/transforms
+    pattern:
+      - blackbox_exporter_http_*.yaml
+      - prometheus_blackbox_exporter_http_*.yaml
+      - blackbox_exporter_icmp_*.yaml
+      - prometheus_blackbox_exporter_icmp_*.yaml
+  register: _blackbox_exporter_find_vector_probes
+
+- name: Nettoyage des configs vector obsolètes
+  ansible.builtin.file:
+    path: "{{ path }}"
+    state: absent
+  loop: "{{ _blackbox_exporter_find_vector_probes.files | map(attribute='path') }}"
+  loop_control:
+    loop_var: path
+  when:
+    - filename not in _blackbox_exporter_vector_sources and filename not in _blackbox_exporter_vector_transforms
+  vars:
+    filename: "{{ path | basename }}"
+  notify: Restart vector
