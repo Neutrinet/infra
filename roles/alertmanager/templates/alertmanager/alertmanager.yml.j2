@@ -60,37 +60,37 @@ inhibit_rules:
   # Combine Certificate alerts from different probes
   # to single alert from main probe.
   - target_matchers:
-      - host != {{ inventory_hostname }}
+      - instance != {{ inventory_hostname }}
     source_matchers:
       - category = probe.cert
-      - host = {{ inventory_hostname }}
+      - instance = {{ inventory_hostname }}
     equal: ['alertname', 'category', 'url']
 
   # Combine HTTP alerts from different probes
   # to single alert from main probe.
   - target_matchers:
-      - host != {{ inventory_hostname }}
+      - instance != {{ inventory_hostname }}
     source_matchers:
       - category = probe.http
-      - host = {{ inventory_hostname }}
+      - instance = {{ inventory_hostname }}
     equal: ['alertname', 'category', 'url']
 
   # Combine ICMP alerts from different probes
   # to single alert from main probe.
   - target_matchers:
-      - host != {{ inventory_hostname }}
+      - instance != {{ inventory_hostname }}
     source_matchers:
       - category = probe.icmp
-      - host = {{ inventory_hostname }}
+      - instance = {{ inventory_hostname }}
     equal: ['alertname', 'category', 'url']
 
   # Combine VPN alerts from different probes
   # to single alert from main probe.
   - target_matchers:
-      - host != {{ inventory_hostname }}
+      - instance != {{ inventory_hostname }}
     source_matchers:
       - category = probe.vpn
-      - host = {{ inventory_hostname }}
+      - instance = {{ inventory_hostname }}
     equal: ['alertname', 'category', 'address', 'port', 'protocol']
 
   # Combine VPN alerts for different ports and protocols
@@ -103,3 +103,32 @@ inhibit_rules:
       - protocol = tcp
       - port = 1195
     equal: ['alertname', 'category', 'address']
+
+  # Hide Caddy alerts about HTTP errors when reverse proxy is down
+  - target_matchers:
+      - category =~ caddy.http_.xx
+    source_matchers:
+      - category = caddy.health
+    equal: ['instance']
+
+  # Hide HAProxy alerts about HTTP errors when backend is down
+  - target_matchers:
+      - category =~ haproxy.http_.xx
+    source_matchers:
+      - category = haproxy.health
+    equal: ['instance', 'proxy']
+
+  # Hide Probe HTTP alerts when Caddy has HTTP 5xx errors
+  - target_matchers:
+      - category = probe.http
+    source_matchers:
+      - category = caddy.http_5xx
+    equal: ['host']
+
+  # Hide Backup errors when {{ inventory_hostname }} is down
+  - target_matchers:
+      - category = base.backup
+      - instance != {{ inventory_hostname }}
+    source_matchers:
+      - category = base.health
+      - instance = {{ inventory_hostname }}

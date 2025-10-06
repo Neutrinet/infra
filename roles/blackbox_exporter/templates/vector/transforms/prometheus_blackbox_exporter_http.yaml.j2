@@ -5,7 +5,7 @@ inputs:
   - "blackbox_exporter_http_{{ probe_hostname | replace(".", "_") }}"
 source: |
   .tags.url = "{{ probe.url }}"
-  .tags.hostname = "{{ probe_hostname }}"
+  .tags.host = "{{ probe_hostname }}"
   .tags.type = "http"
   .tags.module = "{{ probe_name }}"
   .tags.check_cert_expiry = "{{ probe.check_cert_expiry | default(false) | int }}"

@@ -13,6 +13,7 @@ groups:
 {% endfor %}
         labels:
           severity: critical
+          category: base.health
         annotations:
           summary: 'Instance is down'
           description: '[{{ $labels.instance }}] Instance is down'
@@ -375,6 +376,7 @@ groups:
         for: 5m
         labels:
           severity: critical
+          category: probe.http
         annotations:
           summary: Website {{ $labels.module }} HTTP status code is {{ $value }}
           description: "[{{ $labels.module }}] HTTP status code is {{ $value }}"
@@ -384,6 +386,7 @@ groups:
         for: 0m
         labels:
           severity: warning
+          category: probe.http
         annotations:
           summary: Website {{ $labels.module }} is slow to respond
           description: "[{{ $labels.module }}] Host took > 5s to respond in the last 10min (current = {{ humanize $value }}s)"
@@ -404,6 +407,7 @@ groups:
         for: 0m
         labels:
           severity: warning
+          category: probe.icmp
         annotations:
           summary: Host {{ $labels.url }} is slow to respond to ping
           description: "[{{ $labels.url }}] Host took > 1s to respond to ping in the last minute (current = {{ humanize $value }}s)"
@@ -420,6 +424,7 @@ groups:
         labels:
           severity: warning
           frequency: daily
+          category: base.backup
         annotations:
           summary: 'Borgmatic backups failed within 24h'
           description: '[{{ $labels.instance }}] Borgmatic backups failed several times within 24h (failure ratio = {{ humanizePercentage $value }}%)'
