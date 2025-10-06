@@ -53,9 +53,6 @@ blackbox_exporter_http_probes:
   - name: https://support.neutrinet.be
     url: https://support.neutrinet.be/api/v1/monitoring/health_check?token={{ zammad_monitoring_token }}
     body: '"healthy":true'
-  # Modoboa / Mail
-  - url: https://mail.neutri.net
-    check_cert_expiry: true
   # Librenms
   - url: https://librenms.neutrinet.be
   # Grafana

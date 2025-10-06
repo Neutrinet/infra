@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+type: prometheus_scrape
+endpoints:
+  - "http://localhost:9115/probe?target={{ probe.url }}&module={{ probe_name }}"
+
+scrape_interval_secs: 15
+scrape_timeout_secs: 10

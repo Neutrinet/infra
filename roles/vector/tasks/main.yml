@@ -26,12 +26,6 @@
 - name: Ajout du dépôt APT pour Vector
   ansible.builtin.apt_repository:
     repo: deb [signed-by=/etc/apt/keyrings/datadog.asc] https://apt.vector.dev/ stable vector-0
-    state: absent
-    filename: telegraf
-
-- name: Ajout du dépôt APT pour Vector
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/datadog.asc] https://apt.vector.dev/ stable vector-0
     state: present
     filename: vector
 

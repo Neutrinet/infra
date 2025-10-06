@@ -1,0 +1,32 @@
+- name: Configuration de la source vector pour la probe icmp {{ probe }}
+  ansible.builtin.template:
+    src: vector/blackbox_exporter_icmp.yaml.j2
+    dest: /etc/vector/sources/{{ probe_source_path }}
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
+
+- name: Configuration de la transformation vector pour la probe icmp {{ probe }}
+  ansible.builtin.template:
+    src: vector/transforms/prometheus_blackbox_exporter_icmp.yaml.j2
+    dest: /etc/vector/transforms/{{ probe_transform_path }}
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
+
+- name: Ajout de la probe icmp {{ probe }} à la liste des probes installées
+  ansible.builtin.set_fact:
+    _blackbox_exporter_vector_sources: |
+      {{ _blackbox_exporter_vector_sources
+        | default([])
+        | union([probe_source_path])
+      }}
+    _blackbox_exporter_vector_transforms: |
+      {{ _blackbox_exporter_vector_transforms
+        | default([])
+        | union([probe_transform_path])
+      }}
