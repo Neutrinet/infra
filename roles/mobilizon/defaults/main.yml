@@ -1,6 +1,6 @@
 mobilizon_domain: mobilizon.be
 mobilizon_owner: "{{ mobilizon_domain | replace('.', '-') }}"
-mobilizon_version: 5.1.2
+mobilizon_version: 5.1.5
 postgresql_major_version: 17
 
 postgresql_host: localhost
