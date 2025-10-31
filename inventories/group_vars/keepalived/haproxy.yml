@@ -235,6 +235,8 @@ haproxy:
         password: neutrinet
       - username: "{{ vault_username_collectd_occupation_01 }}"
         password: "{{ vault_password_collectd_occupation_01 }}"
+      - username: "{{ vault_username_collectd_occupation_02 }}"
+        password: "{{ vault_password_collectd_occupation_02 }}"
 
   - hostname: stalwart.neutrinet.be
     alt_hostnames:
