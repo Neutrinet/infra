@@ -142,7 +142,7 @@ haproxy:
       - meta.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
-    healthcheck_url: HEAD /
+    healthcheck_url: GET /healthcheck
 
   - hostname: s3.neutrinet.be
     target:
@@ -231,12 +231,22 @@ haproxy:
     healthcheck: true
     healthcheck_url: HEAD /
     users:
-      - username: test
-        password: neutrinet
       - username: "{{ vault_username_collectd_occupation_01 }}"
         password: "{{ vault_password_collectd_occupation_01 }}"
       - username: "{{ vault_username_collectd_occupation_02 }}"
         password: "{{ vault_password_collectd_occupation_02 }}"
+      - username: "{{ vault_username_collectd_occupation_03 }}"
+        password: "{{ vault_password_collectd_occupation_03 }}"
+      - username: "{{ vault_username_collectd_occupation_04 }}"
+        password: "{{ vault_password_collectd_occupation_04 }}"
+      - username: "{{ vault_username_collectd_occupation_05 }}"
+        password: "{{ vault_password_collectd_occupation_05 }}"
+      - username: "{{ vault_username_collectd_occupation_06 }}"
+        password: "{{ vault_password_collectd_occupation_06 }}"
+      - username: "{{ vault_username_collectd_occupation_07 }}"
+        password: "{{ vault_password_collectd_occupation_07 }}"
+      - username: "{{ vault_username_collectd_occupation_08 }}"
+        password: "{{ vault_password_collectd_occupation_08 }}"
 
   - hostname: stalwart.neutrinet.be
     alt_hostnames:
