@@ -231,6 +231,8 @@ haproxy:
     healthcheck: true
     healthcheck_url: HEAD /
     users:
+      - username: "{{ vault_username_collectd_occupation_00 }}"
+        password: "{{ vault_password_collectd_occupation_00 }}"
       - username: "{{ vault_username_collectd_occupation_01 }}"
         password: "{{ vault_password_collectd_occupation_01 }}"
       - username: "{{ vault_username_collectd_occupation_02 }}"
@@ -247,6 +249,8 @@ haproxy:
         password: "{{ vault_password_collectd_occupation_07 }}"
       - username: "{{ vault_username_collectd_occupation_08 }}"
         password: "{{ vault_password_collectd_occupation_08 }}"
+      - username: "{{ vault_username_collectd_occupation_09 }}"
+        password: "{{ vault_password_collectd_occupation_09 }}"
 
   - hostname: stalwart.neutrinet.be
     alt_hostnames:
