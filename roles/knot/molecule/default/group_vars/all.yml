@@ -1,0 +1,3 @@
+knot_primary_serveur: 172.29.129.41
+knot_secondary_serveurs:
+  - 172.29.129.42

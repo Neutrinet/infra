@@ -1,0 +1,100 @@
+{{ ansible_managed | comment }}
+
+server:
+  rundir: "/run/knot"
+  user: knot:knot
+  listen: [ 0.0.0.0@53, ::@53 ]
+  udp-max-payload: 1232
+  tcp-max-clients: 100
+
+
+log:
+  - target: syslog
+    any: notice
+    server: debug
+    zone: debug
+
+
+key:
+  - id: secondary_key
+    algorithm: hmac-sha512
+    secret: {{ knot_secondary_server_key }}
+
+
+remote:
+  - id: remote_primary
+    address: {{ knot_primary_serveur }}@5353
+    key: secondary_key
+
+
+policy:
+  - id: csk-manual
+    signing-threads: 2
+    algorithm: ed25519
+    single-type-signing: on
+    ksk-shared: on
+    ksk-lifetime: 0
+    zsk-lifetime: 0
+    propagation-delay: 3600
+    dnskey-ttl: 3600
+    zone-max-ttl: 86400
+    cds-cdnskey-publish: none
+    nsec3: on
+
+
+mod-synthrecord:
+  - id: ip-reverse
+    type: reverse
+    prefix: dynamic-
+    origin: {{ knot_reverse_domain }}
+    ttl: 3600
+    network: [{{ knot_reverse_networks | join(',') }}]
+  - id: ip-forward
+    type: forward
+    prefix: dynamic-
+    ttl: 3600
+    network: [{{ knot_reverse_networks | join(',') }}]
+mod-rrl:
+  - id: default_rrl
+    rate-limit: 200
+    slip: 2
+    table-size: 524288
+    log-period: 3600
+mod-cookies:
+  - id: default_cookies
+    secret-lifetime: 86400
+mod-dnsproxy:
+  - id: dnsproxy_primary
+    remote: remote_primary
+    fallback: on
+mod-onlinesign:
+  - id: dnssec-online
+    policy: csk-manual
+    nsec-bitmap: [A, AAAA, PTR]
+
+acl:
+  - id: acl_notify_primary
+    remote: remote_primary
+    action: notify
+
+
+template:
+  - id: default
+    storage: "/var/lib/knot/zones"
+    file: "%s"
+    semantic-checks: on
+    dnssec-signing: off 
+    dnssec-policy: csk-manual
+    master: remote_primary
+    notify: remote_primary
+    module: [mod-rrl/default_rrl, mod-cookies/default_cookies]
+    global-module: mod-stats
+    acl: [acl_notify_primary]
+
+zone:
+{% for domain in knot_zone_arpa %}
+  - domain: {{ domain }}
+    module: [mod-synthrecord/ip-reverse, mod-onlinesign/dnssec-online]
+{% endfor %}
+  - domain: {{ knot_reverse_domain }}
+    module: [mod-synthrecord/ip-forward, mod-onlinesign/dnssec-online]

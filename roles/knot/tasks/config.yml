@@ -1,0 +1,50 @@
+---
+
+- name: config | Create config
+  ansible.builtin.template:
+    src: "{{ knot_mode }}.conf.j2"
+    dest: /etc/knot/knot.conf
+    owner: knot
+    group: knot
+    mode: 'ug=r,o='
+    validate: 'knotc -c %s conf-check'
+  notify: Restart knot
+
+- name: config | Create folders
+  ansible.builtin.file:
+    state: directory
+    owner: knot
+    group: knot
+    mode: "u=Xrw,og=Xr"
+    path: "/var/lib/knot/zones"
+
+- name: config | Create dns zone
+  ansible.builtin.template:
+    src: "default.zone.j2"
+    dest: "/var/lib/knot/zones/{{ item }}"
+    owner: knot
+    group: knot
+    mode: "u=rw,og="
+    force: false
+  loop: "{{ knot_zone_arpa + [knot_reverse_domain] }}"
+  notify: Restart knot
+  register: _knot_zone_creation
+  when: knot_mode == 'primary'
+
+- name: Debloque le compte knot pour rsync
+  ansible.builtin.user:
+    name: knot
+    shell: /bin/bash
+    password: '*'
+    groups:
+      - users
+    append: true
+    state: present
+    update_password: always
+
+- name: Ajout la clés SSH du primaire
+  ansible.posix.authorized_key:
+    user: knot
+    state: present
+    key: "{{ knot_primary_server_ssh }}"
+    exclusive: true

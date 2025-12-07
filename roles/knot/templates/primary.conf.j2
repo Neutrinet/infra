@@ -1,0 +1,98 @@
+{{ ansible_managed | comment }}
+
+server:
+    rundir: "/run/knot"
+    user: knot:knot
+    listen: [ 0.0.0.0@5353, ::@5353 ]
+
+
+log:
+  - target: syslog
+    any: notice
+    server: debug
+    zone: debug
+
+
+key:
+  - id: update_key
+    algorithm: hmac-sha512
+    secret: {{ knot_vpn_server_key }}
+  - id: secondary_key
+    algorithm: hmac-sha512
+    secret: {{ knot_secondary_server_key }}
+
+
+remote:
+{% for server in knot_secondary_serveurs %}
+    - id: remote_secondary_{{ "%02d" | format(loop.index) }}
+      address: {{ server }}
+      key: secondary_key
+{% endfor %}
+
+
+policy:
+  - id: csk-manual
+    signing-threads: 2
+    algorithm: ed25519
+    single-type-signing: on
+    ksk-shared: on
+    ksk-lifetime: 0
+    zsk-lifetime: 0
+    propagation-delay: 3600
+    dnskey-ttl: 3600
+    zone-max-ttl: 86400
+    cds-cdnskey-publish: none
+    nsec3: on
+
+
+mod-synthrecord:
+  - id: ip-reverse
+    type: reverse
+    prefix: dynamic-
+    origin: {{ knot_reverse_domain }}
+    ttl: 3600
+    network: [{{ knot_reverse_networks | join(',') }}]
+  - id: ip-forward
+    type: forward
+    prefix: dynamic-
+    ttl: 3600
+    network: [{{ knot_reverse_networks | join(',') }}]
+mod-onlinesign:
+  - id: dnssec-online
+    policy: csk-manual
+    nsec-bitmap: [A, AAAA, PTR]
+
+
+acl:
+  - id: acl_transfer_secondary
+    remote: [{% for server in knot_secondary_serveurs %}remote_secondary_{{ "%02d" | format(loop.index) }}{% if not loop.last %},{% endif %} {% endfor %}]
+    action: transfer
+  - id: acl_notify_secondary
+    remote: [{% for server in knot_secondary_serveurs %}remote_secondary_{{ "%02d" | format(loop.index) }}{% if not loop.last %},{% endif %} {% endfor %}]
+    action: notify
+  - id: acl_update_vpn
+    address: [{{ knot_vpn_servers | join(',') }}]
+    key: update_key
+    action: update
+
+
+template:
+  - id: default
+    storage: "/var/lib/knot/zones"
+    file: "%s"
+    semantic-checks: on
+    dnssec-signing: off 
+    dnssec-policy: csk-manual
+    zonefile-load: difference
+    serial-policy: dateserial
+    notify: [{% for server in knot_secondary_serveurs %}remote_secondary_{{ "%02d" | format(loop.index) }}{% if not loop.last %},{% endif %} {% endfor %}]
+    acl: [acl_transfer_secondary, acl_notify_secondary, acl_update_vpn]
+    global-module: mod-stats
+
+zone:
+{% for domain in knot_zone_arpa %}
+  - domain: {{ domain }}
+    module: [mod-synthrecord/ip-reverse, mod-onlinesign/dnssec-online]
+{% endfor %}
+  - domain: {{ knot_reverse_domain }}
+    module: [mod-synthrecord/ip-forward, mod-onlinesign/dnssec-online]

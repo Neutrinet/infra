@@ -1,0 +1,32 @@
+---
+
+- name: install | Obtenir les clés de signature gpg
+  ansible.builtin.get_url:
+    url: https://pkg.labs.nic.cz/gpg
+    dest: /etc/apt/keyrings/cznic-labs.gpg
+    owner: root
+    group: root
+    mode: "ugo=r"
+    force: true
+
+- name: install | Mise en place des dépôts apt
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/cznic-labs.gpg] https://pkg.labs.nic.cz/knot-dns {{ ansible_distribution_release }} main
+    filename: cznic-labs
+    state: present
+
+- name: install | Conf préférence apt
+  ansible.builtin.copy:
+    src: apt-preferences/80cznic-labs
+    dest: /etc/apt/preferences.d/80cznic-labs
+    owner: root
+    group: root
+    mode: 'ugo=r'
+
+- name: install | APT
+  ansible.builtin.apt:
+    name:
+      - knot
+      - knot-exporter
+      - knot-keymgr
+    state: present

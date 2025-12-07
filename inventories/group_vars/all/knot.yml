@@ -1,0 +1,24 @@
+knot_primary_serveur: 2001:913:1000:11::122
+knot_primary_server_ssh: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH/rBberFMwviPzXVDSvb6CTLZjJLM8poFvfp7qan47w knot@knot-server"
+
+knot_secondary_serveurs:
+  - 2a0c:e300::22
+  - 2a03:7220:8080:900::1
+  - 2a00:5884:821c::1
+  - 2607:5300:60:3fba::1
+knot_vpn_servers:
+  - 2001:913:1fff:ff00::1
+
+knot_vpn_server_key: "{{ knot_vpn_server_key_vault }}"
+knot_secondary_server_key: "{{ knot_secondary_server_key_vault }}"
+
+knot_zone_arpa:
+  - 1.3.1.9.0.1.0.0.2.ip6.arpa
+  - 181.67.80.in-addr.arpa
+  - 191.67.80.in-addr.arpa
+
+knot_reverse_domain : reverse.neutri.net
+knot_reverse_networks:
+  - 2001:913:1000::/36
+  - 80.67.181.0/24
+  - 80.67.191.0/24
