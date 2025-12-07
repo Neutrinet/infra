@@ -17,12 +17,20 @@
 
 - name: Ajout de la clé GPG de InfluxDB
   ansible.builtin.get_url:
-    url: https://repos.influxdata.com/influxdata-archive_compat.key
+    url: https://repos.influxdata.com/influxdata-archive.key
     dest: /etc/apt/keyrings/influxdb.asc
     owner: root
     group: root
     mode: "ugo=r"
     force: true
+
+- name: Bloque le paquet influxdata-archive-keyring
+  ansible.builtin.copy:
+    src: apt-preferences/80influxdata-archive-keyring
+    dest: /etc/apt/preferences.d/80influxdata-archive-keyring
+    owner: root
+    group: root
+    mode: 'ugo=r'
 
 - name: Suppression de l'ancien dépôt APT pour Telegraf
   ansible.builtin.apt_repository:
