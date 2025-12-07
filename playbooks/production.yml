@@ -76,3 +76,6 @@
 
 - name: Déploiement de Stalwart
   import_playbook: apps/stalwart.yml
+
+- name: Déploiement de Knot
+  import_playbook: apps/knot.yml
