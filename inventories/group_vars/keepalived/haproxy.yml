@@ -236,6 +236,18 @@ haproxy:
       - username: "{{ vault_username_collectd_occupation_01 }}"
         password: "{{ vault_password_collectd_occupation_01 }}"
 
+  - hostname: sso.neutrinet.be
+    target:
+      - authentik-01.patata.louise.neutri.net
+      - authentik-02.patata.louise.neutri.net
+    target_port: 9443
+    healthcheck: true
+    healthcheck_url: HEAD /-/health/ready/
+    ssl: true
+    ssl_verify: false
+    deny_paths:
+      - /if/flow/initial-setup/
+
   - hostname: stalwart.neutrinet.be
     alt_hostnames:
       - autoconfig.mobilizon.be
