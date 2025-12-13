@@ -22,5 +22,5 @@ valkey_user_haproxy_password: "{{ vault_valkey_user_haproxy_password }}"
 valkey_users_app:
   - username: 'nextcloud'
     password: "{{ vault_valkey_user_nextcloud_password }}"
-    rules: '~* -@all +@read +@write +@string +@hash +@list +@set +@sortedset +@transaction +del +exists +expire +expireat +ttl +pexpire +pexpireat +pttl +persist +unlink +scan +type'
+    rules: '~* &* +@all -@dangerous -@admin -@blocking +keys -select +select|1'
     database: 1 # Cette cles n'est pas utiliser mais nous sert a documenter quel application utilise quel db
