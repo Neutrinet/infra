@@ -1,0 +1,41 @@
+[Unit]
+Description=Authentik Server Container
+After=docker.service network-online.target
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Restart=always
+RestartSec=10s
+TimeoutStartSec=0
+TimeoutStopSec=120
+User=root
+Group=root
+
+EnvironmentFile=/etc/default/authentik
+Environment="AUTHENTIK_LISTEN__METRICS=[::1]:9031"
+
+ExecStartPre=-/usr/bin/docker stop authentik-server
+ExecStartPre=-/usr/bin/docker rm authentik-server
+ExecStartPre=/usr/bin/docker pull {{ authentik_image }}
+
+ExecStart=/usr/bin/docker run --rm \
+  --name authentik-server \
+  -v /opt/authentik/media:/media:rw \
+  -v /opt/authentik/templates:/templates:ro \
+  -v /opt/authentik/templates:/templates:ro \
+  -v /opt/authentik/static/icon_left_brand.svg:/web/dist/assets/icons/icon_left_brand.svg:ro \
+  -v /opt/authentik/static/icon_left_brand.png:/web/dist/assets/icons/icon_left_brand.png:ro \
+  -v /opt/authentik/static/icon.png:/web/dist/assets/icons/icon.png:ro \
+  -v /opt/authentik/static/flow_background.jpg:/web/dist/assets/images/flow_background.jpg:ro \
+  --network host \
+  --memory="1536m" \
+  --env-file /etc/default/authentik \
+  --env AUTHENTIK_LISTEN__METRICS=[::1]:9030 \
+  {{ authentik_image }} \
+  server
+
+ExecStop=/usr/bin/docker stop authentik-server
+
+[Install]
+WantedBy=multi-user.target

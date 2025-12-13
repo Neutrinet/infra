@@ -1,0 +1,23 @@
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/authentik.yml.j2
+    dest: /etc/borgmatic.d/authentik.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
+  vars:
+    postgresql_db_name: "{{ authentik_postgresql_database }}"
+    postgresql_db_password: "{{ authentik_postgresql_password }}"
+    postgresql_host: "{{ authentik_postgresql_host }}"
+  tags: ['borgmatic_config']
+
+- name: Installation de rclone pour les backups du stockage S3
+  ansible.builtin.import_role:
+    name: rclone
+  vars:
+    rclone_src_host: "{{ authentik_s3_host }}"
+    rclone_src_bucket: "{{ authentik_s3_bucket }}"
+    rclone_src_access_key: "{{ authentik_s3_access_key }}"
+    rclone_src_secret_key: "{{ authentik_s3_secret_key }}"
+  tags: ['rclone']

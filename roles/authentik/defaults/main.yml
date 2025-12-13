@@ -1,0 +1,18 @@
+---
+
+authentik_image: "ghcr.io/goauthentik/server:2025.10.2"
+
+authentik_secret_key: "J53bPi/r9bt90g1DE3kAccl4/Zt+0q08WRqz8xXkWDefYcX263OgC0oUKJWivuMf+B+NnWd7rAbNA1Z+" #  Generate by openssl rand -base64 60
+authentik_proxy_trusted: "::1/128"
+authentik_mail_from: "Authentik <authentik@localhost>"
+
+authentik_postgresql_database: authentik
+authentik_postgresql_password: authentik
+authentik_postgresql_host: localhost
+authentik_postgresql_port: 5432
+
+authentik_s3_host: s3.neutrinet.be
+authentik_s3_endpoint: "https://{{ authentik_s3_host }}"
+authentik_s3_bucket: authentik
+authentik_s3_access_key: minio
+authentik_s3_secret_key: neutrinet

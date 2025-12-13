@@ -1,0 +1,23 @@
+- name: Restart authentik-server
+  ansible.builtin.service:
+    name: authentik-server
+    state: restarted
+
+- name: Restart authentik-worker
+  ansible.builtin.service:
+    name: authentik-worker
+    state: restarted
+
+- name: Restart docker
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart telegraf
+  ansible.builtin.service:
+    name: telegraf
+    state: restarted

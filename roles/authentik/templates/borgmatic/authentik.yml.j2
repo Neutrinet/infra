@@ -1,0 +1,14 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic.d/common.yml
+
+source_directories: !retain
+  - "/opt/authentik"
+
+archive_name_format: authentik-{hostname}-{now}
+
+postgresql_databases:
+  - name: "{{ postgresql_db_name }}"
+    username: "{{ postgresql_db_name }}"
+    password: {{ postgresql_db_password | string | to_json }}
+    hostname: "{{ postgresql_host }}"

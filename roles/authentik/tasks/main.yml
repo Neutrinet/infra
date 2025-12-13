@@ -1,0 +1,17 @@
+---
+
+- name: Installation de docker
+  ansible.builtin.import_tasks:
+    file: docker.yml
+
+- name: Installation de authentik
+  ansible.builtin.import_tasks:
+    file: authentik.yml
+
+# - name: Configuration telegraf
+#   ansible.builtin.import_tasks:
+#     file: telegraf.yml
+
+- name: Configuration des backup
+  ansible.builtin.import_tasks:
+    file: backup.yml
