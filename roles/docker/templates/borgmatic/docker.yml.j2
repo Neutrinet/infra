@@ -3,6 +3,6 @@
 <<: !include /etc/borgmatic.d/common.yml
 
 source_directories: !retain
-  - "/etc/gitlab-runner"
+  - "/etc/docker"
 
-archive_name_format: gitlab-runner_{hostname}-{now}
+archive_name_format: docker_{hostname}-{now}

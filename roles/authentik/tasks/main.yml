@@ -1,12 +1,14 @@
 ---
 
 - name: Installation de docker
-  ansible.builtin.import_tasks:
-    file: docker.yml
+  ansible.builtin.import_role:
+    name: docker
+  tags: ['docker']
 
 - name: Installation de authentik
   ansible.builtin.import_tasks:
     file: authentik.yml
+  tags: ['authentik']
 
 # - name: Configuration telegraf
 #   ansible.builtin.import_tasks:
@@ -15,3 +17,4 @@
 - name: Configuration des backup
   ansible.builtin.import_tasks:
     file: backup.yml
+  tags: ['backup']

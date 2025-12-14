@@ -1,6 +1,7 @@
 ---
-- name: Installation de Docker
-  ansible.builtin.import_tasks: docker.yml
+- name: Installation de docker
+  ansible.builtin.import_role:
+    name: docker
   tags: ['docker']
 
 - name: Installation de Gitlab Runner

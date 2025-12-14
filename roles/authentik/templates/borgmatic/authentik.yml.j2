@@ -5,7 +5,7 @@
 source_directories: !retain
   - "/opt/authentik"
 
-archive_name_format: authentik-{hostname}-{now}
+archive_name_format: authentik_{hostname}-{now}
 
 postgresql_databases:
   - name: "{{ postgresql_db_name }}"

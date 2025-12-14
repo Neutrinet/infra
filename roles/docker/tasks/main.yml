@@ -1,3 +1,5 @@
+---
+
 - name: Ajout de la clé GPG de Docker dans APT
   ansible.builtin.get_url:
     url: https://download.docker.com/linux/debian/gpg
@@ -49,3 +51,35 @@
     special_time: weekly
     user: root
     job: docker system prune -af --filter "until=$((30*24))h" > /dev/null
+
+- name: Trigger haproxy handler
+  ansible.builtin.meta: flush_handlers
+
+- name: Ajouts de l'utilisateur telegraf au group docker
+  ansible.builtin.user:
+    name: telegraf
+    groups: docker
+    append: true
+  notify: Restart telegraf
+  tags: ['telegraf_config']
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/docker.conf.j2
+    dest: /etc/telegraf/telegraf.d/docker.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf_config']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/docker.yml.j2
+    dest: /etc/borgmatic.d/docker.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
+  tags: ['borgmatic_config']
