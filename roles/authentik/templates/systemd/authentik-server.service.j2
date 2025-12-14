@@ -25,7 +25,6 @@ ExecStart=/usr/bin/docker run --rm \
   --name authentik-server \
   -v /opt/authentik/media:/media:rw \
   -v /opt/authentik/templates:/templates:ro \
-  -v /opt/authentik/templates:/templates:ro \
   -v /opt/authentik/static/icon_left_brand.svg:/web/dist/assets/icons/icon_left_brand.svg:ro \
   -v /opt/authentik/static/icon_left_brand.png:/web/dist/assets/icons/icon_left_brand.png:ro \
   -v /opt/authentik/static/icon.png:/web/dist/assets/icons/icon.png:ro \
