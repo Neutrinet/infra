@@ -43,9 +43,5 @@
     state: started
     enabled: true
 
-- name: Trigger haproxy handler
-  # We force keydb to restart its config to ensure our config has been applied.
-  # This forced restart is required on debian systems,
-  # because keydb appears to be already started and enabled by apt,
-  # and later in this role, telegraf expects our keydb to be correctly configured.
+- name: Trigger sentinel handler
   ansible.builtin.meta: flush_handlers

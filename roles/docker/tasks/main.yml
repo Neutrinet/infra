@@ -52,7 +52,7 @@
     user: root
     job: docker system prune -af --filter "until=$((30*24))h" > /dev/null
 
-- name: Trigger haproxy handler
+- name: Trigger docker handler
   ansible.builtin.meta: flush_handlers
 
 - name: Ajouts de l'utilisateur telegraf au group docker
