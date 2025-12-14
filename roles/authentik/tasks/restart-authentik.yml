@@ -1,0 +1,33 @@
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Stop authentik-worker
+  ansible.builtin.service:
+    name: authentik-worker
+    state: stopped
+
+- name: Stop authentik-server
+  ansible.builtin.service:
+    name: authentik-server
+    state: stopped
+
+- name: Start authentik-server
+  ansible.builtin.service:
+    name: authentik-server
+    state: started
+
+- name: Attendre que les migrations soit faites
+  ansible.builtin.uri:
+    url: 'http://localhost:9000/-/health/ready/'
+    status_code:
+      - 200
+  until: uri_output.status == 200
+  retries: 90
+  delay: 10
+  register: uri_output
+
+- name: Start authentik-worker
+  ansible.builtin.service:
+    name: authentik-worker
+    state: started

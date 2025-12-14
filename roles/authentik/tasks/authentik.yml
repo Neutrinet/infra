@@ -41,39 +41,25 @@
     group: root
     mode: 'ug=r,o='
   notify:
-    - Restart authentik-server
-    - Restart authentik-worker
+    - Restart authentik
 
-- name: Créer le service server
+- name: Créer les services
   ansible.builtin.template:
-    src: systemd/authentik-server.service.j2
-    dest: /etc/systemd/system/authentik-server.service
+    src: "systemd/{{ item }}.service.j2"
+    dest: "/etc/systemd/system/{{ item }}.service"
     owner: root
     group: root
     mode: 'ugo=r'
+  loop:
+    - authentik-server
+    - authentik-worker
   notify:
-    - Reload systemd
-    - Restart authentik-server
+    - Restart authentik
 
-- name: Créer le service worker
-  ansible.builtin.template:
-    src: systemd/authentik-worker.service.j2
-    dest: /etc/systemd/system/authentik-worker.service
-    owner: root
-    group: root
-    mode: 'ugo=r'
-  notify:
-    - Reload systemd
-    - Restart authentik-worker
-
-- name: Activer et démarrer le service server
+- name: Activer les service au demarage
   ansible.builtin.service:
-    name: authentik-server
-    state: started
+    name: "{{ item }}"
     enabled: true
-
-- name: Activer et démarrer le service worker
-  ansible.builtin.service:
-    name: authentik-worker
-    state: started
-    enabled: true
+  loop:
+    - authentik-server
+    - authentik-worker

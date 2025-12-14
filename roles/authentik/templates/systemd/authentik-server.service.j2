@@ -13,7 +13,9 @@ User=root
 Group=root
 
 EnvironmentFile=/etc/default/authentik
-Environment="AUTHENTIK_LISTEN__METRICS=[::1]:9031"
+Environment="AUTHENTIK_LISTEN__METRICS=[::1]:9030"
+Environment="AUTHENTIK_LISTEN__HTTP=[::1]:9000"
+Environment="AUTHENTIK_LISTEN__HTTPS=[::]:9443"
 
 ExecStartPre=-/usr/bin/docker stop authentik-server
 ExecStartPre=-/usr/bin/docker rm authentik-server
@@ -32,6 +34,8 @@ ExecStart=/usr/bin/docker run --rm \
   --memory="1536m" \
   --env-file /etc/default/authentik \
   --env AUTHENTIK_LISTEN__METRICS=[::1]:9030 \
+  --env AUTHENTIK_LISTEN__HTTP=[::1]:9000 \
+  --env AUTHENTIK_LISTEN__HTTPS=[::]:9443 \
   {{ authentik_image }} \
   server
 

@@ -7,8 +7,8 @@ driver:
 platforms:
   - name: bookworm-authentik-molecule
     box: debian/bookworm64
-    cpu: 2
-    memory: 1024
+    cpu: 4
+    memory: 4096
     interfaces:
       - network_name: private_network
         type: dhcp
