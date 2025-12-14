@@ -1,0 +1,9 @@
+- name: Restart docker
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+
+- name: Restart telegraf
+  ansible.builtin.service:
+    name: telegraf
+    state: restarted
