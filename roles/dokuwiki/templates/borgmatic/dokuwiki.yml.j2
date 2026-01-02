@@ -4,7 +4,7 @@
 
 source_directories: !retain
   - "/etc/caddy/conf.d/{{ dokuwiki_owner }}.conf"
-  - "{{ web_app_dist_dir }}"
-  - "{{ php_fpm_pool_dir }}/{{ dokuwiki_owner }}.conf"
+  - "/var/www/{{ dokuwiki_owner }}/dist"
+  - "/etc/php/{{ php_version }}/fpm/pool.d/{{ dokuwiki_owner }}.conf"
 
 archive_name_format: dokuwiki-{{ dokuwiki_owner }}_{hostname}-{now}

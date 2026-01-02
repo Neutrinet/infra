@@ -21,7 +21,7 @@
 
 - name: Création du dossier de config des VHosts
   ansible.builtin.file:
-    path: "{{ caddy_vhosts_dir }}"
+    path: /etc/caddy/conf.d
     state: directory
     owner: root
     group: root
@@ -30,7 +30,7 @@
 - name: Copie du fichier de config principal
   ansible.builtin.template:
     src: caddy/Caddyfile.j2
-    dest: "{{ caddy_config_dir }}/Caddyfile"
+    dest: /etc/caddy/Caddyfile
     owner: root
     group: root
     mode: "u=rw,go=r"
@@ -40,7 +40,7 @@
 - name: Copie de la config du healthcheck
   ansible.builtin.template:
     src: caddy/healthcheck.j2
-    dest: "{{ caddy_vhosts_dir }}/healthcheck.conf"
+    dest: /etc/caddy/conf.d/healthcheck.conf
     owner: root
     group: root
     mode: "u=rw,go=r"
@@ -49,7 +49,7 @@
 
 - name: Création du dossier des logs
   ansible.builtin.file:
-    path: "{{ caddy_log_dir }}"
+    path: /var/log/caddy
     state: directory
     owner: caddy
     group: caddy

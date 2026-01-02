@@ -15,7 +15,7 @@
 - name: Configuration de Caddy2 pour ffdnapi
   ansible.builtin.template:
     src: caddy/ffdnapi.j2
-    dest: "{{ caddy_vhosts_dir }}/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.conf"
+    dest: /etc/caddy/conf.d/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.conf
     owner: root
     group: root
     mode: "u=rw,go=r"

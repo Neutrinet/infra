@@ -1,7 +1,7 @@
 - name: Copie de la configuration php-fpm
   ansible.builtin.template:
     src: php-fpm/php-pool.conf.j2
-    dest: "{{ php_fpm_pool_dir }}/{{ web_app_owner }}.conf"
+    dest: /etc/php/{{ php_version }}/fpm/pool.d/{{ web_app_owner }}.conf
     owner: root
     group: root
     mode: "u=rw,go=r"
@@ -11,7 +11,7 @@
 
 - name: Création du dossier tmp pour php-fpm
   ansible.builtin.file:
-    path: "{{ php_fpm_tmp_dir }}"
+    path: /var/www/{{ web_app_owner }}/tmp
     owner: "{{ web_app_owner }}"
     group: "{{ web_app_owner }}"
     mode: "u=rwx,g=rx,o="

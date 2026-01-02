@@ -22,11 +22,6 @@
     name: composer
   tags: ['composer']
 
-- name: Installation de sendmail
-  ansible.builtin.package:
-    name: sendmail
-    state: present
-
 - name: Configuration du site (caddy, php-fpm, etc.)
   ansible.builtin.import_role:
     name: web_app

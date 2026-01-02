@@ -1,7 +1,7 @@
 - name: Copie de la configuration Caddy2
   ansible.builtin.template:
     src: "{{ web_app_caddy_template }}"
-    dest: "{{ caddy_vhosts_dir }}/{{ web_app_owner }}.conf"
+    dest: /etc/caddy/conf.d/{{ web_app_owner }}.conf
     owner: root
     group: root
     mode: "u=rw,go=r"

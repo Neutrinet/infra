@@ -1,11 +1,11 @@
 {{ ansible_managed | comment }}
 
-http://{{ web_app_domain }} {
-    root * {{ web_app_dist_dir | to_json }}
+http://{{ grav_domain }} {
+    root * /var/www/{{ grav_owner }}/dist
     encode gzip
     file_server
 
-    php_fastcgi unix/{{ php_fpm_socket_file }} {
+    php_fastcgi unix//var/run/php/php{{ php_version }}-{{ grav_owner }}.sock {
         trusted_proxies {{ caddy_trusted_proxies | join(' ') }}
     }
 
@@ -42,6 +42,6 @@ http://{{ web_app_domain }} {
     try_files {path} {path}/ /index.php?_url={uri}&{query}
 
     log {
-        output file {{ web_app_caddy_log | to_json }}
+        output file /var/log/caddy/{{ grav_owner }}.log
     }
 }

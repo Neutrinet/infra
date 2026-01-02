@@ -7,7 +7,7 @@
   ##
   ## Example of multiple gathering from local socket and remote host
   ## urls = ["http://192.168.1.20/status", "/tmp/fpm.sock"]
-  urls = [{{ php_fpm_socket_file | to_json }}]
+  urls = ["/var/run/php/php{{ php_version }}-{{ web_app_owner }}.sock"]
 
   ## Duration allowed to complete HTTP requests.
   timeout = "10s"
