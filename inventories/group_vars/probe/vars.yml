@@ -71,7 +71,6 @@ blackbox_exporter_http_probes:
     check_cert_expiry: true
   # Authentik
   - url: https://sso.neutrinet.be
-    check_cert_expiry: true
 
 blackbox_exporter_icmp_probes:
   - "80.67.181.20"
