@@ -10,6 +10,7 @@
     file: authentik.yml
   tags: ['authentik']
 
+## Presentement un bug sur le parsing de la sortie prometheus de authentik
 # - name: Configuration telegraf
 #   ansible.builtin.import_tasks:
 #     file: telegraf.yml

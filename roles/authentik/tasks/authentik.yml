@@ -7,7 +7,7 @@
     postgresql_db_name: "{{ authentik_postgresql_database }}"
     postgresql_db_password: "{{ authentik_postgresql_password }}"
 
-- name: Création de dossiers authentiques
+- name: Création de dossiers pour Authentik
   ansible.builtin.file:
     path: "{{ item }}"
     owner: 1000
