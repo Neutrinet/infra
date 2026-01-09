@@ -12,11 +12,6 @@ valkey_members:
   - name: "{{ inventory_hostname }}"
     ipv4: "{{ ansible_default_ipv4.address }}"
 
-valkey_dbfilename: "dump-{{ valkey_name_instance }}.rdb"
-valkey_logfile: "/var/log/valkey/valkey-server-{{ valkey_name_instance }}.log"
-valkey_pidfile: "/var/run/valkey-{{ valkey_name_instance }}/valkey-server.pid"
-valkey_dir: "/var/lib/valkey"
-
 valkey_maxmemory: 100MB
 valkey_databases: 16
 valkey_maxmemory_policy: noeviction
