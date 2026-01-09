@@ -20,9 +20,9 @@ masterauth {{ valkey_user_replication_password }}
 
 # General
 daemonize yes
-pidfile {{ valkey_pidfile }}
-logfile {{ valkey_logfile }}
-dir {{ valkey_dir }}
+pidfile /var/run/valkey-{{ valkey_name_instance }}/valkey-server.pid
+logfile /var/log/valkey/valkey-server-{{ valkey_name_instance }}.log
+dir /var/lib/valkey
 databases {{ valkey_databases }}
 
 # Memory
@@ -30,7 +30,7 @@ maxmemory {{ valkey_maxmemory | human_to_bytes }}
 maxmemory-policy {{ valkey_maxmemory_policy }}
 
 # Persistance
-dbfilename {{ valkey_dbfilename }}
+dbfilename dump-{{ valkey_name_instance }}.rdb
 {% for save in valkey_saves %}
 save {{ save.times }} {{ save.number_changed }}
 {% endfor %}

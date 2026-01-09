@@ -10,7 +10,7 @@
     owner: valkey
     group: valkey
     mode: "u=rw,go="
-    force: false
+    force: false  # /!\ Ce fichier ne peux plus etre modifier une fois le cluster démarer, valkey modifie ce fichier pour indiquer la topologie du cluster
   notify: Restart Valkey Sentinel
 
 - name: Création de la configuration static

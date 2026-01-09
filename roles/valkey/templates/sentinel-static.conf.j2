@@ -12,7 +12,7 @@ sentinel failover-timeout {{ valkey_name_instance }} {{ valkey_sentinel_failover
 # Logs
 logfile /var/log/valkey/sentinel-{{ valkey_name_instance }}.log
 pidfile /var/run/valkey-{{ valkey_name_instance }}/sentinel.pid
-dir {{ valkey_dir }}
+dir /var/lib/valkey
 
 # Security
 protected-mode {{ valkey_protected_mode | ternary('yes', 'no') }}
