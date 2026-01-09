@@ -5,7 +5,7 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bookworm-gitlab-docker
+  - name: bookworm-docker-molecule
     box: debian/bookworm64
     cpu: 2
     memory: 1024
