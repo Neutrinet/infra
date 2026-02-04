@@ -74,6 +74,7 @@
     mode: "ug=r,o="
   loop:
     - vector.yaml
+    - sinks/localhost.yaml
     - sinks/victoriametrics.yaml
     - sources/prometheus_static_heartbeat.yaml
     - transforms/common_labels.yaml
