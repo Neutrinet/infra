@@ -1,4 +1,4 @@
-victoriametrics_url: http://localhost
+victoriametrics_url: http://localhost:8428
 victoriametrics_username: neutrinet
 victoriametrics_password: neutrinet
 datacenter_name: unknown

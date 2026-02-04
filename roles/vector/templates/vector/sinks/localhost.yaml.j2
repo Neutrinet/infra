@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+type: "prometheus_exporter"
+inputs:
+  - "common_labels"
+
+healthcheck:
+    enabled: false
