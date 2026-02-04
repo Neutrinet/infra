@@ -12,7 +12,7 @@ groups:
           category: caddy.http_5xx
         annotations:
           summary: 'Caddy HTTP 5xx error rate is at {{ humanizePercentage $value }}% for {{ $labels.host }}'
-          description: '[{{ $labels.instance }}] [{{ $labels.host }}] Caddy HTTP 5xx error rate is > 10% in the last 5 minutes (current = {{ humanizePercentage $value }}%)
+          description: '[{{ $labels.instance }}] [{{ $labels.host }}] Caddy HTTP 5xx error rate is > 10% in the last 5 minutes (current = {{ humanizePercentage $value }}%)'
 
       - alert: Caddy High HTTP 4xx Error Rate
         for: 0m
@@ -22,7 +22,7 @@ groups:
           category: caddy.http_4xx
         annotations:
           summary: 'Caddy HTTP 4xx error rate is at {{ humanizePercentage $value }}% for {{ $labels.host }}'
-          description: '[{{ $labels.instance }}] [{{ $labels.host }}] Caddy HTTP 4xx error rate is > 50% in the last 5 minutes (current = {{ humanizePercentage $value }}%)
+          description: '[{{ $labels.instance }}] [{{ $labels.host }}] Caddy HTTP 4xx error rate is > 50% in the last 5 minutes (current = {{ humanizePercentage $value }}%)'
 
       - alert: Caddy Reverse Proxy Down
         expr: caddy_reverse_proxy_upstreams_healthy == 0
