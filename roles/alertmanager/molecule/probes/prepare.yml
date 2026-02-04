@@ -9,7 +9,7 @@
         update_cache: true
 
   roles:
-    - telegraf
+    - vector
     - blackbox_exporter
 
 - name: Prepare Alertmanager
