@@ -8,7 +8,7 @@
   ansible.builtin.import_role:
     name: php_fpm
   vars:
-    php_version: 8.3
+    php_version: "{{ grav_php_version }}"
     php_extra_modules:
       - yaml
       - sqlite3
@@ -22,14 +22,84 @@
     name: composer
   tags: ['composer']
 
-- name: Configuration du site (caddy, php-fpm, etc.)
-  ansible.builtin.import_role:
-    name: web_app
-  vars:
-    web_app_domain: "{{ grav_domain }}"
-    web_app_caddy_template: caddy/grav.j2
-    web_app_php_fpm_enabled: true
-  tags: ['web_app']
+- name: Création de l'utilisateur {{ grav_owner }}
+  ansible.builtin.user:
+    name: "{{ grav_owner }}"
+    home: "/var/www/{{ grav_owner }}"
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: Création du dossier /var/www
+  ansible.builtin.file:
+    path: /var/www
+    owner: caddy
+    group: caddy
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Création du dossier racine du site
+  ansible.builtin.file:
+    path: "/var/www/{{ grav_owner }}/dist"
+    owner: "{{ grav_owner }}"
+    group: "{{ grav_owner }}"
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Copie de la configuration php-fpm
+  ansible.builtin.template:
+    src: php-fpm/php-pool.conf.j2
+    dest: "/etc/php/{{ grav_php_version }}/fpm/pool.d/{{ grav_owner }}.conf"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - Reload php-fpm
+  tags: ['php_config']
+
+- name: Création du dossier tmp pour php-fpm
+  ansible.builtin.file:
+    path: "/var/www/{{ grav_owner }}/tmp"
+    owner: "{{ grav_owner }}"
+    group: "{{ grav_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Trigger php-fpm handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/php-fpm.conf.j2
+    dest: /etc/telegraf/telegraf.d/{{ grav_owner }}.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf_config']
+
+- name: Ajout de l'utilisateur telegraf au groupe caddy
+  ansible.builtin.user:
+    name: telegraf
+    groups: caddy
+    append: true
+  notify: Restart telegraf
+  tags: ['telegraf_config']
+
+- name: Copie de la configuration Caddy2
+  ansible.builtin.template:
+    src: "caddy/grav.j2"
+    dest: "/etc/caddy/conf.d/{{ grav_owner }}.conf"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: caddy validate --adapter caddyfile --config %s
+  notify: Reload caddy
+  tags: ['caddy_config']
+
+- name: Trigger Caddy handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation du scheduler
   ansible.builtin.import_tasks: scheduler.yml

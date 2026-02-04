@@ -1,10 +1,10 @@
 {{ ansible_managed | comment(decoration=';')}}
 
-[{{ web_app_owner }}]
-user = {{ web_app_owner }}
-group = {{ web_app_owner }}
+[{{ dokuwiki_owner }}]
+user = {{ dokuwiki_owner }}
+group = {{ dokuwiki_owner }}
 
-listen = /var/run/php/php{{ php_version }}-{{ web_app_owner }}.sock
+listen = /var/run/php/php{{ dokuwiki_php_version }}-{{ dokuwiki_owner }}.sock
 listen.owner = caddy
 listen.group = caddy
 listen.mode = "0660"
@@ -25,14 +25,12 @@ php_admin_value[post_max_size] = 4096M
 php_flag[display_errors] = false
 
 env[HOSTNAME] = $HOSTNAME
-env[TMP] = /var/www/{{ web_app_owner }}/tmp
-env[TMPDIR] = /var/www/{{ web_app_owner }}/tmp
-env[TEMP] = /var/www/{{ web_app_owner }}/tmp
+env[TMP] = /var/www/{{ dokuwiki_owner }}/tmp
+env[TMPDIR] = /var/www/{{ dokuwiki_owner }}/tmp
+env[TEMP] = /var/www/{{ dokuwiki_owner }}/tmp
 env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 php_admin_value[session.cookie_httponly] = true
 php_admin_value[session.use_only_cookies] = true
 php_admin_value[session.cookie_secure] = true
-{% if php_fpm_session_name %}
-php_admin_value[session.name] = {{ php_fpm_session_name | to_json }}
-{% endif %}
+php_admin_value[session.name] = __Host-PHPSESSID

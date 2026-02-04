@@ -1,0 +1,36 @@
+{{ ansible_managed | comment(decoration=';')}}
+
+[{{ nextcloud_owner }}]
+user = {{ nextcloud_owner }}
+group = {{ nextcloud_owner }}
+
+listen = /var/run/php/php{{ nextcloud_php_version }}-{{ nextcloud_owner }}.sock
+listen.owner = caddy
+listen.group = caddy
+listen.mode = "0660"
+
+pm = ondemand
+pm.max_children = 5
+pm.process_idle_timeout = 10s
+pm.max_requests = 500
+pm.status_path = /status
+
+request_terminate_timeout = 900
+
+php_admin_value[output_buffering] = false
+php_admin_value[memory_limit] = 1024M
+php_admin_value[date.timezone] = Europe/Brussels
+php_value[upload_max_filesize] = 512M
+php_admin_value[post_max_size] = 4096M
+php_flag[display_errors] = false
+
+env[HOSTNAME] = $HOSTNAME
+env[TMP] = /var/www/{{ nextcloud_owner }}/tmp
+env[TMPDIR] = /var/www/{{ nextcloud_owner }}/tmp
+env[TEMP] = /var/www/{{ nextcloud_owner }}/tmp
+env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+php_admin_value[session.cookie_httponly] = true
+php_admin_value[session.use_only_cookies] = true
+php_admin_value[session.cookie_secure] = true
+php_admin_value[session.name] = __Host-PHPSESSID

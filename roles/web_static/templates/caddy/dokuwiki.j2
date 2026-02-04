@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
-http://{{ web_app_domain }} {
-    root * /var/www/{{ web_app_owner }}/dist
+http://{{ domain.name }} {
+    root * /var/www/{{ domain_owner }}/dist
     encode gzip
     file_server
 
@@ -23,6 +23,6 @@ http://{{ web_app_domain }} {
     }
 
     log {
-        output file /var/log/caddy/{{ web_app_owner }}.log
+        output file /var/log/caddy/{{ domain_owner }}.log
     }
 }

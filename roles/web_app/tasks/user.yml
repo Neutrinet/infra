@@ -1,7 +1,0 @@
-- name: Création de l'utilisateur {{ web_app_owner }}
-  ansible.builtin.user:
-    name: "{{ web_app_owner }}"
-    home: /var/www/{{ web_app_owner }}
-    shell: /sbin/nologin
-    system: true
-    state: present
