@@ -9,6 +9,5 @@
         update_cache: true
 
   roles:
-    - probe
     - blackbox_exporter
     - nagios_openvpn

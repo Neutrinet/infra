@@ -13,7 +13,6 @@
 - name: Installation de etcd
   ansible.builtin.package:
     name:
-      - etcd
       - etcd-client
       - etcd-server
     state: present

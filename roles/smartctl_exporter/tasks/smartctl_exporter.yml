@@ -1,0 +1,80 @@
+---
+
+# - name: Création de l'utilisateur pour smartctl exporter
+#   ansible.builtin.user:
+#     name: smartctl-exporter
+#     home: /opt/smartctl-exporter
+#     shell: /sbin/nologin
+#     system: true
+#     groups:
+#       - smartctl
+#     append: true
+#     state: present
+
+- name: Création des dossiers de smartctl exporter
+  ansible.builtin.file:
+    path: "{{ smartctl_exporter_dir }}"
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/smartctl-exporter
+    - /opt/smartctl-exporter/{{ smartctl_exporter_version }}
+  loop_control:
+    loop_var: smartctl_exporter_dir
+
+- name: Création du dossier des archives de smartctl exporter
+  ansible.builtin.file:
+    path: /usr/local/src/smartctl-exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive de smartctl exporter v{{ smartctl_exporter_version }}
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus-community/smartctl_exporter/releases/download/v{{ smartctl_exporter_version }}/smartctl_exporter-{{ smartctl_exporter_version }}.linux-amd64.tar.gz
+    dest: /usr/local/src/smartctl-exporter/{{ smartctl_exporter_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/prometheus-community/smartctl_exporter/releases/download/v{{ smartctl_exporter_version }}/sha256sums.txt"
+
+- name: Décompression de l'archive
+  ansible.builtin.unarchive:
+    src: /usr/local/src/smartctl-exporter/{{ smartctl_exporter_version }}.tar.gz
+    dest: /opt/smartctl-exporter/{{ smartctl_exporter_version }}
+    creates: /opt/smartctl-exporter/{{ smartctl_exporter_version }}/smartctl_exporter
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: root
+    group: root
+
+- name: Création du lien symbolique pour le binaire de stmartctl exporter
+  ansible.builtin.file:
+    src: /opt/smartctl-exporter/{{ smartctl_exporter_version }}/smartctl_exporter
+    dest: /usr/local/bin/smartctl-exporter
+    state: link
+  notify: Restart smartctl-exporter
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/smartctl-exporter.service.j2
+    dest: /etc/systemd/system/smartctl-exporter.service
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart smartctl-exporter
+
+- name: Activation de smartctl exporter au démarrage
+  ansible.builtin.service:
+    name: smartctl-exporter
+    state: started
+    enabled: true
+
+- name: Trigger handlers
+  # We need to restart smartctl-exporter to apply the new config
+  # and expose the metrics for telegraf
+  ansible.builtin.meta: flush_handlers

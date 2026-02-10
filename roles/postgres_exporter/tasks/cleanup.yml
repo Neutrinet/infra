@@ -1,0 +1,44 @@
+- name: Récupération de la liste des dossiers d'installation
+  ansible.builtin.find:
+    path: /opt/postgres-exporter
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _postgres_exporter_installed_dirs
+
+- name: Récupération de la liste des archives
+  ansible.builtin.find:
+    path: /usr/local/src/postgres-exporter
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _postgres_exporter_archives
+
+- name: Récupération de la plus ancienne version et de la version courante
+  ansible.builtin.set_fact:
+    postgres_exporter_oldest_archive: "{{ postgres_exporter_sorted_archives | first }}"
+    postgres_exporter_oldest_install_dir: "{{ postgres_exporter_sorted_install_dirs | first }}"
+    postgres_exporter_oldest_version: "{{ postgres_exporter_sorted_install_dirs | first | basename }}"
+  vars:
+    postgres_exporter_sorted_archives: |-
+      {{ _postgres_exporter_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    postgres_exporter_sorted_install_dirs: |-
+      {{ _postgres_exporter_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: Suppression de la plus ancienne version (v{{ postgres_exporter_oldest_version }})
+  ansible.builtin.file:
+    state: absent
+    path: "{{ postgres_exporter_oldest_install_dir }}"
+  when: _postgres_exporter_installed_dirs.files | length > 5
+
+- name: Suppression de la plus ancienne archive
+  ansible.builtin.file:
+    state: absent
+    path: "{{ postgres_exporter_oldest_archive }}"
+  when: _postgres_exporter_archives.files | length > 5

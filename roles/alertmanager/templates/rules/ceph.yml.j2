@@ -1,0 +1,23 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+  - name: Ceph
+    rules:
+      - alert: Ceph Down
+        for: 5m
+        expr: ceph_health_status == 0
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Ceph instance {{ $labels.instance }} is down'
+          description: '[{{ $labels.instance }}] Ceph instance is down.'
+
+      - alert: Ceph OSD Down
+        for: 5m
+        expr: ceph_osd_up == 0
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Ceph OSD {{ $labels.ceph_daemon }} is down'
+          description: '[{{ $labels.instance }}] Ceph OSD {{ $labels.ceph_daemon }} is down.'

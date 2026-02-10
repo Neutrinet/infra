@@ -8,17 +8,6 @@
     name: letsencrypt
   tags: ['letsencrypt']
 
-- name: Installation des plugins Telegraf
-  ansible.builtin.template:
-    src: telegraf/haproxy.conf.j2
-    dest: /etc/telegraf/telegraf.d/haproxy.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  notify: Restart telegraf
-  tags: ['telegraf_config']
-
 - name: Configuration de vector
   ansible.builtin.template:
     src: vector/prometheus_haproxy_exporter.yaml.j2
