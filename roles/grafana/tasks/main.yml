@@ -7,12 +7,6 @@
     mode: "ugo=r"
     force: true
 
-- name: Suppression de l'ancien dépôt APT pour Grafana
-  ansible.builtin.apt_repository:
-    repo: deb https://packages.grafana.com/oss/deb stable main
-    filename: grafana
-    state: absent
-
 - name: Ajout du dépôt APT pour Grafana
   ansible.builtin.apt_repository:
     repo: deb [signed-by=/etc/apt/keyrings/grafana.asc] https://packages.grafana.com/oss/deb stable main

@@ -48,7 +48,10 @@
 
 # Read metrics about network interface usage
 [[inputs.net]]
+  ignore_protocol_stats = true
 
+# Collect kernel snmp counters and network interface statistics
+[[inputs.nstat]]
 
 # Read TCP metrics such as established, time wait and sockets counts.
 [[inputs.netstat]]

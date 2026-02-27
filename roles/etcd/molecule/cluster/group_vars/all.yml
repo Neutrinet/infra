@@ -1,7 +1,7 @@
 etcd_members:
-  - name: "bullseye-etcd-01-molecule"
+  - name: "bookworm-etcd-01-molecule"
     ipv4: 172.29.129.31
-  - name: "bullseye-etcd-02-molecule"
+  - name: "bookworm-etcd-02-molecule"
     ipv4: 172.29.129.32
-  - name: "bullseye-etcd-03-molecule"
+  - name: "bookworm-etcd-03-molecule"
     ipv4: 172.29.129.33

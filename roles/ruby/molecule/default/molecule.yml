@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bullseye-ruby-molecule
-    box: debian/bullseye64
+  - name: bookworm-ruby-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 1024
 provisioner:

@@ -3,10 +3,10 @@ dependency:
 driver:
   name: vagrant
   provider:
-    name: virtualbox
+    name: libvirt
 platforms:
-  - name: bullseye-alertmanager-molecule
-    box: debian/bullseye64
+  - name: bookworm-alertmanager-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 1024
     interfaces:

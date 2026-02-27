@@ -1,9 +1,14 @@
 letsencrypt_domains_ovh:
-  - neutrinet.be
-  - labriqueinter.net
-  - internetcu.be
-  - teamrecup.be
-  - mobilizon.be
+  - name: neutrinet.be
+    wildcard: true
+  - name: labriqueinter.net
+    wildcard: true
+  - name: internetcu.be
+    wildcard: true
+  - name: teamrecup.be
+    wildcard: true
+  - name: teamrecup.be
+    wildcard: true
 
 haproxy:
   - hostname: neutrinet.be
@@ -13,7 +18,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
+      Content-Security-Policy: "default-src 'none'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self';"
 
   - hostname: beta.neutrinet.be
     target:
@@ -21,10 +26,21 @@ haproxy:
     target_port: 80
     healthcheck: true
     healthcheck_url: GET /healthcheck
-    username: neutrinet
-    password: neutrinet
+    users:
+      - username: neutrinet
+        password: neutrinet
+
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
+      Content-Security-Policy: "default-src 'none'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self';"
+
+  - hostname: teamrecup.be
+    target:
+      - grav.patata.louise.neutri.net
+    target_port: 80
+    healthcheck: true
+    healthcheck_url: GET /healthcheck
+    headers:
+      Content-Security-Policy: "default-src 'none'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self';"
 
   - hostname: mediawiki.neutrinet.be
     target:
@@ -33,7 +49,7 @@ haproxy:
     healthcheck: true
     healthcheck_url: GET /healthcheck
     headers:
-      Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
+      Content-Security-Policy: "default-src 'none'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';"
 
   - hostname: wikijs.neutrinet.be
     target:
@@ -126,13 +142,13 @@ haproxy:
       - meta.patata.louise.neutri.net
     target_port: 80
     healthcheck: true
-    healthcheck_url: HEAD /
+    healthcheck_url: GET /healthcheck
 
   - hostname: s3.neutrinet.be
     target:
-      - ceph-s3-01.patata.louise.neutri.net
-      - ceph-s3-02.patata.louise.neutri.net
-      - ceph-s3-03.patata.louise.neutri.net
+      - topi.louise.neutri.net
+      - nam.louise.neutri.net
+      - bour.louise.neutri.net
     target_port: 7480
     healthcheck: true
     healthcheck_url: HEAD /
@@ -204,9 +220,63 @@ haproxy:
       - web-static.patata.louise.neutri.net
     target_port: 9000
     healthcheck: true
-    healthcheck_url: GET /hooks/health
+    healthcheck_url: HEAD /
     headers:
       Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
+
+  - hostname: collectd.neutrinet.be
+    target:
+      - collectd.patata.louise.neutri.net
+    target_port: 9103
+    healthcheck: true
+    healthcheck_url: HEAD /
+    users:
+      - username: "{{ vault_username_collectd_occupation_00 }}"
+        password: "{{ vault_password_collectd_occupation_00 }}"
+      - username: "{{ vault_username_collectd_occupation_01 }}"
+        password: "{{ vault_password_collectd_occupation_01 }}"
+      - username: "{{ vault_username_collectd_occupation_02 }}"
+        password: "{{ vault_password_collectd_occupation_02 }}"
+      - username: "{{ vault_username_collectd_occupation_03 }}"
+        password: "{{ vault_password_collectd_occupation_03 }}"
+      - username: "{{ vault_username_collectd_occupation_04 }}"
+        password: "{{ vault_password_collectd_occupation_04 }}"
+      - username: "{{ vault_username_collectd_occupation_05 }}"
+        password: "{{ vault_password_collectd_occupation_05 }}"
+      - username: "{{ vault_username_collectd_occupation_06 }}"
+        password: "{{ vault_password_collectd_occupation_06 }}"
+      - username: "{{ vault_username_collectd_occupation_07 }}"
+        password: "{{ vault_password_collectd_occupation_07 }}"
+      - username: "{{ vault_username_collectd_occupation_08 }}"
+        password: "{{ vault_password_collectd_occupation_08 }}"
+      - username: "{{ vault_username_collectd_occupation_09 }}"
+        password: "{{ vault_password_collectd_occupation_09 }}"
+
+  - hostname: stalwart.neutrinet.be
+    alt_hostnames:
+      - autoconfig.mobilizon.be
+      - autodiscover.mobilizon.be
+      - mta-sts.mobilizon.be
+      - mail.mobilizon.be
+      - autoconfig.neutri.net
+      - autodiscover.neutri.net
+      - mta-sts.neutri.net
+      - mail.neutri.be
+      - autoconfig.neutrinet.be
+      - autodiscover.neutrinet.be
+      - mta-sts.neutrinet.be
+      - mail.neutrinet.be
+      - autoconfig.teamrecup.be
+      - autodiscover.teamrecup.be
+      - mta-sts.teamrecup.be
+      - mail.teamrecup.be
+    target:
+      - smtp.neutri.net
+    target_port: 8080
+    healthcheck: true
+    healthcheck_url: GET /healthz/ready
+    deny_paths:
+      - /metrics
 
 haproxy_redirect:
   - from: www.neutrinet.be

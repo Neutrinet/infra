@@ -1,0 +1,6 @@
+- name: Déploiement de Collectd Exporter
+  hosts: collectd
+  become: true
+
+  roles:
+    - collectd_exporter

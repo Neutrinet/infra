@@ -1,12 +1,5 @@
 {{ ansible_managed | comment }}
 
-# The webhook server supports health endpoint only from v2.6.10+
-# Debian buster provides webhook v2.6.9, so we have to wait for bullseye...
-# Meanwhile, a workaround is to create a dummy hook that always succeed.
-# See also https://github.com/adnanh/webhook/pull/283
-- id: "health"
-  execute-command: "true"
-
 - id: "{{ webhook_name }}"
   execute-command: "/etc/webhook/scripts/{{ webhook_script | basename }}"
   include-command-output-in-response: true

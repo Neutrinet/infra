@@ -1,8 +1,0 @@
-- name: Copie de la configuration de Nextcloud
-  ansible.builtin.template:
-    src: "nextcloud/config.json.j2"
-    dest: "{{ web_app_home_dir }}/import.json"
-    owner: "{{ nextcloud_owner }}"
-    group: "{{ web_app_group }}"
-    mode: "u=rw,g=r,o="
-  notify: Config nextcloud

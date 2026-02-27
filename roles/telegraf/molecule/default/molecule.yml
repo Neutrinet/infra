@@ -3,10 +3,10 @@ dependency:
 driver:
   name: vagrant
   provider:
-    name: virtualbox
+    name: libvirt
 platforms:
-  - name: bullseye-telegraf-molecule
-    box: debian/bullseye64
+  - name: bookworm-telegraf-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 512
 provisioner:

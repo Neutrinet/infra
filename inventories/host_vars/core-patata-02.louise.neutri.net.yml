@@ -1,3 +1,8 @@
+# Use pfsense hosts as NTP servers
+commun_ntp_clients:
+  - address: 2001:913:1000:10::61
+  - address: 2001:913:1000:10::62
+
 bird_router_id: 169.254.0.221
 bird_my_asn: 204059
 bird_router_source_ipv4: 80.67.181.11
@@ -52,11 +57,15 @@ keepalived_vrrp_scripts:
 
 keepalived_instances:
   - vip: 80.67.181.17/32
+    additional_vip:
+      - 80.67.181.33/32
     addresses:
       - 80.67.181.18
       - 80.67.181.19
     type: ipv4
   - vip: 2001:913:1000:200::17/128
+    additional_vip:
+      - 2001:913:1000:300::33/128
     addresses:
       - 2001:913:1000:200::18
       - 2001:913:1000:200::19

@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from collectd-exporter
+  urls = ["http://localhost:9103/metrics"]
+  metric_version = 2

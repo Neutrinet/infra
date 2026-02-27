@@ -67,3 +67,8 @@
     serial_number: 0
   tags: ['serial']
   when: ansible_virtualization_type == "kvm" or ansible_product_name == "PowerEdge R620"
+
+- name: Configuration de opensmtpd
+  ansible.builtin.include_tasks: opensmtpd.yml
+  tags: ['opensmtpd']
+  when: "'stalwart' not in group_names"

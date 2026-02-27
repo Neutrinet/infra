@@ -1,5 +1,6 @@
 ceph_cluster: s3-patata
+
 # Use pfsense hosts as NTP servers
-ntp_hosts:
- - 2001:913:1000:11::2
- - 2001:913:1000:11::3
+commun_ntp_clients:
+  - address: 2001:913:1000:11::2
+  - address: 2001:913:1000:11::3

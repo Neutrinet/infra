@@ -1,0 +1,46 @@
+---
+
+- name: Install Stalwart
+  ansible.builtin.import_tasks:
+    file: install.yml
+
+- name: Installation des certificats Let's Encrypt
+  ansible.builtin.import_role:
+    name: letsencrypt
+  vars:
+    letsencrypt_post_hook: 'systemctl restart stalwart'
+    letsencrypt_deploy_hook: '/etc/letsencrypt/stalwart.py'
+  tags: ['letsencrypt']
+
+- name: Config Stalwart
+  ansible.builtin.import_tasks:
+    file: config.yml
+
+- name: Enable service Stalwart
+  ansible.builtin.import_tasks:
+    file: service.yml
+
+- name: Cleanup
+  ansible.builtin.import_tasks:
+    file: cleanup.yml
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/stalwart.conf.j2
+    dest: /etc/telegraf/telegraf.d/stalwart.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf_config']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/stalwart.yml.j2
+    dest: /etc/borgmatic.d/stalwart.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
+  tags: ['borgmatic_config']

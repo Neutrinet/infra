@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bullseye-commun-molecule
-    box: debian/bullseye64
+  - name: bookworm-commun-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 512
 provisioner:

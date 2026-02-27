@@ -44,9 +44,11 @@ defaults
     errorfile 503 /etc/haproxy/errors/503.http
     errorfile 504 /etc/haproxy/errors/504.http
 
-{% for host in haproxy if host.username is defined and host.password is defined %}
+{% for host in haproxy if host.users is defined %}
 userlist {{ host.hostname | replace('.', '-') }}-credentials
-  user {{ host.username }} insecure-password {{ host.password }}
+{% for user in host.users %}
+  user {{ user.username }} insecure-password {{ user.password }}
+{% endfor %}
 
 {% endfor %}
 
@@ -87,11 +89,21 @@ frontend haproxy-frontend
 
 {% for host in haproxy %}
     acl {{ host.hostname | replace('.', '-') }}-acl hdr(host),field(1,:) {{ host.hostname }}
+{% if 'alt_hostnames' in host %}
+{% for alt_host in host.alt_hostnames %}
+    acl {{ alt_host | replace('.', '-') }}-acl hdr(host),field(1,:) {{ alt_host }}
+{% endfor %}
+{% endif %}
 {% if 'deny_paths' in host %}
 {% for deny_path in host.deny_paths %}
     acl {{ host.hostname | replace('.', '-') }}-deny-acl path_beg {{ deny_path }}
 {% endfor %}
     http-request deny if {{ host.hostname | replace('.', '-') }}-acl {{ host.hostname | replace('.', '-') }}-deny-acl
+{% if 'alt_hostnames' in host %}
+{% for alt_host in host.alt_hostnames %}
+    http-request deny if {{ alt_host | replace('.', '-') }}-acl {{ host.hostname | replace('.', '-') }}-deny-acl
+{% endfor %}
+{% endif %}
 {% endif %}
 
 {% endfor %}
@@ -99,6 +111,11 @@ frontend haproxy-frontend
 
 {% for host in haproxy %}
     use_backend {{ host.hostname | replace('.', '-') }}-backend if {{ host.hostname | replace('.', '-') }}-acl
+{% if 'alt_hostnames' in host %}
+{% for alt_host in host.alt_hostnames %}
+    use_backend {{ host.hostname | replace('.', '-') }}-backend if {{ alt_host | replace('.', '-') }}-acl
+{% endfor %}
+{% endif %}
 {% endfor %}
 
 {% for host in haproxy %}
@@ -110,7 +127,7 @@ backend {{ host.hostname | replace('.', '-') }}-backend
 {% endif %}
     option forwardfor
     option http-server-close
-{% if host.username is defined and host.password is defined %}
+{% if host.users is defined %}
     http-request auth unless { http_auth({{ host.hostname | replace('.', '-') }}-credentials) }
 {% endif %}
 {% if host.headers is defined %}
@@ -122,7 +139,7 @@ backend {{ host.hostname | replace('.', '-') }}-backend
     timeout server {{ host.timeout }}
 {% endif %}
 {% for target in host.target %}
-    server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check{% endif %} cookie sl {% if "ssl" in host %}ssl{% endif %} {% if "ssl_verify" in host and not host.ssl_verify %}verify none{% endif %}
+    server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check port {{ host.target_port }}{% endif %} {% if "ssl" in host %}ssl{% endif %} {% if "ssl_verify" in host and not host.ssl_verify %}verify none{% endif %}
 
 {% endfor %}
 

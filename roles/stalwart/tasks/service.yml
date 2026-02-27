@@ -1,0 +1,15 @@
+---
+
+- name: service | Installer le service systemd
+  ansible.builtin.template:
+    src: systemd/stalwart.service.j2
+    dest: /etc/systemd/system/stalwart.service
+    owner: root
+    group: root
+    mode: "ugo=r"
+
+- name: service | Activer stalwart au démarrage
+  ansible.builtin.service:
+    name: stalwart
+    state: started
+    enabled: true

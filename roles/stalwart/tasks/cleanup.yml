@@ -1,0 +1,44 @@
+- name: Récupération de la liste des dossiers d'installation
+  ansible.builtin.find:
+    path: /opt/stalwart
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _stalwart_installed_dirs
+
+- name: Récupération de la liste des archives
+  ansible.builtin.find:
+    path: /usr/local/src/stalwart
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _stalwart_archives
+
+- name: Récupération de la version la plus ancienne et de la version actuelle
+  ansible.builtin.set_fact:
+    stalwart_oldest_archive: "{{ stalwart_sorted_archives | first }}"
+    stalwart_oldest_install_dir: "{{ stalwart_sorted_install_dirs | first }}"
+    stalwart_oldest_version: "{{ stalwart_sorted_install_dirs | first | basename }}"
+  vars:
+    stalwart_sorted_archives: |-
+      {{ _stalwart_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    stalwart_sorted_install_dirs: |-
+      {{ _stalwart_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: Supprimer la version la plus ancienne
+  ansible.builtin.file:
+    state: absent
+    path: "{{ stalwart_oldest_install_dir }}"
+  when: _stalwart_installed_dirs.files | length > 5
+
+- name: Suppression de l'archive la plus ancienne
+  ansible.builtin.file:
+    state: absent
+    path: "{{ stalwart_oldest_archive }}"
+  when: _stalwart_archives.files | length > 5

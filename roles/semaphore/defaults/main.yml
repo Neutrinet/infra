@@ -1,6 +1,6 @@
 semaphore_domain: semaphore.example.com
 semaphore_owner: "{{ semaphore_domain | replace('.', '-') }}"
-semaphore_version: 2.10.22
+semaphore_version: 2.14.12
 
 semaphore_admin_username: admin
 semaphore_admin_password: neutrinet

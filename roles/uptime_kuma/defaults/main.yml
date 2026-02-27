@@ -1,6 +1,6 @@
 uptime_kuma_domain: uptime.example.com
 uptime_kuma_owner: "{{ uptime_kuma_domain | replace('.', '-') }}"
-uptime_kuma_version: 1.23.13
+uptime_kuma_version: 1.23.16
 
 # We first need to create the admin user
 # Then, go to Settings > API Keys and create a new token

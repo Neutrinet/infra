@@ -15,13 +15,6 @@
     force: true
   tags: ['routinator_install']
 
-- name: Suppresion de l'ancien dépôt APT pour routinator
-  ansible.builtin.apt_repository:
-    repo: deb https://packages.nlnetlabs.nl/linux/debian {{ ansible_distribution_release }} main
-    state: absent
-    filename: routinator
-  tags: ['routinator_install']
-
 - name: Ajout du dépôt APT pour routinator
   ansible.builtin.apt_repository:
     repo: deb [signed-by=/etc/apt/keyrings/routinator.asc] https://packages.nlnetlabs.nl/linux/debian {{ ansible_distribution_release }} main

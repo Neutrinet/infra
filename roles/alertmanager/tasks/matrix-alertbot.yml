@@ -37,6 +37,18 @@
       - libolm-dev
     state: present
 
+- name: Vérifier si la version Python de venv correspond au système actuel
+  ansible.builtin.stat:
+    path: "/opt/matrix-alertbot/lib/python{{ ansible_python.version.major }}.{{ ansible_python.version.minor }}"
+  register: python_version_match
+
+- name: Supprimer l'environnement virtuel incompatible
+  ansible.builtin.file:
+    path: "/opt/matrix-alertbot"
+    state: absent
+  when:
+    - not python_version_match.stat.exists
+
 - name: Installation de matrix-alertbot  # noqa package-latest
   ansible.builtin.pip:
     name: matrix-alertbot[e2e]

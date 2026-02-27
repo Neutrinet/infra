@@ -1,1 +1,0 @@
-proxmox_gpg_key_url: https://enterprise.proxmox.com/debian/proxmox-ve-release-{{ proxmox_major_version }}.x.gpg

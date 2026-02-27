@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic.d/common.yml
+
+source_directories: !retain
+  - "{{ stalwart_storage_path }}"
+
+archive_name_format: stalwart_{hostname}-{now}

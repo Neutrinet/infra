@@ -7,7 +7,7 @@
 
 [[processors.override]]
   namepass = ["prometheus"]
-  fieldpass = ["ceph_*"]
+  fieldinclude = ["ceph_*"]
 
   [processors.override.tags]
     ceph_cluster = "{{ ceph_cluster }}"

@@ -2,7 +2,7 @@
   ansible.builtin.command:
     cmd: semaphore user list
     chdir: /etc/semaphore
-  changed_when: no
+  changed_when: false
   become: true
   become_user: "{{ semaphore_owner }}"
   register: _semaphore_users

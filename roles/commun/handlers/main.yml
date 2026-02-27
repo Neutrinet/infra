@@ -24,12 +24,17 @@
     name: systemd-journald
     state: restarted
 
-- name: Restart systemd-timesyncd
+- name: Restart chrony
   ansible.builtin.service:
-    name: systemd-timesyncd
+    name: chrony
     state: restarted
 
 - name: Update grub  # noqa command-instead-of-shell
   ansible.builtin.shell:
     cmd: "grub-mkconfig -o /boot/grub/grub.cfg"
   changed_when: true
+
+- name: Restart opensmtpd
+  ansible.builtin.service:
+    name: opensmtpd
+    state: restarted

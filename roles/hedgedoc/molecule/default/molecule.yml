@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bullseye-hedgedoc-molecule
-    box: debian/bullseye64
+  - name: bookworm-hedgedoc-molecule
+    box: debian/bookworm64
     cpu: 2
     memory: 1024
     interfaces:

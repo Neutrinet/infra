@@ -1,17 +1,18 @@
 - name: Détection du serveur PostgreSQL primaire
   ansible.builtin.uri:
-    url: http://localhost:8008/health
-  delegate_to: "{{ host }}"
+    url: http://{{ host }}:8008/read-write
+    method: HEAD
+    status_code: [200, 503]
   loop: "{{ postgresql_patroni_hosts }}"
   loop_control:
     loop_var: host
-  register: _postgresql_patroni_health
+  register: _postgresql_patroni_read_write
 
 - name: Énumération des serveurs PostgreSQL primaires détectés
   ansible.builtin.set_fact:
     postgresql_patroni_primary_hosts: >-
-      {{ _postgresql_patroni_health.results
-        | selectattr("json.role", "==", "master")
+      {{ _postgresql_patroni_read_write.results
+        | selectattr("status", "==", 200)
         | map(attribute="host")
         | list }}
 

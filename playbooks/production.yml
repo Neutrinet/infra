@@ -53,6 +53,12 @@
 - name: Déploiement des probes pour le monitoring
   import_playbook: apps/probe.yml
 
+- name: Déploiement de Bird Exporter
+  import_playbook: apps/bird_exporter.yml
+
+- name: Déploiement de Collectd Exporter
+  import_playbook: apps/collectd_exporter.yml
+
 - name: Déploiement de VictoriaMetrics
   import_playbook: apps/victoriametrics.yml
 
@@ -67,3 +73,6 @@
 
 - name: Déploiement de Gitlab Runner
   import_playbook: apps/gitlab_runner.yml
+
+- name: Déploiement de Stalwart
+  import_playbook: apps/stalwart.yml
