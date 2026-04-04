@@ -13,7 +13,7 @@
     name: sury-php
     types: deb
     signed_by: /usr/share/keyrings/deb.sury.org-php.gpg
-    uris: https://packages.sury.org/php/ {{ ansible_distribution_release }}
+    uris: https://packages.sury.org/php/
     suites: "{{ ansible_distribution_release }}"
     components:
       - main
