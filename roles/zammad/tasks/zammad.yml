@@ -7,8 +7,8 @@
   ansible.builtin.deb822_repository:
     name: zammad
     types: deb
-    signed_by: "{{ proxmox_gpg_key_url }}"
-    uris: https://dl.packager.io/srv/deb/zammad/zammad/stable/debian
+    signed_by: https://go.packager.io/srv/deb/zammad/zammad/gpg-key.gpg
+    uris: https://go.packager.io/srv/deb/zammad/zammad/stable/debian
     suites: "{{ ansible_distribution_major_version }}"
     components:
       - main

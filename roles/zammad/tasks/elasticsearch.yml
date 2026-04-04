@@ -7,7 +7,7 @@
   ansible.builtin.deb822_repository:
     name: elasticsearch
     types: deb
-    signed_by: "{{ proxmox_gpg_key_url }}"
+    signed_by: https://artifacts.elastic.co/GPG-KEY-elasticsearch
     uris: https://artifacts.elastic.co/packages/{{ zammad_elasticsearch_major_version }}.x/apt
     suites: stable
     components:
