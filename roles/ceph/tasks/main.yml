@@ -3,7 +3,7 @@
   ansible.builtin.include_vars:
     file: "{{ ansible_distribution_release }}.yml"
 
-- name: Suppression de l'ancien dépôt APT pour ceph
+- name: Suppression de l'ancien dépôt APT pour Ceph
   ansible.builtin.file:
     path: /etc/apt/sources.list.d/ceph.list
     state: absent
@@ -16,8 +16,12 @@
     uris: http://download.proxmox.com/debian/ceph-{{ ceph_proxmox_version }}
     suites: "{{ ansible_distribution_release }}"
     components:
-      - main
+      - no-subscription
     state: present
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de Ceph
   ansible.builtin.package:

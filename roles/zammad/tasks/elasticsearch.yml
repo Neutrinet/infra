@@ -1,17 +1,22 @@
-- name: Ajout de la clé GPG de ElasticSearch dans APT
-  ansible.builtin.get_url:
-    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    dest: /etc/apt/keyrings/elasticsearch.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
+- name: Suppression de l'ancien dépôt APT pour ElasticSearch
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/elasticsearch.list
+    state: absent
 
 - name: Ajout du dépôt APT pour ElasticSearch
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/elasticsearch.asc] https://artifacts.elastic.co/packages/{{ zammad_elasticsearch_major_version }}.x/apt stable main
-    filename: elasticsearch
+  ansible.builtin.deb822_repository:
+    name: elasticsearch
+    types: deb
+    signed_by: "{{ proxmox_gpg_key_url }}"
+    uris: https://artifacts.elastic.co/packages/{{ zammad_elasticsearch_major_version }}.x/apt
+    suites: stable
+    components:
+      - main
     state: present
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de ElasticSearch
   ansible.builtin.package:
