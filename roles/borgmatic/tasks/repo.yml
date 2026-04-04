@@ -59,17 +59,19 @@
   register: _borgmatic_repo_host_lookup
 
 - name: Scan de la clé publique du serveur de backup {{ repo.host }}
-  ansible.builtin.command: ssh-keyscan -H {{ repo.host }}
+  ansible.builtin.command: ssh-keyscan {{ repo.host }} {{ repo_host_address }}
   changed_when: false
   register: _borgmatic_repo_host_ssh_keyscan
   run_once: true
+  vars:
+    repo_host_address: "{{ _borgmatic_repo_host_lookup.stdout.split(' ') | first }}"
 
 - name: Ajout de {{ repo.host }} et de son IP dans la liste des serveurs connus
   ansible.builtin.known_hosts:
     name: "{{ target }}"
     key: "{{ _borgmatic_repo_host_ssh_keyscan.stdout }}"
     path: /root/.ssh/known_hosts
-    hash_host: true
+    hash_host: false
     state: present
   loop:
     - "{{ repo.host }}"
