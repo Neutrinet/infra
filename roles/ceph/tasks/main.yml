@@ -3,25 +3,20 @@
   ansible.builtin.include_vars:
     file: "{{ ansible_distribution_release }}.yml"
 
-- name: Ajout de la clé GPG de Proxmox dans APT
-  ansible.builtin.get_url:
-    url: "{{ proxmox_gpg_key_url }}"
-    dest: /etc/apt/keyrings/ceph.gpg
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
-
 - name: Suppression de l'ancien dépôt APT pour ceph
-  ansible.builtin.apt_repository:
-    repo: "deb http://download.proxmox.com/debian/ceph-{{ ceph_proxmox_version }} {{ ansible_distribution_release }} main"
-    filename: ceph
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/ceph.list
     state: absent
 
-- name: Ajout du dépôt APT pour ceph
-  ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/ceph.gpg] http://download.proxmox.com/debian/ceph-{{ ceph_proxmox_version }} {{ ansible_distribution_release }} main"
-    filename: ceph
+- name: Ajout du dépôt APT pour Ceph
+  ansible.builtin.deb822_repository:
+    name: ceph
+    types: deb
+    signed_by: "{{ proxmox_gpg_key_url }}"
+    uris: http://download.proxmox.com/debian/ceph-{{ ceph_proxmox_version }}
+    suites: "{{ ansible_distribution_release }}"
+    components:
+      - main
     state: present
 
 - name: Installation de Ceph
