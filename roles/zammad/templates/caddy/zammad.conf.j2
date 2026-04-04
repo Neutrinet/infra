@@ -25,7 +25,7 @@ http://{{ zammad_domain }} {
         header_up CLIENT_IP {remote_host}
 
         transport http {
-            read_timeout 300s
+            read_timeout 5m
         }
 
         trusted_proxies {{ caddy_trusted_proxies | join(' ') }}
@@ -33,10 +33,11 @@ http://{{ zammad_domain }} {
 
     reverse_proxy /ws* localhost:6042 {
         header_up CLIENT_IP {remote_host}
+        stream_timeout 24h
+        stream_close_delay 5m
 
         transport http {
-            versions 1.1
-            read_timeout 86400s
+            read_timeout 24h
         }
 
         trusted_proxies {{ caddy_trusted_proxies | join(' ') }}
