@@ -44,6 +44,11 @@
     state: stopped
     enabled: false
 
+- name: Masquage de Nginx
+  ansible.builtin.systemd:
+    name: nginx
+    masked: true
+
 - name: Désactivation de PostgreSQL en local
   ansible.builtin.service:
     name: postgresql
