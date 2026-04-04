@@ -28,4 +28,5 @@
       - psmisc # provide killall
       - kitty-terminfo # terminal Tharyrok
       - zstd
+      - python3-systemd
     state: present
