@@ -17,7 +17,7 @@
 
 - name: Ajout de la clé GPG de InfluxDB
   ansible.builtin.get_url:
-    url: https://repos.influxdata.com/influxdata-archive_compat.key
+    url: https://repos.influxdata.com/influxdata-archive.key
     dest: /etc/apt/keyrings/influxdb.asc
     owner: root
     group: root
