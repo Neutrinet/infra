@@ -12,7 +12,7 @@
       - contrib
       - non-free
   notify: Update apt cache
-    
+
 - name: Repos debian-updates
   ansible.builtin.deb822_repository:
     name: debian-updates
