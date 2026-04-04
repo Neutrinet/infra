@@ -1,4 +1,8 @@
 ---
+- name: Installation de python3-debian
+  ansible.builtin.package:
+    name: python3-debian
+
 # Configuration des dépôts et des mises à jour automatiques
 - name: Repos debian
   ansible.builtin.deb822_repository:
