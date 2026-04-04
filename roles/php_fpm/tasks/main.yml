@@ -4,8 +4,8 @@
     state: absent
 
 - name: Installation de la clé GPG pour Sury
-  ansible.builtin.package:
-    name: https://packages.sury.org/debsuryorg-archive-keyring.deb
+  ansible.builtin.apt:
+    deb: https://packages.sury.org/debsuryorg-archive-keyring.deb
     state: present
 
 - name: Ajout du dépôt APT pour Sury
