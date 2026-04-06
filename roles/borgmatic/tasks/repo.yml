@@ -51,32 +51,46 @@
       PreferredAuthentications publickey,password
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ repo.host }}"
 
-- name: Récupération des adresses IP du serveur de backup {{ repo.host }}
-  ansible.builtin.command: hostname -i
-  changed_when: false
-  delegate_to: "{{ repo.host }}"
-  run_once: true
-  register: _borgmatic_repo_host_lookup
+- name: Résolution DNS de {{ repo.host }} (IPv4 et IPv6)
+  ansible.builtin.set_fact:
+    _borgmatic_repo_targets: "{{ ([repo.host,
+        lookup('community.general.dig', repo.host, 'qtype=A'),
+        lookup('community.general.dig', repo.host, 'qtype=AAAA')]
+      | reject('equalto', 'NXDOMAIN')
+      | reject('equalto', '')
+      | list) }}"
 
 - name: Scan de la clé publique du serveur de backup {{ repo.host }}
-  ansible.builtin.command: ssh-keyscan {{ repo.host }} {{ repo_host_address }}
+  ansible.builtin.command: ssh-keyscan {{ repo.host }}
   changed_when: false
   register: _borgmatic_repo_host_ssh_keyscan
   run_once: true
-  vars:
-    repo_host_address: "{{ _borgmatic_repo_host_lookup.stdout.split(' ') | first }}"
+  when: repo.ssh_known_hosts | default([]) | length == 0
 
-- name: Ajout de {{ repo.host }} et de son IP dans la liste des serveurs connus
+- name: Ajout de {{ repo.host }} et de ses IPs dans la liste des serveurs connus
   ansible.builtin.known_hosts:
-    name: "{{ target }}"
+    name: "{{ host_target }}"
     key: "{{ _borgmatic_repo_host_ssh_keyscan.stdout }}"
     path: /root/.ssh/known_hosts
     hash_host: false
     state: present
-  loop:
-    - "{{ repo.host }}"
-    - "{{ repo_host_address }}"
+  loop: "{{ _borgmatic_repo_targets }}"
   loop_control:
-    loop_var: target
+    loop_var: host_target
+  when: repo.ssh_known_hosts | default([]) | length == 0
+
+- name: Ajout de {{ repo.host }} et de ses IPs dans la liste des serveurs connus
+  ansible.builtin.known_hosts:
+    name: "{{ host_target }}"
+    key: "{{ host_target }} {{ host_key }}"
+    path: /root/.ssh/known_hosts
+    hash_host: false
+    state: present
+  loop: "{{ _borgmatic_repo_targets | product(repo.ssh_known_hosts) | list }}"
+  loop_control:
+    loop_var: _borgmatic_repo_entry
+    label: "{{ host_target }} {{ host_key }}"
   vars:
-    repo_host_address: "{{ _borgmatic_repo_host_lookup.stdout.split(' ') | first }}"
+    host_target: "{{ _borgmatic_repo_entry.0 }}"
+    host_key: "{{ _borgmatic_repo_entry.1 }}"
+  when: repo.ssh_known_hosts | default([]) | length > 0
