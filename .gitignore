@@ -138,3 +138,6 @@ vault.key
 .envrc
 .gitsecret
 .ansible
+.env
+.pdm-python
+pdm.lock
