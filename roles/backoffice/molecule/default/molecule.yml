@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bookworm-backoffice-molecule
-    box: debian/bookworm64
+  - name: trixie-backoffice-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 1024
     interfaces:

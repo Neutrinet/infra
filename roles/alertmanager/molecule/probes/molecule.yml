@@ -5,24 +5,24 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bookworm-alertmanager-molecule
-    box: debian/bookworm64
+  - name: trixie-alertmanager-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 1024
     interfaces:
       - network_name: private_network
         ip: 172.29.129.50
         auto_config: true
-  - name: bookworm-probe-01-molecule
-    box: debian/bookworm64
+  - name: trixie-probe-01-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 512
     interfaces:
       - network_name: private_network
         ip: 172.29.129.51
         auto_config: true
-  - name: bookworm-probe-02-molecule
-    box: debian/bookworm64
+  - name: trixie-probe-02-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 512
     interfaces:
