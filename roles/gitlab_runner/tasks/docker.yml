@@ -1,17 +1,22 @@
-- name: Ajout de la clé GPG de Docker dans APT
-  ansible.builtin.get_url:
-    url: https://download.docker.com/linux/debian/gpg
-    dest: /etc/apt/keyrings/docker.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
+- name: Suppression de l'ancien dépôt de Docker
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/docker.list
+    state: absent
 
 - name: Ajout du dépôt APT pour Docker
-  ansible.builtin.apt_repository:
-    repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ ansible_distribution_release | lower }} stable
-    filename: docker
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    signed_by: https://download.docker.com/linux/debian/gpg
+    uris: https://download.docker.com/linux/debian
+    suites: "{{ ansible_distribution_release | lower }}"
+    components:
+      - stable
     state: present
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de Docker
   ansible.builtin.package:

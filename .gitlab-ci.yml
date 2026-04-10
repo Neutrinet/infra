@@ -15,6 +15,7 @@ linting:
   image: neutrinet/pre-commit:1.0.1
   stage: quality
   script:
+    - pip install -r requirements.txt
     - pre-commit run --all-files
   cache:
     key:

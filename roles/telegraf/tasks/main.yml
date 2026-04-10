@@ -15,34 +15,25 @@
     group: root
     mode: "u=rwx,go=rx"
 
-- name: Ajout de la clé GPG de InfluxDB
-  ansible.builtin.get_url:
-    url: https://repos.influxdata.com/influxdata-archive.key
-    dest: /etc/apt/keyrings/influxdb.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
-
-- name: Bloque le paquet influxdata-archive-keyring
-  ansible.builtin.copy:
-    src: apt-preferences/80influxdata-archive-keyring
-    dest: /etc/apt/preferences.d/80influxdata-archive-keyring
-    owner: root
-    group: root
-    mode: 'ugo=r'
-
 - name: Suppression de l'ancien dépôt APT pour Telegraf
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/influxdb.asc] https://repos.influxdata.com/debian {{ ansible_distribution_release }} stable
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/telegraf.list
     state: absent
-    filename: telegraf
 
 - name: Ajout du dépôt APT pour Telegraf
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/influxdb.asc] https://repos.influxdata.com/debian stable main
+  ansible.builtin.deb822_repository:
+    name: telegraf
+    types: deb
+    signed_by: https://repos.influxdata.com/influxdata-archive.key
+    uris: https://repos.influxdata.com/debian
+    suites: stable
+    components:
+      - main
     state: present
-    filename: telegraf
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de Telegraf
   ansible.builtin.package:
@@ -58,13 +49,13 @@
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
   notify: Restart telegraf
-  tags: ['telegraf_config']
+  tags: ["telegraf_config"]
 
 - name: Désactivation de la sortie influxdb
   ansible.builtin.lineinfile:
     path: /etc/telegraf/telegraf.conf
     regexp: '^\[\[outputs\.influxdb\]\]'
-    line: '# [[outputs.influxdb]]'
+    line: "# [[outputs.influxdb]]"
     validate: telegraf --config %s --test
   notify: Restart telegraf
 

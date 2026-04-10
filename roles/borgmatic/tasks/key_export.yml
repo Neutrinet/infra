@@ -1,0 +1,26 @@
+---
+- name: Vérifier si la clé Borg est déjà stockée dans pass pour {{ repo.host }}
+  ansible.builtin.set_fact:
+    _pass_key_missing: >-
+      {{ lookup('community.general.passwordstore',
+        'services/borg/' + inventory_hostname + '/' + (repo.host | replace('.', '-')),
+        missing='empty') | default('', true) | length == 0 }}
+
+- name: Exporter la clé Borg pour {{ repo.host }}
+  ansible.builtin.command: >-
+    borg key export
+    ssh://{{ repo.host }}{{ repo.path }}/{{ inventory_hostname | replace('.', '-') }} -
+  environment:
+    BORG_PASSPHRASE: "{{ borgmatic_encryption_passphrase }}"
+  register: _borg_key_export
+  changed_when: false
+  when: _pass_key_missing | bool
+
+- name: Stocker la clé Borg dans pass pour {{ repo.host }}
+  ansible.builtin.set_fact:
+    _: >-
+      {{ lookup('community.general.passwordstore',
+        'services/borg/' + inventory_hostname,
+        create=true, overwrite=true, userpass=_borg_key_export.stdout) }}
+  when: _pass_key_missing | bool
+  no_log: true

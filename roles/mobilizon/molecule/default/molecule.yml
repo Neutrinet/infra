@@ -6,8 +6,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bookworm-mobilizon-molecule
-    box: debian/bookworm64
+  - name: trixie-mobilizon-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 1024
     interfaces:

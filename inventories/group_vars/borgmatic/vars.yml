@@ -2,5 +2,8 @@ borgmatic_repositories:
   - host: storage-01.ovh.neutri.net
     path: /media/data/backups
     user: backup-borg
+    ssh_known_hosts:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDS/wabrbkUK3T4WwKk9xtTwK9O8yIM2F71+djeleGq4PSZePWBHr2hTCoJVGWcjLPrN/uoCCIVrN8toGqTCRkKCiwTF0W3Ro6+K7cT57RqfbTH4V1VizccSM5J+rADnJAfNP87eS5FjaG9wMOEpyVAjvaqevjGl1mtduHYlX7xg93PlNtDupQ+mNEluTHtZvPb592l9bHn1EEtjtDNyDC3H7cIVBlm47WvXG+EOyJyrFVLC7gVyKfwUm690olf6DyeT1YV4NuTAsynPNC9P3GrAzoYZl9kudRigRPJ/d6czIqN7rN0X9/tTqCsbs6CvzIDSeLYNdFCrjO1VuHlKbh85KfmggC08Hbw5LqAiKuiZS7NNrs/KAFFCp6DEWtqRrAGixKE1G1zjADU4GMafQWR7ds/Dj0KxOxThaEkcoIe2GqLVJbwHZnPVrfY6P+ZYMz2jH8wEt32bPuIlsYw4ipkCZdz1yaMWW72T/xvOAYQn1YbH+7SLhTJ/M3zPLIYOwYXC8tkBiZUyw8oK00v8846/gu85NwkyjINjXVXchbvUffklfqB6TAXKl9LZgbCj2vlyQbAmdq9LmM/4TGnsQGWqOZ5KZ5fCdZarQ2k35GcllUGcwlBkJmGu8FOocsxJs1h4pKId6Ewp36mtIPbrv3PfyVvQ0tzpTAns0FT7aX7hQ==
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDLwZAEEuGDBcXw0x1cG99kc2zEFhoBY5EHdVvqBKQcd
 borgmatic_encryption_passphrase: "{{ vault_borgmatic_encryption_passphrase }}"
 borgmatic_encryption_mode: keyfile
