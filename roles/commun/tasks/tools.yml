@@ -1,5 +1,4 @@
 ---
-
 - name: Installation de divers outils
   ansible.builtin.package:
     name:
@@ -29,4 +28,6 @@
       - kitty-terminfo # terminal Tharyrok
       - zstd
       - python3-systemd
+      # See https://www.reddit.com/r/OpenMediaVault/comments/1rlrll1/who_command_not_showing_logged_in_users_after/
+      - libpam-systemd
     state: present
