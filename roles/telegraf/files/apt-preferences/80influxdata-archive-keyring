@@ -1,3 +1,0 @@
-Package: influxdata-archive-keyring
-Pin: release *
-Pin-Priority: -1
