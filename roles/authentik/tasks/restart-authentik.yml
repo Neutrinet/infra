@@ -6,16 +6,19 @@
   ansible.builtin.service:
     name: authentik-worker
     state: stopped
+  failed_when: false
 
 - name: Stop authentik-server
   ansible.builtin.service:
     name: authentik-server
     state: stopped
+  failed_when: false
 
-- name: Start authentik-server
+- name: Start authentik-server pour les migrations
   ansible.builtin.service:
     name: authentik-server
     state: started
+  run_once: true
 
 - name: Attendre que les migrations soit faites
   ansible.builtin.uri:
@@ -26,6 +29,12 @@
   retries: 90
   delay: 10
   register: uri_output
+  run_once: true
+
+- name: Start authentik-server
+  ansible.builtin.service:
+    name: authentik-server
+    state: started
 
 - name: Start authentik-worker
   ansible.builtin.service:

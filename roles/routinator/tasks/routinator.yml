@@ -3,30 +3,33 @@
   ansible.builtin.package:
     name: acl
     state: present
-  tags: ['routinator_install']
+  tags: ["routinator_install"]
 
-- name: Ajout de la clé GPG de NLnet Labs
-  ansible.builtin.get_url:
-    url: https://packages.nlnetlabs.nl/aptkey.asc
-    dest: /etc/apt/keyrings/routinator.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
-  tags: ['routinator_install']
+- name: Suppression de l'ancien dépôt APT pour Routinator
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/routinator.list
+    state: absent
 
-- name: Ajout du dépôt APT pour routinator
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/routinator.asc] https://packages.nlnetlabs.nl/linux/debian {{ ansible_distribution_release }} main
+- name: Ajout du dépôt APT pour Routinator
+  ansible.builtin.deb822_repository:
+    name: routinator
+    types: deb
+    signed_by: https://packages.nlnetlabs.nl/aptkey.asc
+    uris: https://packages.nlnetlabs.nl/linux/debian
+    suites: "{{ ansible_distribution_release }}"
+    components:
+      - main
     state: present
-    filename: routinator
-  tags: ['routinator_install']
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de routinator
   ansible.builtin.package:
     name: routinator
     state: present
-  tags: ['routinator_install']
+  tags: ["routinator_install"]
 
 - name: Configuration de routinator
   ansible.builtin.template:
@@ -37,7 +40,7 @@
     mode: "ug=r,o="
     validate: routinator --config %s config
   notify: Restart routinator
-  tags: ['routinator_config']
+  tags: ["routinator_config"]
 
 - name: Ajout exception Neutrinet pour routinator
   ansible.builtin.copy:
@@ -47,7 +50,7 @@
     group: routinator
     mode: "ug=r,o="
   notify: Restart routinator
-  tags: ['routinator_config']
+  tags: ["routinator_config"]
 
 - name: Initialisation de routinator
   ansible.builtin.command:
@@ -56,11 +59,11 @@
     chdir: /var/lib/routinator
   become: true
   become_user: routinator
-  tags: ['routinator_config']
+  tags: ["routinator_config"]
 
 - name: Activation du service routinator au démarage
   ansible.builtin.service:
     name: routinator
     state: started
     enabled: true
-  tags: ['routinator_config']
+  tags: ["routinator_config"]

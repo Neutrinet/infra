@@ -1,6 +1,6 @@
 ---
 
-authentik_version: "2025.12.4"
+authentik_version: "2026.2.2"
 
 authentik_secret_key: "J53bPi/r9bt90g1DE3kAccl4/Zt+0q08WRqz8xXkWDefYcX263OgC0oUKJWivuMf+B+NnWd7rAbNA1Z+" #  Generate by openssl rand -base64 60
 authentik_proxy_trusted: "::1/128"

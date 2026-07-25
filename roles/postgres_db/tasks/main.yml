@@ -2,20 +2,27 @@
   ansible.builtin.import_tasks: patroni.yml
   when: postgresql_patroni_hosts | length > 0
 
-- name: Ajout de la clé GPG de PostgreSQL
-  ansible.builtin.get_url:
-    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
-    dest: /etc/apt/keyrings/postgresql.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
+- name: Suppression de l'ancien dépôt APT pour PostgreSQL
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/postgresql.list
+    state: absent
+  tags: ["postgresql_install"]
 
-- name: Ajout du dépôt APT pour PostgreSQL
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
-    filename: postgresql
+- name: Ajout du dépôt APT pour PostreSQL
+  ansible.builtin.deb822_repository:
+    name: postgresql
+    types: deb
+    signed_by: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    uris: http://apt.postgresql.org/pub/repos/apt
+    suites: "{{ ansible_distribution_release }}-pgdg"
+    components:
+      - main
     state: present
+  notify: Update apt cache
+  tags: ["postgresql_install"]
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation des dépendences
   ansible.builtin.package:

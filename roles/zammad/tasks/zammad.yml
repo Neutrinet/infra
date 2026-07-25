@@ -1,17 +1,22 @@
-- name: Ajout de la clé GPG de Zammad dans APT
-  ansible.builtin.get_url:
-    url: https://dl.packager.io/srv/zammad/zammad/key
-    dest: /etc/apt/keyrings/zammad.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
+- name: Suppression de l'ancien dépôt APT pour Zammad
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/zammad.list
+    state: absent
 
 - name: Ajout du dépôt APT pour Zammad
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/zammad.asc] https://dl.packager.io/srv/deb/zammad/zammad/stable/debian {{ ansible_distribution_major_version }} main
-    filename: zammad
+  ansible.builtin.deb822_repository:
+    name: zammad
+    types: deb
+    signed_by: https://go.packager.io/srv/deb/zammad/zammad/gpg-key.gpg
+    uris: https://go.packager.io/srv/deb/zammad/zammad/stable/debian
+    suites: "{{ ansible_distribution_major_version }}"
+    components:
+      - main
     state: present
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de Zammad
   ansible.builtin.package:
@@ -38,6 +43,11 @@
     name: nginx
     state: stopped
     enabled: false
+
+- name: Masquage de Nginx
+  ansible.builtin.systemd:
+    name: nginx
+    masked: true
 
 - name: Désactivation de PostgreSQL en local
   ansible.builtin.service:

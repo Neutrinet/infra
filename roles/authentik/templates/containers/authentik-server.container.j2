@@ -1,0 +1,34 @@
+[Unit]
+Description=Authentik Server Container
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=ghcr.io/goauthentik/server:{{ authentik_version }}
+ContainerName=authentik-server
+Pull=always
+Network=host
+PodmanArgs=--memory=1536m
+ShmSize=512mb
+
+Volume=/opt/authentik/media:/media:rw
+Volume=/opt/authentik/templates:/templates:ro
+Volume=/opt/authentik/static/icon_left_brand.svg:/web/dist/assets/icons/icon_left_brand.svg:ro
+Volume=/opt/authentik/static/icon_left_brand.png:/web/dist/assets/icons/icon_left_brand.png:ro
+Volume=/opt/authentik/static/icon.png:/web/dist/assets/icons/icon.png:ro
+Volume=/opt/authentik/static/flow_background.jpg:/web/dist/assets/images/flow_background.jpg:ro
+
+EnvironmentFile=/etc/default/authentik
+Environment=AUTHENTIK_LISTEN__METRICS=[::1]:9030
+Environment=AUTHENTIK_LISTEN__HTTP=[::1]:9000
+Environment=AUTHENTIK_LISTEN__HTTPS=[::]:9443
+
+Exec=server
+
+[Service]
+Restart=always
+RestartSec=10s
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target

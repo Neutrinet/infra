@@ -1,0 +1,54 @@
+---
+# Migration des dépôts borgmatic vers TAM (Tag Authentication Mode)
+# À utiliser lors d'une migration Borg < 1.1 vers Borg >= 1.1
+# https://borgbackup.readthedocs.io/en/stable/changes.html#pre-1-1-archives
+
+- name: Migration TAM des dépôts borgmatic
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: Suppression de l'ancien dépôt APT pour Telegraf
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/telegraf.list
+        state: absent
+
+    - name: Refresh apt
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install python3-debian
+      ansible.builtin.apt:
+        name:
+          - python3-debian
+
+    - name: Ajout du dépôt APT pour Telegraf
+      ansible.builtin.deb822_repository:
+        name: telegraf
+        types: deb
+        signed_by: https://repos.influxdata.com/influxdata-archive.key
+        uris: https://repos.influxdata.com/debian
+        suites: stable
+        components:
+          - main
+        state: present
+
+    - name: refresh apt
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Installation de borgbackup depuis les backports (Debian <= 12)  # noqa package-latest
+      ansible.builtin.apt:
+        name: borgbackup
+        state: latest
+        default_release: "{{ ansible_distribution_release }}-backports"
+      when: ansible_distribution == 'Debian' and ansible_distribution_major_version | int <= 12
+
+    - name: Upgrade TAM du dépôt
+      ansible.builtin.command: borgmatic borg upgrade --tam
+      changed_when: true
+
+    - name: Upgrade TAM des archives
+      ansible.builtin.command: borgmatic borg upgrade --archives-tam
+      changed_when: true

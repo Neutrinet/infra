@@ -1,9 +1,24 @@
 ---
 
-- name: Installation de docker
-  ansible.builtin.import_role:
-    name: docker
-  tags: ['docker']
+- name: Installation de podman
+  ansible.builtin.package:
+    name: podman
+    state: present
+  tags: ['podman']
+
+- name: Activer le socket Podman
+  ansible.builtin.service:
+    name: podman.socket
+    state: started
+    enabled: true
+
+- name: Créer le répertoire des quadlets
+  ansible.builtin.file:
+    path: /etc/containers/systemd
+    state: directory
+    owner: root
+    group: root
+    mode: 'u=rwx,go=rx'
 
 - name: Installation de authentik
   ansible.builtin.import_tasks:

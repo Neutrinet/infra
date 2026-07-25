@@ -19,6 +19,7 @@
     - /opt/authentik/media
     - /opt/authentik/templates
     - /opt/authentik/static
+    - /opt/authentik/certs
 
 - name: Copie de nos images
   ansible.builtin.copy:
@@ -43,10 +44,20 @@
   notify:
     - Restart authentik
 
-- name: Créer les services
+- name: Supprimer les anciens services systemd Docker
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ item }}.service"
+    state: absent
+  loop:
+    - authentik-server
+    - authentik-worker
+  notify:
+    - Restart authentik
+
+- name: Créer les quadlets Podman
   ansible.builtin.template:
-    src: "systemd/{{ item }}.service.j2"
-    dest: "/etc/systemd/system/{{ item }}.service"
+    src: "containers/{{ item }}.container.j2"
+    dest: "/etc/containers/systemd/{{ item }}.container"
     owner: root
     group: root
     mode: 'ugo=r'
@@ -55,11 +66,3 @@
     - authentik-worker
   notify:
     - Restart authentik
-
-- name: Activer les service au demarage
-  ansible.builtin.service:
-    name: "{{ item }}"
-    enabled: true
-  loop:
-    - authentik-server
-    - authentik-worker

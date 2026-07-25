@@ -29,3 +29,5 @@ haproxy_listen:
 haproxy_valkey_password: neutrinet
 haproxy_valkey:
   - valkey.neutrinet.be
+
+haproxy_repo_version: "3.2"

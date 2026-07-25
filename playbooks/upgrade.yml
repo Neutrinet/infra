@@ -1,0 +1,41 @@
+
+- name: C'est la mise a jours
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Lister les fichier dans sources.list.d
+      ansible.builtin.find:
+        paths: /etc/apt/sources.list.d
+        file_type: file
+      register: files_to_delete
+
+    - name: Supprimer les fichier dans sources.list.d
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ files_to_delete.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: apt upgarde
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        clean: true
+
+    - name: Créer le sources.list
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list
+        owner: root
+        group: root
+        mode: "ugo=r"
+        content: |
+          deb http://deb.debian.org/debian/ trixie contrib main non-free non-free-firmware
+          deb http://deb.debian.org/debian/ trixie-updates contrib main non-free non-free-firmware
+          deb http://deb.debian.org/debian/ trixie-backports contrib main non-free non-free-firmware
+          deb https://security.debian.org/debian-security/ trixie-security contrib main non-free non-free-firmware
+
+    - name: apt update
+      ansible.builtin.apt:
+        update_cache: true
