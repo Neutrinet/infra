@@ -1,0 +1,14 @@
+---
+
+- name: install | Installation du paquet snmpd
+  ansible.builtin.apt:
+    name: snmpd
+    state: present
+
+- name: install | Ajout de Debian-snmp au groupe bird pour l'accès au socket
+  ansible.builtin.user:
+    name: Debian-snmp
+    groups:
+      - bird
+    append: true
+  notify: Restart snmpd

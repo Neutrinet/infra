@@ -1,0 +1,6 @@
+- name: Déploiement de snmpd
+  hosts: louise_network
+  become: true
+
+  roles:
+    - snmpd
