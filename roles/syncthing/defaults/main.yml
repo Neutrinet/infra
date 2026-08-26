@@ -1,0 +1,19 @@
+---
+syncthing_listen_address: "::"
+syncthing_folder_path: changeme
+syncthing_max_kbps: 0
+# List of the other cluster peers this host should sync with. Left empty
+# until the first deploy: each host's own Device ID only exists once
+# syncthing has started for the first time (see roles/syncthing/tasks/report.yml,
+# which prints it). Paste each Device ID exactly as syncthing prints it
+# (canonical dashed form) — a reformatted/lowercased ID makes the folder
+# task non-idempotent.
+#
+# syncthing_devices:
+#   - name: nam
+#     id: "AAAAAAA-BBBBBBB-CCCCCCC-DDDDDDD-EEEEEEE-FFFFFFF-GGGGGGG-HHHHHHH"
+#     address: "2001:913:1000:10::15"
+#   - name: bour
+#     id: "IIIIIII-JJJJJJJ-KKKKKKK-LLLLLLL-MMMMMMM-NNNNNNN-OOOOOOO-PPPPPPP"
+#     address: "2001:913:1000:10::16"
+syncthing_devices: []

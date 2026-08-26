@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic.d/common.yml
+
+source_directories: !retain
+  - "/root/.local/state/syncthing/cert.pem"
+  - "/root/.local/state/syncthing/key.pem"
+
+archive_name_format: syncthing_{hostname}-{now}

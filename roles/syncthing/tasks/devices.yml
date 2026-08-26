@@ -1,0 +1,59 @@
+---
+- name: devices | Lecture du statut système
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/system/status"
+    method: GET
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    return_content: true
+  register: _syncthing_status
+  changed_when: false
+  no_log: true
+
+# syncthing_devices liste les 3 hôtes du cluster, y compris l'hôte
+# courant : on exclut son propre Device ID pour ne parler que des pairs.
+- name: devices | Calcul de la liste des pairs
+  ansible.builtin.set_fact:
+    _syncthing_peers: "{{ syncthing_devices | rejectattr('id', 'equalto', _syncthing_status.json.myID) | list }}"
+
+- name: devices | Lecture de la configuration actuelle des devices pairs
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/config/devices/{{ peer.id }}"
+    method: GET
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    status_code: [200, 404]
+    return_content: true
+  loop: "{{ _syncthing_peers }}"
+  loop_control:
+    loop_var: peer
+    label: "{{ peer.name }}"
+  register: _syncthing_device_current
+  changed_when: false
+  no_log: true
+
+- name: devices | Création ou mise à jour des devices pairs
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/config/devices/{{ peer.id }}"
+    method: PUT
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    body_format: json
+    body:
+      deviceID: "{{ peer.id }}"
+      name: "{{ peer.name }}"
+      addresses:
+        - "tcp://[{{ peer.address }}]:22000"
+        - "quic://[{{ peer.address }}]:22000"
+  loop: "{{ _syncthing_peers }}"
+  loop_control:
+    loop_var: peer
+    label: "{{ peer.name }}"
+    index_var: peer_index
+  when: >-
+    _syncthing_device_current.results[peer_index].status == 404
+    or _syncthing_device_current.results[peer_index].json.name != peer.name
+    or _syncthing_device_current.results[peer_index].json.addresses != ["tcp://[" + peer.address + "]:22000", "quic://[" + peer.address + "]:22000"]
+  changed_when: true
+  no_log: true
+  notify: Restart syncthing@root

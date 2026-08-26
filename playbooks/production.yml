@@ -5,6 +5,9 @@
 - name: Configuration de Proxmox
   import_playbook: apps/proxmox.yml
 
+- name: Déploiement de Syncthing
+  import_playbook: apps/syncthing.yml
+
 - name: Déploiement de Keepalived
   import_playbook: apps/keepalived.yml
 

@@ -1,0 +1,27 @@
+---
+- name: install | Ajout du dépôt APT syncthing
+  ansible.builtin.deb822_repository:
+    name: syncthing
+    types: deb
+    uris: https://apt.syncthing.net/
+    suites: syncthing
+    components: stable-v2
+    signed_by: https://syncthing.net/release-key.gpg
+  register: _syncthing_repo_changed
+
+- name: install | Installation de syncthing
+  ansible.builtin.apt:
+    name:
+      - syncthing
+      - python3-lxml
+    update_cache: "{{ _syncthing_repo_changed.changed }}"
+
+- name: install | Activation et démarrage de syncthing
+  ansible.builtin.systemd:
+    name: syncthing@root
+    enabled: true
+    state: started
+
+- name: install | Attente de la génération de la configuration
+  ansible.builtin.wait_for:
+    path: /root/.local/state/syncthing/config.xml

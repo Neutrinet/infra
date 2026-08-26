@@ -1,0 +1,54 @@
+---
+- name: gui | Lecture de la clé API de la GUI
+  community.general.xml:
+    path: /root/.local/state/syncthing/config.xml
+    xpath: /configuration/gui/apikey
+    content: text
+  register: _syncthing_gui_apikey
+
+- name: gui | Lecture de l'adresse d'écoute de la GUI
+  community.general.xml:
+    path: /root/.local/state/syncthing/config.xml
+    xpath: /configuration/gui/address
+    content: text
+  register: _syncthing_gui_address
+
+- name: gui | Calcul de l'URL de base de l'API REST courante
+  ansible.builtin.set_fact:
+    _syncthing_apikey: "{{ _syncthing_gui_apikey.matches[0].apikey }}"
+    _syncthing_rest_base: "http://{{ _syncthing_gui_address.matches[0].address }}"
+
+- name: gui | Passage de la GUI en écoute sur ::1
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/config/gui"
+    method: PATCH
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    body_format: json
+    body:
+      address: "[::1]:8384"
+  when: _syncthing_gui_address.matches[0].address != '[::1]:8384'
+  changed_when: true
+  no_log: true
+  register: _syncthing_gui_rebind
+  until: _syncthing_gui_rebind is success
+  retries: 5
+  delay: 2
+
+# Redémarrage immédiat (pas de notify:) car toutes les tasks suivantes du
+# rôle parlent à http://[::1]:8384 et doivent trouver la GUI déjà rebindée
+# à cette adresse — un handler ne s'exécuterait qu'en fin de play.
+- name: gui | Redémarrage de syncthing après le rebind de la GUI  # noqa no-handler
+  ansible.builtin.systemd:
+    name: syncthing@root
+    state: restarted
+  when: _syncthing_gui_rebind is changed
+
+- name: gui | Attente de la GUI sur son adresse finale
+  ansible.builtin.wait_for:
+    host: "::1"
+    port: 8384
+
+- name: gui | Fixation de l'URL de base de l'API REST
+  ansible.builtin.set_fact:
+    _syncthing_rest_base: "http://[::1]:8384"

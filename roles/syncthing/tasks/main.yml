@@ -1,0 +1,24 @@
+---
+- name: Installation de syncthing
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.import_tasks: borgmatic.yml
+
+- name: Configuration de la GUI
+  ansible.builtin.import_tasks: gui.yml
+
+- name: Configuration de la supervision Telegraf
+  ansible.builtin.import_tasks: telegraf.yml
+
+- name: Configuration des options de synchronisation
+  ansible.builtin.import_tasks: options.yml
+
+- name: Configuration des devices pairs
+  ansible.builtin.import_tasks: devices.yml
+
+- name: Configuration du dossier de backup
+  ansible.builtin.import_tasks: folder.yml
+
+- name: Affichage des informations
+  ansible.builtin.import_tasks: report.yml

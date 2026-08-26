@@ -1,0 +1,39 @@
+---
+- name: telegraf | Lecture de la configuration actuelle de la GUI
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/config/gui"
+    method: GET
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    return_content: true
+  register: _syncthing_gui_config
+  changed_when: false
+  no_log: true
+
+# /metrics est soumis à la même authentification que le reste de l'API
+# REST par défaut. La GUI n'a ni utilisateur ni mot de passe (loopback
+# uniquement), donc on désactive l'auth juste pour /metrics plutôt que de
+# recopier la clé API dans la config Telegraf.
+- name: telegraf | Activation des métriques Prometheus sans authentification
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/config/gui"
+    method: PATCH
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    body_format: json
+    body:
+      metricsWithoutAuth: true
+  when: not _syncthing_gui_config.json.metricsWithoutAuth
+  changed_when: true
+  no_log: true
+  notify: Restart syncthing@root
+
+- name: telegraf | Installation du plugin Telegraf
+  ansible.builtin.template:
+    src: telegraf/syncthing.conf.j2
+    dest: /etc/telegraf/telegraf.d/syncthing.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf

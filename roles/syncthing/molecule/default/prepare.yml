@@ -1,0 +1,19 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Mise à jour du cache APT
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Création du dossier de test pour syncthing_folder_path
+      ansible.builtin.file:
+        path: /srv/syncthing-test
+        state: directory
+        mode: "u=rwx,go="
+
+  roles:
+    - telegraf
+    - borgmatic

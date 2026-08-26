@@ -1,0 +1,40 @@
+---
+- name: options | Lecture des options actuelles
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/config/options"
+    method: GET
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    return_content: true
+  register: _syncthing_options
+  changed_when: false
+  no_log: true
+
+- name: options | Calcul des options désirées
+  ansible.builtin.set_fact:
+    _syncthing_options_desired:
+      listenAddresses:
+        - "tcp://[{{ syncthing_listen_address }}]:22000"
+        - "quic://[{{ syncthing_listen_address }}]:22000"
+      globalAnnounceEnabled: false
+      localAnnounceEnabled: false
+      relaysEnabled: false
+      natEnabled: false
+      # Sans ça, le trafic entre topi/nam/bour (même /64) est classé LAN
+      # par syncthing et maxSendKbps/maxRecvKbps ne s'applique jamais.
+      limitBandwidthInLan: true
+      maxSendKbps: "{{ syncthing_max_kbps }}"
+      maxRecvKbps: "{{ syncthing_max_kbps }}"
+
+- name: options | Mise à jour des options
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/config/options"
+    method: PATCH
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    body_format: json
+    body: "{{ _syncthing_options_desired }}"
+  when: (_syncthing_options.json | combine(_syncthing_options_desired)) != _syncthing_options.json
+  changed_when: true
+  no_log: true
+  notify: Restart syncthing@root

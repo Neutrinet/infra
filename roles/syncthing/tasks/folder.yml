@@ -1,0 +1,43 @@
+---
+# Les devices pairs doivent déjà exister (tasks/devices.yml) avant de
+# partager le dossier avec eux : syncthing ignore silencieusement, dans
+# la liste "devices" d'un folder, tout deviceID pas encore déclaré au
+# niveau global — le folder ne se peuplerait qu'au run suivant sinon.
+- name: folder | Lecture de la configuration actuelle du dossier de backup
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/config/folders/backup"
+    method: GET
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    status_code: [200, 404]
+    return_content: true
+  register: _syncthing_folder
+  changed_when: false
+  no_log: true
+
+- name: folder | Calcul de la configuration désirée du dossier de backup
+  ansible.builtin.set_fact:
+    _syncthing_folder_desired:
+      id: backup
+      label: backup
+      path: "{{ syncthing_folder_path }}"
+      type: sendreceive
+      devices: "{{ _syncthing_peers | map(attribute='id') | map('community.general.dict_kv', 'deviceID') | list }}"
+    _syncthing_folder_peer_ids: "{{ _syncthing_peers | map(attribute='id') | sort | list }}"
+
+- name: folder | Création ou mise à jour du dossier de backup
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/config/folders/backup"
+    method: PUT
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    body_format: json
+    body: "{{ _syncthing_folder_desired }}"
+  when: >-
+    _syncthing_folder.status == 404
+    or _syncthing_folder.json.path != _syncthing_folder_desired.path
+    or _syncthing_folder.json.type != _syncthing_folder_desired.type
+    or (_syncthing_folder.json.devices | map(attribute='deviceID') | reject('equalto', _syncthing_status.json.myID) | list | sort) != _syncthing_folder_peer_ids
+  changed_when: true
+  no_log: true
+  notify: Restart syncthing@root

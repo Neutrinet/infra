@@ -1,0 +1,4 @@
+---
+- name: report | Affichage du Device ID local
+  ansible.builtin.debug:
+    msg: "Device ID syncthing de {{ inventory_hostname }} : {{ _syncthing_status.json.myID }}"
