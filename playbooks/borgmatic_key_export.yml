@@ -1,0 +1,14 @@
+---
+- name: Export et stockage des clés Borg dans pass
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Export et stockage des clés Borg dans pass
+      ansible.builtin.include_role:
+        name: borgmatic
+        tasks_from: key_export
+      loop: "{{ borgmatic_repositories }}"
+      loop_control:
+        loop_var: repo
+        label: "{{ repo.host }}"

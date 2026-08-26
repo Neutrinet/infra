@@ -2,67 +2,111 @@
 
 ## Installation
 
-Install Ansible and its dependencies in a python3 virtual env:
+### 1. Clone the repository
+
 ```shell
-virtualenv env
-env/bin/pip install -r requirements.txt
-source env/bin/activate
+git clone --recurse-submodules ssh://git@gitlab.domainepublic.net:3265/Neutrinet/infra-ansible.git
+cd infra-ansible
 ```
 
-## Pre-commit
-We use pre-commit to validate merge requests.
-It is strongly advised to add pre-commit on your computer to avoid your merge request to be refused.
+If you already cloned without `--recurse-submodules`:
+```shell
+git submodule update --init --recursive
+```
 
-You can run this command in your virtualenv.
-```bash
+### 2. Install system dependencies
+
+**Debian:**
+```shell
+sudo apt install python3 python3-venv direnv git-secret
+```
+
+**Fedora:**
+```shell
+sudo dnf install python3 direnv git-secret
+```
+
+**Manjaro:**
+```shell
+sudo pacman -S python direnv
+yay -S git-secret
+```
+
+### 3. Set up direnv
+
+direnv automatically activates the Python virtualenv whenever you enter the project directory.
+
+```shell
+cp .envrc.default .envrc
+# Edit .envrc to match your setup (VAGRANT_DEFAULT_PROVIDER, PASSWORD_STORE_DIR…)
+direnv allow
+```
+
+Then add direnv to your shell. Add the following to your `~/.bashrc` (or `~/.zshrc`):
+```shell
+eval "$(direnv hook bash)"
+```
+
+### 4. Install Python dependencies
+
+```shell
+pip install -r requirements.txt
+```
+
+direnv will have activated the `.venv/` virtualenv automatically.
+
+### 5. Decrypt secrets
+
+The repository uses [git-secret](https://git-secret.io) to protect sensitive files (Ansible vault key, etc.).
+
+You need a GPG key that has been added to the repository by an existing member. Once that is done:
+
+```shell
+git secret reveal
+```
+
+See the [Git-secret](#git-secret) section below for more details.
+
+### 6. Set up pre-commit hooks
+
+```shell
 pre-commit install
 ```
 
+This validates your changes locally before each commit, avoiding rejected merge requests.
+
 ## Git-secret
 
-We use [git-secret](https://git-secret.io) to protect sensitive data such as the key to encrypt / decrypt Ansible vaults.
+We use [git-secret](https://git-secret.io) to protect sensitive data such as the Ansible vault key.
 
-In order to decrypt these secrets, you must [install git-secret on your computer](https://git-secret.io/installation). You must also have a GPG key pair to be able to decrypt the secrets.
+### Decrypt the secrets
 
-This git repository has been configured for git-secret as follows:
+After cloning the repository, run:
 ```bash
-git-secret init
-git secret tell <email address>
-git secret add vault.key
-git secret hide
+git secret reveal
 ```
-These steps must be done **once**.
 
 ### Add a new user
 
-Add the GPG key of the user:
+Get the new user's GPG public key and import it into your local keyring, then add them to the repository:
+
 ```bash
+gpg --import <pubkey file>
 git secret tell <email address>
 ```
-or
-```bash
-git --homedir .gitsecret/keys --import <pubkey file>
-```
 
-Then, reencrypt the secrets:
+Then re-encrypt the secrets with the new user's key:
 ```bash
 git secret hide
 ```
 
 Don't forget to commit and push your changes!
 
-### Decrypt the secrets
-
-After cloning the repository, just run:
-```bash
-git secret reveal
-```
-
 ## Usage
 
 ### Production
 
-Run the following to setup the common config for all hosts:
+Run the following to set up the common config for all hosts:
 ```shell
 ansible-playbook playbooks/production.yml
 ```
@@ -94,6 +138,6 @@ ansible-playbook -l <the name of your vm> -k -u root playbooks/production.yml
 ```
 You will be asked for a password and the answer is "neutrinet".
 
-The playbook will stop after the restart of ssh. This is normal from now on you don't have to specify `-l <the name of your vm> -k -u root` on the command line.
+The playbook will stop after the restart of ssh. This is normal — from now on you don't have to specify `-l <the name of your vm> -k -u root` on the command line.
 
 ### Molecule
