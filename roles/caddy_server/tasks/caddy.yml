@@ -1,18 +1,23 @@
 ---
-- name: Ajout de la clé GPG de Caddy dans APT
-  ansible.builtin.get_url:
-    url: https://dl.cloudsmith.io/public/caddy/stable/gpg.155B6D79CA56EA34.key
-    dest: /etc/apt/keyrings/caddy.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
+- name: Suppression de l'ancien dépôt APT pour Caddy
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/caddy-stable.list
+    state: absent
 
 - name: Ajout du dépôt APT pour Caddy
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/caddy.asc] https://dl.cloudsmith.io/public/caddy/stable/deb/{{ ansible_distribution | lower }} any-version main
-    filename: caddy-stable
+  ansible.builtin.deb822_repository:
+    name: caddy-stable
+    types: deb
+    signed_by: https://dl.cloudsmith.io/public/caddy/stable/gpg.155B6D79CA56EA34.key
+    uris: https://dl.cloudsmith.io/public/caddy/stable/deb/{{ ansible_distribution | lower }}
+    suites: any-version
+    components:
+      - main
     state: present
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de Caddy
   ansible.builtin.package:

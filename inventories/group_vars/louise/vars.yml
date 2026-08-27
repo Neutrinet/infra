@@ -1,1 +1,3 @@
 datacenter_name: LouiseDC
+commun_repos_mirror: https://debian.mirrors.ovh.net/debian/
+commun_repos_mirror_security: https://debian.mirrors.ovh.net/debian-security/

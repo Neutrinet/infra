@@ -1,5 +1,4 @@
 ---
-
 - name: Création de l'utilisateur pour Bird exporter
   ansible.builtin.user:
     name: bird-exporter
@@ -34,12 +33,12 @@
 
 - name: Téléchargement de l'archive de Bird exporter v{{ bird_exporter_version }}
   ansible.builtin.get_url:
-    url: https://github.com/czerwonk/bird_exporter/releases/download/{{ bird_exporter_version }}/bird_exporter_{{ bird_exporter_version }}_linux_amd64.tar.gz
+    url: https://github.com/czerwonk/bird_exporter/releases/download/v{{ bird_exporter_version }}/bird_exporter_{{ bird_exporter_version }}_linux_amd64.tar.gz
     dest: /usr/local/src/bird-exporter/{{ bird_exporter_version }}.tar.gz
     owner: root
     group: root
     mode: "u=rw,go=r"
-    checksum: "sha256:https://github.com/czerwonk/bird_exporter/releases/download/{{ bird_exporter_version }}/bird_exporter_{{ bird_exporter_version }}_checksums.txt"
+    checksum: "sha256:https://github.com/czerwonk/bird_exporter/releases/download/v{{ bird_exporter_version }}/bird_exporter_{{ bird_exporter_version }}_checksums.txt"
 
 - name: Décompression de l'archive
   ansible.builtin.unarchive:
