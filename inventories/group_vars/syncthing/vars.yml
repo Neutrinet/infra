@@ -1,11 +1,9 @@
 ---
 syncthing_folder_path: /media/backup
-# 250 Mbps cap. Syncthing's maxSendKbps/maxRecvKbps unit is KiB/s, not
-# kbit/s: 250_000_000 / 8 / 1024 = 30517 (rounded down to stay at or
-# under 250 Mbps).
-syncthing_max_kbps: 30517
-# Device IDs printed by roles/syncthing/tasks/report.yml on the first
-# deploy (2026-08-26). Pasted exactly as syncthing printed them.
+syncthing_max_kbps: 122070
+syncthing_ignore_patterns:
+  - "*.dat"
+  - "*.tmp"
 syncthing_devices:
   - name: topi
     id: "WN46LT4-JHS5IHX-BEQD22I-NYZ54DM-NXITJH7-OAPV7W3-GVJCJGC-SOQUOQX"

@@ -20,11 +20,13 @@
       localAnnounceEnabled: false
       relaysEnabled: false
       natEnabled: false
-      # Sans ça, le trafic entre topi/nam/bour (même /64) est classé LAN
-      # par syncthing et maxSendKbps/maxRecvKbps ne s'applique jamais.
       limitBandwidthInLan: true
       maxSendKbps: "{{ syncthing_max_kbps }}"
       maxRecvKbps: "{{ syncthing_max_kbps }}"
+      announceLANAddresses: false
+      urAccepted: -1
+      crashReportingEnabled: false
+      autoUpgradeIntervalH: 0
 
 - name: options | Mise à jour des options
   ansible.builtin.uri:

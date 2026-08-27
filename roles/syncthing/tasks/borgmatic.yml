@@ -1,8 +1,4 @@
 ---
-# config.xml est entièrement reproductible par ce rôle (géré de façon
-# déclarative via l'API REST) : seuls cert.pem/key.pem (identité de
-# l'appareil, base du Device ID) sont irremplaçables. Les perdre casserait
-# l'appairage avec les deux autres nœuds du cluster.
 - name: borgmatic | Configuration des backups Borgmatic
   ansible.builtin.template:
     src: borgmatic/syncthing.yml.j2

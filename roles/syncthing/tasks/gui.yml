@@ -35,10 +35,7 @@
   retries: 5
   delay: 2
 
-# Redémarrage immédiat (pas de notify:) car toutes les tasks suivantes du
-# rôle parlent à http://[::1]:8384 et doivent trouver la GUI déjà rebindée
-# à cette adresse — un handler ne s'exécuterait qu'en fin de play.
-- name: gui | Redémarrage de syncthing après le rebind de la GUI  # noqa no-handler
+- name: gui | Redémarrage de syncthing après le rebind de la GUI # noqa no-handler
   ansible.builtin.systemd:
     name: syncthing@root
     state: restarted

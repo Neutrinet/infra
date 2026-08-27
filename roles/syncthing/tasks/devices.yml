@@ -10,8 +10,6 @@
   changed_when: false
   no_log: true
 
-# syncthing_devices liste les 3 hôtes du cluster, y compris l'hôte
-# courant : on exclut son propre Device ID pour ne parler que des pairs.
 - name: devices | Calcul de la liste des pairs
   ansible.builtin.set_fact:
     _syncthing_peers: "{{ syncthing_devices | rejectattr('id', 'equalto', _syncthing_status.json.myID) | list }}"

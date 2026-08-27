@@ -10,10 +10,6 @@
   changed_when: false
   no_log: true
 
-# /metrics est soumis à la même authentification que le reste de l'API
-# REST par défaut. La GUI n'a ni utilisateur ni mot de passe (loopback
-# uniquement), donc on désactive l'auth juste pour /metrics plutôt que de
-# recopier la clé API dans la config Telegraf.
 - name: telegraf | Activation des métriques Prometheus sans authentification
   ansible.builtin.uri:
     url: "{{ _syncthing_rest_base }}/rest/config/gui"

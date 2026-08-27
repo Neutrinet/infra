@@ -1,8 +1,4 @@
 ---
-# Les devices pairs doivent déjà exister (tasks/devices.yml) avant de
-# partager le dossier avec eux : syncthing ignore silencieusement, dans
-# la liste "devices" d'un folder, tout deviceID pas encore déclaré au
-# niveau global — le folder ne se peuplerait qu'au run suivant sinon.
 - name: folder | Lecture de la configuration actuelle du dossier de backup
   ansible.builtin.uri:
     url: "{{ _syncthing_rest_base }}/rest/config/folders/backup"
@@ -41,3 +37,27 @@
   changed_when: true
   no_log: true
   notify: Restart syncthing@root
+
+- name: folder | Lecture des patterns d'exclusion actuels
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/db/ignores?folder=backup"
+    method: GET
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    return_content: true
+  register: _syncthing_ignores
+  changed_when: false
+  no_log: true
+
+- name: folder | Mise à jour des patterns d'exclusion
+  ansible.builtin.uri:
+    url: "{{ _syncthing_rest_base }}/rest/db/ignores?folder=backup"
+    method: POST
+    headers:
+      X-API-Key: "{{ _syncthing_apikey }}"
+    body_format: json
+    body:
+      ignore: "{{ syncthing_ignore_patterns }}"
+  when: (_syncthing_ignores.json.ignore | default([], true)) != syncthing_ignore_patterns
+  changed_when: true
+  no_log: true

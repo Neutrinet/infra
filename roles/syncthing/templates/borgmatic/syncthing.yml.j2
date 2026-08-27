@@ -3,6 +3,7 @@
 <<: !include /etc/borgmatic.d/common.yml
 
 source_directories: !retain
+  - "/root/.local/state/syncthing/config.xml"
   - "/root/.local/state/syncthing/cert.pem"
   - "/root/.local/state/syncthing/key.pem"
 
