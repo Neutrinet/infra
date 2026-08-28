@@ -1,0 +1,9 @@
+user default off
+user monitoring on >{{ valkey_user_monitoring_password }} -@all +ping +info +slowlog|get +slowlog|len +latency|doctor +latency|latest +memory|stats +memory|doctor +config|get +cluster|info +client|list
+user haproxy on >{{ valkey_user_haproxy_password }} -@all +auth +ping +info +quit
+user replication on >{{ valkey_user_replication_password }} +psync +replconf +ping
+user sentinel on >{{ valkey_user_sentinel_password }} ~* &* +multi +slaveof +ping +exec +subscribe +config|rewrite +role +publish +info +client|setname +client|kill +script|kill
+user admin on >{{ valkey_user_admin_password }} ~* &* +@all
+{% for user in valkey_users_app %}
+user {{ user.username }} on >{{ user.password }} {{ user.rules }}
+{% endfor %}

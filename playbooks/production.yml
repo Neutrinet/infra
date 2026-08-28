@@ -76,3 +76,9 @@
 
 - name: Déploiement de Stalwart
   import_playbook: apps/stalwart.yml
+
+- name: Déploiement de Valkey
+  import_playbook: apps/valkey.yml
+
+- name: Déploiement de authentik
+  import_playbook: apps/authentik.yml

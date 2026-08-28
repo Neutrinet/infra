@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+
+[[inputs.redis]]
+  servers = ["unix://{{ valkey_unixsocket }}"]
+{% if valkey_protected_mode %}
+  username = "monitoring"
+  password = "{{ valkey_user_monitoring_password }}"
+{% endif %}
+
+{% if valkey_members | length > 1 %}
+[[inputs.redis_sentinel]]
+{% if valkey_protected_mode %}
+  servers = ["tcp://monitoring:{{ valkey_user_monitoring_password }}@localhost:26379"]
+{% else %}
+  servers = ["tcp://localhost:26379"]
+{% endif %}
+{% endif %}

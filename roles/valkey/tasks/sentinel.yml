@@ -1,0 +1,47 @@
+- name: Installation de Valkey Sentinel
+  ansible.builtin.package:
+    name: valkey-sentinel
+    state: present
+
+- name: Création de la configuration dynamique
+  ansible.builtin.template:
+    src: sentinel.conf.j2
+    dest: /etc/valkey/sentinel-{{ valkey_name_instance }}.conf
+    owner: valkey
+    group: valkey
+    mode: "u=rw,go="
+    force: false  # /!\ Ce fichier ne peux plus etre modifier une fois le cluster démarer, valkey modifie ce fichier pour indiquer la topologie du cluster
+  notify: Restart Valkey Sentinel
+
+- name: Création de la configuration static
+  ansible.builtin.template:
+    src: sentinel-static.conf.j2
+    dest: /etc/valkey/sentinel-{{ valkey_name_instance }}-static.conf
+    owner: valkey
+    group: valkey
+    mode: "u=r,go="
+  notify: Restart Valkey Sentinel
+
+- name: Création de la configuration ACL
+  ansible.builtin.template:
+    src: sentinel-acl.conf.j2
+    dest: /etc/valkey/sentinel-{{ valkey_name_instance }}-acl.conf
+    owner: valkey
+    group: valkey
+    mode: "u=r,go="
+  notify: Restart Valkey Sentinel
+
+- name: Dasactiver le serverValkey Sentinel par default
+  ansible.builtin.service:
+    name: valkey-sentinel.service
+    state: stopped
+    enabled: false
+
+- name: Activation de Valkey Sentinel au démarrage
+  ansible.builtin.service:
+    name: valkey-sentinel@{{ valkey_name_instance }}.service
+    state: started
+    enabled: true
+
+- name: Trigger sentinel handler
+  ansible.builtin.meta: flush_handlers

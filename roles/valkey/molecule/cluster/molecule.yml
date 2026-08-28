@@ -1,0 +1,40 @@
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+platforms:
+  - name: bookworm-valkey-01-molecule
+    box: debian/bookworm64
+    cpu: 2
+    memory: 512
+    interfaces:
+      - network_name: private_network
+        ip: 172.29.129.31
+        auto_config: true
+  - name: bookworm-valkey-02-molecule
+    box: debian/bookworm64
+    cpu: 2
+    memory: 512
+    interfaces:
+      - network_name: private_network
+        ip: 172.29.129.32
+        auto_config: true
+  - name: bookworm-valkey-03-molecule
+    box: debian/bookworm64
+    cpu: 2
+    memory: 512
+    interfaces:
+      - network_name: private_network
+        ip: 172.29.129.33
+        auto_config: true
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: /usr/bin/python3
+    ssh_connection:
+      pipelining: true
+verifier:
+  name: ansible

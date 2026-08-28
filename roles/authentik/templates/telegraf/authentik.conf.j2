@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from haproxy's prometheus exporter
+  urls = ["http://localhost:9030/metrics"]
+  metric_version = 2
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from haproxy's prometheus exporter
+  urls = ["http://localhost:9031/metrics"]
+  metric_version = 2

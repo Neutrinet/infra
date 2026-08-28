@@ -17,6 +17,7 @@ haproxy:
 
 haproxy_redirect: []
 haproxy_postgresql: []
+haproxy_valkey: []
 
 haproxy_listen:
   - "[::]"

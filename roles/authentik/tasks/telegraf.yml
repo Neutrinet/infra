@@ -1,0 +1,10 @@
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/authentik.conf.j2
+    dest: /etc/telegraf/telegraf.d/authentik.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf']

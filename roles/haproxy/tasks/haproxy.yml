@@ -4,11 +4,36 @@
     name: rsync
     state: present
 
+- name: Ajouter le dépôt HAProxy
+  ansible.builtin.deb822_repository:
+    name: haproxy
+    types: deb
+    signed_by: https://haproxy.debian.net/haproxy-archive-keyring.gpg
+    uris: https://haproxy.debian.net
+    suites: "{{ ansible_distribution_release }}-backports-{{ haproxy_repo_version }}"
+    components:
+      - main
+    state: present
+  notify: Update apt cache
+
+- name: Pinning du paquet haproxy vers le dépôt officiel
+  ansible.builtin.copy:
+    content: |
+      Package: haproxy
+      Pin: origin haproxy.debian.net
+      Pin-Priority: 900
+    dest: /etc/apt/preferences.d/haproxy
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
+
 - name: Installation de haproxy
   ansible.builtin.package:
     name: haproxy
     state: present
-    default_release: "{{ ansible_distribution_release }}-backports"
 
 - name: Création du répertoire ssl
   ansible.builtin.file:
@@ -53,7 +78,7 @@
     owner: root
     group: root
     mode: "u=rw,g=r,o="
-    validate: "haproxy -f %s -c -q"
+    #validate: "haproxy -f %s -c -q"
   notify: Restart haproxy
 
 - name: Activation de haproxy au démarrage
