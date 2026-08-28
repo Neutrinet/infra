@@ -1,0 +1,26 @@
+---
+
+- name: config | Déploiement du script de détection d'OS de LibreNMS
+  ansible.builtin.copy:
+    src: distro
+    dest: /usr/bin/distro
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: config | Déploiement du script ifAlias de LibreNMS
+  ansible.builtin.copy:
+    src: ifAlias
+    dest: /usr/local/bin/ifAlias
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: config | Déploiement de snmpd.conf
+  ansible.builtin.template:
+    src: snmp/snmpd.conf.j2
+    dest: /etc/snmp/snmpd.conf
+    owner: root
+    group: Debian-snmp
+    mode: "u=rw,g=r,o="
+  notify: Restart snmpd

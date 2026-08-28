@@ -1,0 +1,2 @@
+---
+snmpd_community: "{{ vault_snmpd_community }}"

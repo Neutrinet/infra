@@ -56,6 +56,9 @@
 - name: Déploiement de Bird Exporter
   import_playbook: apps/bird_exporter.yml
 
+- name: Déploiement de snmpd
+  import_playbook: apps/snmpd.yml
+
 - name: Déploiement de Collectd Exporter
   import_playbook: apps/collectd_exporter.yml
 
