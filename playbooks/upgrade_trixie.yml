@@ -1,10 +1,9 @@
-
-- name: C'est la mise a jours
+- name: Mise à jour vers trixie
   hosts: all
   become: true
 
   tasks:
-    - name: Lister les fichier dans sources.list.d
+    - name: Lister les fichiers dans sources.list.d
       ansible.builtin.find:
         paths: /etc/apt/sources.list.d
         file_type: file
@@ -18,13 +17,13 @@
       loop_control:
         label: "{{ item.path }}"
 
-    - name: apt upgarde
+    - name: Mettre à jour vers la dernière version de Bookworm
       ansible.builtin.apt:
         update_cache: true
         upgrade: dist
         clean: true
 
-    - name: Créer le sources.list
+    - name: Créer les dépôts sources.list
       ansible.builtin.copy:
         dest: /etc/apt/sources.list
         owner: root
@@ -36,6 +35,6 @@
           deb http://deb.debian.org/debian/ trixie-backports contrib main non-free non-free-firmware
           deb https://security.debian.org/debian-security/ trixie-security contrib main non-free non-free-firmware
 
-    - name: apt update
+    - name: Mettre à jour le cache des dépôts
       ansible.builtin.apt:
         update_cache: true

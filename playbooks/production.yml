@@ -82,3 +82,6 @@
 
 - name: Déploiement de authentik
   import_playbook: apps/authentik.yml
+
+- name: Déploiement de Knot
+  import_playbook: apps/knot.yml
