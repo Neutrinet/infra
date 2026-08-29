@@ -5,17 +5,17 @@ workflow:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 variables:
-  PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.venv/"
+  PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.venv"
   PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
   FF_USE_FASTZIP: "true"
 
 stages:
   - quality
 
-linting:
+.linting:
   image: python:3.13
   stage: quality
-  script:
+  before_script:
     - chmod o= -R . # This is needed because somehow the repository is world-writable
     - echo "fake_password" > vault.key # Faking vault password file because it doesn't exists in the CI
     - |
@@ -24,7 +24,6 @@ linting:
       fi
     - source .venv/bin/activate
     - pip install -r requirements.txt
-    - pre-commit run --all-files --color always
   cache:
     key:
       files:
@@ -35,3 +34,17 @@ linting:
       - ${PIP_CACHE_DIR}
     policy: pull-push
   interruptible: true
+
+linting merge request:
+  extends: .linting
+  script:
+    - pre-commit run --color always
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+linting main:
+  extends: .linting
+  script:
+    - pre-commit run --all-files --color always
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
