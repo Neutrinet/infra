@@ -1,21 +1,22 @@
 ---
+- name: Suppression de l'ancien dépôt APT pour Knot
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/cznic-labs.list
+    state: absent
 
-- name: install | Obtenir les clés de signature gpg
-  ansible.builtin.get_url:
-    url: https://pkg.labs.nic.cz/gpg
-    dest: /etc/apt/keyrings/cznic-labs.gpg
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
-
-- name: install | Mise en place des dépôts apt
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/cznic-labs.gpg] https://pkg.labs.nic.cz/knot-dns {{ ansible_distribution_release }} main
-    filename: cznic-labs
+- name: Ajout du dépôt APT pour Knot
+  ansible.builtin.deb822_repository:
+    name: knot-dns
+    types: deb
+    signed_by: https://pkg.labs.nic.cz/gpg
+    uris: https://pkg.labs.nic.cz/knot-dns
+    suites: "{{ ansible_distribution_release }}"
+    components:
+      - main
     state: present
+  notify: Update apt cache
 
-- name: install | Conf préférence apt
+- name: Configuration des préférences APT
   ansible.builtin.copy:
     src: apt-preferences/80cznic-labs
     dest: /etc/apt/preferences.d/80cznic-labs
@@ -23,7 +24,7 @@
     group: root
     mode: 'ugo=r'
 
-- name: install | APT
+- name: Installation des paquets pour Knot
   ansible.builtin.apt:
     name:
       - knot
