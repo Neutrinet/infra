@@ -17,13 +17,13 @@ stages:
   stage: quality
   before_script:
     - chmod o= -R . # This is needed because somehow the repository is world-writable
-    - echo "fake_password" > vault.key # Faking vault password file because it doesn't exists in the CI
+    - touch vault.key # Create empty vault password file otherwise ansible-lint will panic
     - |
       if [[ ! -d .venv ]]; then
         python3 -m venv .venv
       fi
     - source .venv/bin/activate
-    - pip install -r requirements.txt
+    - pip install -r requirements.txt -U
   cache:
     key:
       files:
