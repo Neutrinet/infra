@@ -17,6 +17,7 @@ linting:
   stage: quality
   script:
     - chmod o= -R . # This is needed because somehow the repository is world-writable
+    - sed -i '/vault_password_file/d' ansible.cfg # Removing vault password file because it doesn't exists in the CI
     - pip install -r requirements.txt
     - pre-commit run --all-files --color always
   cache:
