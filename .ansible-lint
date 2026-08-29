@@ -9,3 +9,4 @@ skip_list:
 
 exclude_paths:
   - roles/*/molecule/*/molecule.yml
+  - inventories/*_vars/*/*vault*.yml
