@@ -1,0 +1,55 @@
+---
+- name: monitoring | Création du dossier des archives JMX Exporter
+  ansible.builtin.file:
+    path: /usr/local/src/jmx_exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: monitoring | Création du dossier d'installation JMX Exporter
+  ansible.builtin.file:
+    path: "/opt/jmx_exporter/{{ kafka_jmx_exporter_version }}"
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: monitoring | Téléchargement de l'agent JMX Exporter
+  ansible.builtin.get_url:
+    url: "https://github.com/prometheus/jmx_exporter/releases/download/{{ kafka_jmx_exporter_version }}/jmx_prometheus_javaagent-{{ kafka_jmx_exporter_version }}.jar"
+    dest: "/usr/local/src/jmx_exporter/{{ kafka_jmx_exporter_version }}.jar"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/prometheus/jmx_exporter/releases/download/{{ kafka_jmx_exporter_version }}/jmx_prometheus_javaagent-{{ kafka_jmx_exporter_version }}.jar.sha256"
+
+- name: monitoring | Installation de l'agent JMX Exporter
+  ansible.builtin.copy:
+    src: "/usr/local/src/jmx_exporter/{{ kafka_jmx_exporter_version }}.jar"
+    dest: "/opt/jmx_exporter/{{ kafka_jmx_exporter_version }}/jmx_prometheus_javaagent.jar"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart kafka
+
+- name: monitoring | Déploiement des règles JMX Exporter pour Kafka
+  ansible.builtin.copy:
+    src: jmx_exporter/kafka.yml
+    dest: /etc/kafka/jmx_exporter.yml
+    owner: root
+    group: kafka
+    mode: "u=r,g=r,o="
+  notify: Restart kafka
+
+- name: monitoring | Installation du plugin Telegraf
+  ansible.builtin.template:
+    src: telegraf/kafka.conf.j2
+    dest: /etc/telegraf/telegraf.d/kafka.conf
+    owner: telegraf
+    group: telegraf
+    mode: "ug=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ["telegraf_config"]

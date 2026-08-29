@@ -1,0 +1,3 @@
+---
+clickhouse_default_password: changeme
+clickhouse_max_memory_usage_bytes: 4000000000

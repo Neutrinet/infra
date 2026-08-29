@@ -1,0 +1,49 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Akvorado Console
+Documentation=https://akvorado.net/
+After=network.target akvorado-orchestrator.service
+Wants=akvorado-orchestrator.service
+
+[Service]
+Type=simple
+User=akvorado
+Group=akvorado
+ExecStart=/usr/local/bin/akvorado console http://[::1]:8080
+Restart=on-failure
+RestartSec=5
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=akvorado-console
+
+ReadWritePaths=/var/lib/akvorado
+
+CapabilityBoundingSet=
+LimitNOFILE=65536
+MemoryMax={{ akvorado_console_memory_max }}
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+PrivateUsers=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=noaccess
+ProtectSystem=strict
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target

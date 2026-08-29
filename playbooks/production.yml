@@ -85,3 +85,11 @@
 
 - name: Déploiement de authentik
   import_playbook: apps/authentik.yml
+- name: Déploiement de ClickHouse
+  import_playbook: apps/clickhouse.yml
+
+- name: Déploiement de Kafka
+  import_playbook: apps/kafka.yml
+
+- name: Déploiement d'Akvorado
+  import_playbook: apps/akvorado.yml

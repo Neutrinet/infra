@@ -1,0 +1,8 @@
+---
+- name: user | Créer l'utilisateur unix Akvorado
+  ansible.builtin.user:
+    name: akvorado
+    home: /var/lib/akvorado
+    shell: /sbin/nologin
+    system: true
+    state: present

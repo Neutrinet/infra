@@ -1,0 +1,96 @@
+---
+- name: install | Création de dossiers Akvorado
+  ansible.builtin.file:
+    path: "{{ akvorado_dir }}"
+    owner: akvorado
+    group: akvorado
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/akvorado
+    - "/opt/akvorado/{{ akvorado_version }}"
+    - /var/lib/akvorado
+  loop_control:
+    loop_var: akvorado_dir
+
+- name: install | Création du dossier de configuration Akvorado
+  ansible.builtin.file:
+    path: /etc/akvorado
+    owner: root
+    group: akvorado
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: install | Installation des dépendances de build Akvorado
+  ansible.builtin.apt:
+    name:
+      - git
+      - golang
+      - clang
+      - make
+      - zip
+    state: present
+
+- name: install | Installation de Node.js pour le build du frontend Akvorado
+  ansible.builtin.import_role:
+    name: nodejs
+
+- name: install | Création du dossier des sources Akvorado
+  ansible.builtin.file:
+    path: /usr/local/src/akvorado
+    owner: akvorado
+    group: akvorado
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: install | Récupération des sources Akvorado
+  ansible.builtin.git:
+    repo: https://github.com/akvorado/akvorado.git
+    dest: /usr/local/src/akvorado
+    version: "v{{ akvorado_version }}"
+    force: true
+  become: true
+  become_user: akvorado
+  environment:
+    HOME: /var/lib/akvorado
+  register: _akvorado_source
+
+- name: install | Vérifier si le binaire Akvorado est déjà compilé
+  ansible.builtin.stat:
+    path: /usr/local/src/akvorado/bin/akvorado
+  register: _akvorado_binary_stat
+
+- name: install | Compilation d'Akvorado (GOAMD64={{ akvorado_build_variant }}) # noqa: no-handler
+  community.general.make:
+    chdir: /usr/local/src/akvorado
+    jobs: "{{ akvorado_build_jobs }}"
+    params:
+      TARGETARCH: amd64
+      TARGETVARIANT: "{{ akvorado_build_variant }}"
+  become: true
+  become_user: akvorado
+  environment:
+    HOME: /var/lib/akvorado
+    GOMAXPROCS: "{{ akvorado_build_jobs }}"
+    PWD: /usr/local/src/akvorado
+  when: _akvorado_source.changed or not _akvorado_binary_stat.stat.exists
+
+- name: install | Installation du binaire Akvorado compilé
+  ansible.builtin.copy:
+    src: /usr/local/src/akvorado/bin/akvorado
+    dest: "/opt/akvorado/{{ akvorado_version }}/akvorado"
+    remote_src: true
+    owner: akvorado
+    group: akvorado
+    mode: "u=rx,g=rx,o="
+
+- name: install | Création d'un lien symbolique pour le binaire Akvorado
+  ansible.builtin.file:
+    src: "/opt/akvorado/{{ akvorado_version }}/akvorado"
+    dest: /usr/local/bin/akvorado
+    state: link
+  notify:
+    - Restart akvorado-orchestrator
+    - Restart akvorado-inlet
+    - Restart akvorado-outlet
+    - Restart akvorado-console

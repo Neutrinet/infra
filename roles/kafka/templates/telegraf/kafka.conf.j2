@@ -1,6 +1,6 @@
 {{ ansible_managed | comment }}
 
 [[inputs.prometheus]]
-  ## Scrape metrics directly from Stalwart
-  urls = ["http://localhost:8080/metrics/prometheus"]
+  ## Scrape metrics from the Kafka JMX exporter
+  urls = ["http://[::1]:{{ kafka_jmx_exporter_port }}/metrics"]
   metric_version = 2

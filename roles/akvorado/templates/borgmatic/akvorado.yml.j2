@@ -1,0 +1,14 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic.d/common.yml
+
+source_directories: !retain
+  - "/var/lib/clickhouse-backup"
+
+before_backup:
+  - rm -rf /var/lib/clickhouse-backup/akvorado
+  - source /etc/akvorado/backup.env && clickhouse-client --user akvorado --host ::1 --query "BACKUP DATABASE akvorado TO Disk('backups', 'akvorado')" || exit 75
+after_backup:
+  - rm -rf /var/lib/clickhouse-backup/akvorado
+
+archive_name_format: akvorado_{hostname}-{now}

@@ -1,0 +1,130 @@
+{{ ansible_managed | comment }}
+
+kafka:
+  topic: flows
+  brokers:
+    - "[::1]:9092"
+  topic-configuration:
+    num-partitions: 1
+    replication-factor: 1
+
+clickhousedb:
+  servers:
+    - "[::1]:9000"
+  database: akvorado
+  username: akvorado
+  password: "{{ akvorado_clickhouse_password }}"
+
+clickhouse:
+  orchestrator-url: "http://[::1]:8080"
+
+http:
+  listen: "[::1]:8080"
+
+inlet:
+  http:
+    listen: "[::1]:8081"
+  flow:
+    inputs:
+      - type: udp
+        decoder: sflow
+        listen: "[::]:6343"
+        workers: 4
+        receive-buffer: 212992
+
+outlet:
+  http:
+    listen: "[::1]:8082"
+  core:
+    interface-classifiers:
+      - |
+        ClassifyConnectivityRegex(Interface.Description, "^(?i)(transit|peering|cust):? ", "$1") &&
+        ClassifyProviderRegex(Interface.Description, "^\\S+?\\s(.+)", "$1") &&
+        ClassifyExternal()
+      - ClassifyInternal()
+    exporter-classifiers:
+      - ClassifyRoleRegex(Exporter.Name, "^(route-reflector|edge|core|bra)-", "$1")
+  routing:
+    provider:
+      type: bmp
+      listen: "[::]:10179"
+  geoip:
+    optional: true
+    asn-database:
+      - /var/lib/GeoIP/GeoLite2-ASN.mmdb
+    geo-database:
+      - /var/lib/GeoIP/GeoLite2-Country.mmdb
+  metadata:
+    cache-persist-file: /var/lib/akvorado/metadata.cache
+    providers:
+      - type: snmp
+        credentials:
+          ::/0:
+            communities: "{{ akvorado_snmp_community }}"
+  flow:
+    state-persist-file: /var/lib/akvorado/flow.state
+  networks:
+    networks:
+      2001:913:1000:10::/64:
+        name: Internal VMs / Friends
+        role: infrastructure
+      2001:913:1000:11::/64:
+        name: Internal VMs / Friends
+        role: hosting
+      80.67.181.0/28:
+        name: Routing (edge/core/bra)
+        role: infrastructure
+      2001:913:1000:100::/64:
+        name: Routing (edge/core/bra)
+        role: infrastructure
+      80.67.181.16/28:
+        name: Internal VMs / Friends
+        role: hosting
+      2001:913:1000:200::/56:
+        name: Internal VMs / Friends
+        role: hosting
+      80.67.181.32/28:
+        name: Internal VMs / Friends
+        role: hosting
+      2001:913:1000:300::/56:
+        name: Internal VMs / Friends
+        role: hosting
+      23.128.97.0/24:
+        name: NS-Global
+        role: customer
+        asn: 398987
+      2607:7c80:53::/48:
+        name: NS-Global
+        role: customer
+        asn: 398987
+      80.67.181.128/25:
+        name: OpenVPN Clients
+        role: customer
+      2001:913:1f00::/40:
+        name: OpenVPN Clients
+        role: customer
+      80.67.191.0/25:
+        name: Member Internet Access
+        role: customer
+      2001:913:1d00::/44:
+        name: Member Internet Access
+        role: customer
+      2001:913:1e00::/44:
+        name: Member Internet Access
+        role: customer
+      80.67.181.0/24:
+        name: Unassigned
+        role: unreachable
+      80.67.191.0/24:
+        name: Unassigned
+        role: unreachable
+      2001:913:1000::/36:
+        name: Unassigned
+        role: unreachable
+
+console:
+  http:
+    listen: "[::]:8083"
+  database:
+    driver: sqlite
+    dsn: /var/lib/akvorado/console.sqlite

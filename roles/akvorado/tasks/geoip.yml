@@ -1,0 +1,39 @@
+---
+- name: geoip | Installer le paquet geoipupdate
+  ansible.builtin.apt:
+    name: geoipupdate
+    state: present
+
+- name: geoip | Déployer la configuration GeoIP.conf
+  ansible.builtin.template:
+    src: geoip/GeoIP.conf.j2
+    dest: /etc/GeoIP.conf
+    owner: root
+    group: root
+    mode: "u=rw,go="
+
+- name: geoip | Activer le timer geoipupdate
+  ansible.builtin.systemd:
+    name: geoipupdate.timer
+    enabled: true
+    state: started
+
+- name: geoip | Vérifier si les bases GeoIP existent déjà
+  ansible.builtin.stat:
+    path: "/var/lib/GeoIP/{{ akvorado_geoip_item }}.mmdb"
+  register: _akvorado_geoip_db_stat
+  loop:
+    - GeoLite2-ASN
+    - GeoLite2-Country
+  loop_control:
+    loop_var: akvorado_geoip_item
+
+- name: geoip | Lancer une première mise à jour GeoIP
+  ansible.builtin.systemd:
+    name: geoipupdate.service
+    state: started
+  when:
+    - _akvorado_geoip_db_stat.results | selectattr('stat.exists', 'equalto', false) | list | length > 0
+    - akvorado_geoip_account_id is match('^[0-9]+$')
+    - akvorado_geoip_license_key | length > 0
+  failed_when: false

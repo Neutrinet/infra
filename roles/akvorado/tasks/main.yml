@@ -1,0 +1,35 @@
+---
+- name: Création de l'utilisateur
+  ansible.builtin.import_tasks: user.yml
+
+- name: Installation d'Akvorado
+  ansible.builtin.import_tasks: install.yml
+
+- name: Nettoyage des anciennes versions
+  ansible.builtin.import_tasks: cleanup.yml
+
+- name: Configuration de l'utilisateur ClickHouse
+  ansible.builtin.include_role:
+    name: clickhouse
+    tasks_from: users
+  vars:
+    _clickhouse_user_name: akvorado
+    _clickhouse_user_password: "{{ akvorado_clickhouse_password }}"
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Configuration de l'orchestrateur
+  ansible.builtin.import_tasks: config.yml
+
+- name: Configuration de GeoIP
+  ansible.builtin.import_tasks: geoip.yml
+
+- name: Activation des services
+  ansible.builtin.import_tasks: service.yml
+
+- name: Configuration de la supervision Telegraf
+  ansible.builtin.import_tasks: telegraf.yml
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.import_tasks: borgmatic.yml

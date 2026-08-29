@@ -179,6 +179,16 @@ haproxy:
     healthcheck: true
     healthcheck_url: "HEAD /healthcheck"
 
+  - hostname: akvorado.neutrinet.be
+    target:
+      - akvorado.patata.louise.neutri.net
+    target_port: 8083
+    healthcheck: true
+    healthcheck_url: "GET /api/v0/healthcheck"
+    users:
+      - username: "{{ vault_username_akvorado }}"
+        password: "{{ vault_password_akvorado }}"
+
   - hostname: wiki.labriqueinter.net
     target:
       - web-static.patata.louise.neutri.net

@@ -1,0 +1,12 @@
+---
+akvorado_version: 2026.8.0
+akvorado_build_variant: v1
+akvorado_build_jobs: 2
+akvorado_clickhouse_password: changeme
+akvorado_geoip_account_id: changeme
+akvorado_geoip_license_key: changeme
+akvorado_snmp_community: changeme
+akvorado_orchestrator_memory_max: 256M
+akvorado_inlet_memory_max: 512M
+akvorado_outlet_memory_max: 1G
+akvorado_console_memory_max: 256M

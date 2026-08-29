@@ -9,6 +9,15 @@
     mode: "ug=r,o="
   notify: Restart kafka
 
+- name: config | Copier la configuration log4j2
+  ansible.builtin.template:
+    src: log4j2.yaml.j2
+    dest: /etc/kafka/log4j2.yaml
+    owner: kafka
+    group: kafka
+    mode: "ug=r,o="
+  notify: Restart kafka
+
 - name: config | Générer un UUID de cluster Kafka
   ansible.builtin.command:
     cmd: /opt/kafka/current/bin/kafka-storage.sh random-uuid

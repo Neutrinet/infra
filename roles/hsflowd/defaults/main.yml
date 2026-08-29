@@ -1,0 +1,5 @@
+---
+hsflowd_version: 2.1.17-1
+hsflowd_collector_port: 6343
+hsflowd_psample_group: 1
+hsflowd_polling_interval: 30

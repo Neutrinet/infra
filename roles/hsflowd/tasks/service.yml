@@ -1,0 +1,6 @@
+---
+- name: service | Activer et démarrer hsflowd
+  ansible.builtin.systemd:
+    name: hsflowd
+    enabled: true
+    state: started

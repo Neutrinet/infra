@@ -13,7 +13,7 @@
     file_type: file
     use_regex: true
     recurse: false
-    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tgz$'
   register: _kafka_archives
 
 - name: Récupération de la version la plus ancienne et de la version actuelle

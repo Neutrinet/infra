@@ -1,0 +1,9 @@
+---
+- name: Installation de hsflowd
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configuration de hsflowd
+  ansible.builtin.import_tasks: config.yml
+
+- name: Activation du service hsflowd
+  ansible.builtin.import_tasks: service.yml

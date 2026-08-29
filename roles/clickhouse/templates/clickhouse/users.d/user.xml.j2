@@ -1,0 +1,14 @@
+{{ ansible_managed | comment('xml') }}
+
+<clickhouse>
+    <users>
+        <{{ _clickhouse_user_name }}>
+            <password_sha256_hex>{{ _clickhouse_user_password | hash('sha256') }}</password_sha256_hex>
+            <networks>
+                <ip>::1</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+        </{{ _clickhouse_user_name }}>
+    </users>
+</clickhouse>

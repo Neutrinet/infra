@@ -1,0 +1,46 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Akvorado Orchestrator
+Documentation=https://akvorado.net/
+After=network.target clickhouse-server.service kafka.service
+
+[Service]
+Type=simple
+User=akvorado
+Group=akvorado
+ExecStart=/usr/local/bin/akvorado orchestrator /etc/akvorado/orchestrator.yaml
+Restart=on-failure
+RestartSec=5
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=akvorado-orchestrator
+
+CapabilityBoundingSet=
+LimitNOFILE=65536
+MemoryMax={{ akvorado_orchestrator_memory_max }}
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+PrivateUsers=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=noaccess
+ProtectSystem=strict
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,24 @@
+---
+- name: cleanup | Récupération de la liste des dossiers d'installation
+  ansible.builtin.find:
+    path: /opt/akvorado
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _akvorado_installed_dirs
+
+- name: cleanup | Récupération de la version la plus ancienne
+  ansible.builtin.set_fact:
+    _akvorado_oldest_install_dir: "{{ _akvorado_sorted_install_dirs | first }}"
+  vars:
+    _akvorado_sorted_install_dirs: |-
+      {{ _akvorado_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: cleanup | Supprimer la version la plus ancienne
+  ansible.builtin.file:
+    state: absent
+    path: "{{ _akvorado_oldest_install_dir }}"
+  when: _akvorado_installed_dirs.files | length > 5

@@ -1,0 +1,9 @@
+---
+- name: config | Déployer la configuration hsflowd
+  ansible.builtin.template:
+    src: hsflowd.conf.j2
+    dest: /etc/hsflowd.conf
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify: Restart hsflowd

@@ -1,0 +1,69 @@
+---
+- name: service | Créer le service systemd Akvorado Orchestrator
+  ansible.builtin.template:
+    src: systemd/akvorado-orchestrator.service.j2
+    dest: /etc/systemd/system/akvorado-orchestrator.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - Reload systemd
+    - Restart akvorado-orchestrator
+
+- name: service | Créer le service systemd Akvorado Inlet
+  ansible.builtin.template:
+    src: systemd/akvorado-inlet.service.j2
+    dest: /etc/systemd/system/akvorado-inlet.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - Reload systemd
+    - Restart akvorado-inlet
+
+- name: service | Créer le service systemd Akvorado Outlet
+  ansible.builtin.template:
+    src: systemd/akvorado-outlet.service.j2
+    dest: /etc/systemd/system/akvorado-outlet.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - Reload systemd
+    - Restart akvorado-outlet
+
+- name: service | Créer le service systemd Akvorado Console
+  ansible.builtin.template:
+    src: systemd/akvorado-console.service.j2
+    dest: /etc/systemd/system/akvorado-console.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - Reload systemd
+    - Restart akvorado-console
+
+- name: service | Activer et démarrer Akvorado Orchestrator
+  ansible.builtin.systemd:
+    name: akvorado-orchestrator
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: service | Activer et démarrer Akvorado Inlet
+  ansible.builtin.systemd:
+    name: akvorado-inlet
+    enabled: true
+    state: started
+
+- name: service | Activer et démarrer Akvorado Outlet
+  ansible.builtin.systemd:
+    name: akvorado-outlet
+    enabled: true
+    state: started
+
+- name: service | Activer et démarrer Akvorado Console
+  ansible.builtin.systemd:
+    name: akvorado-console
+    enabled: true
+    state: started
