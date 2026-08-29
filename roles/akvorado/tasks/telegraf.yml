@@ -1,0 +1,11 @@
+---
+- name: telegraf | Installation du plugin Telegraf
+  ansible.builtin.template:
+    src: telegraf/akvorado.conf.j2
+    dest: /etc/telegraf/telegraf.d/akvorado.conf
+    owner: telegraf
+    group: telegraf
+    mode: "ug=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf_config']

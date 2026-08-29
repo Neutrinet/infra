@@ -1,0 +1,30 @@
+---
+- name: Installation de ClickHouse
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configuration de ClickHouse
+  ansible.builtin.import_tasks: config.yml
+
+- name: Activation du service ClickHouse
+  ansible.builtin.import_tasks: service.yml
+
+- name: Configuration du backup Borgmatic de la config ClickHouse
+  ansible.builtin.template:
+    src: borgmatic/clickhouse.yml.j2
+    dest: /etc/borgmatic.d/clickhouse.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
+  tags: ['borgmatic_config']
+
+- name: Installation du plugin Telegraf
+  ansible.builtin.template:
+    src: telegraf/clickhouse.conf.j2
+    dest: /etc/telegraf/telegraf.d/clickhouse.conf
+    owner: telegraf
+    group: telegraf
+    mode: "ug=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf_config']

@@ -1,0 +1,19 @@
+---
+- name: install | Setup apt repo
+  ansible.builtin.deb822_repository:
+    name: clickhouse
+    types: deb
+    uris: https://packages.clickhouse.com/deb
+    suites: lts
+    components: [main]
+    signed_by: https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: install | Install ClickHouse server and client
+  ansible.builtin.package:
+    name:
+      - clickhouse-server
+      - clickhouse-client

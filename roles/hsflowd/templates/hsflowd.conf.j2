@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+sflow {
+  agent.cidr = 2001:913:1000:10::/64
+  collector { ip=2001:913:1000:11::114 udpport={{ hsflowd_collector_port }} }
+  polling = {{ hsflowd_polling_interval }}
+  psample { group={{ hsflowd_psample_group }} egress=on }
+}

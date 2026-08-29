@@ -13,7 +13,10 @@ Group=kafka
 Environment="JAVA_HOME=/usr/lib/jvm/temurin-{{ kafka_java_major_version }}-jdk-amd64"
 Environment="PATH=/usr/lib/jvm/temurin-{{ kafka_java_major_version }}-jdk-amd64/bin:{{ ansible_env.PATH }}"
 Environment="KAFKA_HEAP_OPTS=-Xmx{{ kafka_heap_size }} -Xms{{ kafka_heap_size }}"
-Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
+Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
+Environment="LOG_DIR=/var/log/kafka"
+Environment="KAFKA_LOG4J_OPTS=-Dlog4j2.configurationFile=/etc/kafka/log4j2.yaml"
+Environment="KAFKA_OPTS=-javaagent:/opt/jmx_exporter/{{ kafka_jmx_exporter_version }}/jmx_prometheus_javaagent.jar=[::1]:{{ kafka_jmx_exporter_port }}:/etc/kafka/jmx_exporter.yml"
 
 ExecStart=/opt/kafka/current/bin/kafka-server-start.sh /etc/kafka/server.properties
 ExecStop=/opt/kafka/current/bin/kafka-server-stop.sh
@@ -28,6 +31,31 @@ SyslogIdentifier=kafka
 # Limites de ressources
 LimitNOFILE=100000
 TimeoutStopSec=180
+
+# Systemd hardening
+ReadWritePaths={{ kafka_data_path }} /var/log/kafka
+
+CapabilityBoundingSet=
+LockPersonality=true
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+PrivateUsers=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=noaccess
+ProtectSystem=strict
+SystemCallFilter=@system-service
 
 [Install]
 WantedBy=multi-user.target

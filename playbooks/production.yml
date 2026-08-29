@@ -91,3 +91,12 @@
 
 - name: Déploiement de Valkey
   ansible.builtin.import_playbook: apps/valkey.yml
+
+- name: Déploiement de ClickHouse
+  ansible.builtin.import_playbook: apps/clickhouse.yml
+
+- name: Déploiement de Kafka
+  ansible.builtin.import_playbook: apps/kafka.yml
+
+- name: Déploiement d'Akvorado
+  ansible.builtin.import_playbook: apps/akvorado.yml

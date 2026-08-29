@@ -1,0 +1,40 @@
+---
+- name: config | Vérifier si la base ClickHouse akvorado existe
+  ansible.builtin.uri:
+    url: http://[::1]:8123/
+    method: POST
+    body: "SELECT name FROM system.databases WHERE name = 'akvorado' FORMAT TabSeparated"
+    user: akvorado
+    password: "{{ akvorado_clickhouse_password }}"
+    force_basic_auth: true
+    return_content: true
+  register: _akvorado_clickhouse_db_check
+  changed_when: false
+  check_mode: false
+  no_log: true
+
+- name: config | Créer la base ClickHouse akvorado
+  ansible.builtin.uri:
+    url: http://[::1]:8123/
+    method: POST
+    body: "CREATE DATABASE IF NOT EXISTS akvorado"
+    user: akvorado
+    password: "{{ akvorado_clickhouse_password }}"
+    force_basic_auth: true
+  when: (_akvorado_clickhouse_db_check.content | default('') | trim) != 'akvorado'
+  changed_when: true
+  no_log: true
+
+- name: config | Déployer la configuration de l'orchestrateur
+  ansible.builtin.template:
+    src: akvorado/orchestrator.yaml.j2
+    dest: /etc/akvorado/orchestrator.yaml
+    owner: root
+    group: akvorado
+    mode: "u=r,g=r,o="
+    validate: /usr/local/bin/akvorado orchestrator %s --check
+  notify:
+    - Restart akvorado-orchestrator
+    - Restart akvorado-inlet
+    - Restart akvorado-outlet
+    - Restart akvorado-console

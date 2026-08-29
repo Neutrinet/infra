@@ -1,0 +1,19 @@
+---
+- name: borgmatic | Déployer le fichier d'environnement pour le backup de la base ClickHouse
+  ansible.builtin.template:
+    src: borgmatic/akvorado-backup.env.j2
+    dest: /etc/akvorado/backup.env
+    owner: root
+    group: root
+    mode: "u=r,go="
+  tags: ['borgmatic_config']
+
+- name: borgmatic | Configuration du backup Borgmatic de la base akvorado
+  ansible.builtin.template:
+    src: borgmatic/akvorado.yml.j2
+    dest: /etc/borgmatic.d/akvorado.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
+  tags: ['borgmatic_config']

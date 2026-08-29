@@ -1,0 +1,5 @@
+---
+- name: Restart hsflowd
+  ansible.builtin.systemd:
+    name: hsflowd
+    state: restarted

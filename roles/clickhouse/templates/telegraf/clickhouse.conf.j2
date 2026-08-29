@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  ## Scrape metrics directly from ClickHouse
+  urls = ["http://[::1]:9363/metrics"]
+  metric_version = 2

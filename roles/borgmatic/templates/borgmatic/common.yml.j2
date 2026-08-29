@@ -24,6 +24,10 @@ exclude_patterns:
   - "/var/run"
   - "/var/tmp"
   - "/var/lib/routinator/rpki-cache"
+  - "/var/lib/kafka"
+  - "/var/lib/akvorado/metadata.cache"
+  - "/var/lib/akvorado/flow.state"
+  - "/var/lib/clickhouse"
 
 repositories:
 {% for repo in borgmatic_repositories %}

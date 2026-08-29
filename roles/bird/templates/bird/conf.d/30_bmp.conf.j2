@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+protocol bmp {
+	station address ip 2001:913:1000:11::114 port 10179;
+	system name "{{ inventory_hostname }}";
+	monitoring rib in pre_policy;
+	monitoring rib in post_policy;
+}

@@ -2,7 +2,7 @@
 - name: install | Créer l'utilisateur unix Apache Kafka
   ansible.builtin.user:
     name: kafka
-    home: /opt/kafka
+    home: /var/lib/kafka
     shell: /sbin/nologin
     system: true
     state: present
@@ -19,6 +19,7 @@
     - "/opt/kafka/{{ kafka_version }}"
     - /etc/kafka
     - "{{ kafka_data_path }}"
+    - /var/log/kafka
   loop_control:
     loop_var: kafka_dir
 
@@ -30,10 +31,18 @@
     mode: "u=rwx,g=rx,o="
     state: directory
 
+- name: install | Récupérer le checksum SHA512 de l'archive Apache Kafka
+  ansible.builtin.uri:
+    url: "https://dlcdn.apache.org/kafka/{{ kafka_version }}/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz.sha512"
+    return_content: true
+  register: _kafka_sha512_file
+  changed_when: false
+
 - name: install | Téléchargement de l'archive Apache Kafka
   ansible.builtin.get_url:
     url: "https://dlcdn.apache.org/kafka/{{ kafka_version }}/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
     dest: /usr/local/src/kafka/{{ kafka_version }}.tgz
+    checksum: "sha512:{{ _kafka_sha512_file.content.split(':', 1)[1] | regex_replace('\\s+', '') | lower }}"
     owner: root
     group: root
     mode: "ug=r"
@@ -56,4 +65,4 @@
     owner: kafka
     group: kafka
     state: link
-  # notify: Restart kafka
+  notify: Restart kafka

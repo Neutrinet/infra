@@ -1,0 +1,20 @@
+---
+- name: install | Création du dossier des archives hsflowd
+  ansible.builtin.file:
+    path: /usr/local/src/hsflowd
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: install | Téléchargement du paquet hsflowd
+  ansible.builtin.get_url:
+    url: "https://github.com/sflow/host-sflow/releases/download/v{{ hsflowd_version }}/hsflowd-debian13_{{ hsflowd_version }}_amd64.deb"
+    dest: "/usr/local/src/hsflowd/{{ hsflowd_version }}.deb"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: install | Installation du paquet hsflowd
+  ansible.builtin.apt:
+    deb: "/usr/local/src/hsflowd/{{ hsflowd_version }}.deb"

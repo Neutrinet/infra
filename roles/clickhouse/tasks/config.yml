@@ -1,0 +1,45 @@
+---
+- name: config | Déployer la configuration listen
+  ansible.builtin.template:
+    src: clickhouse/listen.xml.j2
+    dest: /etc/clickhouse-server/config.d/listen.xml
+    owner: root
+    group: clickhouse
+    mode: "u=r,g=r,o="
+  notify: Restart clickhouse-server
+
+- name: config | Déployer la configuration Prometheus
+  ansible.builtin.template:
+    src: clickhouse/observability.xml.j2
+    dest: /etc/clickhouse-server/config.d/observability.xml
+    owner: root
+    group: clickhouse
+    mode: "u=r,g=r,o="
+  notify: Restart clickhouse-server
+
+- name: config | Déployer la limite de mémoire du serveur
+  ansible.builtin.template:
+    src: clickhouse/memory.xml.j2
+    dest: /etc/clickhouse-server/config.d/memory.xml
+    owner: root
+    group: clickhouse
+    mode: "u=r,g=r,o="
+  notify: Restart clickhouse-server
+
+- name: config | Durcir l'utilisateur default
+  ansible.builtin.template:
+    src: clickhouse/users.d/default.xml.j2
+    dest: /etc/clickhouse-server/users.d/default.xml
+    owner: root
+    group: clickhouse
+    mode: "u=r,g=r,o="
+  notify: Restart clickhouse-server
+
+- name: config | Déployer le disque de backup
+  ansible.builtin.template:
+    src: clickhouse/backup_disk.xml.j2
+    dest: /etc/clickhouse-server/config.d/backup_disk.xml
+    owner: root
+    group: clickhouse
+    mode: "u=r,g=r,o="
+  notify: Restart clickhouse-server

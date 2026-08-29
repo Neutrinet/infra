@@ -1,0 +1,6 @@
+---
+- name: service | Activer et démarrer ClickHouse
+  ansible.builtin.systemd:
+    name: clickhouse-server
+    enabled: true
+    state: started

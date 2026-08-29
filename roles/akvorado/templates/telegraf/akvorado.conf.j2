@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+
+{% for component in ['orchestrator', 'inlet', 'outlet', 'console'] %}
+[[inputs.prometheus]]
+  ## Scrape metrics from Akvorado {{ component }}
+  urls = ["http://[::1]:808{{ loop.index0 }}/api/v0/{{ component }}/metrics"]
+  metric_version = 2
+
+{% endfor %}

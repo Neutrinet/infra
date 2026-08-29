@@ -1,0 +1,16 @@
+{{ ansible_managed | comment('xml') }}
+
+<clickhouse>
+    <storage_configuration>
+        <disks>
+            <backups>
+                <type>local</type>
+                <path>/var/lib/clickhouse-backup/</path>
+            </backups>
+        </disks>
+    </storage_configuration>
+    <backups>
+        <allowed_disk>backups</allowed_disk>
+        <allowed_path>/var/lib/clickhouse-backup/</allowed_path>
+    </backups>
+</clickhouse>

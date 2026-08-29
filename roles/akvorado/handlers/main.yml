@@ -1,0 +1,29 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart akvorado-orchestrator
+  ansible.builtin.systemd:
+    name: akvorado-orchestrator
+    state: restarted
+
+- name: Restart akvorado-inlet
+  ansible.builtin.systemd:
+    name: akvorado-inlet
+    state: restarted
+
+- name: Restart akvorado-outlet
+  ansible.builtin.systemd:
+    name: akvorado-outlet
+    state: restarted
+
+- name: Restart akvorado-console
+  ansible.builtin.systemd:
+    name: akvorado-console
+    state: restarted
+
+- name: Restart telegraf
+  ansible.builtin.service:
+    name: telegraf
+    state: restarted

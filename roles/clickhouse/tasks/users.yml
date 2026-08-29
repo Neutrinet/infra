@@ -1,0 +1,9 @@
+---
+- name: users | Déployer l'utilisateur {{ _clickhouse_user_name }}
+  ansible.builtin.template:
+    src: clickhouse/users.d/user.xml.j2
+    dest: "/etc/clickhouse-server/users.d/{{ _clickhouse_user_name }}.xml"
+    owner: root
+    group: clickhouse
+    mode: "u=r,g=r,o="
+  notify: Restart clickhouse-server
