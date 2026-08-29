@@ -5,6 +5,7 @@ workflow:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 variables:
+  PIP_INSTALL_DIR: /usr/local/lib/python3.13/site-packages
   PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
   FF_USE_FASTZIP: "true"
 
@@ -15,13 +16,16 @@ linting:
   image: neutrinet/pre-commit:1.0.1
   stage: quality
   script:
+    - chmod o= -R . # This is needed because somehow the repository is world-writable
     - pip install -r requirements.txt
     - pre-commit run --all-files --color always
   cache:
     key:
       files:
         - .pre-commit-config.yaml
+        - requirements.txt
     paths:
       - ${PRE_COMMIT_HOME}
+      - ${PIP_INSTALL_DIR}
     policy: pull-push
   interruptible: true
