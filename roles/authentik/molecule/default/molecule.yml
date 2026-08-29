@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bookworm-authentik-molecule
-    box: debian/bookworm64
+  - name: trixie-authentik-molecule
+    box: debian/trixie64
     cpu: 4
     memory: 4096
     interfaces:
