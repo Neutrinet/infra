@@ -5,16 +5,16 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bookworm-knot-primary-molecule
-    box: debian/bookworm64
+  - name: trixie-knot-primary-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 512
     interfaces:
       - network_name: private_network
         ip: 172.29.129.41
         auto_config: true
-  - name: bookworm-knot-secondary-molecule
-    box: debian/bookworm64
+  - name: trixie-knot-secondary-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 512
     interfaces:
