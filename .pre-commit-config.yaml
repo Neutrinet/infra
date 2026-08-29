@@ -24,7 +24,9 @@ repos:
     hooks:
       - id: ansible-lint
         name: ansible-lint
-        entry: ./.pre-commit-ansible-lint.sh
+        entry: ansible-lint
         language: system
         pass_filenames: true
+        require_serial: true
+        exclude: '^.*vault.*$'
         types: [yaml]
