@@ -23,7 +23,7 @@ key:
 
 
 remote:
-{% for server in knot_secondary_serveurs %}
+{% for server in knot_secondary_servers %}
     - id: remote_secondary_{{ "%02d" | format(loop.index) }}
       address: {{ server }}
       key: secondary_key
@@ -65,10 +65,10 @@ mod-onlinesign:
 
 acl:
   - id: acl_transfer_secondary
-    remote: [{% for server in knot_secondary_serveurs %}remote_secondary_{{ "%02d" | format(loop.index) }}{% if not loop.last %},{% endif %} {% endfor %}]
+    remote: [{% for server in knot_secondary_servers %}remote_secondary_{{ "%02d" | format(loop.index) }}{% if not loop.last %},{% endif %} {% endfor %}]
     action: transfer
   - id: acl_notify_secondary
-    remote: [{% for server in knot_secondary_serveurs %}remote_secondary_{{ "%02d" | format(loop.index) }}{% if not loop.last %},{% endif %} {% endfor %}]
+    remote: [{% for server in knot_secondary_servers %}remote_secondary_{{ "%02d" | format(loop.index) }}{% if not loop.last %},{% endif %} {% endfor %}]
     action: notify
   - id: acl_update_vpn
     address: [{{ knot_vpn_servers | join(',') }}]
@@ -85,7 +85,7 @@ template:
     dnssec-policy: csk-manual
     zonefile-load: difference
     serial-policy: dateserial
-    notify: [{% for server in knot_secondary_serveurs %}remote_secondary_{{ "%02d" | format(loop.index) }}{% if not loop.last %},{% endif %} {% endfor %}]
+    notify: [{% for server in knot_secondary_servers %}remote_secondary_{{ "%02d" | format(loop.index) }}{% if not loop.last %},{% endif %} {% endfor %}]
     acl: [acl_transfer_secondary, acl_notify_secondary, acl_update_vpn]
     global-module: mod-stats
 
