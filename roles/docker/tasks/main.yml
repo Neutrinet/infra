@@ -64,7 +64,7 @@
     groups: docker
     append: true
   notify: Restart telegraf
-  tags: [ "telegraf_config" ]
+  tags: ["telegraf_config"]
 
 - name: Installation des plugins Telegraf
   ansible.builtin.template:
@@ -75,7 +75,7 @@
     mode: "u=rw,g=r,o="
     validate: telegraf --config %s --test
   notify: Restart telegraf
-  tags: [ "telegraf_config" ]
+  tags: ["telegraf_config"]
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:
@@ -85,4 +85,4 @@
     group: root
     mode: "u=rw,go="
     validate: borgmatic config validate --show -c %s
-  tags: [ "borgmatic_config" ]
+  tags: ["borgmatic_config"]
