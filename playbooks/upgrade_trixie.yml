@@ -1,4 +1,3 @@
-
 - name: Mise à jour vers trixie
   hosts: all
   become: true
