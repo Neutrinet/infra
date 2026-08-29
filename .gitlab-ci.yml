@@ -5,7 +5,7 @@ workflow:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 variables:
-  PIP_INSTALL_DIR: /usr/local/lib/python3.13/site-packages
+  PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.venv/"
   PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
   FF_USE_FASTZIP: "true"
 
@@ -13,11 +13,16 @@ stages:
   - quality
 
 linting:
-  image: neutrinet/pre-commit:1.0.1
+  image: python:3.13
   stage: quality
   script:
     - chmod o= -R . # This is needed because somehow the repository is world-writable
     - echo "fake_password" > vault.key # Faking vault password file because it doesn't exists in the CI
+    - |
+      if [[ ! -d .venv ]]; then
+        python3 -m venv .venv
+      fi
+    - source .venv/bin/activate
     - pip install -r requirements.txt
     - pre-commit run --all-files --color always
   cache:
@@ -27,6 +32,6 @@ linting:
         - requirements.txt
     paths:
       - ${PRE_COMMIT_HOME}
-      - ${PIP_INSTALL_DIR}
+      - ${PIP_CACHE_DIR}
     policy: pull-push
   interruptible: true
