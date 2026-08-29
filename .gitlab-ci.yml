@@ -16,8 +16,8 @@ stages:
   image: python:3.13
   stage: quality
   before_script:
-    - chmod o= -R . # This is needed because somehow the repository is world-writable
-    - touch vault.key # Create empty vault password file otherwise ansible-lint will panic
+    - chmod o= -R . # This is needed because somehow the repository is world-writable and ansible doesn't like that
+    - echo "fake_password" > vault.key # Create fake vault password file otherwise ansible-lint will panic
     - |
       if [[ ! -d .venv ]]; then
         python3 -m venv .venv
