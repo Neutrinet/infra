@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+
+[[inputs.prometheus]]
+  urls = ["http://127.0.0.1:9433/metrics"]
+  metric_version = 2
+  timeout = "15s"
