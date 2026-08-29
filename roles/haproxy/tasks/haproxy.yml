@@ -78,7 +78,7 @@
     owner: root
     group: root
     mode: "u=rw,g=r,o="
-    #validate: "haproxy -f %s -c -q"
+    validate: "haproxy -f %s -c -q"
   notify: Restart haproxy
 
 - name: Activation de haproxy au démarrage
