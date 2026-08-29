@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bookworm-web-app-molecule
-    box: debian/bookworm64
+  - name: trixie-web-app-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 512
     interfaces:

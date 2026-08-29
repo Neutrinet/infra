@@ -1,7 +1,7 @@
 etcd_members:
-  - name: "bookworm-etcd-01-molecule"
+  - name: "trixie-etcd-01-molecule"
     ipv4: 172.29.129.31
-  - name: "bookworm-etcd-02-molecule"
+  - name: "trixie-etcd-02-molecule"
     ipv4: 172.29.129.32
-  - name: "bookworm-etcd-03-molecule"
+  - name: "trixie-etcd-03-molecule"
     ipv4: 172.29.129.33

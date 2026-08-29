@@ -45,10 +45,12 @@ postgresql:
   connect_address: "{{ patroni_current_member.ipv4 }}:5432"
 {% endif %}
   use_unix_socket: true
+  max_connections: 300
+  shared_buffers: 384M
 
-  data_dir: /var/lib/postgresql/{{ postgresql_major_version }}/{{ postgresql_patroni_name }}
+  data_dir: /media/data/postgresql/{{ postgresql_major_version }}/{{ postgresql_patroni_name }}
   bin_dir: /usr/lib/postgresql/{{ postgresql_major_version }}/bin
-  pgpass: /var/lib/postgresql/{{ postgresql_major_version }}-{{ postgresql_patroni_name }}.pgpass
+  pgpass: /media/data/postgresql/{{ postgresql_major_version }}-{{ postgresql_patroni_name }}.pgpass
 
   authentication:
     replication:

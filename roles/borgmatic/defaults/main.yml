@@ -1,7 +1,7 @@
-borgmatic_version: 2.0.6
+borgmatic_version: 2.1.4
 borgmatic_repositories:
   - host: "{{ inventory_hostname }}"
     path: /media/data/backups
     user: backup-borg
+    ssh_known_hosts: []
 borgmatic_encryption_passphrase: neutrinet
-borgmatic_encryption_mode: keyfile

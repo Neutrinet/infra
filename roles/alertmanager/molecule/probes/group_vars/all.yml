@@ -1,4 +1,4 @@
-victoriametrics_url: http://bookworm-alertmanager-molecule:8428
+victoriametrics_url: http://trixie-alertmanager-molecule:8428
 victoriametrics_username: victoriametrics
 victoriametrics_password: neutrinet
 
