@@ -16,7 +16,7 @@ linting:
   stage: quality
   script:
     - pip install -r requirements.txt
-    - pre-commit run --all-files
+    - pre-commit run --all-files --color always
   cache:
     key:
       files:
