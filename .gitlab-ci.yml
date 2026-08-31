@@ -35,16 +35,18 @@ stages:
     policy: pull-push
   interruptible: true
 
-linting draft:
+linting shallow:
   extends: .linting
   script:
     - pre-commit run --color always
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_DRAFT == "true"
 
-linting:
+linting full:
   extends: .linting
   script:
     - pre-commit run --all-files --color always
   rules:
     - if: $CI_PIPELINE_SOURCE != "merge_request_event" || $CI_MERGE_REQUEST_DRAFT == "false"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_DRAFT == "true"
+      when: manual
