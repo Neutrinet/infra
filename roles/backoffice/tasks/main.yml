@@ -4,24 +4,54 @@
     name: caddy_server
   tags: ['caddy']
 
-- name: Configuration du site (caddy, etc.)
-  ansible.builtin.import_role:
-    name: web_app
-  vars:
-    web_app_domain: "{{ backoffice_domain }}"
-    web_app_caddy_template: caddy/backoffice.j2
-  tags: ['web_app']
+- name: Création de l'utilisateur {{ backoffice_owner }}
+  ansible.builtin.user:
+    name: "{{ backoffice_owner }}"
+    home: "/var/www/{{ backoffice_owner }}"
+    shell: /sbin/nologin
+    system: true
+    state: present
 
-- name: Configuration de Caddy2 pour ffdnapi
+- name: Création du dossier /var/www
+  ansible.builtin.file:
+    path: /var/www
+    owner: caddy
+    group: caddy
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Création du dossier racine du site
+  ansible.builtin.file:
+    path: "/var/www/{{ backoffice_owner }}/dist"
+    owner: "{{ backoffice_owner }}"
+    group: "{{ backoffice_owner }}"
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Copie de la configuration Caddy2
   ansible.builtin.template:
-    src: caddy/ffdnapi.j2
-    dest: "{{ caddy_vhosts_dir }}/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.conf"
+    src: caddy/backoffice.j2
+    dest: /etc/caddy/conf.d/{{ backoffice_owner }}.conf
     owner: root
     group: root
     mode: "u=rw,go=r"
     validate: caddy validate --adapter caddyfile --config %s
   notify: Reload caddy
   tags: ['caddy_config']
+
+- name: Configuration de Caddy2 pour ffdnapi
+  ansible.builtin.template:
+    src: caddy/ffdnapi.j2
+    dest: /etc/caddy/conf.d/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.conf
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: caddy validate --adapter caddyfile --config %s
+  notify: Reload caddy
+  tags: ['caddy_config']
+
+- name: Trigger Caddy handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Configuration de la base de données PostgreSQL
   ansible.builtin.import_role:

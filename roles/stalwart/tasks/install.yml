@@ -1,4 +1,17 @@
 ---
+- name: install | Ajout du dépôt rspamd
+  ansible.builtin.deb822_repository:
+    name: rspamd
+    types: deb
+    uris: http://rspamd.com/apt-stable/
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: main
+    signed_by: https://rspamd.com/apt-stable/gpg.key
+  notify: Update apt cache
+
+- name: install | Trigger APT handler
+  ansible.builtin.meta: flush_handlers
+
 - name: install | Créer l'utilisateur unix Stalwart
   ansible.builtin.user:
     name: stalwart

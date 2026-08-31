@@ -1,4 +1,8 @@
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
 - name: Reload php-fpm
   ansible.builtin.service:
-    name: "{{ php_fpm_executable }}"
+    name: php{{ php_version }}-fpm
     state: reloaded

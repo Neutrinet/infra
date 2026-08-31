@@ -1,18 +1,23 @@
 ---
-- name: Ajout de la clé GPG de Yarn dans APT
-  ansible.builtin.get_url:
-    url: https://dl.yarnpkg.com/debian/pubkey.gpg
-    dest: /etc/apt/keyrings/yarn.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
+- name: Suppression de l'ancien dépôt APT pour Yarn
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/yarn.list
+    state: absent
 
 - name: Ajout du dépôt APT pour Yarn
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/yarn.asc] https://dl.yarnpkg.com/debian/ stable main
-    filename: yarn
+  ansible.builtin.deb822_repository:
+    name: yarn
+    types: deb
+    signed_by: https://dl.yarnpkg.com/debian/pubkey.gpg
+    uris: https://dl.yarnpkg.com/debian
+    suites: stable
+    components:
+      - main
     state: present
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de Yarn
   ansible.builtin.package:

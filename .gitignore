@@ -131,9 +131,14 @@ env
 # End of https://www.gitignore.io/api/ansible,intellij,virtualenv,sublimetext,visualstudiocode
 
 ansible_fact_cache/
+.facts_cache/
 log/
 .gitsecret/keys/random_seed
 !*.secret
 vault.key
 .envrc
 .gitsecret
+.ansible
+.env
+.pdm-python
+pdm.lock

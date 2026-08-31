@@ -1,0 +1,29 @@
+---
+
+
+- name: service | Enable and start service
+  ansible.builtin.service:
+    name: knot
+    state: started
+    enabled: true
+
+- name: Trigger haproxy handler
+  # We force haproxy to reload its config to ensure our config has been applied.
+  # This forced reload is required on debian systems,
+  # because haproxy appears to be already started and enabled by apt,
+  # and later in this role, telegraf expects our haproxy to be correctly configured.
+  ansible.builtin.meta: flush_handlers
+
+- name: service | Copie du service knot-exporter
+  ansible.builtin.copy:
+    src: systemd/knot-exporter.service
+    dest: /etc/systemd/system/knot-exporter.service
+    owner: root
+    group: root
+    mode: "ugo=r"
+
+- name: service | Enable and start service
+  ansible.builtin.service:
+    name: knot-exporter
+    state: started
+    enabled: true

@@ -1,18 +1,33 @@
-- name: Installation de la cles gpg via .deb
+- name: Suppression de l'ancien dépôt APT pour Sury
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/sury-php.list
+    state: absent
+
+- name: Installation de la clé GPG pour Sury
   ansible.builtin.apt:
     deb: https://packages.sury.org/debsuryorg-archive-keyring.deb
-
-- name: Ajout du dépôt pour Sury
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ {{ ansible_distribution_release }} main
-    filename: sury-php
     state: present
+
+- name: Ajout du dépôt APT pour Sury
+  ansible.builtin.deb822_repository:
+    name: sury-php
+    types: deb
+    signed_by: /usr/share/keyrings/deb.sury.org-php.gpg
+    uris: https://packages.sury.org/php/
+    suites: "{{ ansible_distribution_release }}"
+    components:
+      - main
+    state: present
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de PHP et PHP-FPM
   ansible.builtin.package:
     name:
-      - "{{ php_executable }}"
-      - "{{ php_fpm_executable }}"
+      - php{{ php_version }}
+      - php{{ php_version }}-fpm
     state: present
 
 - name: Installation des modules PHP par défaut
@@ -31,7 +46,7 @@
     loop_var: module_name
     label: "{{ php_module }}"
   vars:
-    php_module: "{{ php_executable }}-{{ module_name }}"
+    php_module: php{{ php_version }}-{{ module_name }}
 
 - name: Installation des modules PHP additionnels
   ansible.builtin.package:
@@ -42,7 +57,7 @@
     loop_var: module_name
     label: "{{ php_module }}"
   vars:
-    php_module: "{{ php_executable }}-{{ module_name }}"
+    php_module: php{{ php_version }}-{{ module_name }}
 
 - name: Installation de imagemagick
   ansible.builtin.package:
@@ -64,16 +79,16 @@
 - name: Copie de la configuration OPCache
   ansible.builtin.template:
     src: opcache.ini.j2
-    dest: "{{ php_fpm_config_dir }}/conf.d/99-opcache.ini"
+    dest: /etc/php/{{ php_version }}/fpm/conf.d/99-opcache.ini
     owner: root
     group: root
     mode: "u=rw,go=r"
   notify:
     - Reload php-fpm
-  tags: ['php_config']
+  tags: ["php_config"]
 
-- name: Activation de {{ php_fpm_executable }} au démarrage
+- name: Activation de php{{ php_version }}-fpm au démarrage
   ansible.builtin.service:
-    name: "{{ php_fpm_executable }}"
+    name: php{{ php_version }}-fpm
     state: started
     enabled: true

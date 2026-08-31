@@ -43,6 +43,6 @@ http://{{ mobilizon_domain }} {
     }
 
     log {
-        output file "{{ caddy_log_dir }}/{{ mobilizon_owner }}.log"
+        output file /var/log/caddy/{{ mobilizon_owner }}.log
     }
 }

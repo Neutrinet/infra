@@ -3,31 +3,29 @@
   ansible.builtin.package:
     name: acl
     state: present
-  tags: ['postgresql_install']
+  tags: ["postgresql_install"]
 
-- name: Ajout de la clé GPG de PostgreSQL
-  ansible.builtin.get_url:
-    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
-    dest: /etc/apt/keyrings/postgresql.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
-  tags: ['postgresql_install']
-
-- name: Suppresion de l'ancien dépôt APT pour PostgreSQL
-  ansible.builtin.apt_repository:
-    repo: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
-    filename: postgresql
+- name: Suppression de l'ancien dépôt APT pour PostgreSQL
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/postgresql.list
     state: absent
-  tags: ['postgresql_install']
+  tags: ["postgresql_install"]
 
 - name: Ajout du dépôt APT pour PostgreSQL
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
-    filename: postgresql
+  ansible.builtin.deb822_repository:
+    name: postgresql
+    types: deb
+    signed_by: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    uris: http://apt.postgresql.org/pub/repos/apt
+    suites: "{{ ansible_distribution_release }}-pgdg"
+    components:
+      - main
     state: present
-  tags: ['postgresql_install']
+  notify: Update apt cache
+  tags: ["postgresql_install"]
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de PostgreSQL
   ansible.builtin.package:
@@ -36,4 +34,4 @@
       - postgresql-client-{{ postgresql_major_version }}
       - python3-psycopg2
     state: present
-  tags: ['postgresql_install']
+  tags: ["postgresql_install"]

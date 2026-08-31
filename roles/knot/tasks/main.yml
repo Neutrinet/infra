@@ -1,0 +1,43 @@
+---
+
+- name: Installer le knot
+  ansible.builtin.import_tasks:
+    file: install.yml
+
+- name: Config knot
+  ansible.builtin.import_tasks:
+    file: config.yml
+
+- name: Activer le service knot
+  ansible.builtin.import_tasks:
+    file: service.yml
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/knot.yml.j2
+    dest: /etc/borgmatic.d/knot.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
+  tags: ['borgmatic_config']
+
+- name: Vérification que l'exporteur Prometheus est prêt
+  ansible.builtin.uri:
+    url: http://localhost:9433/metrics
+    method: GET
+  register: _knot_module_prometheus
+  retries: 10
+  delay: 5
+  until: _knot_module_prometheus is success
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/knot.conf.j2
+    dest: /etc/telegraf/telegraf.d/knot.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf_config']

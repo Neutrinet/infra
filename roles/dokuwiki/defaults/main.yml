@@ -1,2 +1,3 @@
 dokuwiki_domain: wiki.example.com
 dokuwiki_owner: "{{ dokuwiki_domain | replace('.', '-') }}"
+dokuwiki_php_version: 8.3

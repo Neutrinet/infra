@@ -5,24 +5,24 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bookworm-etcd-01-molecule
-    box: debian/bookworm64
+  - name: trixie-etcd-01-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 512
     interfaces:
       - network_name: private_network
         ip: 172.29.129.31
         auto_config: true
-  - name: bookworm-etcd-02-molecule
-    box: debian/bookworm64
+  - name: trixie-etcd-02-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 512
     interfaces:
       - network_name: private_network
         ip: 172.29.129.32
         auto_config: true
-  - name: bookworm-etcd-03-molecule
-    box: debian/bookworm64
+  - name: trixie-etcd-03-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 512
     interfaces:

@@ -28,7 +28,7 @@
     owner: postgres
     group: postgres
     mode: "u=rw,g=r,o="
-    validate: patroni --validate-config %s
+    validate: patroni --ignore-listen-port --validate-config %s
   vars:
     patroni_current_member: "{{ etcd_members | selectattr('name', '==', ansible_hostname) | first }}"
   notify: Reload patroni

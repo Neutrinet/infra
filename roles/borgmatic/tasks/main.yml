@@ -32,7 +32,7 @@
   when:
     - not python_version_match.stat.exists
 
-- name: Installation de Borgmatic  # noqa package-latest
+- name: Installation de Borgmatic # noqa package-latest
   ansible.builtin.pip:
     name: borgmatic
     state: present
@@ -84,7 +84,25 @@
     group: root
     mode: u=rw,go=
     validate: borgmatic config validate --show -c %s
-  notify: Init borgmatic
+
+- name: Vérifier si le cache Borg existe (indique que Borg a déjà tourné sur cette machine)
+  ansible.builtin.stat:
+    path: /root/.cache/borg
+  register: _borg_cache
+
+- name: Vérifier si des backups existent sur le dépôt distant
+  ansible.builtin.command: /opt/borgmatic/bin/borgmatic info --last 1
+  register: _borgmatic_info
+  changed_when: false
+  failed_when: false
+  when: not _borg_cache.stat.exists
+
+- name: Initialisation des dépôts Borg (première fois uniquement)
+  ansible.builtin.command: /opt/borgmatic/bin/borgmatic init --encryption keyfile
+  when:
+    - not _borg_cache.stat.exists
+    - _borgmatic_info.rc != 0
+  changed_when: true
 
 - name: Création d'un timer pour créer et vérifier les backups périodiquement
   ansible.builtin.copy:

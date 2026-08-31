@@ -1,0 +1,47 @@
+- name: Création de l'utilisateur {{ domain_owner }}
+  ansible.builtin.user:
+    name: "{{ domain_owner }}"
+    home: "/var/www/{{ domain_owner }}"
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: Création du dossier /var/www
+  ansible.builtin.file:
+    path: /var/www
+    owner: caddy
+    group: caddy
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Création du dossier racine du site
+  ansible.builtin.file:
+    path: "/var/www/{{ domain_owner }}/dist"
+    owner: "{{ domain_owner }}"
+    group: "{{ domain_owner }}"
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Copie de la configuration Caddy2
+  ansible.builtin.template:
+    src: "{{ domain.template }}"
+    dest: "/etc/caddy/conf.d/{{ domain_owner }}.conf"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: caddy validate --adapter caddyfile --config %s
+  notify: Reload caddy
+  tags: ['caddy_config']
+
+- name: Trigger Caddy handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/web-static.yml.j2
+    dest: /etc/borgmatic.d/web-static-{{ domain_owner }}.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
+  tags: ['borgmatic_config']

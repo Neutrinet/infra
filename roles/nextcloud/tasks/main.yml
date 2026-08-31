@@ -8,7 +8,7 @@
   ansible.builtin.import_role:
     name: php_fpm
   vars:
-    php_version: "8.3"
+    php_version: "{{ nextcloud_php_version }}"
     php_extra_modules:
       - apcu
       - bcmath
@@ -20,14 +20,109 @@
       - pgsql
   tags: ['php_fpm']
 
-- name: Installation l'application web
-  ansible.builtin.import_role:
-    name: web_app
-  vars:
-    web_app_domain: "{{ nextcloud_domain }}"
-    web_app_caddy_template: caddy/nextcloud.j2
-    web_app_php_fpm_enabled: true
-  tags: ['web_app']
+- name: Création de l'utilisateur {{ nextcloud_owner }}
+  ansible.builtin.user:
+    name: "{{ nextcloud_owner }}"
+    home: "/var/www/{{ nextcloud_owner }}"
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: Création du dossier /var/www
+  ansible.builtin.file:
+    path: /var/www
+    owner: caddy
+    group: caddy
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Création du dossier racine du site
+  ansible.builtin.file:
+    path: "/var/www/{{ nextcloud_owner }}/dist"
+    owner: "{{ nextcloud_owner }}"
+    group: "{{ nextcloud_owner }}"
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Création du dossier des logs Nextcloud
+  ansible.builtin.file:
+    path: "/var/log/nextcloud"
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Création du dossier des logs pour l'instance Nextcloud
+  ansible.builtin.file:
+    path: "/var/log/nextcloud/{{ nextcloud_owner }}"
+    owner: "{{ nextcloud_owner }}"
+    group: "{{ nextcloud_owner }}"
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Configuration de logrotate
+  ansible.builtin.template:
+    src: logrotate/nextcloud.tpl
+    dest: /etc/logrotate.d/nextcloud
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: logrotate --debug %s
+
+- name: Copie de la configuration php-fpm
+  ansible.builtin.template:
+    src: php-fpm/php-pool.conf.j2
+    dest: "/etc/php/{{ nextcloud_php_version }}/fpm/pool.d/{{ nextcloud_owner }}.conf"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - Reload php-fpm
+  tags: ['php_config']
+
+- name: Création du dossier tmp pour php-fpm
+  ansible.builtin.file:
+    path: "/var/www/{{ nextcloud_owner }}/tmp"
+    owner: "{{ nextcloud_owner }}"
+    group: "{{ nextcloud_owner }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Trigger php-fpm handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Installation des plugins Telegraf
+  ansible.builtin.template:
+    src: telegraf/php-fpm.conf.j2
+    dest: /etc/telegraf/telegraf.d/{{ nextcloud_owner }}.conf
+    owner: telegraf
+    group: telegraf
+    mode: "u=rw,g=r,o="
+    validate: telegraf --config %s --test
+  notify: Restart telegraf
+  tags: ['telegraf_config']
+
+- name: Ajout de l'utilisateur telegraf au groupe caddy
+  ansible.builtin.user:
+    name: telegraf
+    groups: caddy
+    append: true
+  notify: Restart telegraf
+  tags: ['telegraf_config']
+
+- name: Copie de la configuration Caddy2
+  ansible.builtin.template:
+    src: "caddy/nextcloud.j2"
+    dest: "/etc/caddy/conf.d/{{ nextcloud_owner }}.conf"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    validate: caddy validate --adapter caddyfile --config %s
+  notify: Reload caddy
+  tags: ['caddy_config']
+
+- name: Trigger Caddy handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Configuration de la base de données PostgreSQL
   ansible.builtin.import_role:

@@ -1,40 +1,5 @@
 php_version: 8.3
-php_config_dir: "/etc/php/{{ php_version }}"
 php_extra_modules: []
 
-php_fpm_config_dir: "{{ php_config_dir }}/fpm"
-php_fpm_pool_dir: "{{ php_fpm_config_dir }}/pool.d"
-php_fpm_tmp_dir: "{{ web_app_home_dir }}/tmp"
-
-# Socket
-php_fpm_socket_file: /var/run/php/{{ php_executable }}-{{ web_app_owner }}.sock
-
-# Process manager
-php_fpm_pm: ondemand
-php_fpm_pm_max_children: 5
-php_fpm_pm_process_idle_timeout: 10s
-php_fpm_pm_max_requests: 500
-
 # Session cookies
-php_fpm_session_cookie_httponly: true
-php_fpm_session_use_only_cookies: true
-php_fpm_session_cookie_secure: true
 php_fpm_session_name: __Host-PHPSESSID
-
-# OpCache
-php_fpm_opcache_enabled: true
-php_fpm_opcache_validate_timestamps: true
-php_fpm_opcache_revalidate_freq: 2
-php_fpm_opcache_max_accelerated_files: 10000
-php_fpm_opcache_max_interned_strings_buffer: 16
-php_fpm_opcache_memory_consumption: 128
-php_fpm_opcache_save_comments: true
-
-# Additionnal parameters
-php_fpm_output_buffering: false
-php_fpm_request_terminate_timeout: 900
-php_fpm_memory_limit: 1024M
-php_fpm_date_timezone: Europe/Brussels
-php_fpm_upload_max_filesize: 512M
-php_fpm_post_max_size: 4096M
-php_fpm_display_error: false
