@@ -40,13 +40,13 @@ linting shallow:
   script:
     - pre-commit run --color always
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_DRAFT == "true"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 linting full:
   extends: .linting
   script:
     - pre-commit run --all-files --color always
   rules:
-    - if: $CI_PIPELINE_SOURCE != "merge_request_event" || $CI_MERGE_REQUEST_DRAFT == "false"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_DRAFT == "true"
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
