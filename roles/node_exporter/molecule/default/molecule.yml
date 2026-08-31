@@ -5,8 +5,8 @@ driver:
   provider:
     name: libvirt
 platforms:
-  - name: bookworm-node-exporter-molecule
-    box: debian/bookworm64
+  - name: trixie-node-exporter-molecule
+    box: debian/trixie64
     cpu: 2
     memory: 512
 provisioner:
