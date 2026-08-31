@@ -66,10 +66,10 @@
     name: telegraf
   tags: ['telegraf']
 
-# - name: Installation de Borgmatic
-#   ansible.builtin.import_role:
-#     name: borgmatic
-#   tags: ['borgmatic']
+- name: Installation de Borgmatic
+  ansible.builtin.import_role:
+    name: borgmatic
+  tags: ['borgmatic']
 
 - name: Configuration du port série
   ansible.builtin.include_tasks: serial.yml
