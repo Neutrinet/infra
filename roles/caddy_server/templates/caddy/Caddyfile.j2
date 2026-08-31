@@ -4,6 +4,9 @@
     metrics {
         per_host
     }
+    servers {
+        trusted_proxies static {{ caddy_trusted_proxies | join(' ') }}
+    }
 }
 
 import /etc/caddy/conf.d/*.conf
