@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+
+type: prometheus_scrape
+endpoints:
+    - http://localhost:3001/metrics
+auth:
+  strategy: bearer
+  token: "{{ uptime_kuma_api_token }}"
+
+scrape_interval_secs: 15
+scrape_timeout_secs: 10

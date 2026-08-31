@@ -31,13 +31,12 @@
   delay: 5
   until: _knot_module_prometheus is success
 
-- name: Installation des plugins Telegraf
+- name: Configuration de vector
   ansible.builtin.template:
-    src: telegraf/knot.conf.j2
-    dest: /etc/telegraf/telegraf.d/knot.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  notify: Restart telegraf
-  tags: ['telegraf_config']
+    src: vector/prometheus_knot_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_knot_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']

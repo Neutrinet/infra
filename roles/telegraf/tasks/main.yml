@@ -1,50 +1,25 @@
 ---
-- name: Suppression de l'ancien dépôt APT pour Telegraf
+- name: Suppression de la clé GPG de InfluxDB
+  ansible.builtin.file:
+    path: /etc/apt/keyrings/influxdb.asc
+    state: absent
+
+- name: Suppression du dépôt APT pour Telegraf
   ansible.builtin.file:
     path: /etc/apt/sources.list.d/telegraf.list
     state: absent
 
-- name: Ajout du dépôt APT pour Telegraf
-  ansible.builtin.deb822_repository:
-    name: telegraf
-    types: deb
-    signed_by: https://repos.influxdata.com/influxdata-archive.key
-    uris: https://repos.influxdata.com/debian
-    suites: stable
-    components:
-      - main
-    state: present
-  notify: Update apt cache
-
-- name: Trigger handlers
-  ansible.builtin.meta: flush_handlers
-
-- name: Installation de Telegraf
+- name: Suppression de Telegraf
   ansible.builtin.package:
     name: telegraf
-    state: present
+    state: absent
 
-- name: Copie des plugins globaux de Telegraf
-  ansible.builtin.template:
-    src: telegraf/global.conf.j2
-    dest: /etc/telegraf/telegraf.d/global.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  notify: Restart telegraf
-  tags: ["telegraf_config"]
+- name: Suppression du dossier de configuration Telegraf
+  ansible.builtin.file:
+    path: /etc/telegraf
+    state: absent
 
-- name: Désactivation de la sortie influxdb
-  ansible.builtin.lineinfile:
-    path: /etc/telegraf/telegraf.conf
-    regexp: '^\[\[outputs\.influxdb\]\]'
-    line: "# [[outputs.influxdb]]"
-    validate: telegraf --config %s --test
-  notify: Restart telegraf
-
-- name: Activation de Telegraf au démarrage
-  ansible.builtin.service:
+- name: Suppression de l'utilisateur telegraf
+  ansible.builtin.user:
     name: telegraf
-    state: started
-    enabled: true
+    state: absent

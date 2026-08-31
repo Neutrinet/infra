@@ -52,7 +52,7 @@
     owner: root
     group: root
 
-- name: Création du lien symbolique pour le binaire de stmartctl exporter
+- name: Création du lien symbolique pour le binaire de smartctl exporter
   ansible.builtin.file:
     src: /opt/smartctl-exporter/{{ smartctl_exporter_version }}/smartctl_exporter
     dest: /usr/local/bin/smartctl-exporter
@@ -76,5 +76,5 @@
 
 - name: Trigger handlers
   # We need to restart smartctl-exporter to apply the new config
-  # and expose the metrics for telegraf
+  # and expose the metrics for vector
   ansible.builtin.meta: flush_handlers

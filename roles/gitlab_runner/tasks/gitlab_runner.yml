@@ -41,7 +41,7 @@
 
 - name: Trigger handlers
   # We need to restart gitlab-runner to apply the new config
-  # and expose the metrics for telegraf
+  # and expose the metrics for vector
   ansible.builtin.meta: flush_handlers
 
 - name: Configuration de vector
