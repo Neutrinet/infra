@@ -11,6 +11,6 @@ http://{{ backoffice_ffdnapi_domain }} {
     }
 
     log {
-        output file {{ caddy_log_dir }}/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.log
+        output file /var/log/caddy/{{ backoffice_ffdnapi_domain | replace('.', '-') }}.log
     }
 }

@@ -4,7 +4,7 @@ http://{{ backoffice_domain }} {
     encode gzip zstd
 
     handle /static/* {
-        root * {{ web_app_dist_dir }}/static_deploy
+        root * /var/www/{{ backoffice_owner }}/dist/static_deploy
         file_server
     }
 
@@ -16,6 +16,6 @@ http://{{ backoffice_domain }} {
     }
 
     log {
-        output file {{ web_app_caddy_log | to_json }}
+        output file /var/log/caddy/{{ backoffice_owner }}.log
     }
 }

@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
 http://{{ nextcloud_domain }} {
-    root * {{ web_app_dist_dir | to_json }}
+    root * /var/www/{{ nextcloud_owner }}/dist
     encode gzip
     file_server
 
@@ -9,7 +9,7 @@ http://{{ nextcloud_domain }} {
         max_size {{ nextcloud_max_upload_size }}
     }
 
-    php_fastcgi unix/{{ php_fpm_socket_file }} {
+    php_fastcgi unix//var/run/php/php{{ php_version }}-{{ nextcloud_owner }}.sock {
         env front_controller_active true
         trusted_proxies {{ caddy_trusted_proxies | join(' ') }}
     }
@@ -33,6 +33,6 @@ http://{{ nextcloud_domain }} {
     respond @forbidden 404
 
     log {
-        output file {{ web_app_caddy_log | to_json }}
+        output file /var/log/caddy/{{ nextcloud_owner }}.log
     }
 }

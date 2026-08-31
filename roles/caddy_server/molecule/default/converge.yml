@@ -16,15 +16,15 @@
       ansible.builtin.copy:
         content: |
           localhost {
-            root * {{ caddy_config_dir }}
+            root * /etc/caddy
             file_server browse
             tls internal # self-signed certs
 
             log {
-              output file {{ caddy_log_dir }}/example.log
+              output file /var/log/caddy/example.log
             }
           }
-        dest: "{{ caddy_vhosts_dir }}/example.conf"
+        dest: /etc/caddy/conf.d/example.conf
         owner: root
         group: root
         mode: "u=rw,go=r"

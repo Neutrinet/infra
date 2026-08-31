@@ -1,9 +1,9 @@
 {{ ansible_managed | comment }}
 
-{% for domain in [web_app_domain] + web_app_alt_domains %}
-http://{{ domain }}{% if not loop.last %}, {% endif %}
+{% for domain_name in [domain.name] + domain.alt_domains %}
+http://{{ domain_name }}{% if not loop.last %}, {% endif %}
 {% endfor %} {
-    root * {{ web_app_dist_dir | to_json }}
+    root * /var/www/{{ domain_owner }}/dist
     encode gzip
 
     @browse {
@@ -14,7 +14,7 @@ http://{{ domain }}{% if not loop.last %}, {% endif %}
     file_server @browse browse
 
     @cfacile {
-        host cfacile.{{ web_app_domain }}
+        host cfacile.{{ domain.name }}
     }
     file_server @cfacile {
         index cfacile.html
@@ -30,6 +30,6 @@ http://{{ domain }}{% if not loop.last %}, {% endif %}
     file_server
 
     log {
-        output file {{ web_app_caddy_log | to_json }}
+        output file /var/log/caddy/{{ domain_owner }}.log
     }
 }

@@ -26,8 +26,8 @@
 - name: Installation de PHP et PHP-FPM
   ansible.builtin.package:
     name:
-      - "{{ php_executable }}"
-      - "{{ php_fpm_executable }}"
+      - php{{ php_version }}
+      - php{{ php_version }}-fpm
     state: present
 
 - name: Installation des modules PHP par défaut
@@ -46,7 +46,7 @@
     loop_var: module_name
     label: "{{ php_module }}"
   vars:
-    php_module: "{{ php_executable }}-{{ module_name }}"
+    php_module: php{{ php_version }}-{{ module_name }}
 
 - name: Installation des modules PHP additionnels
   ansible.builtin.package:
@@ -57,7 +57,7 @@
     loop_var: module_name
     label: "{{ php_module }}"
   vars:
-    php_module: "{{ php_executable }}-{{ module_name }}"
+    php_module: php{{ php_version }}-{{ module_name }}
 
 - name: Installation de imagemagick
   ansible.builtin.package:
@@ -79,7 +79,7 @@
 - name: Copie de la configuration OPCache
   ansible.builtin.template:
     src: opcache.ini.j2
-    dest: "{{ php_fpm_config_dir }}/conf.d/99-opcache.ini"
+    dest: /etc/php/{{ php_version }}/fpm/conf.d/99-opcache.ini
     owner: root
     group: root
     mode: "u=rw,go=r"
@@ -87,8 +87,8 @@
     - Reload php-fpm
   tags: ["php_config"]
 
-- name: Activation de {{ php_fpm_executable }} au démarrage
+- name: Activation de php{{ php_version }}-fpm au démarrage
   ansible.builtin.service:
-    name: "{{ php_fpm_executable }}"
+    name: php{{ php_version }}-fpm
     state: started
     enabled: true
