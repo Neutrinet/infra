@@ -1,33 +1,20 @@
 ---
-- name: Installation de GPG
-  ansible.builtin.package:
-    name:
-      - gpg
-      - gpg-agent
-      - dirmngr
-    state: present
-
-- name: Création du répertoire pour les clés GPG
+- name: Suppression de l'ancien dépôt APT pour Vector
   ansible.builtin.file:
-    path: /etc/apt/keyrings
-    state: directory
-    owner: root
-    group: root
-    mode: "u=rwx,go=rx"
-
-- name: Ajout de la clé GPG de Datadog
-  ansible.builtin.get_url:
-    url: https://keys.datadoghq.com/DATADOG_APT_KEY_C0962C7D.public
-    dest: /etc/apt/keyrings/datadog.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
+    path: /etc/apt/sources.list.d/vector.list
+    state: absent
 
 - name: Ajout du dépôt APT pour Vector
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/datadog.asc] https://apt.vector.dev/ stable vector-0
+  ansible.builtin.deb822_repository:
+    name: vector
+    types: deb
+    signed_by: https://keys.datadoghq.com/DATADOG_APT_KEY_C0962C7D.public
+    uris: https://apt.vector.dev
+    suites: stable
+    components:
+      - vector-0
     state: present
-    filename: vector
+  notify: Update apt cache
 
 - name: Installation de Vector
   ansible.builtin.package:
