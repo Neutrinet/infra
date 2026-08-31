@@ -5,23 +5,53 @@ workflow:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 variables:
+  PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.venv"
   PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
   FF_USE_FASTZIP: "true"
 
 stages:
   - quality
 
-linting:
-  image: neutrinet/pre-commit:1.0.1
+.linting:
+  image: python:3.13
   stage: quality
-  script:
-    - pip install -r requirements.txt
-    - pre-commit run --all-files
+  before_script:
+    - chmod o= -R . # This is needed because somehow the repository is world-writable and ansible doesn't like that
+    - echo "fake_password" > vault.key # Create fake vault password file otherwise ansible-lint will panic
+    - |
+      if [[ ! -d .venv ]]; then
+        python3 -m venv .venv
+      fi
+    - source .venv/bin/activate
+    - pip install -r requirements.txt -U
   cache:
     key:
       files:
         - .pre-commit-config.yaml
+        - requirements.txt
     paths:
       - ${PRE_COMMIT_HOME}
+      - ${PIP_CACHE_DIR}
     policy: pull-push
   interruptible: true
+
+linting on changes:
+  extends: .linting
+  script:
+    - pre-commit run --color always
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+linting full:
+  extends: .linting
+  script:
+    - pre-commit run --all-files --color always
+  rules:
+    # Run full linting anytime except in draft MR
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event" || $CI_MERGE_REQUEST_DRAFT == "false"
+    # Allow manual trigger of full linting in draft MR
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_DRAFT == "true"
+      when: manual
+  needs:
+    - job: linting on changes
+      optional: true
