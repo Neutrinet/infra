@@ -1,0 +1,33 @@
+---
+- name: Suppression de l'ancien dépôt APT pour Knot
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/cznic-labs.list
+    state: absent
+
+- name: Ajout du dépôt APT pour Knot
+  ansible.builtin.deb822_repository:
+    name: knot-dns
+    types: deb
+    signed_by: https://pkg.labs.nic.cz/gpg
+    uris: https://pkg.labs.nic.cz/knot-dns
+    suites: "{{ ansible_distribution_release }}"
+    components:
+      - main
+    state: present
+  notify: Update apt cache
+
+- name: Configuration des préférences APT
+  ansible.builtin.copy:
+    src: apt-preferences/80cznic-labs
+    dest: /etc/apt/preferences.d/80cznic-labs
+    owner: root
+    group: root
+    mode: 'ugo=r'
+
+- name: Installation des paquets pour Knot
+  ansible.builtin.apt:
+    name:
+      - knot
+      - knot-exporter
+      - knot-keymgr
+    state: present

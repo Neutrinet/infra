@@ -1,12 +1,82 @@
 ---
-# Configuration des dépôts et des mises à jour automatiques
-- name: Copie des fichiers de dépôts
+- name: Installation de python3-debian
+  ansible.builtin.package:
+    name: python3-debian
+
+- name: Repos debian (deb822)
+  ansible.builtin.deb822_repository:
+    name: debian
+    types: deb
+    uris: "{{ commun_repos_mirror }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+    components:
+      - main
+      - contrib
+      - non-free
+  when: ansible_distribution_major_version | int >= 12
+  notify: Update apt cache
+
+- name: Repos debian-updates (deb822)
+  ansible.builtin.deb822_repository:
+    name: debian-updates
+    types: deb
+    uris: "{{ commun_repos_mirror }}"
+    suites: "{{ ansible_facts['distribution_release'] }}-updates"
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+    components:
+      - main
+      - contrib
+      - non-free
+  when: ansible_distribution_major_version | int >= 12
+  notify: Update apt cache
+
+- name: Repos debian-backports (deb822)
+  ansible.builtin.deb822_repository:
+    name: debian-backports
+    types: deb
+    uris: "{{ commun_repos_mirror }}"
+    suites: "{{ ansible_facts['distribution_release'] }}-backports"
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+    components:
+      - main
+      - contrib
+      - non-free
+  when: ansible_distribution_major_version | int >= 12
+  notify: Update apt cache
+
+- name: Repos debian-security (deb822)
+  ansible.builtin.deb822_repository:
+    name: debian-security
+    types: deb
+    uris: "{{ commun_repos_mirror_security }}"
+    suites: "{{ ansible_facts['distribution_release'] }}-security"
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+    components:
+      - main
+      - contrib
+      - non-free
+  when: ansible_distribution_major_version | int >= 12
+  notify: Update apt cache
+
+- name: Empty old sources.list (deb822)
   ansible.builtin.copy:
-    src: "apt/{{ ansible_distribution_release }}_sources.list"
+    content: ""
     dest: /etc/apt/sources.list
     owner: root
     group: root
     mode: "ugo=r"
+  when: ansible_distribution_major_version | int >= 12
+  notify: Update apt cache
+
+- name: Repos debian (sources.list)
+  ansible.builtin.copy:
+    src: "apt/{{ ansible_facts['distribution_release'] }}_sources.list"
+    dest: /etc/apt/sources.list
+    owner: root
+    group: root
+    mode: "ugo=r"
+  when: ansible_distribution_major_version | int < 12
   notify: Update apt cache
 
 - name: Trigger APT handler

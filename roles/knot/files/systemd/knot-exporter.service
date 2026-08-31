@@ -1,0 +1,16 @@
+[Unit]
+Description=Prometheus exporter for Knot DNS
+Documentation=https://github.com/CZ-NIC/knot/tree/master/python/knot_exporter
+After=knot.service
+Requires=knot.service
+
+[Service]
+Restart=always
+User=knot
+Group=knot
+ExecStart=/usr/sbin/knot-exporter
+TimeoutStopSec=20s
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target

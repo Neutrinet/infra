@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+
+<<: !include /etc/borgmatic.d/common.yml
+
+source_directories: !retain
+  - "/etc/knot/"
+  - "/var/lib/knot/"
+
+archive_name_format: knot_{hostname}-{now}

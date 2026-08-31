@@ -49,7 +49,7 @@
 - name: Ajout des extensions nécessaires à postgresql
   community.postgresql.postgresql_ext:
     name: "{{ extensions }}"
-    db: "{{ mobilizon_owner }}"
+    login_db: "{{ mobilizon_owner }}"
   loop:
     - postgis
     - pg_trgm

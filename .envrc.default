@@ -1,8 +1,6 @@
 #!/bin/bash
-ANSIBLE_STRATEGY_PLUGINS="$(pwd)/env/lib/python3.9/site-packages/ansible_mitogen/plugins/strategy"
+export VAGRANT_DEFAULT_PROVIDER=libvirt
+export PASSWORD_STORE_DIR=/home/neutrinet/.password-store
 
-export VIRTUAL_ENV=env
-export ANSIBLE_STRATEGY_PLUGINS
-export ANSIBLE_STRATEGY=mitogen_linear
-
-layout python-venv
+export VIRTUAL_ENV=.venv
+layout python3

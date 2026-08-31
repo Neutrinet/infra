@@ -7,7 +7,8 @@ config :mobilizon, Mobilizon.Web.Endpoint,
      ip: {127,0,0,1},
      port: 4000
     ],
-   secret_key_base: "{{ mobilizon_secret_key_base }}"
+   secret_key_base: "{{ mobilizon_secret_key_base }}",
+   has_reverse_proxy: true
 
 config :mobilizon, Mobilizon.Web.Auth.Guardian,
   secret_key: "{{ mobilizon_secret_key }}"

@@ -1,17 +1,22 @@
-- name: Ajout de la clé GPG de Grafana dans APT
-  ansible.builtin.get_url:
-    url: https://packages.grafana.com/gpg.key
-    dest: /etc/apt/keyrings/grafana.asc
-    owner: root
-    group: root
-    mode: "ugo=r"
-    force: true
+- name: Suppression de l'ancien dépôt APT pour Grafana
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/grafana.list
+    state: absent
 
 - name: Ajout du dépôt APT pour Grafana
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/grafana.asc] https://packages.grafana.com/oss/deb stable main
-    filename: grafana
+  ansible.builtin.deb822_repository:
+    name: grafana
+    types: deb
+    signed_by: https://packages.grafana.com/gpg.key
+    uris: https://packages.grafana.com/oss/deb
+    suites: stable
+    components:
+      - main
     state: present
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de Grafana
   ansible.builtin.package:
@@ -60,7 +65,7 @@
 - name: Post-installation de Grafana
   ansible.builtin.import_tasks: postinstall.yml
   when: _grafana_admin_login_checked.status == 200
-  tags: ['grafana_postinstall']
+  tags: ["grafana_postinstall"]
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:
@@ -70,4 +75,4 @@
     group: root
     mode: "u=rw,go="
     validate: borgmatic config validate --show -c %s
-  tags: ['borgmatic_config']
+  tags: ["borgmatic_config"]
