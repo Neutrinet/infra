@@ -35,7 +35,7 @@ stages:
     policy: pull-push
   interruptible: true
 
-linting shallow:
+linting on changes:
   extends: .linting
   script:
     - pre-commit run --color always
@@ -53,5 +53,5 @@ linting full:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_DRAFT == "true"
       when: manual
   needs:
-    - job: linting shallow
+    - job: linting on changes
       optional: true
