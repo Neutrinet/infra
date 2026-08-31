@@ -9,4 +9,4 @@
         update_cache: true
 
   roles:
-    - telegraf
+    - vector

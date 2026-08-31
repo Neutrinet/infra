@@ -1,0 +1,40 @@
+---
+- name: Importation des variables spécifiques à l'OS
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution_release }}.yml"
+
+- name: Suppression de l'ancien dépôt APT PBS
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/pbs-no-subscription.list
+    state: absent
+
+- name: Ajout du dépôt APT pour PBS
+  ansible.builtin.deb822_repository:
+    name: pbs-no-subscription
+    types: deb
+    uris: http://download.proxmox.com/debian/pbs
+    suites: "{{ ansible_distribution_release }}"
+    components: pbs-no-subscription
+    architectures: amd64
+    signed_by: "{{ proxmox_gpg_key_url }}"
+    state: present
+
+- name: Installation de ipmi exporter
+  ansible.builtin.import_role:
+    name: ipmi_exporter
+  tags: ['ipmi_exporter']
+
+- name: Installation de smartctl exporter
+  ansible.builtin.import_role:
+    name: smartctl_exporter
+  tags: ['smartctl_exporter']
+
+- name: Configuration des backups Borgmatic
+  ansible.builtin.template:
+    src: borgmatic/pbs.yml.j2
+    dest: /etc/borgmatic.d/pbs.yml
+    owner: root
+    group: root
+    mode: "u=rw,go="
+    validate: borgmatic config validate --show -c %s
+  tags: ['borgmatic_config']

@@ -1,8 +1,0 @@
-- name: Update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-
-- name: Restart telegraf
-  ansible.builtin.service:
-    name: telegraf
-    state: restarted

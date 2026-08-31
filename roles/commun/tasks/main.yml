@@ -61,7 +61,7 @@
     name: node_exporter
   tags: ['node_exporter']
 
-- name: Installation de Telegraf
+- name: Désinstallation de Telegraf
   ansible.builtin.import_role:
     name: telegraf
   tags: ['telegraf']

@@ -1,0 +1,22 @@
+---
+- name: Installation de FreeIPMI
+  ansible.builtin.package:
+    name: freeipmi-tools
+
+- name: Installation de ipmi exporter
+  ansible.builtin.import_tasks: ipmi_exporter.yml
+  tags: ['ipmi_exporter']
+
+- name: Nettoyage des archives de ipmi exporter
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ['cleanup']
+
+- name: Configuration de vector
+  ansible.builtin.template:
+    src: vector/prometheus_ipmi_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_ipmi_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']

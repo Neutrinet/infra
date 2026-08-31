@@ -2,9 +2,15 @@
   ansible.builtin.import_tasks: routinator.yml
   tags: ['routinator']
 
-- name: Configuration de Telegraf
-  ansible.builtin.import_tasks: telegraf.yml
-  tags: ['telegraf_config']
+- name: Configuration de vector
+  ansible.builtin.template:
+    src: vector/prometheus_routinator_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_routinator_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:

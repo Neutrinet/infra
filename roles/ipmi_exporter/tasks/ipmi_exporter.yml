@@ -1,0 +1,76 @@
+---
+# - name: Création de l'utilisateur pour ipmi exporter
+#   ansible.builtin.user:
+#     name: ipmi-exporter
+#     home: /opt/ipmi-exporter
+#     shell: /sbin/nologin
+#     system: true
+#     state: present
+
+- name: Création des dossiers de ipmi exporter
+  ansible.builtin.file:
+    path: "{{ ipmi_exporter_dir }}"
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/ipmi-exporter
+    - /opt/ipmi-exporter/{{ ipmi_exporter_version }}
+  loop_control:
+    loop_var: ipmi_exporter_dir
+
+- name: Création du dossier des archives de ipmi exporter
+  ansible.builtin.file:
+    path: /usr/local/src/ipmi-exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive de ipmi exporter v{{ ipmi_exporter_version }}
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus-community/ipmi_exporter/releases/download/v{{ ipmi_exporter_version }}/ipmi_exporter-{{ ipmi_exporter_version }}.linux-amd64.tar.gz
+    dest: /usr/local/src/ipmi-exporter/{{ ipmi_exporter_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/prometheus-community/ipmi_exporter/releases/download/v{{ ipmi_exporter_version }}/sha256sums.txt"
+
+- name: Décompression de l'archive
+  ansible.builtin.unarchive:
+    src: /usr/local/src/ipmi-exporter/{{ ipmi_exporter_version }}.tar.gz
+    dest: /opt/ipmi-exporter/{{ ipmi_exporter_version }}
+    creates: /opt/ipmi-exporter/{{ ipmi_exporter_version }}/ipmi_exporter
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    owner: root
+    group: root
+
+- name: Création du lien symbolique pour le binaire de ipmi exporter
+  ansible.builtin.file:
+    src: /opt/ipmi-exporter/{{ ipmi_exporter_version }}/ipmi_exporter
+    dest: /usr/local/bin/ipmi-exporter
+    state: link
+  notify: Restart ipmi-exporter
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/ipmi-exporter.service.j2
+    dest: /etc/systemd/system/ipmi-exporter.service
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart ipmi-exporter
+
+- name: Activation de ipmi exporter au démarrage
+  ansible.builtin.service:
+    name: ipmi-exporter
+    state: started
+    enabled: true
+
+- name: Trigger handlers
+  # We need to restart ipmi-exporter to apply the new config
+  # and expose the metrics for vector
+  ansible.builtin.meta: flush_handlers

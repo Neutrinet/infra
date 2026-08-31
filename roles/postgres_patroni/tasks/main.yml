@@ -54,14 +54,14 @@
     postgres_role: "{{ _postgresql_patroni_health.json.role }}"
   tags: ['postgres_exporter']
 
-# - name: Suppression de l'utilisateur PostgreSQL telegraf
-#   community.postgresql.postgresql_user:
-#     name: telegraf
-#     state: absent
-#   become: true
-#   become_user: postgres
-#   when: _postgresql_patroni_health.json.role == 'master'
-#   tags: ['telegraf_config']
+- name: Suppression de l'utilisateur PostgreSQL telegraf
+  community.postgresql.postgresql_user:
+    name: telegraf
+    state: absent
+  become: true
+  become_user: postgres
+  when: _postgresql_patroni_health.json.role == 'master'
+  tags: ['telegraf_config']
 
 - name: Configuration de vector
   ansible.builtin.template:

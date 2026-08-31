@@ -91,25 +91,6 @@
 - name: Trigger php-fpm handlers
   ansible.builtin.meta: flush_handlers
 
-- name: Installation des plugins Telegraf
-  ansible.builtin.template:
-    src: telegraf/php-fpm.conf.j2
-    dest: /etc/telegraf/telegraf.d/{{ nextcloud_owner }}.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  notify: Restart telegraf
-  tags: ['telegraf_config']
-
-- name: Ajout de l'utilisateur telegraf au groupe caddy
-  ansible.builtin.user:
-    name: telegraf
-    groups: caddy
-    append: true
-  notify: Restart telegraf
-  tags: ['telegraf_config']
-
 - name: Copie de la configuration Caddy2
   ansible.builtin.template:
     src: "caddy/nextcloud.j2"

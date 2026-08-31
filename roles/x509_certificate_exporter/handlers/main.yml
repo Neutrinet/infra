@@ -1,0 +1,15 @@
+- name: Restart x509-certificate-exporter
+  ansible.builtin.systemd:
+    name: x509-certificate-exporter
+    daemon_reload: true
+    state: restarted
+
+- name: Reload x509-certificate-exporter
+  ansible.builtin.service:
+    name: x509-certificate-exporter
+    state: reloaded
+
+- name: Restart vector
+  ansible.builtin.service:
+    name: vector
+    state: restarted

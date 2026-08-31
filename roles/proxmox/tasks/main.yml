@@ -1,12 +1,12 @@
 ---
+- name: Importation des variables spécifiques à l'OS
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution_release }}.yml"
+
 - name: Installation de Ceph
   ansible.builtin.import_role:
     name: ceph
   tags: ["ceph"]
-
-- name: Installation de ipmitool
-  ansible.builtin.package:
-    name: ipmitool
 
 - name: Suppression de l'ancien dépôt APT pour Proxmox
   ansible.builtin.file:
@@ -29,39 +29,31 @@
   ansible.builtin.meta: flush_handlers
 
 - name: Configuration de l'exporteur InfluxDB de Proxmox
-  # The copy module doesn't work because /etc/pve is a special device
-  # See also: https://github.com/ansible/ansible/issues/70535
-  # Although it didn't work even with unsafe_writes=true in Ansible 2.11.5
-  ansible.builtin.shell:
-    cmd: |
-      cat > /etc/pve/status.cfg << EOF
-      influxdb: InfluxDB
-      server 127.0.0.1
-      port 8089
-      EFO
-    creates: /etc/pve/status.cfg
+  ansible.builtin.copy:
+    src: pve/status.cfg
+    dest: /etc/pve/status.cfg
+    owner: root
+    group: www-data
+    mode: u=rw,g=r
 
-- name: Ajout de l'utilisateur telegraf au sudoers
-  ansible.builtin.user:
-    name: telegraf
-    groups: disk
-    append: true
-  notify: Restart telegraf
-  tags: ["telegraf_config"]
-
-- name: Permission à l'utilisateur d'exécuter certaines commandes sudo
+- name: Suppression de la permission à l'utilisateur telegraf d'exécuter certaines commandes sudo
   ansible.builtin.lineinfile:
     path: /etc/sudoers
-    state: present
-    regexp: "^telegraf"
-    line: "telegraf ALL=(ALL) NOPASSWD: /usr/sbin/smartctl, /usr/bin/ipmitool"
-    validate: "visudo -cf %s"
-  tags: ["sudo"]
+    state: absent
+    regexp: '^telegraf'
+    line: 'telegraf ALL=(ALL) NOPASSWD: /usr/sbin/smartctl, /usr/bin/ipmitool'
+    validate: 'visudo -cf %s'
+  tags: ['sudo']
+
+- name: Installation de ipmi_exporter
+  ansible.builtin.import_role:
+    name: ipmi_exporter
+  tags: ["ipmi_exporter"]
 
 - name: Installation de smartctl exporter
   ansible.builtin.import_role:
     name: smartctl_exporter
-  tags: ['smartctl_exporter']
+  tags: ["smartctl_exporter"]
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:

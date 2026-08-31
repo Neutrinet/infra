@@ -1,5 +1,10 @@
 ---
 
+- name: Installation du paquet smartctl
+  ansible.builtin.package:
+    name: smartmontools
+    state: present
+
 - name: Installation de smartctl exporter
   ansible.builtin.import_tasks: smartctl_exporter.yml
   tags: ['smartctl_exporter']
