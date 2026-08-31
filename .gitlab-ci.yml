@@ -47,8 +47,10 @@ linting full:
   script:
     - pre-commit run --all-files --color always
   rules:
-    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    # Run full linting anytime except in draft MR
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event" || $CI_MERGE_REQUEST_DRAFT == "false"
+    # Allow manual trigger of full linting in draft MR
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_DRAFT == "true"
       when: manual
   needs:
     - job: linting shallow
