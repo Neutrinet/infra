@@ -16,6 +16,9 @@
     state: present
   notify: Update apt cache
 
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
+
 - name: Installation de Vector
   ansible.builtin.package:
     name: vector

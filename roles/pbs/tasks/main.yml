@@ -18,6 +18,10 @@
     architectures: amd64
     signed_by: "{{ proxmox_gpg_key_url }}"
     state: present
+  notify: Update apt cache
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Installation de ipmi exporter
   ansible.builtin.import_role:
