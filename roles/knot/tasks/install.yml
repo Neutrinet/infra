@@ -16,6 +16,9 @@
     state: present
   notify: Update apt cache
 
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
+
 - name: Configuration des préférences APT
   ansible.builtin.copy:
     src: apt-preferences/80cznic-labs
