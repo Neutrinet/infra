@@ -8,10 +8,20 @@
   ansible.builtin.import_tasks: cleanup.yml
   tags: ['cleanup']
 
-- name: Configuration de vector
+- name: Configuration de la source vector
   ansible.builtin.template:
-    src: vector/prometheus_collectd_exporter.yaml.j2
-    dest: /etc/vector/sources/prometheus_collectd_exporter.yaml
+    src: vector/collectd_exporter.yaml.j2
+    dest: /etc/vector/sources/collectd_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
+
+- name: Configuration de la transformation vector
+  ansible.builtin.template:
+    src: vector/transforms/prometheus_collectd_exporter.yaml.j2
+    dest: /etc/vector/transforms/prometheus_collectd_exporter.yaml
     owner: vector
     group: vector
     mode: "ug=r,o="

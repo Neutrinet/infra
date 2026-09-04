@@ -1,0 +1,8 @@
+{{ ansible_managed | comment}}
+
+type: "remap"
+inputs:
+  - "collectd_exporter"
+source: |
+  .tags.hostname = .tags.instance
+  .
