@@ -26,9 +26,9 @@ if [[ $address == *':'* ]]; then
   ip_version=6
 fi
 
-value=0
-if check_openvpn=$(check_openvpn $tcp_arg -p $port $address); then
-  value=1
+value=1
+if response=$(check_openvpn $tcp_arg -p $port $address); then
+  value=0
 fi
 
 jq -r -c <<EOF
@@ -43,7 +43,8 @@ jq -r -c <<EOF
       "address": "$address",
       "port": "$port",
       "protocol": "$protocol",
-      "ip_version": "$ip_version"
+      "ip_version": "$ip_version",
+      "response": "$response"
     }
   }
 }
