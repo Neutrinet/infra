@@ -1,13 +1,19 @@
 ---
 - name: Suppression de la clé GPG de InfluxDB
   ansible.builtin.file:
-    path: /etc/apt/keyrings/influxdb.asc
+    path: /etc/apt/keyrings/{{ item }}
     state: absent
+  loop:
+    - influxdb.asc
+    - telegraf.asc
 
 - name: Suppression du dépôt APT pour Telegraf
   ansible.builtin.file:
-    path: /etc/apt/sources.list.d/telegraf.list
+    path: /etc/apt/sources.list.d/{{ item }}
     state: absent
+  loop:
+    - telegraf.list
+    - telegraf.sources
 
 - name: Suppression de Telegraf
   ansible.builtin.package:
