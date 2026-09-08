@@ -29,33 +29,56 @@ route:
   repeat_interval: 3h
 
   # A default receiver
-  receiver: default-receiver
+  receiver: production-receiver
 
   # All the above attributes are inherited by all child routes and can
   # overwritten on each.
 
   # The child route trees.
   routes:
+{% if alertmanager_staging_labels %}
+    - matchers:
+{% for label_name, label_value in alertmanager_staging_labels.items() %}
+        - {{ label_name }} = {{ label_value }}
+{% endfor %}
+      routes:
+        - matchers:
+            - frequency = monthly
+          repeat_interval: 30d
+          routes:
+            - receiver: staging-receiver
+        - matchers:
+            - frequency = daily
+          repeat_interval: 1d
+          routes:
+            - receiver: staging-receiver
+        - routes:
+            - receiver: staging-receiver
+{% endif %}
     - matchers:
         - frequency = monthly
       repeat_interval: 30d
       routes:
-        - receiver: default-receiver
+        - receiver: production-receiver
     - matchers:
         - frequency = daily
       repeat_interval: 1d
       routes:
-        - receiver: default-receiver
+        - receiver: production-receiver
     - routes:
-        - receiver: default-receiver
+        - receiver: production-receiver
 
 receivers:
-  - name: default-receiver
+  - name: production-receiver
     webhook_configs:
-      # Send alerts to matrix-alertbot, which will forward them to a Matrix room
+      # Send alerts to matrix-alertbot, which will forward them to the Matrix room for alerts in production
       - url: http://localhost:4060/alerts/{{ alertmanager_matrix_alertbot_room }}
         send_resolved: true
-
+  - name: staging-receiver
+    webhook_configs:
+      # Send alerts to matrix-alertbot, which will forward them to the Matrix room for alerts in staging
+      - url: http://localhost:4060/alerts/{{ alertmanager_staging_matrix_alertbot_room }}
+        send_resolved: true
 inhibit_rules:
   # Combine Certificate alerts from different probes
   # to single alert from main probe.

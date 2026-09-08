@@ -28,6 +28,9 @@ matrix:
   # List of rooms where the bot can interact
   allowed_rooms:
     - "{{ alertmanager_matrix_alertbot_room }}"
+{% if alertmanager_staging_matrix_alertbot_room %}
+    - "{{ alertmanager_staging_matrix_alertbot_room }}"
+{% endif %}
 
 dm:
   filter_labels:
