@@ -50,6 +50,10 @@ route:
           repeat_interval: 30d
           receiver: staging-receiver
         - matchers:
+            - frequency = weekly
+          repeat_interval: 1w
+          receiver: staging-receiver
+        - matchers:
             - frequency = daily
           repeat_interval: 1d
           receiver: staging-receiver
@@ -58,6 +62,10 @@ route:
     - matchers:
         - frequency = monthly
       repeat_interval: 30d
+      receiver: production-receiver
+    - matchers:
+        - frequency = weekly
+      repeat_interval: 1w
       receiver: production-receiver
     - matchers:
         - frequency = daily
