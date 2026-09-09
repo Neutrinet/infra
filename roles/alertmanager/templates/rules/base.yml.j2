@@ -26,8 +26,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: 'Disk usage is at {{ humanizePercentage $value }}%'
-          description: '[{{ $labels.instance }}] Device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" has disk usage > 90% (current = {{ humanizePercentage $value }}%)'
+          summary: 'Disk usage is at {{ humanizePercentage $value }}'
+          description: '[{{ $labels.instance }}] Device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" has disk usage > 90% (current = {{ humanizePercentage $value }})'
 
       - alert: Disk Full Next Week
         for: 1h
@@ -36,8 +36,8 @@ groups:
           severity: warning
           frequency: daily
         annotations:
-          summary: 'Disk full within the week (current = {{ humanizePercentage $value }}%)'
-          description: '[{{ $labels.instance }}] Based on disk usage from last 2 days, device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" will be full within the week (current = {{ humanizePercentage $value }}%)'
+          summary: 'Disk full within the week (current = {{ humanizePercentage $value }})'
+          description: '[{{ $labels.instance }}] Based on disk usage from last 2 days, device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" will be full within the week (current = {{ humanizePercentage $value }})'
 
       - alert: Low Inodes
         for: 1h
@@ -45,8 +45,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: 'Inodes usage is at {{ humanizePercentage $value }}%'
-          description: '[{{ $labels.instance }}] Device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" has inodes usage > 90% (current = {{ humanizePercentage $value }}%)'
+          summary: 'Inodes usage is at {{ humanizePercentage $value }}'
+          description: '[{{ $labels.instance }}] Device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" has inodes usage > 90% (current = {{ humanizePercentage $value }})'
 
       - alert: Inodes Full Next Week
         for: 1h
@@ -55,11 +55,11 @@ groups:
           severity: warning
           frequency: daily
         annotations:
-          summary: 'Inodes full within the week (current = {{ humanizePercentage $value }}%)'
-          description: '[{{ $labels.instance }}] Based on inodes usage from last 2 days, device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" will be full within the week (current = {{ humanizePercentage $value }}%)'
+          summary: 'Inodes full within the week (current = {{ humanizePercentage $value }})'
+          description: '[{{ $labels.instance }}] Based on inodes usage from last 2 days, device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" will be full within the week (current = {{ humanizePercentage $value }})'
 
       - alert: Filesystem Device Error
-        expr: 'node_filesystem_device_error{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"} == 1'
+        expr: 'node_filesystem_device_error{fstype!~"^(fuse.*|tmpfs|cifs|nfs)", device_error!="permission denied"} == 1'
         for: 15m
         labels:
           severity: critical
@@ -75,8 +75,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: 'Memory usage is at {{ humanizePercentage $value }}%'
-          description: '[{{ $labels.instance }}] Memory usage is > 90% (current = {{ humanizePercentage $value }}%)'
+          summary: 'Memory usage is at {{ humanizePercentage $value }}'
+          description: '[{{ $labels.instance }}] Memory usage is > 90% (current = {{ humanizePercentage $value }})'
 
       - alert: High Memory Major Page Faults
         expr: 'rate(node_vmstat_pgmajfault[5m]) > 500'
@@ -94,17 +94,17 @@ groups:
           severity: info
           frequency: weekly
         annotations:
-          summary: 'Memory is underutilized (current = {{ humanizePercentage $value }}%)'
-          description: "[{{ $labels.instance }}] Memory usage is < 40% for 1 week (current = {{ humanizePercentage $value }}%). Consider reducing available memory space"
+          summary: 'Memory is underutilized (current = {{ humanizePercentage $value }})'
+          description: "[{{ $labels.instance }}] Memory usage is < 40% for 1 week (current = {{ humanizePercentage $value }}). Consider reducing available memory space"
 
       - alert: High Swap Usage
         for: 15m
         expr: '(1 - node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes) > 0.8'
         labels:
-          severity: warning
+          severity: info
         annotations:
-          summary: Swap usage is at {{ humanizePercentage $value }}%
-          description: "[{{ $labels.instance }}] Swap usage is > 80% (current = {{ humanizePercentage $value }}"
+          summary: Swap usage is at {{ humanizePercentage $value }}
+          description: "[{{ $labels.instance }}] Swap usage is > 80% (current = {{ humanizePercentage $value }})"
 
       - alert: OOM Kill Detected
         for: 0m
@@ -123,8 +123,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: CPU usage is at {{ humanizePercentage $value }}%
-          description: '[{{ $labels.instance }}] CPU usage is > 200% (value = {{ humanizePercentage $value }}%)'
+          summary: CPU usage is at {{ humanizePercentage $value }}
+          description: '[{{ $labels.instance }}] CPU usage is > 200% (value = {{ humanizePercentage $value }})'
 
       - alert: CPU Steal Noisy Neighbor
         expr: 'avg without (cpu, mode) (rate(node_cpu_seconds_total{mode="steal"}[5m])) > 0.1'
@@ -133,7 +133,7 @@ groups:
           severity: warning
         annotations:
           summary: CPU steal increased by {{ humanizePercentage $value }} in the last 5 minutes.
-          description: "[{{ $labels.instance }}] CPU steal increased by > 10% in the last 5 minutes (current = {{ humanizePercentage $value }}%). A noisy neighbor is killing VM performances or a spot instance may be out of credit."
+          description: "[{{ $labels.instance }}] CPU steal increased by > 10% in the last 5 minutes (current = {{ humanizePercentage $value }}). A noisy neighbor is killing VM performances or a spot instance may be out of credit."
 
   - name: Network
     rules:
@@ -143,8 +143,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: Network receive bandwidth is at {{ humanizePercentage $value }}%
-          description: "[{{ $labels.instance }}] Receive bandwidth is > 80% (current = {{ humanizePercentage $value }}%)"
+          summary: Network receive bandwidth is at {{ humanizePercentage $value }}
+          description: "[{{ $labels.instance }}] Receive bandwidth is > 80% (current = {{ humanizePercentage $value }})"
 
       - alert: Unusual Network Transmit Bandwidth
         expr: 'rate(node_network_transmit_bytes_total[5m]) / node_network_speed_bytes > 0.8'
@@ -152,8 +152,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: Network transmit bandwidth is at {{ humanizePercentage $value }}%
-          description: "[{{ $labels.instance }}] Transmit bandwidth is > 80% (current = {{ humanizePercentage $value }}%)"
+          summary: Network transmit bandwidth is at {{ humanizePercentage $value }}
+          description: "[{{ $labels.instance }}] Transmit bandwidth is > 80% (current = {{ humanizePercentage $value }})"
 
       - alert: Network Receive Errors
         expr: 'rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01'
@@ -161,8 +161,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: Network receive errors is at {{ humanizePercentage $value }}%
-          description: "[{{ $labels.instance }}] Interface {{ $labels.device }} has encountered {{ humanizePercentage $value }}% receive errors in the last 2 minutes."
+          summary: Network receive errors is at {{ humanizePercentage $value }}
+          description: "[{{ $labels.instance }}] Interface {{ $labels.device }} has encountered {{ humanizePercentage $value }} receive errors in the last 2 minutes."
 
       - alert: Network Transmit Errors
         expr: 'rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01'
@@ -170,8 +170,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: Network transmit errors is at {{ humanizePercentage $value }}%
-          description: "[{{ $labels.instance }}] Interface {{ $labels.device }} has encountered {{ humanizePercentage $value }}% transmit errors in the last 2 minutes."
+          summary: Network transmit errors is at {{ humanizePercentage $value }}
+          description: "[{{ $labels.instance }}] Interface {{ $labels.device }} has encountered {{ humanizePercentage $value }} transmit errors in the last 2 minutes."
 
       - alert: Network Bond Degraded
         expr: '(node_bonding_active - node_bonding_slaves) != 0'
@@ -188,8 +188,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: Number of conntrack is at {{ humanizePercentage $value }}%
-          description: "[{{ $labels.instance }}] Number of conntrack is > {{ humanizePercentage $value }}% than the limit."
+          summary: Number of conntrack is at {{ humanizePercentage $value }}
+          description: "[{{ $labels.instance }}] Number of conntrack is > {{ humanizePercentage $value }} than the limit."
 
   - name: System
     rules:
@@ -239,8 +239,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: Physical component {{ $labels.chip }} is too hot (current = {{ humanizePercentage $value }}%)
-          description: "[{{ $labels.instance }}] Physical hardware component {{ $labels.chip }} is > 90% than max temperature (current = {{ humanizePercentage $value }}%, sensor = {{ $labels.sensor }})"
+          summary: Physical component {{ $labels.chip }} is too hot (current = {{ humanizePercentage $value }})
+          description: "[{{ $labels.instance }}] Physical hardware component {{ $labels.chip }} is > 90% than max temperature (current = {{ humanizePercentage $value }}, sensor = {{ $labels.sensor }})"
 
       - alert: Temperature Alarm
         expr: '(node_hwmon_temp_celsius / node_hwmon_temp_critical_celsius > 0.9) or node_hwmon_temp_alarm == 1'
@@ -248,8 +248,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: Physical component {{ $labels.chip }} temperature is critical (current = {{ humanizePercentage $value }}%)
-          description: "[{{ $labels.instance }}] Physical hardware component {{ $labels.chip }} is > 90% than critical temperature or the critical alerm triggered (current = {{ humanizePercentage $value }}%, sensor = {{ $labels.sensor }})"
+          summary: Physical component {{ $labels.chip }} temperature is critical (current = {{ humanizePercentage $value }})
+          description: "[{{ $labels.instance }}] Physical hardware component {{ $labels.chip }} is > 90% than critical temperature or the critical alerm triggered (current = {{ humanizePercentage $value }}, sensor = {{ $labels.sensor }})"
 
       - alert: Software Raid Insufficient Drives
         for: 5m
@@ -289,7 +289,7 @@ groups:
           frequency: daily
         annotations:
           summary: 'Disk /dev{{ $labels.device }} wear level is at {{ $value }}%'
-          description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} wear level is < 10% (current = {{ $value }})'
+          description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} wear level is < 10% (current = {{ $value }}%)'
 
       - alert: Disk Failure Next Month
         for: 5m
@@ -425,4 +425,4 @@ groups:
           category: base.backup
         annotations:
           summary: 'Borgmatic backups failed within 24h'
-          description: '[{{ $labels.instance }}] Borgmatic backups failed several times within 24h (failure ratio = {{ humanizePercentage $value }}%)'
+          description: '[{{ $labels.instance }}] Borgmatic backups failed several times within 24h (failure ratio = {{ humanizePercentage $value }})'
