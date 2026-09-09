@@ -26,7 +26,7 @@ route:
 
   # If an alert has successfully been sent, wait 'repeat_interval' to
   # resend them.
-  repeat_interval: 8h
+  repeat_interval: {{ alertmanager_repeat_interval }}
 
   # A default receiver
   receiver: production-receiver
