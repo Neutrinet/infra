@@ -1,0 +1,35 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+  - name: PPP Sessions
+    rules:
+      # Alerte quand une session PPP est down depuis plus de 5 minutes
+      - alert: PPP Session Down
+        expr: freeradius_ppp_session_last_terminate_timestamp unless on (username) freeradius_ppp_sessions_active
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PPP session for {{ labels.username }} is inactive"
+          description: '[{{ $labels.instance }}] PPP session of user {{ $labels.username }} has been inactive for 15min (cause = {{ $labels.cause }})'
+
+      # Version qui ignore les déconnexions volontaires (User-Request)
+      - alert: PPP Session Down Unexpected
+        expr: freeradius_ppp_session_last_terminate_timestamp{cause!~"User-Request|Admin-Reset"} unless on(username) freeradius_ppp_sessions_active
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PPP session for {{ $labels.username }} is inactive (Unexpected)"
+          description: '[{{ $labels.instance }}] PPP session of user {{ $labels.username }} has been unexpectedly inactive for 15min (cause = {{ $labels.cause }})'
+
+      # Alerte critique si beaucoup de sessions tombent en même temps
+      - alert: PPP Mass Disconnection
+        expr: count(freeradius_ppp_sessions_active) / freeradius_ppp_sessions_total < 0.5
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Mass disconnection of PPP sessions (current = {{ humanizePercentage $value }})"
+          description: '[{{ $labels.instance }}] Mass disconnection of PPP sessions: < 50% of configured sessions are active (current = {{ humanizePercentage $value }}).'

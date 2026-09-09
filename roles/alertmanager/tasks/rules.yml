@@ -12,6 +12,8 @@
     - caddy
     - haproxy
     - ceph
+    - bgp
+    - ppp
   loop_control:
     loop_var: rule_group
   notify:

@@ -1,0 +1,24 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+- name: BGP Sessions
+  rules:
+  - alert: BGP State Down
+    expr: bird_protocol_up{proto="BGP", state!="Passive", proto="BGP"} == 0
+    for: 5m
+    labels:
+      severity: info
+    annotations:
+      summary: "BGP session {{ $labels.name }} is down"
+      description: '[{{ $labels.instance }}] BGP session {{ $labels.name }} is down (state = {{ $labels.state }}).'
+
+  - alert: BGP State Recovered
+    expr: bird_protocol_up{proto="BGP"} == 1 and on (instance, name, ip_version) changes(bird_protocol_up{proto="BGP"}[5m]) > 0
+    for: 5m
+    labels:
+      severity: info
+      exporter: node-exporter
+    annotations:
+      summary: "BGP session {{ $labels.name }} has recovered"
+      description: '[{{ $labels.instance }}] BGP session {{ $labels.name }} has recovered.'
