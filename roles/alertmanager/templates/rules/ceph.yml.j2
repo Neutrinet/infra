@@ -6,12 +6,21 @@ groups:
     rules:
       - alert: Ceph Down
         for: 5m
-        expr: ceph_health_status == 0
+        expr: ceph_health_status > 1
         labels:
           severity: critical
         annotations:
           summary: 'Ceph instance {{ $labels.instance }} is down'
           description: '[{{ $labels.instance }}] Ceph instance is down.'
+
+      - alert: Ceph Health Warning
+        for: 5m
+        expr: ceph_health_status == 1
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Ceph instance {{ $labels.instance }} has warnings'
+          description: '[{{ $labels.instance }}] Ceph instance has health warnings.'
 
       - alert: Ceph OSD Down
         for: 5m
