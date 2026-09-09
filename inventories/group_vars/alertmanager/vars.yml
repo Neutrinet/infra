@@ -1,3 +1,5 @@
+alertmanager_repeat_interval: 8h
+
 alertmanager_matrix_username: "neutribot"
 alertmanager_matrix_password: "{{ vault_alertmanager_matrix_password }}"
 alertmanager_matrix_host: matrix.domainepublic.net

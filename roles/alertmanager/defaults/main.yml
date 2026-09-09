@@ -1,4 +1,5 @@
 alertmanager_version: 0.28.1
+alertmanager_repeat_interval: 1h
 
 alertmanager_matrix_username: "neutribot-test"
 alertmanager_matrix_password: !vault |
