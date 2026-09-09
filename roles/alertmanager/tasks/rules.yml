@@ -5,6 +5,7 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
+    validate: vmalert -dryRun -rule %s
   loop:
     - base
     - vpn
@@ -18,4 +19,4 @@
     loop_var: rule_group
   notify:
     - Reload victoriametrics
-    - Reload victoriametrics-alert
+    - Restart victoriametrics-alert
