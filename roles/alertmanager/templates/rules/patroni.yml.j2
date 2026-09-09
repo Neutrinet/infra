@@ -65,15 +65,6 @@ groups:
           description: 'Etcd cluster has no leader on instance {{ $labels.instance }}.'
           summary: 'Etcd cluster has no leader.'
 
-      - alert: Etcd Health
-        for: 5m
-        expr: etcd_server_health_success == 0
-        labels:
-          severity: warning
-        annotations:
-          description: 'Etcd server is unhealthy on instance {{ $labels.instance}}.'
-          summary: 'Etcd server is unhealthy.'
-
       - alert: Etcd Leader Changes
         expr: 'increase(etcd_server_leader_changes_seen_total[1h]) >= 5'
         for: 0m
