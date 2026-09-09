@@ -11,7 +11,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "PPP session for {{ labels.username }} is inactive"
+          summary: "PPP session for {{ $labels.username }} is inactive"
           description: '[{{ $labels.instance }}] PPP session of user {{ $labels.username }} has been inactive for 15min (cause = {{ $labels.cause }})'
 
       # Version qui ignore les déconnexions volontaires (User-Request)
