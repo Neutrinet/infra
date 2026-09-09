@@ -21,6 +21,9 @@ ExecStart=/usr/local/bin/vmalert \
   -datasource.url={{ victoriametrics_alert_datasource }} \
   -remoteWrite.url={{ victoriametrics_alert_datasource }} \
   -remoteRead.url={{ victoriametrics_alert_datasource }} \
+{% if victoriametrics_alert_url %}
+  -external.url={{ victoriametrics_alert_url }} \
+{% endif %}
   -notifier.url={{ victoriametrics_alert_notifier }}
 
 # Systemd hardening
