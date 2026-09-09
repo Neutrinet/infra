@@ -26,7 +26,7 @@ route:
 
   # If an alert has successfully been sent, wait 'repeat_interval' to
   # resend them.
-  repeat_interval: 3h
+  repeat_interval: 8h
 
   # A default receiver
   receiver: production-receiver
@@ -36,6 +36,9 @@ route:
 
   # The child route trees.
   routes:
+    - matchers:
+        - severity = info
+      receiver: dummy-receiver
 {% if alertmanager_staging_labels %}
     - matchers:
 {% for label_name, label_value in alertmanager_staging_labels.items() %}
@@ -45,30 +48,25 @@ route:
         - matchers:
             - frequency = monthly
           repeat_interval: 30d
-          routes:
-            - receiver: staging-receiver
+          receiver: staging-receiver
         - matchers:
             - frequency = daily
           repeat_interval: 1d
-          routes:
-            - receiver: staging-receiver
-        - routes:
-            - receiver: staging-receiver
+          receiver: staging-receiver
+        - receiver: staging-receiver
 {% endif %}
     - matchers:
         - frequency = monthly
       repeat_interval: 30d
-      routes:
-        - receiver: production-receiver
+      receiver: production-receiver
     - matchers:
         - frequency = daily
       repeat_interval: 1d
-      routes:
-        - receiver: production-receiver
-    - routes:
-        - receiver: production-receiver
+      receiver: production-receiver
+    - receiver: production-receiver
 
 receivers:
+  - name: dummy-receiver
   - name: production-receiver
     webhook_configs:
       # Send alerts to matrix-alertbot, which will forward them to the Matrix room for alerts in production
