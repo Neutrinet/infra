@@ -10,7 +10,7 @@ groups:
         labels:
           severity: critical
           category: caddy.http
-          code_category: 5xx 
+          code_category: 5xx
         annotations:
           summary: 'Caddy HTTP 5xx error rate is at {{ humanizePercentage $value }} for {{ $labels.host }}'
           description: '[{{ $labels.instance }}] [{{ $labels.host }}] Caddy HTTP 5xx error rate is > 10% in the last 5 minutes (current = {{ humanizePercentage $value }})'
