@@ -4,5 +4,5 @@ type: "remap"
 inputs:
   - "collectd_exporter"
 source: |
-  .tags.hostname = .tags.instance
+  .tags.hostname = "{{ inventory_hostname }}"
   .
