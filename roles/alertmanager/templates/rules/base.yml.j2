@@ -359,7 +359,7 @@ groups:
           category: probe.cert
         annotations:
           summary: 'Certificate for url {{ $labels.module }} will expire within the month'
-          description: ''[{{ $labels.instance }}] [{{ $labels.module }}] Certificate will expire in {{ $value }} days'
+          description: '[{{ $labels.instance }}] [{{ $labels.module }}] Certificate will expire in {{ $value }} days'
 
       - alert: Website Down
         for: 5m
@@ -379,7 +379,7 @@ groups:
           category: probe.http
         annotations:
           summary: Website {{ $labels.module }} HTTP status code is {{ $value }}
-          description: "'[{{ $labels.instance }}] [{{ $labels.module }}] HTTP status code is {{ $value }}"
+          description: "[{{ $labels.instance }}] [{{ $labels.module }}] HTTP status code is {{ $value }}"
 
       - alert: Website Slow
         expr: 'avg_over_time(probe_http_duration_seconds[10m]) > 5'
@@ -389,7 +389,7 @@ groups:
           category: probe.http
         annotations:
           summary: Website {{ $labels.module }} is slow to respond
-          description: "'[{{ $labels.instance }}] [{{ $labels.module }}] Host took > 5s to respond in the last 10min (current = {{ humanize $value }}s)"
+          description: "[{{ $labels.instance }}] [{{ $labels.module }}] Host took > 5s to respond in the last 10min (current = {{ humanize $value }}s)"
 
       - alert: Ping Down
         for: 5m
@@ -399,7 +399,7 @@ groups:
           category: probe.icmp
         annotations:
           summary: "Host {{ $labels.url }} doesn't respond to ping"
-          description: "'[{{ $labels.instance }}] [{{ $labels.url }}] Host doesn't respond to ping"
+          description: "[{{ $labels.instance }}] [{{ $labels.url }}] Host doesn't respond to ping"
 
       - alert: Ping Slow
         expr: 'avg_over_time(probe_icmp_duration_seconds[1m]) > 1'
@@ -409,7 +409,7 @@ groups:
           category: probe.icmp
         annotations:
           summary: Host {{ $labels.url }} is slow to respond to ping
-          description: '[{{ $labels.instance }}] "[{{ $labels.url }}] Host took > 1s to respond to ping in the last minute (current = {{ humanize $value }}s)"
+          description: "[{{ $labels.instance }}] [{{ $labels.url }}] Host took > 1s to respond to ping in the last minute (current = {{ humanize $value }}s)"
 
   - name: Backup
     rules:
