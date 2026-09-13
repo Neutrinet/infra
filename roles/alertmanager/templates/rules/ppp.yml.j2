@@ -4,9 +4,9 @@
 groups:
   - name: PPP Sessions
     rules:
-      # Alerte quand une session PPP est down depuis plus de 5 minutes
+      # Alerte quand une session PPP est down depuis plus de 15 minutes
       - alert: PPP Session Down
-        expr: freeradius_ppp_session_last_terminate_timestamp unless on (username) freeradius_ppp_sessions_active
+        expr: freeradius_ppp_session_last_terminate_timestamp{cause=~"User-Request|Admin-Reset"} unless on (username) freeradius_ppp_sessions_active
         for: 15m
         labels:
           severity: warning
