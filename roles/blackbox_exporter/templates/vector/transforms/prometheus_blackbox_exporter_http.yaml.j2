@@ -6,6 +6,7 @@ inputs:
 source: |
   .tags.url = "{{ probe.url }}"
   .tags.target = "{{ probe_hostname }}"
+  .tags.host = "{{ probe_hostname }}"
   .tags.type = "http"
   .tags.module = "{{ probe_name }}"
   .tags.check_cert_expiry = "{{ probe.check_cert_expiry | default(false) | int }}"
