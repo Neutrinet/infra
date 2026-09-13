@@ -135,23 +135,30 @@ inhibit_rules:
 
   # Hide Caddy alerts about HTTP errors when reverse proxy is down
   - target_matchers:
-      - category =~ caddy.http_.xx
+      - category =~ caddy.http
     source_matchers:
       - category = caddy.health
     equal: ['instance']
 
   # Hide HAProxy alerts about HTTP errors when backend is down
   - target_matchers:
-      - category =~ haproxy.http_.xx
+      - category =~ haproxy.http
     source_matchers:
       - category = haproxy.health
     equal: ['instance', 'proxy']
+
+  # Hide HAProxy alerts about HTTP errors when same alerts from Caddy are active
+  - target_matchers:
+      - category =~ haproxy.http
+    source_matchers:
+      - category =~ caddy.http
+    equal: ['server', 'code_category']
 
   # Hide Probe HTTP alerts when Caddy has HTTP 5xx errors
   - target_matchers:
       - category = probe.http
     source_matchers:
-      - category = caddy.http_5xx
+      - category = caddy.http
     equal: ['host']
 
   # Hide Backup errors when {{ inventory_hostname }} is down

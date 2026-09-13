@@ -2,10 +2,20 @@
   ansible.builtin.import_tasks: caddy.yml
   tags: ['caddy']
 
-- name: Configuration de vector
+- name: Configuration de la source vector
   ansible.builtin.template:
-    src: vector/prometheus_caddy_exporter.yaml.j2
-    dest: /etc/vector/sources/prometheus_caddy_exporter.yaml
+    src: vector/caddy_exporter.yaml.j2
+    dest: /etc/vector/sources/caddy_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
+
+- name: Configuration de la transformation vector
+  ansible.builtin.template:
+    src: vector/transforms/prometheus_caddy_exporter.yaml.j2
+    dest: /etc/vector/transforms/prometheus_caddy_exporter.yaml
     owner: vector
     group: vector
     mode: "ug=r,o="
