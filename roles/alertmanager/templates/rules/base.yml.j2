@@ -279,7 +279,7 @@ groups:
           frequency: weekly
         annotations:
           summary: 'Disk /dev{{ $labels.device }} is failing'
-          description: '[{{ $labels.host }}] Disk /dev/{{ $labels.device }} is failing'
+          description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} is failing'
 
       - alert: Disk Low Wear Level
         for: 5m
