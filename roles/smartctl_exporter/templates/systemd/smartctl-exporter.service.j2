@@ -1,39 +1,51 @@
 {{ ansible_managed | comment }}
+# Based on https://gitlab.archlinux.org/archlinux/packaging/packages/prometheus-smartctl-exporter/-/blob/main/prometheus-smartctl-exporter.service
 
 [Unit]
-Description=smartctl exporter
-After=network.target
+Description=Prometheus exporter for S.M.A.R.T. metrics using smartctl
+Requires=network-online.target
+After=network-online.target
+ConditionVirtualization=false
 
 [Service]
-Type=simple
-User=root
-Group=root
-ExecReload=/bin/kill -HUP $MAINPID
 ExecStart=/usr/local/bin/smartctl-exporter --web.listen-address '[::1]:9633'
-Restart=always
-RestartSec=5
+User=smartctl-exporter
+Group=smartctl-exporter
+Restart=on-failure
 
-# Systemd hardening
-CapabilityBoundingSet=CAP_SYS_RAWIO
-AmbientCapabilities=CAP_SYS_RAWIO
-LockPersonality=true
 NoNewPrivileges=true
-MemoryDenyWriteExecute=true
-PrivateTmp=true
+LimitNOFILE=1048576
+UMask=0077
+
+ProtectSystem=strict
 ProtectHome=true
-RemoveIPC=true
-RestrictRealtime=true
-RestrictNamespaces=true
-RestrictSUIDSGID=true
-RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
-ProtectControlGroups=true
-ProtectKernelModules=true
-ProtectKernelTunables=true
-ProtectKernelLogs=true
+#PrivateUsers=yes       # this breaks smartctl
+PrivateTmp=true
+#PrivateDevices=true    # this is actually needed to access the disks
 ProtectHostname=true
-ProtectProc=noaccess
-ProtectSystem=full
+ProtectClock=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RemoveIPC=true
+
+# CAP_SYS_ADMIN: Required by NVME_IOCTL_ADMIN_CMD to read NVMe SMART/Health Information
+# CAP_DAC_READ_SEARCH: Required to search for disks
+# CAP_DAC_OVERRIDE: Seems to be required to search for disks handled by megaraid
+# CAP_SYS_RAWIO: Required to to read disk SMART/Health Information
+AmbientCapabilities=CAP_SYS_ADMIN CAP_DAC_READ_SEARCH CAP_DAC_OVERRIDE CAP_SYS_RAWIO
+CapabilityBoundingSet=CAP_SYS_ADMIN CAP_DAC_READ_SEARCH CAP_DAC_OVERRIDE CAP_SYS_RAWIO 
+
 SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+SystemCallArchitectures=native
 
 [Install]
 WantedBy=multi-user.target
