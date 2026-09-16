@@ -1,18 +1,9 @@
 ---
-- name: Création de l'utilisateur pour smartctl exporter
-  ansible.builtin.user:
-    name: smartctl-exporter
-    home: /opt/smartctl-exporter
-    shell: /sbin/nologin
-    system: true
-    append: true
-    state: present
-
 - name: Création des dossiers de smartctl exporter
   ansible.builtin.file:
     path: "{{ smartctl_exporter_dir }}"
-    owner: smartctl-exporter
-    group: smartctl-exporter
+    owner: root
+    group: root
     mode: "u=rwx,g=rx,o="
     state: directory
   loop:

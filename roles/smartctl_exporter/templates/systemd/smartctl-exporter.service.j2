@@ -1,51 +1,35 @@
 {{ ansible_managed | comment }}
-# Based on https://gitlab.archlinux.org/archlinux/packaging/packages/prometheus-smartctl-exporter/-/blob/main/prometheus-smartctl-exporter.service
+# Based on https://aur.archlinux.org/cgit/aur.git/tree/smartctl_exporter.service?h=smartctl_exporter
 
 [Unit]
 Description=Prometheus exporter for S.M.A.R.T. metrics using smartctl
 Requires=network-online.target
 After=network-online.target
 ConditionVirtualization=false
+StartLimitIntervalSec=30
+StartLimitBurst=3
 
 [Service]
 ExecStart=/usr/local/bin/smartctl-exporter --web.listen-address '[::1]:9633'
-User=smartctl-exporter
-Group=smartctl-exporter
+User=root
+Group=root
+
 Restart=on-failure
+RestartSec=30
 
 NoNewPrivileges=true
-LimitNOFILE=1048576
-UMask=0077
-
-ProtectSystem=strict
-ProtectHome=true
-#PrivateUsers=yes       # this breaks smartctl
 PrivateTmp=true
-#PrivateDevices=true    # this is actually needed to access the disks
+ProtectHome=true
+ProtectSystem=strict
 ProtectHostname=true
-ProtectClock=true
-ProtectKernelTunables=true
-ProtectKernelModules=true
-ProtectKernelLogs=true
 ProtectControlGroups=true
-RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
-RestrictNamespaces=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
 LockPersonality=true
-MemoryDenyWriteExecute=true
 RestrictRealtime=true
+RestrictNamespaces=true
 RestrictSUIDSGID=true
-RemoveIPC=true
-
-# CAP_SYS_ADMIN: Required by NVME_IOCTL_ADMIN_CMD to read NVMe SMART/Health Information
-# CAP_DAC_READ_SEARCH: Required to search for disks
-# CAP_DAC_OVERRIDE: Seems to be required to search for disks handled by megaraid
-# CAP_SYS_RAWIO: Required to to read disk SMART/Health Information
-AmbientCapabilities=CAP_SYS_ADMIN CAP_DAC_READ_SEARCH CAP_DAC_OVERRIDE CAP_SYS_RAWIO
-CapabilityBoundingSet=CAP_SYS_ADMIN CAP_DAC_READ_SEARCH CAP_DAC_OVERRIDE CAP_SYS_RAWIO
-
-SystemCallFilter=@system-service
-SystemCallFilter=~@privileged @resources
-SystemCallArchitectures=native
-
-[Install]
-WantedBy=multi-user.target
+MemoryDenyWriteExecute=true
+CapabilityBoundingSet=CAP_SYS_ADMIN CAP_SYS_RAWIO CAP_MKNOD
+AmbientCapabilities=
