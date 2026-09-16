@@ -286,7 +286,7 @@ groups:
         expr: 'smartctl_device_attribute{attribute_name="Wear_Leveling_Count", attribute_value_type="value"} < 10'
         labels:
           severity: critical
-          frequency: daily
+          frequency: weekly
         annotations:
           summary: 'Disk /dev{{ $labels.device }} wear level is at {{ $value }}%'
           description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} wear level is < 10% (current = {{ $value }}%)'
@@ -296,7 +296,7 @@ groups:
         expr: '0 < smartctl_device_attribute{attribute_name="Wear_Leveling_Count", attribute_value_type="value"} <= 20 and predict_linear(smartctl_device_attribute{attribute_name="Wear_Leveling_Count", attribute_value_type="value"}[30d], 30 * 24 * 3600) <= 0'
         labels:
           severity: warning
-          frequency: daily
+          frequency: weekly
         annotations:
           summary: 'Disk /dev{{ $labels.device }} will fail in 30 days (current wear level = {{ $value }}%)'
           description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} will fail in 30 days (current wear level = {{ $value }}%)'
