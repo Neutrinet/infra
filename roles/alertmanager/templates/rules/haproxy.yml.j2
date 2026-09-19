@@ -6,7 +6,7 @@ groups:
     rules:
       - alert: HAProxy High HTTP 5xx Error Rate
         for: 0m
-        expr: sum without (code, server) (rate(haproxy_server_http_responses_total{code="5xx"}[5m])) / sum without (code, server) (rate(haproxy_server_http_responses_total[5m])) > 0.1
+        expr: sum without (code) (rate(haproxy_server_http_responses_total{code="5xx"}[5m])) / sum without (code, server) (rate(haproxy_server_http_responses_total[5m])) > 0.1
         labels:
           severity: critical
           category: haproxy.http
@@ -17,7 +17,7 @@ groups:
 
       - alert: HAProxy High HTTP 4xx Error Rate
         for: 0m
-        expr: sum without (code, server) (rate(haproxy_server_http_responses_total{code="4xx"}[5m])) / sum without (code, server) (rate(haproxy_server_http_responses_total[5m])) > 0.5
+        expr: sum without (code) (rate(haproxy_server_http_responses_total{code="4xx"}[5m])) / sum without (code, server) (rate(haproxy_server_http_responses_total[5m])) > 0.5
         labels:
           severity: info
           category: haproxy.http
