@@ -68,6 +68,15 @@
 - name: Trigger php-fpm handlers
   ansible.builtin.meta: flush_handlers
 
+- name: Installation de PHP-FPM exporter
+  ansible.builtin.include_role:
+    name: php_fpm_exporter
+  vars:
+    php_fpm_exporter_pool: "{{ grav_owner }}"
+    php_fpm_exporter_socket: /var/run/php/php{{ grav_php_version }}-{{ grav_owner }}.sock
+    php_fpm_exporter_port: 9255
+  tags: ['php_fpm_exporter']
+
 - name: Copie de la configuration Caddy2
   ansible.builtin.template:
     src: "caddy/grav.j2"
