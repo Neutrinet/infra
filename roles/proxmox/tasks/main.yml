@@ -38,6 +38,15 @@
   notify: Restart vector
   tags: ['vector_config']
 
+# pmxcfs refuse le chmod que fait copy à la création d'un fichier : on le crée vide d'abord
+- name: Création du fichier de l'exporteur InfluxDB de Proxmox
+  ansible.builtin.file:
+    path: /etc/pve/status.cfg
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+
+# pmxcfs refuse aussi les fichiers temporaires, d'où unsafe_writes
 - name: Configuration de l'exporteur InfluxDB de Proxmox
   ansible.builtin.copy:
     src: pve/status.cfg
@@ -45,6 +54,7 @@
     owner: root
     group: www-data
     mode: u=rw,g=r
+    unsafe_writes: true
 
 - name: Suppression de la permission à l'utilisateur telegraf d'exécuter certaines commandes sudo
   ansible.builtin.lineinfile:
