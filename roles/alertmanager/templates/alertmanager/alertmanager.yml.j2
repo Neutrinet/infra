@@ -108,6 +108,19 @@ inhibit_rules:
       - alertname = "Instance Down"
     equal: ['instance']
 
+  # Disk or inodes almost full: hide the prediction for the same filesystem
+  - target_matchers:
+      - alertname = "Disk Full Next Week"
+    source_matchers:
+      - alertname = "Low Disk Space"
+    equal: ['instance', 'device', 'mountpoint']
+
+  - target_matchers:
+      - alertname = "Inodes Full Next Week"
+    source_matchers:
+      - alertname = "Low Inodes"
+    equal: ['instance', 'device', 'mountpoint']
+
   # Clock not synchronising on several hosts of a datacenter: hide the alerts per host
   - target_matchers:
       - category = base.clock
