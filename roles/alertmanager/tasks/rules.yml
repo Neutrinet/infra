@@ -15,6 +15,7 @@
     - ceph
     - bgp
     - ppp
+    - monitoring
   loop_control:
     loop_var: rule_group
   notify: Reload victoriametrics-alert

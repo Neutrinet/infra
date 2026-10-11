@@ -1,0 +1,60 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+  - name: Monitoring
+    # Surveillance de la chaîne d'alerte elle-même (vmalert, Alertmanager, VictoriaMetrics).
+    rules:
+      - alert: Vmalert Config Reload Failed
+        expr: vmalert_config_last_reload_successful != 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: vmalert failed to reload its configuration
+          description: "[{{ $labels.instance }}] vmalert failed to reload its rules, the previous rules are still in use."
+
+      - alert: Vmalert Rules Errors
+        expr: sum without (id) (increase({__name__=~"vmalert_(alerting|recording)_rules_errors_total"}[5m])) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: vmalert fails to evaluate rule {{ $labels.alertname }}{{ $labels.recording }}
+          description: "[{{ $labels.instance }}] vmalert fails to evaluate rules of group {{ $labels.group }}, alerts of this group may be missing."
+
+      - alert: Vmalert Missed Iterations
+        expr: increase(vmalert_iteration_missed_total[5m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: vmalert skips evaluations of group {{ $labels.group }}
+          description: "[{{ $labels.instance }}] vmalert misses evaluations of group {{ $labels.group }}, the evaluation is slower than its interval."
+
+      - alert: Vmalert Alertmanager Errors
+        expr: increase(vmalert_alerts_send_errors_total[5m]) > 0
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: vmalert fails to send alerts to Alertmanager
+          description: "[{{ $labels.instance }}] vmalert fails to send alerts to {{ $labels.addr }}."
+
+      - alert: Alertmanager Notification Failed
+        expr: increase(alertmanager_notifications_failed_total[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: Alertmanager fails to send notifications with {{ $labels.integration }}
+          description: "[{{ $labels.instance }}] Alertmanager failed to send {{ $value }} notifications with {{ $labels.integration }} in the last 5 minutes, check matrix-alertbot."
+
+      - alert: VictoriaMetrics Disk Usage High
+        expr: sum by (instance) (vm_data_size_bytes) / (sum by (instance) (vm_free_disk_space_bytes) + sum by (instance) (vm_data_size_bytes)) > 0.8
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          summary: VictoriaMetrics disk usage is at {{ humanizePercentage $value }}
+          description: "[{{ $labels.instance }}] VictoriaMetrics data uses > 80% of its disk (current = {{ humanizePercentage $value }})"
