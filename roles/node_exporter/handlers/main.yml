@@ -4,11 +4,6 @@
     daemon_reload: true
     state: restarted
 
-- name: Reload node-exporter
-  ansible.builtin.service:
-    name: node-exporter
-    state: restarted
-
 - name: Restart vector
   ansible.builtin.service:
     name: vector

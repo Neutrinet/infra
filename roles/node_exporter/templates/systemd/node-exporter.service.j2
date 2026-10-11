@@ -8,8 +8,18 @@ Documentation=https://github.com/prometheus/node_exporter
 Restart=on-failure
 User=node-exporter
 Group=node-exporter
-EnvironmentFile=/etc/default/node-exporter
-ExecStart=/usr/local/bin/node-exporter "$ARGS"
+ExecStart=/usr/local/bin/node-exporter \
+  --web.listen-address=[::1]:9100 \
+{% if ansible_virtualization_role == 'host' %}
+  --collector.interrupts \
+  --collector.meminfo_numa \
+  --collector.ethtool \
+{% endif %}
+  --collector.textfile.directory=/var/lib/node-exporter/textfile_collector \
+  --collector.filesystem.mount-points-exclude=^/(dev|proc|run|sys|etc/pve)($$|/) \
+  --collector.logind \
+  --collector.systemd \
+  --collector.netdev.device-exclude=tap[0-9]+i[0-9]
 ExecReload=/bin/kill -HUP $MAINPID
 TimeoutStopSec=20s
 SendSIGKILL=no
