@@ -39,9 +39,7 @@
     owner: root
     group: root
     mode: "ugo=r"
-  notify:
-    - Reload systemd
-    - Restart vector
+  notify: Restart vector
 
 - name: Créer des dossier pour vector
   ansible.builtin.file:
