@@ -17,6 +17,10 @@
     - ppp
   loop_control:
     loop_var: rule_group
-  notify:
-    - Reload victoriametrics
-    - Restart victoriametrics-alert
+  notify: Reload victoriametrics-alert
+
+- name: Suppression des anciennes alertes hardware, fusionnées dans base
+  ansible.builtin.file:
+    path: /etc/victoriametrics/rules.d/hardware.yml
+    state: absent
+  notify: Reload victoriametrics-alert
