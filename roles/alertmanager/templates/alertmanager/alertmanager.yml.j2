@@ -18,7 +18,9 @@ route:
   # This way ensures that you get multiple alerts for the same group that start
   # firing shortly after another are batched together on the first
   # notification.
-  group_wait: 0s
+  # Les alertes sources (Instance Down, Datacenter Down, Website Down...) doivent arriver
+  # avant d'envoyer les autres pour que les inhibitions s'appliquent.
+  group_wait: 1m
 
   # When the first notification was sent, wait 'group_interval' to send a batch
   # of new alerts that started firing for that group.
@@ -86,41 +88,33 @@ receivers:
       - url: http://localhost:4060/alerts/{{ alertmanager_staging_matrix_alertbot_room }}
         send_resolved: true
 inhibit_rules:
-  # Combine Certificate alerts from different probes
-  # to single alert from main probe.
+  # Datacenter down: hide all other alerts from this datacenter
   - target_matchers:
-      - instance != {{ inventory_hostname }}
+      - alertname != "Datacenter Down"
     source_matchers:
-      - category = probe.cert
-      - instance = {{ inventory_hostname }}
-    equal: ['alertname', 'category', 'url']
+      - alertname = "Datacenter Down"
+    equal: ['datacenter']
 
-  # Combine HTTP alerts from different probes
-  # to single alert from main probe.
+  # Most of the probed services are hosted in LouiseDC: when it is down,
+  # hide the probe alerts, which have no datacenter label for the target.
   - target_matchers:
-      - instance != {{ inventory_hostname }}
+      - category =~ "probe[.].*"
     source_matchers:
-      - category = probe.http
-      - instance = {{ inventory_hostname }}
-    equal: ['alertname', 'category', 'url']
+      - alertname = "Datacenter Down"
 
-  # Combine ICMP alerts from different probes
-  # to single alert from main probe.
+  # Instance down: hide all other alerts from this instance
   - target_matchers:
-      - instance != {{ inventory_hostname }}
+      - alertname != "Instance Down"
     source_matchers:
-      - category = probe.icmp
-      - instance = {{ inventory_hostname }}
-    equal: ['alertname', 'category', 'url']
+      - alertname = "Instance Down"
+    equal: ['instance']
 
-  # Combine VPN alerts from different probes
-  # to single alert from main probe.
+  # Clock not synchronising on several hosts of a datacenter: hide the alerts per host
   - target_matchers:
-      - instance != {{ inventory_hostname }}
+      - category = base.clock
     source_matchers:
-      - category = probe.vpn
-      - instance = {{ inventory_hostname }}
-    equal: ['alertname', 'category', 'address', 'port', 'protocol']
+      - category = base.clock_datacenter
+    equal: ['datacenter']
 
   # Combine VPN alerts for different ports and protocols
   # to single alert for TCP protocol and 1195 port.
@@ -133,33 +127,35 @@ inhibit_rules:
       - port = 1195
     equal: ['alertname', 'category', 'address']
 
+  # Website down: keep only this alert for the site, hide the HTTP errors
+  # and slowness seen by the probes, HAProxy and Caddy (the cause, like a failed
+  # systemd service, is still notified)
+  - target_matchers:
+      - alertname =~ "Website HTTP Failure|Website Slow|HAProxy High HTTP 5xx Error Rate|HAProxy Backend Down|Caddy High HTTP 5xx Error Rate"
+    source_matchers:
+      - alertname = "Website Down"
+    equal: ['site']
+
+  # Website HTTP failure: hide the HTTP errors seen by HAProxy and Caddy for the same site
+  - target_matchers:
+      - alertname =~ "HAProxy High HTTP 5xx Error Rate|Caddy High HTTP 5xx Error Rate"
+    source_matchers:
+      - alertname = "Website HTTP Failure"
+    equal: ['site']
+
+  # HAProxy backend down or same errors from Caddy: hide the HAProxy HTTP errors of this site
+  - target_matchers:
+      - alertname = "HAProxy High HTTP 5xx Error Rate"
+    source_matchers:
+      - alertname =~ "HAProxy Backend Down|Caddy High HTTP 5xx Error Rate"
+    equal: ['site']
+
   # Hide Caddy alerts about HTTP errors when reverse proxy is down
   - target_matchers:
       - category =~ caddy.http
     source_matchers:
       - category = caddy.health
     equal: ['instance']
-
-  # Hide HAProxy alerts about HTTP errors when backend is down
-  - target_matchers:
-      - category =~ haproxy.http
-    source_matchers:
-      - category = haproxy.health
-    equal: ['instance', 'proxy']
-
-  # Hide HAProxy alerts about HTTP errors when same alerts from Caddy are active
-  - target_matchers:
-      - category =~ haproxy.http
-    source_matchers:
-      - category =~ caddy.http
-    equal: ['server', 'code_category']
-
-  # Hide Probe HTTP alerts when Caddy has HTTP 5xx errors
-  - target_matchers:
-      - category = probe.http
-    source_matchers:
-      - category = caddy.http
-    equal: ['host']
 
   # Hide Backup errors when {{ inventory_hostname }} is down
   - target_matchers:
