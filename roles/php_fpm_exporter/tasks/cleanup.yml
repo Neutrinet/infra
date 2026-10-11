@@ -1,0 +1,44 @@
+- name: cleanup | Récupération de la liste des dossiers d'installation
+  ansible.builtin.find:
+    path: /opt/php-fpm-exporter
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _php_fpm_exporter_installed_dirs
+
+- name: cleanup | Récupération de la liste des archives
+  ansible.builtin.find:
+    path: /usr/local/src/php-fpm-exporter
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _php_fpm_exporter_archives
+
+- name: cleanup | Récupération de la plus ancienne version et de la version courante
+  ansible.builtin.set_fact:
+    php_fpm_exporter_oldest_archive: "{{ php_fpm_exporter_sorted_archives | first }}"
+    php_fpm_exporter_oldest_install_dir: "{{ php_fpm_exporter_sorted_install_dirs | first }}"
+    php_fpm_exporter_oldest_version: "{{ php_fpm_exporter_sorted_install_dirs | first | basename }}"
+  vars:
+    php_fpm_exporter_sorted_archives: |-
+      {{ _php_fpm_exporter_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    php_fpm_exporter_sorted_install_dirs: |-
+      {{ _php_fpm_exporter_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: cleanup | Suppression de la plus ancienne version (v{{ php_fpm_exporter_oldest_version }})
+  ansible.builtin.file:
+    state: absent
+    path: "{{ php_fpm_exporter_oldest_install_dir }}"
+  when: _php_fpm_exporter_installed_dirs.files | length > 5
+
+- name: cleanup | Suppression de la plus ancienne archive
+  ansible.builtin.file:
+    state: absent
+    path: "{{ php_fpm_exporter_oldest_archive }}"
+  when: _php_fpm_exporter_archives.files | length > 5
