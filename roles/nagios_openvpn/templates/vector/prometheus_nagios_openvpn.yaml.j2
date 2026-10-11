@@ -3,7 +3,7 @@
 type: exec
 command:
   - /opt/check_openvpn.sh
-{% if probe.tcp %}
+{% if probe.tcp | default(false) %}
   - -t
 {% endif %}
   - -p
