@@ -66,15 +66,6 @@
     mode: "u=rw,go=r"
   notify: Restart node-exporter
 
-- name: Configuration de Node exporter
-  ansible.builtin.template:
-    src: node-exporter/default.j2
-    dest: /etc/default/node-exporter
-    owner: root
-    group: root
-    mode: "ug=r,o="
-  notify: Reload node-exporter
-
 - name: Activation de Node exporter au démarrage
   ansible.builtin.service:
     name: node-exporter
