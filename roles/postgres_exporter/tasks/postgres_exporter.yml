@@ -6,9 +6,9 @@
     home: /opt/postgres-exporter
     shell: /sbin/nologin
     system: true
-    groups:
-      - postgres
-    append: true
+    # Authentification peer via le socket accessible à tous, pas besoin du groupe postgres
+    groups: []
+    append: false
     state: present
 
 - name: Création des dossiers de PostgreSQL exporter
