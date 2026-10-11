@@ -15,8 +15,8 @@ Restart=always
 RestartSec=5
 
 # Systemd hardening
-CapabilityBoundingSet=CAP_SYS_RAWIO
-AmbientCapabilities=CAP_SYS_RAWIO
+CapabilityBoundingSet=
+AmbientCapabilities=
 LockPersonality=true
 NoNewPrivileges=true
 MemoryDenyWriteExecute=true
@@ -31,6 +31,7 @@ ProtectControlGroups=true
 ProtectKernelModules=true
 ProtectKernelTunables=true
 ProtectKernelLogs=true
+ProtectClock=true
 ProtectHostname=true
 ProtectProc=noaccess
 ProtectSystem=full

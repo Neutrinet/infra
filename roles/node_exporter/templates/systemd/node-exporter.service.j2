@@ -24,5 +24,27 @@ ExecReload=/bin/kill -HUP $MAINPID
 TimeoutStopSec=20s
 SendSIGKILL=no
 
+# Systemd hardening
+CapabilityBoundingSet=
+AmbientCapabilities=
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateTmp=true
+ProtectHome=read-only
+RemoveIPC=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
+ProtectHostname=true
+ProtectSystem=strict
+# Pas de ProtectClock : le collector timex lit l'horloge avec adjtimex, que ProtectClock refuse
+SystemCallFilter=@system-service adjtimex
+
 [Install]
 WantedBy=multi-user.target
