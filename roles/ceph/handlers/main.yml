@@ -6,3 +6,9 @@
   ansible.builtin.service:
     name: vector
     state: restarted
+
+- name: Restart ceph-exporter
+  ansible.builtin.systemd:
+    name: ceph-exporter
+    state: restarted
+    daemon_reload: true
