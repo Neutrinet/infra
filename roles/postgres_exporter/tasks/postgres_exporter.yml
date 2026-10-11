@@ -6,9 +6,8 @@
     home: /opt/postgres-exporter
     shell: /sbin/nologin
     system: true
-    groups:
-      - postgres
-    append: true
+    groups: []
+    append: false
     state: present
 
 - name: Création des dossiers de PostgreSQL exporter
