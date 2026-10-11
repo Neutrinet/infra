@@ -1,0 +1,19 @@
+---
+
+- name: Installation de Redis exporter
+  ansible.builtin.import_tasks: redis_exporter.yml
+  tags: ['redis_exporter']
+
+- name: Nettoyage des archives de Redis exporter
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ['cleanup']
+
+- name: Configuration de vector
+  ansible.builtin.template:
+    src: vector/prometheus_redis_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_redis_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
