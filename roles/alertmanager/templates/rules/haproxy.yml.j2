@@ -19,8 +19,10 @@ groups:
           description: '[{{ $labels.proxy }}] HAProxy HTTP 5xx error rate is > 10% in the last 5 minutes (current = {{ humanizePercentage $value }})'
 
       - alert: HAProxy High HTTP 4xx Error Rate
-        for: 0m
-        expr: sum without (code) (rate(haproxy_server_http_responses_total{code="4xx"}[5m])) / sum without (code) (rate(haproxy_server_http_responses_total[5m])) > 0.5
+        for: 30m
+        keep_firing_for: 10m
+        # Les bots provoquent des rafales de 4xx : seul un taux élevé qui dure, avec du trafic, est remonté.
+        expr: sum without (code) (rate(haproxy_server_http_responses_total{code="4xx"}[5m])) / sum without (code) (rate(haproxy_server_http_responses_total[5m])) > 0.5 and sum without (code) (rate(haproxy_server_http_responses_total[5m])) > 0.5
         labels:
           severity: info
           category: haproxy.http
