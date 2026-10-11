@@ -30,12 +30,12 @@
 
 - name: Téléchargement de l'archive de x509 certificate exporter v{{ x509_certificate_exporter_version }}
   ansible.builtin.get_url:
-    url: https://github.com/enix/x509-certificate-exporter/releases/download/v{{ x509_certificate_exporter_version }}/x509-certificate-exporter-linux-amd64.tar.gz
+    url: https://github.com/enix/x509-certificate-exporter/releases/download/v{{ x509_certificate_exporter_version }}/x509-certificate-exporter-v{{ x509_certificate_exporter_version }}-linux-amd64.tar.gz
     dest: /usr/local/src/x509-certificate-exporter/{{ x509_certificate_exporter_version }}.tar.gz
     owner: root
     group: root
     mode: "u=rw,go=r"
-    checksum: "sha256:https://github.com/enix/x509-certificate-exporter/releases/download/v{{ x509_certificate_exporter_version }}/x509-certificate-exporter-linux-amd64.tar.gz.sha256"
+    checksum: "sha256:https://github.com/enix/x509-certificate-exporter/releases/download/v{{ x509_certificate_exporter_version }}/checksums.txt"
 
 - name: Décompression de l'archive
   ansible.builtin.unarchive:
