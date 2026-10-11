@@ -3,9 +3,11 @@
 type: prometheus_scrape
 endpoints:
     - http://localhost:3001/metrics
+# Uptime Kuma n'accepte la clé d'API que comme mot de passe en basic auth.
 auth:
-  strategy: bearer
-  token: "{{ uptime_kuma_api_token }}"
+  strategy: basic
+  user: ""
+  password: "{{ uptime_kuma_api_token }}"
 
 scrape_interval_secs: 15
 scrape_timeout_secs: 10
