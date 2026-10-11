@@ -3,10 +3,7 @@
     update_cache: true
 
 - name: Restart vector
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: vector
     state: restarted
-
-- name: Reload systemd
-  ansible.builtin.systemd:
     daemon_reload: true
