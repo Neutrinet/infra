@@ -1,0 +1,32 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+  - name: PHP-FPM
+    rules:
+      - alert: PHP-FPM Pool Down
+        expr: phpfpm_up == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: PHP-FPM pool {{ $labels.pool }} is unreachable
+          description: "[{{ $labels.instance }}] PHP-FPM exporter can't reach the status page of pool {{ $labels.pool }}."
+
+      - alert: PHP-FPM Queue Saturated
+        expr: phpfpm_listen_queue >= phpfpm_listen_queue_length and phpfpm_listen_queue_length > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: PHP-FPM listen queue of pool {{ $labels.pool }} is saturated
+          description: "[{{ $labels.instance }}] The listen queue of pool {{ $labels.pool }} is at capacity, new requests are rejected."
+
+      - alert: PHP-FPM Max Children Reached
+        expr: increase(phpfpm_max_children_reached[10m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: PHP-FPM pool {{ $labels.pool }} reached max_children
+          description: "[{{ $labels.instance }}] The pool {{ $labels.pool }} hit its max_children limit recently, consider raising it."
