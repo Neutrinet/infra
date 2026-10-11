@@ -181,6 +181,12 @@ inhibit_rules:
       - category = caddy.health
     equal: ['instance']
 
+  # Specific Ceph alert active: hide the generic HEALTH_WARN / HEALTH_ERROR alerts
+  - target_matchers:
+      - category = ceph.health
+    source_matchers:
+      - category = ceph.detail
+
   # Hide Backup errors when {{ inventory_hostname }} is down
   - target_matchers:
       - category = base.backup

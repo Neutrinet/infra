@@ -3,30 +3,277 @@
 
 groups:
   - name: Ceph
+    # Expressions reprises des règles officielles de Ceph (monitoring/ceph-mixin/prometheus_alerts.yml).
+    # Les alertes de la catégorie ceph.detail précisent la cause et cachent les alertes génériques ceph.health.
     rules:
       - alert: Ceph Down
         for: 5m
         expr: ceph_health_status > 1
         labels:
           severity: critical
+          category: ceph.health
         annotations:
-          summary: 'Ceph instance {{ $labels.instance }} is down'
-          description: '[{{ $labels.instance }}] Ceph instance is down.'
+          summary: 'Ceph cluster is in HEALTH_ERROR'
+          description: 'Ceph cluster is in HEALTH_ERROR state, check "ceph health detail".'
 
       - alert: Ceph Health Warning
-        for: 5m
+        for: 15m
         expr: ceph_health_status == 1
         labels:
           severity: warning
+          category: ceph.health
         annotations:
-          summary: 'Ceph instance {{ $labels.instance }} has warnings'
-          description: '[{{ $labels.instance }}] Ceph instance has health warnings.'
+          summary: 'Ceph cluster is in HEALTH_WARN'
+          description: 'Ceph cluster is in HEALTH_WARN state for more than 15 minutes, check "ceph health detail".'
 
       - alert: Ceph OSD Down
         for: 5m
         expr: ceph_osd_up == 0
         labels:
           severity: critical
+          category: ceph.detail
         annotations:
           summary: 'Ceph OSD {{ $labels.ceph_daemon }} is down'
-          description: '[{{ $labels.instance }}] Ceph OSD {{ $labels.ceph_daemon }} is down.'
+          description: 'Ceph OSD {{ $labels.ceph_daemon }} is down.'
+
+      - alert: Ceph OSD Flapping
+        expr: rate(ceph_osd_up[5m]) * 60 > 1
+        for: 0m
+        labels:
+          severity: warning
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph OSD {{ $labels.ceph_daemon }} is flapping'
+          description: 'Ceph OSD {{ $labels.ceph_daemon }} was marked down and back up more than once a minute in the last 5 minutes, check the network and the disk.'
+
+      - alert: Ceph Mon Quorum At Risk
+        for: 30s
+        expr: ((ceph_health_detail{name="MON_DOWN"} == 1) * on () (count(ceph_mon_quorum_status == 1) == bool (floor(count(ceph_mon_metadata) / 2) + 1))) == 1
+        labels:
+          severity: critical
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph monitor quorum is at risk'
+          description: 'Only the minimum number of monitors are in quorum, losing one more monitor makes the cluster unavailable.'
+
+      - alert: Ceph Mon Down
+        for: 30s
+        expr: count(ceph_mon_quorum_status == 0) <= (count(ceph_mon_metadata) - floor(count(ceph_mon_metadata) / 2) + 1)
+        labels:
+          severity: warning
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph has {{ $value }} monitors out of quorum'
+          description: '{{ $value }} Ceph monitors are down, the quorum is still active.'
+
+      - alert: Ceph Mon Disk Critical
+        for: 1m
+        expr: ceph_health_detail{name="MON_DISK_CRIT"} == 1
+        labels:
+          severity: critical
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph monitor disk space is critically low'
+          description: 'The filesystem of a Ceph monitor store is almost full.'
+
+      - alert: Ceph Mon Clock Skew
+        for: 1m
+        expr: ceph_health_detail{name="MON_CLOCK_SKEW"} == 1
+        labels:
+          severity: warning
+          category: ceph.detail
+        annotations:
+          summary: 'Clock skew detected among Ceph monitors'
+          description: 'The clocks of the Ceph monitors are not synchronised, check NTP on the Ceph nodes.'
+
+      - alert: Ceph OSD Near Full
+        for: 5m
+        expr: ceph_health_detail{name="OSD_NEARFULL"} == 1
+        labels:
+          severity: warning
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph OSDs are near full'
+          description: 'One or more OSDs reached the nearfull threshold, add capacity or rebalance before they become full.'
+
+      - alert: Ceph OSD Backfill Full
+        for: 1m
+        expr: ceph_health_detail{name="OSD_BACKFILLFULL"} > 0
+        labels:
+          severity: warning
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph OSDs are too full for backfill'
+          description: 'One or more OSDs reached the backfillfull threshold, data rebalancing is blocked.'
+
+      - alert: Ceph OSD Full
+        for: 1m
+        expr: ceph_health_detail{name="OSD_FULL"} > 0
+        labels:
+          severity: critical
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph OSDs are full, writes are blocked'
+          description: 'One or more OSDs reached the full threshold, writes to the affected pools are blocked.'
+
+      - alert: Ceph OSD Read Errors
+        for: 30s
+        expr: ceph_health_detail{name="BLUESTORE_SPURIOUS_READ_ERRORS"} == 1
+        labels:
+          severity: warning
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph OSDs report spurious read errors'
+          description: 'BlueStore had to retry reads, this can be the sign of a failing disk.'
+
+      - alert: Ceph Device Failure Predicted
+        for: 1m
+        expr: ceph_health_detail{name="DEVICE_HEALTH"} == 1
+        labels:
+          severity: warning
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph predicts a device failure'
+          description: 'Ceph device health predicts a disk failure soon, check "ceph device ls".'
+
+      - alert: Ceph PGs Inactive
+        for: 5m
+        expr: ceph_pool_metadata * on (pool_id, instance) group_left () (ceph_pg_total - ceph_pg_active) > 0
+        labels:
+          severity: critical
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph pool {{ $labels.name }} has {{ $value }} inactive PGs'
+          description: 'Pool {{ $labels.name }} has {{ $value }} placement groups inactive for more than 5 minutes, IO to these PGs is blocked.'
+
+      - alert: Ceph PGs Damaged
+        for: 5m
+        expr: ceph_health_detail{name=~"PG_DAMAGED|OSD_SCRUB_ERRORS"} == 1
+        labels:
+          severity: critical
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph has damaged PGs'
+          description: 'Scrubbing found inconsistent or damaged placement groups, check "ceph health detail" before repairing.'
+
+      - alert: Ceph PG Unavailable Blocking IO
+        for: 1m
+        expr: ((ceph_health_detail{name="PG_AVAILABILITY"} == 1) - scalar(ceph_health_detail{name="OSD_DOWN"})) == 1
+        labels:
+          severity: critical
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph PGs are unavailable, IO is blocked'
+          description: 'Some placement groups are unavailable while all OSDs are up, IO to these PGs is blocked.'
+
+      - alert: Ceph PG Recovery At Risk
+        for: 1m
+        expr: ceph_health_detail{name="PG_RECOVERY_FULL"} == 1
+        labels:
+          severity: critical
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph PG recovery is blocked by full OSDs'
+          description: 'Data recovery is blocked because OSDs are full, the redundancy is not restored.'
+
+      - alert: Ceph Object Missing
+        for: 30s
+        expr: (ceph_health_detail{name="OBJECT_UNFOUND"} == 1) * on () (count(ceph_osd_up == 1) == bool count(ceph_osd_metadata)) == 1
+        labels:
+          severity: critical
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph has unfound objects'
+          description: 'Ceph cannot find the latest copy of some objects while all OSDs are up.'
+
+      - alert: Ceph Pool Near Full
+        for: 5m
+        expr: ceph_health_detail{name="POOL_NEAR_FULL"} > 0
+        labels:
+          severity: warning
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph pools are near full'
+          description: 'One or more pools are near their quota or the cluster capacity.'
+
+      - alert: Ceph Pool Full
+        for: 1m
+        expr: ceph_health_detail{name="POOL_FULL"} > 0
+        labels:
+          severity: critical
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph pools are full, writes are blocked'
+          description: 'One or more pools are full, writes to these pools are blocked.'
+
+      - alert: Ceph Slow Ops
+        for: 5m
+        expr: ceph_healthcheck_slow_ops > 0
+        labels:
+          severity: warning
+          category: ceph.detail
+        annotations:
+          summary: 'Ceph has {{ $value }} slow operations'
+          description: '{{ $value }} OSD requests are taking too long to complete.'
+
+      - alert: Ceph Daemon Crash
+        for: 1m
+        expr: ceph_health_detail{name="RECENT_CRASH"} == 1
+        labels:
+          severity: critical
+          category: ceph.detail
+        annotations:
+          summary: 'A Ceph daemon has crashed recently'
+          description: 'A Ceph daemon crashed recently, check "ceph crash ls-new" and archive it with "ceph crash archive-all".'
+
+  - name: Ceph Daemons
+    # Compteurs de performance exposés par ceph-exporter sur chaque nœud.
+    rules:
+      - alert: Ceph OSD High Write Latency
+        expr: rate(ceph_osd_op_w_latency_sum[5m]) / rate(ceph_osd_op_w_latency_count[5m]) > 0.5
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Ceph OSD {{ $labels.ceph_daemon }} write latency is {{ humanizeDuration $value }}'
+          description: '[{{ $labels.instance }}] Ceph OSD {{ $labels.ceph_daemon }} write latency is > 500ms for 15 minutes (current = {{ humanizeDuration $value }})'
+
+      - alert: Ceph OSD High Read Latency
+        expr: rate(ceph_osd_op_r_latency_sum[5m]) / rate(ceph_osd_op_r_latency_count[5m]) > 0.5
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Ceph OSD {{ $labels.ceph_daemon }} read latency is {{ humanizeDuration $value }}'
+          description: '[{{ $labels.instance }}] Ceph OSD {{ $labels.ceph_daemon }} read latency is > 500ms for 15 minutes (current = {{ humanizeDuration $value }})'
+
+      - alert: Ceph Exporter Down
+        for: 15m
+        expr: 'static_heartbeat{instance=~"{{{ groups['proxmox'] | join('|') }}}"} unless on (instance) ceph_exporter_scrape_time'
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Ceph exporter is down'
+          description: '[{{ $labels.instance }}] Vector is running but ceph-exporter metrics are missing'
+
+  - name: Ceph S3
+    # RadosGW tourne sur les serveurs Proxmox, derrière s3.neutrinet.be ; compteurs de ceph-exporter.
+    rules:
+      - alert: Ceph RGW Down
+        for: 5m
+        expr: 'static_heartbeat{instance=~"{{{ groups['proxmox_patata'] | join('|') }}}"} unless on (instance) ceph_rgw_req'
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Ceph RGW is down'
+          description: '[{{ $labels.instance }}] Vector is running but the RadosGW counters are missing, the S3 gateway is probably stopped.'
+
+      - alert: Ceph RGW High Failed Requests
+        expr: sum by (instance) (rate(ceph_rgw_failed_req[5m])) / sum by (instance) (rate(ceph_rgw_req[5m])) > 0.05 and sum by (instance) (rate(ceph_rgw_req[5m])) > 0.1
+        for: 15m
+        keep_firing_for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Ceph RGW failed requests are at {{ humanizePercentage $value }}'
+          description: '[{{ $labels.instance }}] More than 5% of the S3 requests failed in the last 5 minutes (current = {{ humanizePercentage $value }})'
