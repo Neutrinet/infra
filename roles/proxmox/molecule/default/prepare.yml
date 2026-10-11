@@ -1,4 +1,6 @@
 ---
+# Installe Proxmox VE et un Ceph mono-nœud (un mon, un mgr, sans OSD) pour que le rôle
+# puisse écrire dans /etc/pve et activer le module prometheus du mgr.
 - name: Prepare
   hosts: all
   become: true
@@ -7,6 +9,76 @@
     - name: Mise à jour du cache APT
       ansible.builtin.apt:
         update_cache: true
+
+    - name: Installation de python3-debian
+      ansible.builtin.package:
+        name: python3-debian
+        state: present
+
+    # pve-cluster refuse de démarrer si le nom de l'hôte pointe sur 127.0.1.1
+    - name: Résolution du nom de l'hôte sur son adresse IP
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        regexp: "^127\\.0\\.1\\.1"
+        line: "{{ ansible_default_ipv4.address }} {{ ansible_hostname }}"
+
+    - name: Ajout des dépôts APT pour Proxmox et Ceph
+      ansible.builtin.deb822_repository:
+        name: "{{ item.name }}"
+        types: deb
+        signed_by: https://enterprise.proxmox.com/debian/proxmox-archive-keyring-trixie.gpg
+        uris: "{{ item.uri }}"
+        suites: trixie
+        components:
+          - "{{ item.component }}"
+        state: present
+      loop:
+        - name: pve-install-repo
+          uri: http://download.proxmox.com/debian/pve
+          component: pve-no-subscription
+        - name: ceph
+          uri: http://download.proxmox.com/debian/ceph-squid
+          component: no-subscription
+
+    - name: Installation de Proxmox VE et de Ceph
+      ansible.builtin.apt:
+        name:
+          - pve-manager
+          - ceph
+        update_cache: true
+        state: present
+
+    - name: Recherche des dépôts enterprise ajoutés par pve-manager
+      ansible.builtin.find:
+        paths: /etc/apt/sources.list.d
+        contains: ".*enterprise\\.proxmox\\.com/debian/(pve|ceph)"
+        patterns: "*.sources,*.list"
+      register: _prepare_enterprise_repos
+
+    - name: Suppression des dépôts enterprise, inaccessibles sans abonnement
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ _prepare_enterprise_repos.files }}"
+
+    - name: Mise à jour du cache APT sans les dépôts enterprise
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Initialisation de la configuration Ceph
+      ansible.builtin.command:
+        cmd: pveceph init --network {{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.prefix }}
+        creates: /etc/pve/ceph.conf
+
+    - name: Création du moniteur Ceph
+      ansible.builtin.command:
+        cmd: pveceph mon create
+        creates: /var/lib/ceph/mon/ceph-{{ ansible_hostname }}
+
+    - name: Création du manager Ceph
+      ansible.builtin.command:
+        cmd: pveceph mgr create
+        creates: /var/lib/ceph/mgr/ceph-{{ ansible_hostname }}
 
   roles:
     - vector
