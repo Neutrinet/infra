@@ -6,3 +6,8 @@
   ansible.builtin.service:
     name: routinator
     state: restarted
+
+- name: Restart vector
+  ansible.builtin.service:
+    name: vector
+    state: restarted
