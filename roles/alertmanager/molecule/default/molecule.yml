@@ -7,6 +7,12 @@ driver:
 platforms:
   - name: trixie-alertmanager-molecule
     box: debian/trixie64
+    # Groupes de l'inventaire de production utilisés par les règles d'alerte
+    groups:
+      - louise
+      - proxmox
+      - proxmox_patata
+      - pbs
     cpu: 2
     memory: 1024
     interfaces:

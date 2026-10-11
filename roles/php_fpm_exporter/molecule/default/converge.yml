@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  roles:
+    - role: php_fpm_exporter
+      vars:
+        php_fpm_exporter_pool: molecule
+        php_fpm_exporter_socket: /run/php/molecule.sock
+        php_fpm_exporter_port: 9253

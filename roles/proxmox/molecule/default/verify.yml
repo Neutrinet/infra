@@ -1,0 +1,46 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Récupération de l'état des services
+      ansible.builtin.service_facts:
+
+    - name: Vérification que les exporters sont actifs et activés au démarrage
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services[item].state == 'running'
+          - ansible_facts.services[item].status == 'enabled'
+      loop:
+        - ceph-exporter.service
+        - smartctl-exporter.service
+        - ipmi-exporter.service
+
+    - name: Vérification du module prometheus du manager Ceph
+      ansible.builtin.uri:
+        url: http://localhost:9283/metrics
+        return_content: true
+      register: _verify_mgr
+      retries: 6
+      delay: 10
+      until: "_verify_mgr.status == 200 and 'ceph_health_status' in _verify_mgr.content"
+
+    - name: Vérification de ceph-exporter
+      ansible.builtin.uri:
+        url: http://localhost:9926/metrics
+        return_content: true
+      register: _verify_ceph_exporter
+      retries: 6
+      delay: 10
+      until: "_verify_ceph_exporter.status == 200 and 'ceph_exporter_scrape_time' in _verify_ceph_exporter.content"
+
+    # pvestatd envoie ses métriques InfluxDB à Vector toutes les 10 secondes
+    - name: Vérification des métriques remontées par Vector
+      ansible.builtin.uri:
+        url: http://localhost:9598/metrics
+        return_content: true
+      register: _verify_vector
+      retries: 12
+      delay: 10
+      until: "_verify_vector.status == 200 and 'ceph_health_status' in _verify_vector.content and 'ceph_exporter_scrape_time' in _verify_vector.content and 'cpustat_' in _verify_vector.content"

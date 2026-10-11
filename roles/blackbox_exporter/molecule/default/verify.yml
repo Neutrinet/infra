@@ -1,0 +1,23 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Récupération de l'état des services
+      ansible.builtin.service_facts:
+
+    - name: Vérification que blackbox-exporter est actif et activé au démarrage
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['blackbox-exporter.service'].state == 'running'
+          - ansible_facts.services['blackbox-exporter.service'].status == 'enabled'
+
+    - name: Vérification de http://localhost:9115/metrics
+      ansible.builtin.uri:
+        url: http://localhost:9115/metrics
+        return_content: true
+      register: _verify_endpoint_0
+      retries: 6
+      delay: 10
+      until: "_verify_endpoint_0.status == 200 and 'blackbox_exporter' in _verify_endpoint_0.content"
