@@ -1,0 +1,5 @@
+php_fpm_exporter_version: 2.2.0
+# Pool PHP-FPM à surveiller, fournis par le rôle appelant
+php_fpm_exporter_pool: changeme
+php_fpm_exporter_socket: /var/run/php/changeme.sock
+php_fpm_exporter_port: 9253
