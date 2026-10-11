@@ -6,7 +6,7 @@ driver:
     name: libvirt
 platforms:
   - name: trixie-vector-molecule
-    box: debian/trixie4
+    box: debian/trixie64
     cpu: 2
     memory: 512
 provisioner:

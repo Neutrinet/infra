@@ -1,0 +1,27 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Récupération de l'état des services
+      ansible.builtin.service_facts:
+
+    - name: Vérification que routinator est actif et activé au démarrage
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['routinator.service'].state == 'running'
+          - ansible_facts.services['routinator.service'].status == 'enabled'
+
+    # La première validation RPKI prend plusieurs minutes, Routinator répond 503 en attendant
+    - name: Vérification que routinator répond sur /metrics
+      ansible.builtin.uri:
+        url: http://localhost:8323/metrics
+        return_content: true
+        status_code:
+          - 200
+          - 503
+      register: _verify_endpoint
+      failed_when: >-
+        not (_verify_endpoint.status == 200 and 'routinator_' in _verify_endpoint.content
+        or _verify_endpoint.status == 503 and 'Initial validation ongoing' in _verify_endpoint.content)
