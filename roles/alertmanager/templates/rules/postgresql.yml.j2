@@ -3,7 +3,7 @@
 
 groups:
   - name: PostgreSQL
-    # Métriques de postgres_exporter (collectors activés par défaut en v0.18).
+    # Métriques de postgres_exporter (collectors activés par défaut en v0.20).
     rules:
       - alert: PostgreSQL Exporter Error
         expr: pg_up == 0
@@ -34,7 +34,7 @@ groups:
 
       - alert: PostgreSQL Replication Slot Inactive
         # Un slot inactif sur le primaire retient le WAL jusqu'à max_slot_wal_keep_size.
-        expr: pg_replication_slot_slot_is_active == 0 and on (instance) pg_replication_is_replica == 0
+        expr: pg_replication_slots_slot_is_active == 0 and on (instance) pg_replication_is_replica == 0
         for: 15m
         labels:
           severity: warning
@@ -43,7 +43,7 @@ groups:
           description: "[{{ $labels.instance }}] Replication slot {{ $labels.slot_name }} is inactive on the primary, the replica is probably down."
 
       - alert: PostgreSQL Replication Slot WAL Lost
-        expr: pg_replication_slot_wal_status{wal_status="lost"} == 1
+        expr: pg_replication_slots_wal_status{wal_status="lost"} == 1
         for: 0m
         labels:
           severity: critical

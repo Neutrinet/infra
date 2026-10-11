@@ -27,10 +27,10 @@ groups:
           description: "[{{ $labels.instance }}] Certificate {{ $labels.filepath }} will expire in {{ $value | humanize }} days, check the renewal."
 
       - alert: Local Certificate Read Errors
-        expr: x509_read_errors > 0
+        expr: sum by (instance, source_name) (increase(x509_source_errors_total[15m])) > 0
         for: 15m
         labels:
           severity: warning
         annotations:
           summary: x509 certificate exporter fails to read certificates
-          description: "[{{ $labels.instance }}] x509 certificate exporter fails to read {{ $value }} certificates."
+          description: "[{{ $labels.instance }}] x509 certificate exporter had {{ $value }} errors reading source {{ $labels.source_name }} in the last 15 minutes."
