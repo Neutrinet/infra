@@ -32,6 +32,46 @@ groups:
           summary: 'PostgreSQL is not running in the Patroni cluster.'
           description: '[{{ $labels.instance }}] [Patroni cluster {{ $labels.scope }}] PostgreSQL is not running.'
 
+      - alert: Patroni Down
+        # Sans Patroni, ses métriques disparaissent et les alertes ci-dessus restent muettes.
+        expr: 'static_heartbeat{instance=~"{{{ postgresql_patroni_hosts | join('|') }}}"} unless on (instance) patroni_postgres_running'
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Patroni is down
+          description: "[{{ $labels.instance }}] Vector is running but Patroni metrics are missing, Patroni is probably stopped."
+
+      - alert: PostgreSQL Replication Lag
+        expr: pg_replication_lag_seconds > 300 and on (instance) pg_replication_is_replica == 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: PostgreSQL replica is {{ humanizeDuration $value }} behind the primary
+          description: "[{{ $labels.instance }}] PostgreSQL replica is > 5 minutes behind the primary (current = {{ humanizeDuration $value }})"
+
+      - alert: Patroni Paused
+        # Mode maintenance oublié : plus de failover automatique.
+        expr: max by (scope) (patroni_is_paused) == 1
+        for: 1h
+        labels:
+          severity: warning
+          frequency: daily
+        annotations:
+          summary: Patroni cluster {{ $labels.scope }} is paused
+          description: "[Patroni cluster {{ $labels.scope }}] Maintenance mode is enabled since more than 1h, automatic failover is disabled (patronictl resume)."
+
+      - alert: Patroni Pending Restart
+        expr: count by (scope) (patroni_pending_restart == 1)
+        for: 1h
+        labels:
+          severity: warning
+          frequency: daily
+        annotations:
+          summary: Patroni cluster {{ $labels.scope }} has {{ $value }} nodes pending a restart
+          description: "[Patroni cluster {{ $labels.scope }}] {{ $value }} nodes need a restart to apply their configuration (patronictl restart --pending)."
+
       - alert: PostgreSQL Behind Timeline
         for: 10m
         expr: stdvar by (scope) (patroni_postgres_timeline) > 0
