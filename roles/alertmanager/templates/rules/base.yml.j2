@@ -108,7 +108,7 @@ groups:
 
       - alert: OOM Kill Detected
         for: 0m
-        expr: 'increase(node_vmstat_oom_kill) > 0'
+        expr: 'increase(node_vmstat_oom_kill[5m]) > 0'
         labels:
           severity: warning
         annotations:
@@ -203,7 +203,8 @@ groups:
           description: "[{{ $labels.instance }}] Systemd service {{ $labels.name }} failed."
 
       - alert: Kernel Version Changed
-        expr: 'changes(node_uname_info[1h]) > 0'
+        # Un nouveau noyau crée une nouvelle série, on compte donc les séries vues sur la dernière heure.
+        expr: 'node_uname_info and on (instance) (count by (instance) (last_over_time(node_uname_info[1h])) > 1)'
         for: 1m
         labels:
           severity: info
@@ -214,7 +215,7 @@ groups:
   - name: Time
     rules:
       - alert: Clock Skew
-        expr: 'abs(node_timex_offset_seconds) > 0.05 and abs(deriv(node_timex_offset_seconds[5m])) >= 0'
+        expr: 'abs(node_timex_offset_seconds) > 0.05'
         for: 15m
         labels:
           severity: warning
@@ -278,7 +279,7 @@ groups:
           severity: critical
           frequency: weekly
         annotations:
-          summary: 'Disk /dev{{ $labels.device }} is failing'
+          summary: 'Disk /dev/{{ $labels.device }} is failing'
           description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} is failing'
 
       - alert: Disk Low Wear Level
@@ -288,7 +289,7 @@ groups:
           severity: critical
           frequency: weekly
         annotations:
-          summary: 'Disk /dev{{ $labels.device }} wear level is at {{ $value }}%'
+          summary: 'Disk /dev/{{ $labels.device }} wear level is at {{ $value }}%'
           description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} wear level is < 10% (current = {{ $value }}%)'
 
       - alert: Disk Failure Next Month
@@ -298,7 +299,7 @@ groups:
           severity: warning
           frequency: weekly
         annotations:
-          summary: 'Disk /dev{{ $labels.device }} will fail in 30 days (current wear level = {{ $value }}%)'
+          summary: 'Disk /dev/{{ $labels.device }} will fail in 30 days (current wear level = {{ $value }}%)'
           description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} will fail in 30 days (current wear level = {{ $value }}%)'
 
       - alert: EDAC Correctable Errors Detected

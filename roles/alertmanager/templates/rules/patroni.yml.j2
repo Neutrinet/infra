@@ -25,11 +25,8 @@ groups:
 
       - alert: PostgreSQL Running
         for: 5m
-        expr: >
-{% for host in postgresql_patroni_hosts %}
-          patroni_postgres_running{host="{{{ host }}}"} == 0{% if not loop.last %} OR {% endif %}
-
-{% endfor %}
+        # Seuls les hôtes Patroni exposent cette métrique, pas besoin de filtrer par instance.
+        expr: 'patroni_postgres_running == 0'
         labels:
           severity: critical
         annotations:
@@ -49,11 +46,12 @@ groups:
     rules:
       - alert: Etcd Cluster Size
         for: 15m
+        # Etcd tourne sur les hôtes Patroni (importé par le rôle postgres_patroni).
         expr: count(etcd_server_id) != 3
         labels:
           severity: critical
         annotations:
-          description: 'Incorrect number of hosts for the Etcd cluster: {{ $labels.value }}.'
+          description: 'Incorrect number of hosts for the Etcd cluster: {{ $value }}.'
           summary: 'Incorrect number of hosts for the Etcd cluster.'
 
       - alert: Etcd Leader

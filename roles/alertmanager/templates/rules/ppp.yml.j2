@@ -1,6 +1,7 @@
 #jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
 {{{ ansible_managed | comment }}}
 
+# Pas encore d'exporter PPP freeradius dans ce dépôt : ces règles en ont besoin pour se déclencher.
 groups:
   - name: PPP Sessions
     rules:
@@ -26,7 +27,7 @@ groups:
 
       # Alerte critique si beaucoup de sessions tombent en même temps
       - alert: PPP Mass Disconnection
-        expr: count(freeradius_ppp_sessions_active) / freeradius_ppp_sessions_total < 0.5
+        expr: count by (instance) (freeradius_ppp_sessions_active) / on (instance) max by (instance) (freeradius_ppp_sessions_total) < 0.5
         for: 5m
         labels:
           severity: critical
