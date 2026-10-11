@@ -1,6 +1,8 @@
 - name: Installation des dépendences
   ansible.builtin.package:
-    name: python-is-python3
+    name:
+      - python-is-python3
+      - jq
     state: present
 
 - name: Récupération du dépôt git de nagios-scinga-openvpn
