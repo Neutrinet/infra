@@ -14,3 +14,11 @@
   ansible.builtin.include_role:
     name: postgres_exporter
   tags: ['postgres_exporter']
+
+- name: Suppression de l'utilisateur PostgreSQL telegraf
+  community.postgresql.postgresql_user:
+    name: telegraf
+    state: absent
+  become: true
+  become_user: postgres
+  tags: ['telegraf_config']
