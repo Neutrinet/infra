@@ -1,0 +1,36 @@
+#jinja2: variable_start_string:'{{{', variable_end_string: '}}}'
+{{{ ansible_managed | comment }}}
+
+groups:
+  - name: Certificates
+    # Certificats lus sur disque par x509-certificate-exporter : détecte un renouvellement raté,
+    # y compris pour les services non HTTP.
+    rules:
+      - alert: Local Certificate Expires Soon
+        expr: x509_cert_expires_in_seconds / 86400 < 21
+        for: 1h
+        labels:
+          severity: warning
+          frequency: daily
+        annotations:
+          summary: Certificate {{ $labels.subject_CN }} will expire in {{ $value | humanize }} days
+          description: "[{{ $labels.instance }}] Certificate {{ $labels.filepath }} will expire in {{ $value | humanize }} days, check the renewal."
+
+      - alert: Local Certificate Expires Critical
+        expr: x509_cert_expires_in_seconds / 86400 < 7
+        for: 0m
+        labels:
+          severity: critical
+          frequency: daily
+        annotations:
+          summary: Certificate {{ $labels.subject_CN }} will expire in {{ $value | humanize }} days
+          description: "[{{ $labels.instance }}] Certificate {{ $labels.filepath }} will expire in {{ $value | humanize }} days, check the renewal."
+
+      - alert: Local Certificate Read Errors
+        expr: sum by (instance, source_name) (increase(x509_source_errors_total[15m])) > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: x509 certificate exporter fails to read certificates
+          description: "[{{ $labels.instance }}] x509 certificate exporter had {{ $value }} errors reading source {{ $labels.source_name }} in the last 15 minutes."
