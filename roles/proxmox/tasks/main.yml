@@ -28,6 +28,16 @@
 - name: Trigger handlers
   ansible.builtin.meta: flush_handlers
 
+- name: Configuration de la source InfluxDB de Vector pour Proxmox
+  ansible.builtin.template:
+    src: vector/prometheus_proxmox_influxdb.yaml.j2
+    dest: /etc/vector/sources/prometheus_proxmox_influxdb.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
+
 - name: Configuration de l'exporteur InfluxDB de Proxmox
   ansible.builtin.copy:
     src: pve/status.cfg

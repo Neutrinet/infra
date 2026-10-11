@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+# Réception des métriques envoyées par pvestatd (/etc/pve/status.cfg) au format InfluxDB.
+type: socket
+mode: udp
+address: "127.0.0.1:8089"
+decoding:
+  codec: influxdb
