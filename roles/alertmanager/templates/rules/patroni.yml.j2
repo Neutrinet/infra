@@ -25,11 +25,7 @@ groups:
 
       - alert: PostgreSQL Running
         for: 5m
-        expr: >
-{% for host in postgresql_patroni_hosts %}
-          patroni_postgres_running{host="{{{ host }}}"} == 0{% if not loop.last %} OR {% endif %}
-
-{% endfor %}
+        expr: 'patroni_postgres_running == 0'
         labels:
           severity: critical
         annotations:
@@ -53,7 +49,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          description: 'Incorrect number of hosts for the Etcd cluster: {{ $labels.value }}.'
+          description: 'Incorrect number of hosts for the Etcd cluster: {{ $value }}.'
           summary: 'Incorrect number of hosts for the Etcd cluster.'
 
       - alert: Etcd Leader

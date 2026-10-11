@@ -5,8 +5,8 @@ groups:
   - name: Caddy
     rules:
       - alert: Caddy High HTTP 5xx Error Rate
-        for: 0m
-        expr: sum without (code) (rate(caddy_http_request_duration_seconds_count{code=~"5.."}[5m])) / sum without (code) (rate(caddy_http_request_duration_seconds_count[5m])) > 0.1
+        for: 5m
+        expr: sum without (code) (rate(caddy_http_request_duration_seconds_count{code=~"5.."}[5m])) / sum without (code) (rate(caddy_http_request_duration_seconds_count[5m])) > 0.1 and sum without (code) (rate(caddy_http_request_duration_seconds_count[5m])) > 0.1
         labels:
           severity: critical
           category: caddy.http

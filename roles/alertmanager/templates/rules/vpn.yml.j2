@@ -6,7 +6,7 @@ groups:
     rules:
       - alert: VPN Down
         for: 5m
-        expr: check_openvpn_state != 0
+        expr: check_openvpn != 0
         labels:
           severity: critical
           category: probe.vpn

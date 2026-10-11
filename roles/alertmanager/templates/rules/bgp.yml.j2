@@ -5,7 +5,7 @@ groups:
 - name: BGP Sessions
   rules:
   - alert: BGP State Down
-    expr: bird_protocol_up{proto="BGP", state!="Passive", proto="BGP"} == 0
+    expr: bird_protocol_up{proto="BGP", state!="Passive"} == 0
     for: 5m
     labels:
       severity: info
@@ -18,7 +18,7 @@ groups:
     for: 5m
     labels:
       severity: info
-      exporter: node-exporter
+      exporter: bird-exporter
     annotations:
       summary: "BGP session {{ $labels.name }} has recovered"
       description: '[{{ $labels.instance }}] BGP session {{ $labels.name }} has recovered.'
