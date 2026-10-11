@@ -61,7 +61,8 @@
   loop_control:
     loop_var: path
   when:
-    - filename not in _blackbox_exporter_vector_sources and filename not in _blackbox_exporter_vector_transforms
+    - filename not in _blackbox_exporter_vector_sources | default([])
+    - filename not in _blackbox_exporter_vector_transforms | default([])
   vars:
     filename: "{{ path | basename }}"
   notify: Restart vector

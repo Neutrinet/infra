@@ -4,7 +4,8 @@ type: "remap"
 inputs:
   - "blackbox_exporter_http_{{ probe_hostname | replace(".", "_") }}"
 source: |
-  .tags.url = "{{ probe.url }}"
+  # La query string est retirée, elle peut contenir des secrets (tokens)
+  .tags.url = "{{ probe.url | split('?') | first }}"
   .tags.target = "{{ probe_hostname }}"
   .tags.host = "{{ probe_hostname }}"
   .tags.type = "http"

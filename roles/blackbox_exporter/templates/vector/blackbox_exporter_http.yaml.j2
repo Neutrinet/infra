@@ -2,7 +2,7 @@
 
 type: prometheus_scrape
 endpoints:
-  - "http://localhost:9115/probe?target={{ probe.url }}&module={{ probe_name }}"
+  - "http://localhost:9115/probe?target={{ probe.url | urlencode }}&module={{ probe_name | urlencode }}"
 
 scrape_interval_secs: 15
 scrape_timeout_secs: 10
