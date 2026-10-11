@@ -7,3 +7,7 @@ blackbox_exporter_http_probes:
   - url: https://example.com
   - url: https://expired.badssl.com/
     check_cert_expiry: true
+
+# Sans hôte Patroni, le fichier de règles patroni est vide et vmalert -dryRun le refuse
+postgresql_patroni_hosts:
+  - trixie-alertmanager-molecule
