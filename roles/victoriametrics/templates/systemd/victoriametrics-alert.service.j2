@@ -15,6 +15,7 @@ Group=victoriametrics
 ExecReload=/bin/kill -s SIGHUP $MAINPID
 ExecStart=/usr/local/bin/vmalert \
   -enableTCP6 \
+  -httpListenAddr=localhost:8880 \
   -memory.allowedBytes={{ victoriametrics_alert_memory_limit | human_to_bytes }} \
   -rule="/etc/victoriametrics/rules.d/*.yml" \
   -datasource.url={{ victoriametrics_alert_datasource }} \
