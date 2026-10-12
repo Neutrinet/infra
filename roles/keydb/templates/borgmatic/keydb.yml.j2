@@ -1,9 +1,0 @@
-{{ ansible_managed | comment }}
-
-<<: !include /etc/borgmatic.d/common.yml
-
-source_directories: !retain
-  - "/etc/keydb/keydb-{{ keydb_name_instance }}.conf"
-  - "{{ keydb_dir }}"
-
-archive_name_format: keydb_{{ keydb_name_instance }}_{hostname}-{now}

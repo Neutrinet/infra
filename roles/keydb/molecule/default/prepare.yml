@@ -1,7 +1,0 @@
----
-- name: Prepare
-  hosts: all
-  become: true
-
-  roles:
-    - commun
