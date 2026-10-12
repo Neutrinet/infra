@@ -13,7 +13,6 @@ RestartSec=1
 User=victoriametrics
 Group=victoriametrics
 ExecReload=/bin/kill -s SIGHUP $MAINPID
-ExecStop=/bin/kill -s SIGTERM $MAINPID
 ExecStart=/usr/local/bin/victoria-metrics \
   -enableTCP6 \
   -memory.allowedBytes={{victoriametrics_memory_limit | human_to_bytes }} \
