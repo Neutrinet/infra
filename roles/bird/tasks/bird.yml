@@ -64,7 +64,7 @@
     owner: root
     group: root
     mode: "ug=r,o="
-  notify: restart bird
+  notify: Restart bird
   tags: ['bird_config']
 
 - name: Configuration des peers upstream de bird
