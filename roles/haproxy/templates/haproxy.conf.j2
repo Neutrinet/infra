@@ -121,7 +121,6 @@ frontend haproxy-frontend
 {% for host in haproxy %}
 backend {{ host.hostname | replace('.', '-') }}-backend
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
-    http-request set-header X-Real-IP %[src]
     mode http
 {% if "healthcheck_url" in host and host.healthcheck_url %}
     option httpchk {{ host.healthcheck_url }}
