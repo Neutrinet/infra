@@ -1,0 +1,11 @@
+#!/bin/sh
+# Valide une config Caddy avec l'utilisateur caddy : les fichiers de log ouverts
+# pendant la validation lui appartiennent (lancée en root, ils seraient créés en
+# root et Caddy ne pourrait plus les ouvrir).
+set -eu
+
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+
+install -o caddy -m u=r "$1" "$tmp"
+runuser -u caddy -- caddy validate --adapter caddyfile --config "$tmp"

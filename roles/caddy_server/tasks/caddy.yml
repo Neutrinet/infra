@@ -32,6 +32,22 @@
     group: root
     mode: "u=rwx,go=rx"
 
+- name: Copie du script de validation des configs
+  ansible.builtin.copy:
+    src: caddy-validate
+    dest: /usr/local/bin/caddy-validate
+    owner: root
+    group: root
+    mode: "ugo=rx"
+
+- name: Création du dossier des logs
+  ansible.builtin.file:
+    path: /var/log/caddy
+    state: directory
+    owner: caddy
+    group: caddy
+    mode: "u=rwx,g=rx,o="
+
 - name: Copie du fichier de config principal
   ansible.builtin.template:
     src: caddy/Caddyfile.j2
@@ -39,7 +55,7 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
-    validate: caddy validate --adapter caddyfile --config %s
+    validate: caddy-validate %s
   notify: Reload caddy
 
 - name: Copie de la config du healthcheck
@@ -49,16 +65,8 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
-    validate: caddy validate --adapter caddyfile --config %s
+    validate: caddy-validate %s
   notify: Reload caddy
-
-- name: Création du dossier des logs
-  ansible.builtin.file:
-    path: /var/log/caddy
-    state: directory
-    owner: caddy
-    group: caddy
-    mode: "u=rwx,g=rx,o="
 
 - name: Activation du service caddy au démarage
   ansible.builtin.service:

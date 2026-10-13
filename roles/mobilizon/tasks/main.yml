@@ -72,7 +72,7 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
-    validate: caddy validate --adapter caddyfile --config %s
+    validate: caddy-validate %s
   notify: Reload caddy
 
 - name: Installation de Mobilizon
