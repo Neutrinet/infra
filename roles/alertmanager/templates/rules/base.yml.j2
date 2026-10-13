@@ -61,7 +61,8 @@ groups:
   - name: Disk Usage
     rules:
       - alert: Low Disk Space
-        for: 5m
+        for: 15m
+        keep_firing_for: 15m
         expr: '(1 - node_filesystem_avail_bytes{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"} / node_filesystem_size_bytes) > 0.9 and node_filesystem_readonly == 0'
         labels:
           severity: critical
@@ -356,36 +357,6 @@ groups:
         annotations:
           summary: 'Disk /dev/{{ $labels.device }} will fail in 30 days (current wear level = {{ $value }}%)'
           description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} will fail in 30 days (current wear level = {{ $value }}%)'
-
-      - alert: Disk Critical Warning
-        for: 0m
-        expr: 'smartctl_device_critical_warning > 0'
-        labels:
-          severity: critical
-          frequency: weekly
-        annotations:
-          summary: 'Disk /dev/{{ $labels.device }} reports a critical warning'
-          description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} reports a critical warning (value = {{ $value }})'
-
-      - alert: Disk Media Errors
-        for: 0m
-        expr: 'smartctl_device_media_errors > 0'
-        labels:
-          severity: critical
-          frequency: weekly
-        annotations:
-          summary: 'Disk /dev/{{ $labels.device }} has media errors'
-          description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} has {{ $value }} media errors'
-
-      - alert: Disk Spare Below Threshold
-        for: 0m
-        expr: 'smartctl_device_available_spare < smartctl_device_available_spare_threshold'
-        labels:
-          severity: critical
-          frequency: weekly
-        annotations:
-          summary: 'Disk /dev/{{ $labels.device }} available spare is below threshold'
-          description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} available spare is below its threshold (current = {{ $value }}%)'
 
       - alert: Disk Temperature High
         for: 5m
