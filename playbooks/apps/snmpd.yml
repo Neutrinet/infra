@@ -1,5 +1,5 @@
 - name: Déploiement de snmpd
-  hosts: louise_network
+  hosts: bird
   become: true
 
   roles:

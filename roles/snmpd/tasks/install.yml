@@ -1,14 +1,18 @@
 ---
 
-- name: install | Installation du paquet snmpd
+- name: install | Installation de snmpd et des dépendances des scripts LibreNMS
   ansible.builtin.apt:
-    name: snmpd
+    name:
+      - snmpd
+      - libjson-perl
+      - libfile-slurp-perl
     state: present
 
-- name: install | Ajout de Debian-snmp au groupe bird pour l'accès au socket
-  ansible.builtin.user:
-    name: Debian-snmp
-    groups:
-      - bird
-    append: true
-  notify: Restart snmpd
+- name: install | Autorisation de birdc en lecture seule pour Debian-snmp
+  community.general.sudoers:
+    name: snmpd-birdc
+    user: Debian-snmp
+    runas: bird
+    commands: /usr/sbin/birdc -r show protocols all
+    nopassword: true
+    state: present

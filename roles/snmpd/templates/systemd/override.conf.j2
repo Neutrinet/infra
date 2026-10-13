@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+[Service]
+# Commande du paquet Debian, plus les modules qui lisent /proc/net/route et /proc/net/ipv6_route :
+# ce dernier liste toutes les tables, donc la full view IPv6 de la VRF routing
+ExecStart=
+ExecStart=/usr/sbin/snmpd -LOw -u Debian-snmp -g Debian-snmp -I -smux,mteTrigger,mteTriggerConf,ipCidrRouteTable,inetCidrRouteTable -f
+# snmpd s'arrête s'il ne peut pas écouter sur l'adresse de ens18 (adresse IPv6 pas encore prête au démarrage)
+Restart=on-failure
+RestartSec=10

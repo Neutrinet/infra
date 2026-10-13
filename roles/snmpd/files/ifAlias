@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-DISTRO_BIN="/usr/bin/distro"
+DISTRO_BIN="/usr/local/bin/distro"
 BASE='.1.3.6.1.2.1.31.1.1.1.18'
 GET_TYPE="$1"
 GET_OID="$2"
