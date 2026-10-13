@@ -284,7 +284,7 @@ groups:
           category: base.clock_datacenter
         annotations:
           summary: Clock is not synchronising on {{ $value }} hosts of datacenter {{ $labels.datacenter }}
-          description: "Clock is not synchronising on {{ $value }} hosts of datacenter {{ $labels.datacenter }}. Check the NTP sources and the network of the datacenter."
+          description: "[{{ $labels.datacenter }}] Clock is not synchronising on {{ $value }} hosts. Check the NTP sources and the network of the datacenter."
 
   - name: Hardware
     rules:
