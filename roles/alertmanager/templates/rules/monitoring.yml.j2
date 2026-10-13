@@ -27,7 +27,7 @@ groups:
         expr: increase(vmalert_iteration_missed_total[5m]) > 0
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: vmalert skips evaluations of group {{ $labels.group }}
           description: "[{{ $labels.instance }}] vmalert misses evaluations of group {{ $labels.group }}, the evaluation is slower than its interval."
@@ -54,7 +54,7 @@ groups:
         expr: sum by (instance) (vm_data_size_bytes) / (sum by (instance) (vm_free_disk_space_bytes) + sum by (instance) (vm_data_size_bytes)) > 0.8
         for: 30m
         labels:
-          severity: critical
+          severity: warning
         annotations:
           summary: VictoriaMetrics disk usage is at {{ humanizePercentage $value }}
           description: "[{{ $labels.instance }}] VictoriaMetrics data uses > 80% of its disk (current = {{ humanizePercentage $value }})"
