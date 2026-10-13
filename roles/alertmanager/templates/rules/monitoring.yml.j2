@@ -42,7 +42,7 @@ groups:
           description: "[{{ $labels.instance }}] vmalert fails to send alerts to {{ $labels.addr }}."
 
       - alert: Alertmanager Notification Failed
-        expr: increase(alertmanager_notifications_failed_total[5m]) > 0
+        expr: increase(alertmanager_notifications_failed_total{integration="webhook"}[5m]) > 0
         for: 0m
         labels:
           severity: critical
