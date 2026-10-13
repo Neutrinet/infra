@@ -44,7 +44,7 @@ groups:
         for: 15m
         expr: 'static_heartbeat{instance=~"{{{ (groups['proxmox'] + groups['pbs']) | join('|') }}}"} unless on (instance) smartctl_device_smart_status'
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: 'Smartctl exporter is down'
           description: '[{{ $labels.instance }}] Vector is running but smartctl exporter metrics are missing'
@@ -53,7 +53,7 @@ groups:
         for: 15m
         expr: 'static_heartbeat{instance=~"{{{ (groups['proxmox'] + groups['pbs']) | join('|') }}}"} unless on (instance) count by (instance) ({__name__=~"ipmi_.+"})'
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: 'IPMI exporter is down'
           description: '[{{ $labels.instance }}] Vector is running but IPMI exporter metrics are missing'
@@ -113,7 +113,7 @@ groups:
         for: 15m
         expr: '(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.9'
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: 'Memory usage is at {{ humanizePercentage $value }}'
           description: '[{{ $labels.instance }}] Memory usage is > 90% (current = {{ humanizePercentage $value }})'
@@ -122,7 +122,7 @@ groups:
         expr: 'rate(node_vmstat_pgmajfault[5m]) > 500'
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: 'Memory page faults occurring at high rate (current = {{ humanize $value }})'
           description: "[{{ $labels.instance }}] Instance is under heavy memory pressure. High rate of loading memory pages from disk (current = {{ humanize $value }})"
@@ -162,7 +162,7 @@ groups:
         for: 15m
         expr: 'node_load5 / count without (cpu, mode) (node_cpu_seconds_total{mode="idle"}) > 2'
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: CPU usage is at {{ humanizePercentage $value }}
           description: '[{{ $labels.instance }}] CPU usage is > 200% (value = {{ humanizePercentage $value }})'
@@ -171,7 +171,7 @@ groups:
         expr: 'avg without (cpu, mode) (rate(node_cpu_seconds_total{mode="steal"}[5m])) > 0.1'
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: CPU steal increased by {{ humanizePercentage $value }} in the last 5 minutes.
           description: "[{{ $labels.instance }}] CPU steal increased by > 10% in the last 5 minutes (current = {{ humanizePercentage $value }}). A noisy neighbor is killing VM performances or a spot instance may be out of credit."
@@ -182,7 +182,7 @@ groups:
         expr: 'rate(node_network_receive_bytes_total[5m]) / node_network_speed_bytes > 0.8'
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: Network receive bandwidth is at {{ humanizePercentage $value }}
           description: "[{{ $labels.instance }}] Receive bandwidth is > 80% (current = {{ humanizePercentage $value }})"
@@ -191,7 +191,7 @@ groups:
         expr: 'rate(node_network_transmit_bytes_total[5m]) / node_network_speed_bytes > 0.8'
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: Network transmit bandwidth is at {{ humanizePercentage $value }}
           description: "[{{ $labels.instance }}] Transmit bandwidth is > 80% (current = {{ humanizePercentage $value }})"
@@ -259,7 +259,7 @@ groups:
         expr: 'abs(node_timex_offset_seconds) > 0.05'
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: Clock skew detected
           description: "[{{ $labels.instance }}] Clock skew detected. Clock is out of sync. Ensure NTP is configured correctly on this host (current = {{ humanize $value }})"
@@ -341,7 +341,7 @@ groups:
         for: 5m
         expr: 'smartctl_device_attribute{attribute_name="Wear_Leveling_Count", attribute_value_type="value"} < 10'
         labels:
-          severity: critical
+          severity: warning
           frequency: weekly
         annotations:
           summary: 'Disk /dev/{{ $labels.device }} wear level is at {{ $value }}%'
@@ -420,7 +420,7 @@ groups:
         expr: 'avg without (cpu, mode) (rate(node_cpu_seconds_total{mode="iowait"}[5m])) > 0.1'
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: CPU IO wait is at {{ humanizePercentage $value }}
           description: "[{{ $labels.instance }}] CPU spends > 10% of its time waiting for disk IO (current = {{ humanizePercentage $value }})."
@@ -518,7 +518,7 @@ groups:
         expr: 'min by (url) (avg_over_time(probe_icmp_duration_seconds[1m])) > 1'
         for: 15m
         labels:
-          severity: warning
+          severity: info
           category: probe.icmp
         annotations:
           summary: Host {{ $labels.url }} is slow to respond to ping
