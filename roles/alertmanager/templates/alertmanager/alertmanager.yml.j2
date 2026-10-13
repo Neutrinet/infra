@@ -134,21 +134,21 @@ inhibit_rules:
       - alertname =~ "Website HTTP Failure|Website Slow|HAProxy High HTTP 5xx Error Rate|HAProxy Backend Down|Caddy High HTTP 5xx Error Rate"
     source_matchers:
       - alertname = "Website Down"
-    equal: ['site']
+    equal: ['proxy']
 
   # Website HTTP failure: hide the HTTP errors seen by HAProxy and Caddy for the same site
   - target_matchers:
       - alertname =~ "HAProxy High HTTP 5xx Error Rate|Caddy High HTTP 5xx Error Rate"
     source_matchers:
       - alertname = "Website HTTP Failure"
-    equal: ['site']
+    equal: ['proxy']
 
-  # HAProxy backend down or same errors from Caddy: hide the HAProxy HTTP errors of this site
+  # HAProxy backend down or same errors from Caddy: hide the HAProxy HTTP errors of this backend
   - target_matchers:
       - alertname = "HAProxy High HTTP 5xx Error Rate"
     source_matchers:
       - alertname =~ "HAProxy Backend Down|Caddy High HTTP 5xx Error Rate"
-    equal: ['site']
+    equal: ['proxy']
 
   # Hide Caddy alerts about HTTP errors when reverse proxy is down
   - target_matchers:

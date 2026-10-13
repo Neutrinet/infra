@@ -3,13 +3,13 @@
 
 groups:
   - name: HAProxy
-    # Les alertes sont agrégées par backend sur tous les load balancers, avec un label site
-    # (ex. doc-neutrinet-be) commun avec les probes et Caddy pour les inhibitions.
+    # Les alertes sont agrégées par backend sur tous les load balancers ; le label proxy
+    # (ex. doc-neutrinet-be-backend) est commun avec les probes et Caddy pour les inhibitions.
     rules:
       - alert: HAProxy High HTTP 5xx Error Rate
         for: 5m
         keep_firing_for: 10m
-        expr: 'label_replace(label_copy(sum by (proxy) (rate(haproxy_server_http_responses_total{code="5xx"}[5m])) / sum by (proxy) (rate(haproxy_server_http_responses_total[5m])) > 0.1 and sum by (proxy) (rate(haproxy_server_http_responses_total[5m])) > 0.1, "proxy", "site"), "site", "$1", "proxy", "(.+)-backend")'
+        expr: 'sum by (proxy) (rate(haproxy_server_http_responses_total{code="5xx"}[5m])) / sum by (proxy) (rate(haproxy_server_http_responses_total[5m])) > 0.1 and sum by (proxy) (rate(haproxy_server_http_responses_total[5m])) > 0.1'
         labels:
           severity: critical
           category: haproxy.http
@@ -30,7 +30,7 @@ groups:
           description: '[{{ $labels.instance }}] [{{ $labels.proxy }}] HAProxy HTTP 4xx error rate is > 50% in the last 5 minutes (current = {{ humanizePercentage $value }})'
 
       - alert: HAProxy Backend Down
-        expr: 'label_replace(label_copy(max by (proxy) (haproxy_backend_active_servers + haproxy_backend_backup_servers) == 0, "proxy", "site"), "site", "$1", "proxy", "(.+)-backend")'
+        expr: 'max by (proxy) (haproxy_backend_active_servers + haproxy_backend_backup_servers) == 0'
         for: 15m
         labels:
           severity: critical

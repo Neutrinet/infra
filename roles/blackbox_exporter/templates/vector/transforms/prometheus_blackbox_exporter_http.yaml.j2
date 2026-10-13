@@ -8,6 +8,7 @@ source: |
   .tags.url = "{{ probe.url | split('?') | first }}"
   .tags.target = "{{ probe_hostname }}"
   .tags.host = "{{ probe_hostname }}"
+  .tags.proxy = "{{ probe_hostname | replace('.', '-') }}-backend"
   .tags.type = "http"
   .tags.module = "{{ probe_name }}"
   .tags.check_cert_expiry = "{{ probe.check_cert_expiry | default(false) | int }}"

@@ -3,12 +3,12 @@
 
 groups:
   - name: Caddy
-    # Le label site (ex. doc-neutrinet-be) est commun avec les probes et HAProxy pour les inhibitions.
+    # Le label proxy (ex. doc-neutrinet-be-backend) est commun avec les probes et HAProxy pour les inhibitions.
     rules:
       - alert: Caddy High HTTP 5xx Error Rate
         for: 5m
         keep_firing_for: 10m
-        expr: 'label_transform(label_copy(sum without (code) (rate(caddy_http_request_duration_seconds_count{code=~"5.."}[5m])) / sum without (code) (rate(caddy_http_request_duration_seconds_count[5m])) > 0.1 and sum without (code) (rate(caddy_http_request_duration_seconds_count[5m])) > 0.1, "host", "site"), "site", "\\.", "-")'
+        expr: 'sum without (code) (rate(caddy_http_request_duration_seconds_count{code=~"5.."}[5m])) / sum without (code) (rate(caddy_http_request_duration_seconds_count[5m])) > 0.1 and sum without (code) (rate(caddy_http_request_duration_seconds_count[5m])) > 0.1'
         labels:
           severity: critical
           category: caddy.http
