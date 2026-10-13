@@ -40,7 +40,7 @@ route:
   routes:
     - matchers:
         - severity = info
-      repeat_interval: 1w
+      receiver: dummy-receiver
 {% if alertmanager_staging_labels %}
     - matchers:
 {% for label_name, label_value in alertmanager_staging_labels.items() %}
@@ -76,6 +76,7 @@ route:
     - receiver: production-receiver
 
 receivers:
+  - name: dummy-receiver
   - name: production-receiver
     webhook_configs:
       # Send alerts to matrix-alertbot, which will forward them to the Matrix room for alerts in production

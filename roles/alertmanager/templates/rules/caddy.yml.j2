@@ -18,7 +18,7 @@ groups:
           description: '[{{ $labels.instance }}] [{{ $labels.host }}] Caddy HTTP 5xx error rate is > 10% in the last 5 minutes (current = {{ humanizePercentage $value }})'
 
       - alert: Caddy High HTTP 4xx Error Rate
-        for: 30m
+        for: 15m
         keep_firing_for: 10m
         # Les bots provoquent des rafales de 4xx : seul un taux élevé qui dure, avec du trafic, est remonté.
         expr: sum without (code) (rate(caddy_http_request_duration_seconds_count{code=~"4.."}[5m])) / sum without (code) (rate(caddy_http_request_duration_seconds_count[5m])) > 0.5 and sum without (code) (rate(caddy_http_request_duration_seconds_count[5m])) > 0.5
