@@ -26,7 +26,7 @@ groups:
         expr: increase(phpfpm_max_children_reached[10m]) > 0
         for: 0m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: PHP-FPM pool {{ $labels.pool }} reached max_children
           description: "[{{ $labels.instance }}] The pool {{ $labels.pool }} hit its max_children limit recently, consider raising it."
