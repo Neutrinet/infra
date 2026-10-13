@@ -7,17 +7,17 @@ groups:
     # y compris pour les services non HTTP.
     rules:
       - alert: Local Certificate Expires Soon
-        expr: x509_cert_expires_in_seconds / 86400 < 21
+        expr: (x509_cert_not_after - time()) / 86400 < 21
         for: 1h
         labels:
           severity: warning
-          frequency: daily
+          frequency: weekly
         annotations:
           summary: Certificate {{ $labels.subject_CN }} will expire in {{ $value | humanize }} days
           description: "[{{ $labels.instance }}] Certificate {{ $labels.filepath }} will expire in {{ $value | humanize }} days, check the renewal."
 
       - alert: Local Certificate Expires Critical
-        expr: x509_cert_expires_in_seconds / 86400 < 7
+        expr: (x509_cert_not_after - time()) / 86400 < 7
         for: 0m
         labels:
           severity: critical
