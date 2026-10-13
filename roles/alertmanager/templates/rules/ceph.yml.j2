@@ -220,7 +220,7 @@ groups:
         for: 1m
         expr: ceph_health_detail{name="RECENT_CRASH"} == 1
         labels:
-          severity: critical
+          severity: warning
           category: ceph.detail
         annotations:
           summary: 'A Ceph daemon has crashed recently'
@@ -233,7 +233,7 @@ groups:
         expr: rate(ceph_osd_op_w_latency_sum[5m]) / rate(ceph_osd_op_w_latency_count[5m]) > 0.5
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: 'Ceph OSD {{ $labels.ceph_daemon }} write latency is {{ humanizeDuration $value }}'
           description: '[{{ $labels.instance }}] Ceph OSD {{ $labels.ceph_daemon }} write latency is > 500ms for 15 minutes (current = {{ humanizeDuration $value }})'
@@ -242,7 +242,7 @@ groups:
         expr: rate(ceph_osd_op_r_latency_sum[5m]) / rate(ceph_osd_op_r_latency_count[5m]) > 0.5
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: 'Ceph OSD {{ $labels.ceph_daemon }} read latency is {{ humanizeDuration $value }}'
           description: '[{{ $labels.instance }}] Ceph OSD {{ $labels.ceph_daemon }} read latency is > 500ms for 15 minutes (current = {{ humanizeDuration $value }})'
