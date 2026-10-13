@@ -1,0 +1,7 @@
+#!/bin/sh
+# Sortie de « birdc show protocols all » pour l'extend bird2 de LibreNMS, sans les peerings
+# bilatéraux (protocoles peering_*) : sur les edges d'IX, ils dépassent la taille d'une réponse SNMP.
+/usr/bin/sudo -n -u bird /usr/sbin/birdc -r show protocols all | awk '
+    /^[^ \t]/ { skip = ($1 ~ /^peering_/) }
+    !skip
+'

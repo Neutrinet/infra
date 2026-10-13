@@ -25,7 +25,7 @@ syscontact noc@neutrinet.be
 sysName {{ inventory_hostname }}
 
 extend distro /usr/local/bin/distro
-extend bird2 '/usr/bin/sudo -n -u bird /usr/sbin/birdc -r show protocols all'
+extend bird2 /usr/local/bin/snmpd-bird2
 extend osupdate /usr/local/bin/osupdate
 extend chronyd /usr/local/bin/chrony
 extend linux_softnet_stat '/usr/local/bin/linux_softnet_stat -b'

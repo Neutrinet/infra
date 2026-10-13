@@ -17,6 +17,7 @@
   loop:
     - distro
     - ifAlias
+    - snmpd-bird2
     - osupdate
     - chrony
     - linux_softnet_stat
