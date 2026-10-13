@@ -42,15 +42,6 @@ groups:
           summary: Patroni is down
           description: "[{{ $labels.instance }}] Vector is running but Patroni metrics are missing, Patroni is probably stopped."
 
-      - alert: PostgreSQL Replication Lag
-        expr: pg_replication_lag_seconds > 300 and on (instance) pg_replication_is_replica == 1
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: PostgreSQL replica is {{ humanizeDuration $value }} behind the primary
-          description: "[{{ $labels.instance }}] PostgreSQL replica is > 5 minutes behind the primary (current = {{ humanizeDuration $value }})"
-
       - alert: Patroni Paused
         # Mode maintenance oublié : plus de failover automatique.
         expr: max by (scope) (patroni_is_paused) == 1
