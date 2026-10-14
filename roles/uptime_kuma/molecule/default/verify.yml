@@ -1,0 +1,14 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Récupération de l'état des services
+      ansible.builtin.service_facts:
+
+    - name: Vérification que uptime-kuma est actif et activé au démarrage
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['uptime-kuma.service'].state == 'running'
+          - ansible_facts.services['uptime-kuma.service'].status == 'enabled'

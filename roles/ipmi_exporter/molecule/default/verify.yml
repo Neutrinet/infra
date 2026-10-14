@@ -1,0 +1,23 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Récupération de l'état des services
+      ansible.builtin.service_facts:
+
+    - name: Vérification que ipmi-exporter est actif et activé au démarrage
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['ipmi-exporter.service'].state == 'running'
+          - ansible_facts.services['ipmi-exporter.service'].status == 'enabled'
+
+    - name: Vérification de http://localhost:9290/metrics
+      ansible.builtin.uri:
+        url: http://localhost:9290/metrics
+        return_content: true
+      register: _verify_endpoint_0
+      retries: 6
+      delay: 10
+      until: "_verify_endpoint_0.status == 200 and 'ipmi_' in _verify_endpoint_0.content"
