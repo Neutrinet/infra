@@ -36,3 +36,30 @@
       retries: 6
       delay: 10
       until: "_verify_endpoint_1.status == 200 and 'Instance Down' in _verify_endpoint_1.content"
+
+    - name: Lecture de la configuration d'alertmanager
+      ansible.builtin.slurp:
+        src: /etc/alertmanager/alertmanager.yml
+      register: _verify_alertmanager_config
+
+    - name: Liste des catégories des alertes chargées et de celles citées dans les inhibitions
+      ansible.builtin.set_fact:
+        _verify_rule_categories: >-
+          {{ (_verify_endpoint_1.content | from_json).data.groups | map(attribute='rules') | flatten
+             | map(attribute='labels', default={}) | map(attribute='category', default='') | select | unique }}
+        _verify_inhibit_categories: >-
+          {{ (((_verify_alertmanager_config.content | b64decode | from_yaml).inhibit_rules
+               | map(attribute='target_matchers', default=[]) | flatten)
+             + ((_verify_alertmanager_config.content | b64decode | from_yaml).inhibit_rules
+               | map(attribute='source_matchers', default=[]) | flatten))
+             | select('match', 'category\s*=~?\s')
+             | map('regex_replace', '^category\s*=~?\s*"?([^"]*)"?$', '\1')
+             | unique }}
+
+    - name: Vérification que chaque catégorie citée dans les inhibitions correspond à une alerte
+      ansible.builtin.assert:
+        that:
+          - _verify_rule_categories | select('match', '^(' ~ item ~ ')$') | list | length > 0
+        fail_msg: "Aucune alerte chargée ne correspond à la catégorie {{ item }} des inhibitions"
+        quiet: true
+      loop: "{{ _verify_inhibit_categories }}"
