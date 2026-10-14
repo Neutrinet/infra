@@ -28,6 +28,26 @@
 - name: Trigger handlers
   ansible.builtin.meta: flush_handlers
 
+- name: Configuration de la source InfluxDB de Vector pour Proxmox
+  ansible.builtin.template:
+    src: vector/prometheus_proxmox_influxdb.yaml.j2
+    dest: /etc/vector/sources/prometheus_proxmox_influxdb.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
+
+# pmxcfs refuse le chmod que fait copy à la création d'un fichier : on le crée vide d'abord,
+# sans mode, pmxcfs impose root:www-data en 0640
+- name: Création du fichier de l'exporteur InfluxDB de Proxmox  # noqa: risky-file-permissions
+  ansible.builtin.file:
+    path: /etc/pve/status.cfg
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+
+# pmxcfs refuse aussi les fichiers temporaires, d'où unsafe_writes
 - name: Configuration de l'exporteur InfluxDB de Proxmox
   ansible.builtin.copy:
     src: pve/status.cfg
@@ -35,6 +55,7 @@
     owner: root
     group: www-data
     mode: u=rw,g=r
+    unsafe_writes: true
 
 - name: Suppression de la permission à l'utilisateur telegraf d'exécuter certaines commandes sudo
   ansible.builtin.lineinfile:

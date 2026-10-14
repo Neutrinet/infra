@@ -8,12 +8,13 @@ platforms:
   - name: trixie-proxmox-molecule
     box: debian/trixie64
     cpu: 2
-    memory: 512
+    memory: 4096
 provisioner:
   name: ansible
   config_options:
     defaults:
       interpreter_python: /usr/bin/python3
+      vault_password_file: "${MOLECULE_PROJECT_DIRECTORY}/../../vault.key"
     ssh_connection:
       pipelining: true
 verifier:
