@@ -90,9 +90,9 @@ receivers:
 inhibit_rules:
   # Datacenter down: hide all other alerts from this datacenter
   - target_matchers:
-      - alertname != "Datacenter Down"
+      - category != base.datacenter
     source_matchers:
-      - alertname = "Datacenter Down"
+      - category = base.datacenter
     equal: ['datacenter']
 
   # Most of the probed services are hosted in LouiseDC: when it is down,
@@ -100,13 +100,13 @@ inhibit_rules:
   - target_matchers:
       - category =~ "probe[.].*"
     source_matchers:
-      - alertname = "Datacenter Down"
+      - category = base.datacenter
 
   # Instance down: hide all other alerts from this instance
   - target_matchers:
-      - alertname != "Instance Down"
+      - category != base.health
     source_matchers:
-      - alertname = "Instance Down"
+      - category = base.health
     equal: ['instance']
 
   # Clock not synchronising on several hosts of a datacenter: hide the alerts per host
@@ -131,23 +131,34 @@ inhibit_rules:
   # and slowness seen by the probes, HAProxy and Caddy (the cause, like a failed
   # systemd service, is still notified)
   - target_matchers:
-      - alertname =~ "Website HTTP Failure|Website Slow|HAProxy High HTTP 5xx Error Rate|HAProxy Backend Down|Caddy High HTTP 5xx Error Rate"
+      - category =~ "probe[.]http_(error|slow)|haproxy[.]health"
     source_matchers:
-      - alertname = "Website Down"
+      - category = probe.http_down
     equal: ['proxy']
 
-  # Website HTTP failure: hide the HTTP errors seen by HAProxy and Caddy for the same site
+  # Website down or HTTP failure: hide the HTTP errors seen by HAProxy and Caddy for the same site
   - target_matchers:
-      - alertname =~ "HAProxy High HTTP 5xx Error Rate|Caddy High HTTP 5xx Error Rate"
+      - category =~ "haproxy[.]http|caddy[.]http"
+      - code_category = 5xx
     source_matchers:
-      - alertname = "Website HTTP Failure"
+      - category =~ "probe[.]http_(down|error)"
     equal: ['proxy']
 
-  # HAProxy backend down or same errors from Caddy: hide the HAProxy HTTP errors of this backend
+  # HAProxy backend down: hide the HAProxy HTTP errors of this backend
   - target_matchers:
-      - alertname = "HAProxy High HTTP 5xx Error Rate"
+      - category = haproxy.http
+      - code_category = 5xx
     source_matchers:
-      - alertname =~ "HAProxy Backend Down|Caddy High HTTP 5xx Error Rate"
+      - category = haproxy.health
+    equal: ['proxy']
+
+  # Same errors from Caddy: hide the HAProxy HTTP errors of this backend
+  - target_matchers:
+      - category = haproxy.http
+      - code_category = 5xx
+    source_matchers:
+      - category = caddy.http
+      - code_category = 5xx
     equal: ['proxy']
 
   # Hide Caddy alerts about HTTP errors when reverse proxy is down
