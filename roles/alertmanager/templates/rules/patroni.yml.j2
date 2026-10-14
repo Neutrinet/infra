@@ -62,13 +62,13 @@ groups:
           summary: 'Etcd cluster has no leader.'
 
       - alert: Etcd Leader Changes
-        expr: 'increase(etcd_server_leader_changes_seen_total[1h]) >= 5'
+        expr: 'max(increase(etcd_server_leader_changes_seen_total[1h])) >= 5'
         for: 0m
         labels:
           severity: warning
         annotations:
-          summary: Etcd high number of leader changes (instance {{ $labels.instance }})
-          description: "[{{ $labels.instance }}] Etcd leader changed >= 5 times during last 1h (current = {{ $value }})"
+          summary: Etcd high number of leader changes
+          description: "Etcd leader changed >= 5 times during last 1h (current = {{ $value }})"
 
       - alert: Etcd Member Communication Slow
         expr: histogram_quantile(0.99, rate(etcd_network_peer_round_trip_time_seconds_bucket[1m])) > 0.15
@@ -80,11 +80,11 @@ groups:
           description: "[{{ $labels.instance }}] Etcd member communication slowing down, 99th percentile is > 0.15s (current = {{ $value }})"
 
       - alert: Etcd High Number Of Failed Proposals
-        expr: increase(etcd_server_proposals_failed_total[1h]) > 5
+        expr: max(increase(etcd_server_proposals_failed_total[1h])) > 5
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: Etcd high number of failed proposals
-          description: "[{{ $labels.instance }}] Etcd server got > 5 failed proposals in past hour (current = {{ $value }})"
+          description: "Etcd cluster got > 5 failed proposals in past hour (current = {{ $value }})"
 {% endif %}
