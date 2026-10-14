@@ -18,7 +18,6 @@ groups:
     for: 5m
     labels:
       severity: info
-      exporter: bird-exporter
     annotations:
       summary: "BGP session {{ $labels.name }} has recovered"
       description: '[{{ $labels.instance }}] BGP session {{ $labels.name }} has recovered.'
