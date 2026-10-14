@@ -3,10 +3,10 @@
   ansible.builtin.apt:
     update_cache: true
 
-- name: Restart haproxy
+- name: Reload haproxy
   ansible.builtin.service:
     name: haproxy
-    state: restarted
+    state: reloaded
 
 - name: Restart vector
   ansible.builtin.service:

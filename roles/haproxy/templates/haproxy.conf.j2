@@ -15,6 +15,9 @@ global
     # https://stackoverflow.com/a/64119235
     noreuseport
 
+    # Au reload, l'ancien processus garde ses sessions (PostgreSQL, Valkey) jusqu'à leur timeout de 30m
+    hard-stop-after 30m
+
     # Empreinte JA4 du ClientHello TLS (2048 pour les ClientHello post-quantiques)
     tune.ssl.capture-buffer-size 2048
     tune.lua.bool-sample-conversion normal
@@ -202,7 +205,7 @@ listen postgresql-primary
     timeout server 30m
     option	tcplog
     option httpchk OPTIONS /read-write
-    default-server on-marked-down shutdown-sessions
+    default-server on-marked-down shutdown-sessions init-state down
 {% for target in haproxy_postgresql %}
     server {{ target | replace('.', '-') }} {{ target }}:5432 check port 8008
 {% endfor %}
@@ -215,7 +218,7 @@ listen postgresql-replica
     timeout server 30m
     option	tcplog
     option httpchk OPTIONS /read-only
-    default-server on-marked-down shutdown-sessions
+    default-server on-marked-down shutdown-sessions init-state down
 {% for target in haproxy_postgresql %}
     server {{ target | replace('.', '-') }} {{ target }}:5432 check port 8008
 {% endfor %}
@@ -241,7 +244,7 @@ listen valkey-primary
     tcp-check expect string role:master
     tcp-check send QUIT\r\n
     tcp-check expect string +OK
-    default-server on-marked-down shutdown-sessions
+    default-server on-marked-down shutdown-sessions init-state down
 {% for target in haproxy_valkey %}
     server {{ target | replace('.', '-') }} {{ target }}:6379 check port 6379 inter 2s fall 3 rise 2
 {% endfor %}

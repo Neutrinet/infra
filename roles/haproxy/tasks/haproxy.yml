@@ -50,7 +50,7 @@
     mode: "u=rw,g=r,o="
     owner: haproxy
     group: haproxy
-  notify: Restart haproxy
+  notify: Reload haproxy
 
 - name: Création du dossier des pages d'erreur personnalisées
   ansible.builtin.file:
@@ -72,7 +72,7 @@
       - --chmod=D755,F644
   become: true
   become_user: haproxy
-  notify: Restart haproxy
+  notify: Reload haproxy
 
 - name: Création du dossier des scripts Lua
   ansible.builtin.file:
@@ -89,7 +89,7 @@
     owner: root
     group: root
     mode: "u=r,go=r"
-  notify: Restart haproxy
+  notify: Reload haproxy
 
 - name: Config de haproxy
   ansible.builtin.template:
@@ -99,7 +99,7 @@
     group: root
     mode: "u=rw,g=r,o="
     validate: "haproxy -f %s -c -q"
-  notify: Restart haproxy
+  notify: Reload haproxy
 
 - name: Activation de haproxy au démarrage
   ansible.builtin.service:
