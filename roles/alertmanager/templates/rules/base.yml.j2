@@ -436,7 +436,7 @@ groups:
         expr: 'count by (url, target, module, proxy) (probe_success{type="http"} == 0) >= 2'
         labels:
           severity: critical
-          category: probe.http
+          category: probe.http_down
         annotations:
           summary: 'Website {{ $labels.module }} is down'
           description: '[{{ $labels.module }}] Website is down for {{ $value }} probes'
@@ -447,7 +447,7 @@ groups:
         keep_firing_for: 10m
         labels:
           severity: critical
-          category: probe.http
+          category: probe.http_error
         annotations:
           summary: Website {{ $labels.module }} HTTP status code is {{ $value }}
           description: "[{{ $labels.module }}] HTTP status code is {{ $value }}"
@@ -458,7 +458,7 @@ groups:
         keep_firing_for: 10m
         labels:
           severity: warning
-          category: probe.http
+          category: probe.http_slow
         annotations:
           summary: Website {{ $labels.module }} is slow to respond
           description: "[{{ $labels.module }}] All probes took > 5s to respond in the last 10min (current = {{ humanize $value }}s)"
