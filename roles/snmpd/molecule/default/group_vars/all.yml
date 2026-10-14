@@ -1,0 +1,3 @@
+---
+datacenter_name: molecule
+snmpd_interface: "{{ ansible_facts['default_ipv4']['interface'] }}"

@@ -1,0 +1,51 @@
+---
+
+- name: config | Vérification de l'interface d'écoute de snmpd
+  ansible.builtin.assert:
+    that:
+      - ansible_facts[snmpd_interface] is defined
+      - ansible_facts[snmpd_interface].ipv4 is defined or ansible_facts[snmpd_interface].ipv6 is defined
+    fail_msg: "L'interface {{ snmpd_interface }} n'existe pas ou n'a pas d'adresse IP"
+
+- name: config | Déploiement des scripts LibreNMS
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+  loop:
+    - distro
+    - ifAlias
+    - snmpd-bird2
+    - osupdate
+    - chrony
+    - linux_softnet_stat
+
+- name: config | Création du dossier d'override systemd de snmpd
+  ansible.builtin.file:
+    path: /etc/systemd/system/snmpd.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: config | Override systemd de snmpd
+  ansible.builtin.template:
+    src: systemd/override.conf.j2
+    dest: /etc/systemd/system/snmpd.service.d/override.conf
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify: Restart snmpd
+
+- name: config | Déploiement de snmpd.conf
+  ansible.builtin.template:
+    src: snmp/snmpd.conf.j2
+    dest: /etc/snmp/snmpd.conf
+    owner: root
+    group: Debian-snmp
+    mode: "u=rw,g=r,o="
+  # Le fichier contient la communauté SNMP
+  diff: false
+  notify: Restart snmpd

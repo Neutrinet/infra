@@ -1,0 +1,6 @@
+- name: Déploiement de snmpd
+  hosts: bird
+  become: true
+
+  roles:
+    - snmpd

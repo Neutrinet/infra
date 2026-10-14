@@ -1,0 +1,13 @@
+---
+
+- name: Installation de snmpd
+  ansible.builtin.import_tasks: install.yml
+  tags: ['snmpd']
+
+- name: Configuration de snmpd
+  ansible.builtin.import_tasks: config.yml
+  tags: ['snmpd']
+
+- name: Activation du service snmpd
+  ansible.builtin.import_tasks: service.yml
+  tags: ['snmpd']
