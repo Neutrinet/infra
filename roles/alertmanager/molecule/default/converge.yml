@@ -4,4 +4,8 @@
   become: true
 
   roles:
-    - alertmanager
+    - role: alertmanager
+      vars:
+        # Sans hôte Patroni, le fichier de règles patroni est vide et vmalert -dryRun le refuse
+        postgresql_patroni_hosts:
+          - "{{ inventory_hostname }}"

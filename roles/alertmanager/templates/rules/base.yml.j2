@@ -6,9 +6,10 @@ groups:
     rules:
       - alert: Instance Down
         for: 5m
+        # Le matcher datacenter est repris dans les labels de absent(), il sert aux inhibitions.
         expr: |-
 {% for host in groups.all %}
-          absent(static_heartbeat{instance="{{{ host }}}"}) == 1{% if not loop.last %} OR {% endif %}
+          absent(static_heartbeat{instance="{{{ host }}}", datacenter="{{{ hostvars[host].datacenter_name | default('unknown') }}}"}) == 1{% if not loop.last %} OR {% endif %}
 
 {% endfor %}
         labels:
@@ -17,6 +18,45 @@ groups:
         annotations:
           summary: 'Instance is down'
           description: '[{{ $labels.instance }}] Instance is down'
+
+      - alert: Datacenter Down
+        for: 5m
+        # Seul LouiseDC héberge assez d'hôtes pour cette alerte : plus de la moitié sans heartbeat.
+        expr: '(count(static_heartbeat{datacenter="LouiseDC"}) or vector(0)) < {{{ (groups['louise'] | length + 1) // 2 }}}'
+        labels:
+          severity: critical
+          category: base.datacenter
+          datacenter: LouiseDC
+        annotations:
+          summary: 'Datacenter LouiseDC is down'
+          description: '[{{ $labels.datacenter }}] More than half of the {{{ groups['louise'] | length }}} hosts are down (hosts up = {{ $value }})'
+
+      - alert: Node Exporter Down
+        for: 15m
+        expr: 'static_heartbeat unless on (instance) node_uname_info'
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Node exporter is down'
+          description: '[{{ $labels.instance }}] Vector is running but node exporter metrics are missing'
+
+      - alert: Smartctl Exporter Down
+        for: 15m
+        expr: 'static_heartbeat{instance=~"{{{ (groups['proxmox'] + groups['pbs']) | join('|') }}}"} unless on (instance) smartctl_device_smart_status'
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Smartctl exporter is down'
+          description: '[{{ $labels.instance }}] Vector is running but smartctl exporter metrics are missing'
+
+      - alert: IPMI Exporter Down
+        for: 15m
+        expr: 'static_heartbeat{instance=~"{{{ (groups['proxmox'] + groups['pbs']) | join('|') }}}"} unless on (instance) count by (instance) ({__name__=~"ipmi_.+"})'
+        labels:
+          severity: warning
+        annotations:
+          summary: 'IPMI exporter is down'
+          description: '[{{ $labels.instance }}] Vector is running but IPMI exporter metrics are missing'
 
   - name: Disk Usage
     rules:
@@ -226,11 +266,25 @@ groups:
       - alert: Clock Not Synchronising
         expr: 'min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16'
         for: 15m
+        keep_firing_for: 15m
         labels:
           severity: warning
+          category: base.clock
         annotations:
           summary: Clock is not synchronising
           description: "[{{ $labels.instance }}] Clock is not synchronising. Ensure NTP is configured on this host."
+
+      - alert: Clock Not Synchronising Datacenter
+        # Plusieurs hôtes d'un même datacenter : cause commune (source NTP, réseau), une seule alerte.
+        expr: 'count by (datacenter) (min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16) >= 3'
+        for: 15m
+        keep_firing_for: 15m
+        labels:
+          severity: warning
+          category: base.clock_datacenter
+        annotations:
+          summary: Clock is not synchronising on {{ $value }} hosts of datacenter {{ $labels.datacenter }}
+          description: "[{{ $labels.datacenter }}] Clock is not synchronising on {{ $value }} hosts. Check the NTP sources and the network of the datacenter."
 
   - name: Hardware
     rules:
