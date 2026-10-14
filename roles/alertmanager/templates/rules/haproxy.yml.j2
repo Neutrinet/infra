@@ -31,8 +31,9 @@ groups:
           summary: 'HAProxy HTTP 4xx error rate is at {{ humanizePercentage $value }} for backend {{ $labels.proxy }}'
           description: '[{{ $labels.instance }}] [{{ $labels.proxy }}] HAProxy HTTP 4xx error rate is > 50% in the last 5 minutes (current = {{ humanizePercentage $value }})'
 
+      # Seuls les backends qui ont des serveurs comptent (default-backend n'en a pas)
       - alert: HAProxy Backend Down
-        expr: 'max by (proxy) (haproxy_backend_active_servers + haproxy_backend_backup_servers) == 0'
+        expr: 'max by (proxy) (haproxy_backend_active_servers + haproxy_backend_backup_servers) == 0 and on (proxy) count by (proxy) (haproxy_server_status)'
         for: 15m
         labels:
           severity: critical
