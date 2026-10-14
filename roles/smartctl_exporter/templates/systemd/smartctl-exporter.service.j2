@@ -30,6 +30,9 @@ RestrictRealtime=true
 RestrictNamespaces=true
 RestrictSUIDSGID=true
 MemoryDenyWriteExecute=true
+ProtectClock=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallFilter=@system-service
 CapabilityBoundingSet=CAP_SYS_ADMIN CAP_SYS_RAWIO CAP_MKNOD
 AmbientCapabilities=
 
