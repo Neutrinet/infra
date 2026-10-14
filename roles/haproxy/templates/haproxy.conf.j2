@@ -1,8 +1,6 @@
 {{ ansible_managed | comment }}
 
 global
-    nbthread 4
-    cpu-map auto:1/1-4 0-3
     maxconn 20480
 
     log /dev/log	local0
@@ -17,27 +15,40 @@ global
     # https://stackoverflow.com/a/64119235
     noreuseport
 
-    # generated 2021-04-28, Mozilla Guideline v5.6, HAProxy 2.2.8, OpenSSL 1.1.1d, intermediate configuration
-    # https://ssl-config.mozilla.org/#server=haproxy&version=2.2.8&config=intermediate&openssl=1.1.1d&guideline=5.6
-    # intermediate configuration
-    ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
-    ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
-    ssl-default-bind-options prefer-client-ciphers no-sslv3 no-tlsv10 no-tlsv11 no-tls-tickets
+    # Empreinte JA4 du ClientHello TLS (2048 pour les ClientHello post-quantiques)
+    tune.ssl.capture-buffer-size 2048
+    tune.lua.bool-sample-conversion normal
+    lua-load /etc/haproxy/lua/ja4.lua
 
-    ssl-default-server-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    # generated 2026-10-14, TLSRef Guideline v6.0, HAProxy 3.2.25-1~bpo13+1, OpenSSL 3.5.7, intermediate config, HSTS, gitrev=6bcb595
+    # https://configurator.tlsref.org/#server=haproxy&version=3.2.25-1~bpo13+1&config=intermediate&openssl=3.5.7&hsts&guideline=6.0
+    # intermediate configuration
+    ssl-default-bind-curves X25519MLKEM768:X25519:prime256v1:secp384r1
+    ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305
+    ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+    ssl-default-bind-options prefer-client-ciphers ssl-min-ver TLSv1.2 no-tls-tickets
+
+    ssl-default-server-curves X25519MLKEM768:X25519:prime256v1:secp384r1
+    ssl-default-server-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305
     ssl-default-server-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
-    ssl-default-server-options no-sslv3 no-tlsv10 no-tlsv11 no-tls-tickets
+    ssl-default-server-options ssl-min-ver TLSv1.2 no-tls-tickets
 
 defaults
     log	global
     mode	http
     option	dontlognull
     option	httplog
-    timeout connect 5000
-    timeout client  50000
-    timeout server  50000
+    timeout connect 10s
+    timeout http-request 10s
+    timeout http-keep-alive 10s
+    timeout client  5m
+    timeout server  15m
+    timeout tunnel  2h
+    timeout client-fin 30s
+    timeout server-fin 30s
     errorfile 400 /etc/haproxy/errors/400.http
     errorfile 403 /etc/haproxy/errors/403.http
+    errorfile 404 /etc/haproxy/errors/404.http
     errorfile 408 /etc/haproxy/errors/408.http
     errorfile 500 /etc/haproxy/errors/500.http
     errorfile 502 /etc/haproxy/errors/502.http
@@ -60,28 +71,57 @@ frontend prometheus-frontend
 frontend haproxy-frontend
 {% for ip in haproxy_listen %}
     bind {{ ip }}:80 v4v6
-    bind {{ ip }}:443 v4v6 ssl crt /etc/haproxy/ssl alpn h2,http/1.1 allow-0rtt
+    bind {{ ip }}:443 v4v6 ssl crt /etc/haproxy/ssl/default.pem crt /etc/haproxy/ssl strict-sni alpn h2,http/1.1
+{% if ip.startswith('[') %}
+    bind quic6@{{ ip }}:443 ssl crt /etc/haproxy/ssl/default.pem crt /etc/haproxy/ssl strict-sni alpn h3
+{% else %}
+    bind quic4@{{ ip }}:443 ssl crt /etc/haproxy/ssl/default.pem crt /etc/haproxy/ssl strict-sni alpn h3
+{% endif %}
 {% endfor %}
 
     mode http
 
+    # X_Forwarded-For contournerait les del-header une fois passé en FastCGI
+    option http-restrict-req-hdr-names delete
+
+    # Seuls les en-têtes de proxy écrits par HAProxy arrivent aux backends
+    http-request del-header X-Forwarded-For
+    http-request del-header X-Forwarded-Proto
+    http-request del-header X-Forwarded-Host
+    http-request del-header X-Forwarded-Port
+    http-request del-header X-Real-IP
+    http-request del-header Forwarded
+
+    # Empreinte JA4 et User-Agent écrits dans les logs
+    http-request lua.fingerprint_ja4 if { ssl_fc }
+    http-request capture var(txn.fingerprint_ja4) len 36
+    http-request capture req.hdr(user-agent) len 150
+
+    # Enable http3
+    http-response set-header alt-svc "h3=\":443\";ma=900;"
+
     # enable HSTS
-    http-response set-header Strict-Transport-Security "max-age=63072000;{% if not letsencrypt_staging %} preload;{% endif %}"
+    http-response set-header Strict-Transport-Security "max-age=63072000"
 
-    # disable FLoC tracking
-    http-response set-header Permissions-Policy "interest-cohort=()"
+    # En-têtes OWASP, sauf si l'application les envoie déjà
+    http-response set-header X-Content-Type-Options "nosniff" unless { res.hdr(X-Content-Type-Options) -m found }
+    http-response set-header X-Frame-Options "SAMEORIGIN" unless { res.hdr(X-Frame-Options) -m found }
+    # no-referrer met Origin à null sur les POST, ce que refuse le CSRF de Django (authentik)
+    http-response set-header Referrer-Policy "same-origin" unless { res.hdr(Referrer-Policy) -m found }
+    http-response set-header Permissions-Policy "accelerometer=(), autoplay=(self), camera=(self), cross-origin-isolated=(), display-capture=(self), encrypted-media=(self), fullscreen=(self), geolocation=(self), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(self), midi=(), payment=(), picture-in-picture=(self), publickey-credentials-get=(self), screen-wake-lock=(self), sync-xhr=(self), usb=(), web-share=(self), xr-spatial-tracking=(), clipboard-read=(self), clipboard-write=(self), gamepad=(), hid=(), idle-detection=(), interest-cohort=(), serial=(), unload=()" unless { res.hdr(Permissions-Policy) -m found }
+    http-response set-header X-Permitted-Cross-Domain-Policies "none" unless { res.hdr(X-Permitted-Cross-Domain-Policies) -m found }
+    http-response set-header X-DNS-Prefetch-Control "off" unless { res.hdr(X-DNS-Prefetch-Control) -m found }
+    http-response set-header X-XSS-Protection "0"
 
-    # disable clients from sniffing the media type
-    http-response set-header X-Content-Type-Options "nosniff"
-
-    # clickjacking protection
-    http-response set-header X-Frame-Options "SAMEORIGIN"
-
-    # keep referrer data off of HTTP connections
-    http-response set-header Referrer-Policy "same-origin"
-
-    # Block pages from loading when they detect reflected XSS attacks
-    http-response set-header X-XSS-Protection "1; mode=block"
+    # En-têtes qui révèlent le logiciel ou sa version
+    http-response del-header Server
+    http-response del-header X-Powered-By
+    http-response del-header X-Generator
+    http-response del-header X-Php-Version
+    http-response del-header X-Redirect-By
+    http-response del-header X-AspNet-Version
+    http-response del-header X-SourceMap
+    http-response del-header SourceMap
 
 {% for redirect in haproxy_redirect %}
     http-request redirect prefix https://{{ redirect.to }} code 301 if { hdr(host),field(1,:) -i {{ redirect.from }} }
@@ -96,7 +136,7 @@ frontend haproxy-frontend
 {% endif %}
 {% if 'deny_paths' in host %}
 {% for deny_path in host.deny_paths %}
-    acl {{ host.hostname | replace('.', '-') }}-deny-acl path_beg {{ deny_path }}
+    acl {{ host.hostname | replace('.', '-') }}-deny-acl path,url_dec,lower,regsub(/+,/,g) -m beg {{ deny_path | lower }}
 {% endfor %}
     http-request deny if {{ host.hostname | replace('.', '-') }}-acl {{ host.hostname | replace('.', '-') }}-deny-acl
 {% if 'alt_hostnames' in host %}
@@ -105,9 +145,12 @@ frontend haproxy-frontend
 {% endfor %}
 {% endif %}
 {% endif %}
+{% for rule in host.http_request_rules | default([]) %}
+    http-request {{ rule.action }} if {{ host.hostname | replace('.', '-') }}-acl {{ rule.condition }}
+{% endfor %}
 
 {% endfor %}
-    redirect scheme https code 301 if !{ ssl_fc }
+    redirect scheme https code 308 if !{ ssl_fc }
 
 {% for host in haproxy %}
     use_backend {{ host.hostname | replace('.', '-') }}-backend if {{ host.hostname | replace('.', '-') }}-acl
@@ -117,6 +160,10 @@ frontend haproxy-frontend
 {% endfor %}
 {% endif %}
 {% endfor %}
+    default_backend default-backend
+
+backend default-backend
+    http-request return status 404 default-errorfiles
 
 {% for host in haproxy %}
 backend {{ host.hostname | replace('.', '-') }}-backend
@@ -139,7 +186,7 @@ backend {{ host.hostname | replace('.', '-') }}-backend
     timeout server {{ host.timeout }}
 {% endif %}
 {% for target in host.target %}
-    server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check port {{ host.target_port }}{% endif %} {% if "ssl" in host %}ssl{% endif %} {% if "ssl_verify" in host and not host.ssl_verify %}verify none{% endif %}
+    server {{ target | replace('.', '-') }} {{ target }}:{{ host.target_port }} {% if "healthcheck" in host and host.healthcheck %}check port {{ host.target_port }}{% endif %} {% if "ssl" in host %}ssl check-ssl{% endif %} {% if "ssl_verify" in host and not host.ssl_verify %}verify none{% endif %}
 
 {% endfor %}
 
@@ -147,8 +194,12 @@ backend {{ host.hostname | replace('.', '-') }}-backend
 
 {% if haproxy_postgresql | length > 0 %}
 listen postgresql-primary
-    bind :::5432 v4v6
+{% for ip in haproxy_listen %}
+    bind {{ ip }}:5432 v4v6
+{% endfor %}
     mode tcp
+    timeout client 30m
+    timeout server 30m
     option	tcplog
     option httpchk OPTIONS /read-write
     default-server on-marked-down shutdown-sessions
@@ -157,12 +208,41 @@ listen postgresql-primary
 {% endfor %}
 
 listen postgresql-replica
-    bind :::5433 v4v6
-    mode tcp
+{% for ip in haproxy_listen %}
+    bind {{ ip }}:5433 v4v6
+{% endfor %}    mode tcp
+    timeout client 30m
+    timeout server 30m
     option	tcplog
     option httpchk OPTIONS /read-only
     default-server on-marked-down shutdown-sessions
 {% for target in haproxy_postgresql %}
     server {{ target | replace('.', '-') }} {{ target }}:5432 check port 8008
+{% endfor %}
+{% endif %}
+
+
+{% if haproxy_valkey | length > 0 %}
+listen valkey-primary
+{% for ip in haproxy_listen %}
+    bind {{ ip }}:6379 v4v6
+{% endfor %}
+    mode tcp
+    timeout client 30m
+    timeout server 30m
+    option tcplog
+    option tcp-check
+    tcp-check connect
+    tcp-check send AUTH\ haproxy\ {{ haproxy_valkey_password }}\r\n
+    tcp-check expect string +OK
+    tcp-check send PING\r\n
+    tcp-check expect string +PONG
+    tcp-check send info\ replication\r\n
+    tcp-check expect string role:master
+    tcp-check send QUIT\r\n
+    tcp-check expect string +OK
+    default-server on-marked-down shutdown-sessions
+{% for target in haproxy_valkey %}
+    server {{ target | replace('.', '-') }} {{ target }}:6379 check port 6379 inter 2s fall 3 rise 2
 {% endfor %}
 {% endif %}
