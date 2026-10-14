@@ -3,6 +3,7 @@
   ansible.builtin.service:
     name: etcd
     state: restarted
+  throttle: 1
 
 - name: Restart vector
   ansible.builtin.service:
