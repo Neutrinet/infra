@@ -10,7 +10,7 @@ groups:
         expr: freeradius_ppp_session_last_terminate_timestamp{cause=~"User-Request|Admin-Reset"} unless on (username) freeradius_ppp_sessions_active
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: "PPP session for {{ $labels.username }} is inactive"
           description: '[{{ $labels.instance }}] PPP session of user {{ $labels.username }} has been inactive for 15min (cause = {{ $labels.cause }})'
