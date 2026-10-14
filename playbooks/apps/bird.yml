@@ -1,6 +1,7 @@
 - name: Déploiement de Bird
   hosts: bird
   become: true
+  serial: 1
 
   roles:
     - bird
