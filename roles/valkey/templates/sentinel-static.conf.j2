@@ -20,5 +20,7 @@ requirepass {{ valkey_user_sentinel_password }}
 aclfile /etc/valkey/sentinel-neutrinet-acl.conf
 sentinel auth-user neutrinet sentinel
 sentinel auth-pass neutrinet {{ valkey_user_sentinel_password }}
+sentinel sentinel-user sentinel
+sentinel sentinel-pass {{ valkey_user_sentinel_password }}
 daemonize yes
 sentinel deny-scripts-reconfig yes
