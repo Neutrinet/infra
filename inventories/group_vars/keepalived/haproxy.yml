@@ -171,6 +171,8 @@ haproxy:
       - /metrics
     healthcheck: true
     healthcheck_url: "HEAD /status"
+    headers:
+      X-Robots-Tag: "noindex, nofollow"
 
   - hostname: support.neutrinet.be
     target:
