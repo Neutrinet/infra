@@ -7,8 +7,3 @@
   ansible.builtin.service:
     name: valkey-sentinel@{{ valkey_name_instance }}.service
     state: restarted
-
-- name: Restart telegraf
-  ansible.builtin.service:
-    name: telegraf
-    state: restarted

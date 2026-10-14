@@ -56,8 +56,6 @@
     enabled: true
 
 - name: Trigger Valkey handler
-  # We force keydb to restart its config to ensure our config has been applied.
-  # This forced restart is required on debian systems,
-  # because keydb appears to be already started and enabled by apt,
-  # and later in this role, telegraf expects our keydb to be correctly configured.
+  # Le paquet Debian démarre déjà valkey avec sa config par défaut : on force le redémarrage
+  # pour que notre config soit appliquée avant la mise en place de sentinel.
   ansible.builtin.meta: flush_handlers
