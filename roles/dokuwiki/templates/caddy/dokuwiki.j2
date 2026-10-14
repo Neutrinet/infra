@@ -18,6 +18,12 @@ http://{{ dokuwiki_domain }} {
     }
     respond @forbidden 403
 
+    @taskrunner-sans-referer {
+        path /lib/exe/taskrunner.php
+        not header Referer https://{{ dokuwiki_domain }}/*
+    }
+    respond @taskrunner-sans-referer 204
+
     try_files {path} {path}/index.html
 
     route {
