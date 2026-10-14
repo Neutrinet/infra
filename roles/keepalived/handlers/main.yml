@@ -2,6 +2,7 @@
   ansible.builtin.service:
     name: keepalived
     state: reloaded
+  throttle: 1
 
 - name: Restart vector
   ansible.builtin.service:

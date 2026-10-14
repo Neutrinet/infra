@@ -5,6 +5,8 @@ DAEMON_ARGS="--heartbeat-interval 250 --election-timeout 1250"
 # [Member]
 ETCD_NAME="{{ ansible_hostname }}"
 ETCD_DATA_DIR="{{ etcd_data_dir }}"
+ETCD_AUTO_COMPACTION_MODE="periodic"
+ETCD_AUTO_COMPACTION_RETENTION="1h"
 {% if 'ipv6' in etcd_current_member %}
 ETCD_LISTEN_PEER_URLS="http://[{{ etcd_current_member.ipv6 }}]:2380"
 ETCD_LISTEN_CLIENT_URLS="http://[{{ etcd_current_member.ipv6 }}]:2379,http://localhost:2379"

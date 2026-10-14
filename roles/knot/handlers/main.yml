@@ -6,6 +6,7 @@
   ansible.builtin.service:
     name: knot
     state: restarted
+  throttle: 1
 
 - name: Restart vector
   ansible.builtin.service:

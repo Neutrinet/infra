@@ -7,3 +7,8 @@ postgresql_patroni_replication_username: replicator
 postgresql_patroni_replication_password: neutrinet
 postgresql_patroni_rewind_username: rewind
 postgresql_patroni_rewind_password: neutrinet
+
+postgresql_patroni_shared_buffers: 128MB
+postgresql_patroni_effective_cache_size: 384MB
+postgresql_patroni_work_mem: 4MB
+postgresql_patroni_maintenance_work_mem: 64MB

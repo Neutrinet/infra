@@ -18,7 +18,9 @@
 
 - name: Installation de Patroni
   ansible.builtin.package:
-    name: patroni
+    name:
+      - patroni
+      - python3-etcd
     state: present
 
 - name: Configuration de Patroni
