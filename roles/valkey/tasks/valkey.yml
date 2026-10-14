@@ -13,7 +13,7 @@
     owner: valkey
     group: valkey
     mode: "u=rw,go="
-    force: false
+    force: false  # /!\ Ce fichier ne peut plus etre modifié une fois le cluster démarré, sentinel le réécrit (replicaof) à chaque bascule du primary
   notify: Restart Valkey
 
 - name: Création de la configuration static
