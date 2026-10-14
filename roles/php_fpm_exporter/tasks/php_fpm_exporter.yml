@@ -1,0 +1,85 @@
+---
+
+- name: php_fpm_exporter | Création de l'utilisateur pour PHP-FPM exporter
+  ansible.builtin.user:
+    name: php-fpm-exporter
+    home: /opt/php-fpm-exporter
+    shell: /sbin/nologin
+    system: true
+    create_home: false
+    state: present
+
+- name: php_fpm_exporter | Création des dossiers de PHP-FPM exporter
+  ansible.builtin.file:
+    path: "{{ php_fpm_exporter_dir }}"
+    owner: php-fpm-exporter
+    group: php-fpm-exporter
+    mode: "u=rwx,go=rx"
+    state: directory
+  loop:
+    - /opt/php-fpm-exporter
+    - /opt/php-fpm-exporter/{{ php_fpm_exporter_version }}
+    - /etc/php-fpm-exporter
+  loop_control:
+    loop_var: php_fpm_exporter_dir
+
+- name: php_fpm_exporter | Création du dossier des archives de PHP-FPM exporter
+  ansible.builtin.file:
+    path: /usr/local/src/php-fpm-exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: php_fpm_exporter | Téléchargement de l'archive de PHP-FPM exporter v{{ php_fpm_exporter_version }}
+  ansible.builtin.get_url:
+    url: https://github.com/hipages/php-fpm_exporter/releases/download/v{{ php_fpm_exporter_version }}/php-fpm_exporter_{{ php_fpm_exporter_version }}_linux_amd64.tar.gz
+    dest: /usr/local/src/php-fpm-exporter/{{ php_fpm_exporter_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/hipages/php-fpm_exporter/releases/download/v{{ php_fpm_exporter_version }}/php-fpm_exporter_{{ php_fpm_exporter_version }}_checksums.txt"
+
+- name: php_fpm_exporter | Décompression de l'archive
+  ansible.builtin.unarchive:
+    src: /usr/local/src/php-fpm-exporter/{{ php_fpm_exporter_version }}.tar.gz
+    dest: /opt/php-fpm-exporter/{{ php_fpm_exporter_version }}
+    creates: /opt/php-fpm-exporter/{{ php_fpm_exporter_version }}/php-fpm_exporter
+    remote_src: true
+    owner: php-fpm-exporter
+    group: php-fpm-exporter
+
+- name: php_fpm_exporter | Création du lien symbolique pour le binaire de PHP-FPM exporter
+  ansible.builtin.file:
+    src: /opt/php-fpm-exporter/{{ php_fpm_exporter_version }}/php-fpm_exporter
+    dest: /usr/local/bin/php-fpm-exporter
+    state: link
+  notify: Restart php-fpm-exporter
+
+- name: php_fpm_exporter | Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/php-fpm-exporter@.service.j2
+    dest: /etc/systemd/system/php-fpm-exporter@.service
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart php-fpm-exporter
+
+- name: php_fpm_exporter | Configuration du pool {{ php_fpm_exporter_pool }}
+  ansible.builtin.template:
+    src: php-fpm-exporter/pool.env.j2
+    dest: /etc/php-fpm-exporter/{{ php_fpm_exporter_pool }}.env
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart php-fpm-exporter
+
+- name: php_fpm_exporter | Activation de PHP-FPM exporter au démarrage
+  ansible.builtin.systemd:
+    name: php-fpm-exporter@{{ php_fpm_exporter_pool }}
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: php_fpm_exporter | Trigger handlers
+  ansible.builtin.meta: flush_handlers

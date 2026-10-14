@@ -17,6 +17,7 @@
     - ppp
     - monitoring
     - x509
+    - php_fpm
     - postgresql
   loop_control:
     loop_var: rule_group
