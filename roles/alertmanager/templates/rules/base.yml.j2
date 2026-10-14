@@ -44,7 +44,7 @@ groups:
         for: 15m
         expr: 'static_heartbeat{instance=~"{{{ (groups['proxmox'] + groups['pbs']) | join('|') }}}"} unless on (instance) smartctl_device_smart_status'
         labels:
-          severity: info
+          severity: warning
         annotations:
           summary: 'Smartctl exporter is down'
           description: '[{{ $labels.instance }}] Vector is running but smartctl exporter metrics are missing'
@@ -53,7 +53,7 @@ groups:
         for: 15m
         expr: 'static_heartbeat{instance=~"{{{ (groups['proxmox'] + groups['pbs']) | join('|') }}}"} unless on (instance) count by (instance) ({__name__=~"ipmi_.+"})'
         labels:
-          severity: info
+          severity: warning
         annotations:
           summary: 'IPMI exporter is down'
           description: '[{{ $labels.instance }}] Vector is running but IPMI exporter metrics are missing'
@@ -66,6 +66,7 @@ groups:
         expr: '(1 - node_filesystem_avail_bytes{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"} / node_filesystem_size_bytes) > 0.9 and node_filesystem_readonly == 0'
         labels:
           severity: critical
+          category: base.disk
         annotations:
           summary: 'Disk usage is at {{ humanizePercentage $value }}'
           description: '[{{ $labels.instance }}] Device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" has disk usage > 90% (current = {{ humanizePercentage $value }})'
@@ -75,6 +76,7 @@ groups:
         expr: '(1 - node_filesystem_avail_bytes{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"} / node_filesystem_size_bytes) > 0.8 and predict_linear(node_filesystem_avail_bytes{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"}[2d], 7 * 24 * 3600) <= 0 and node_filesystem_avail_bytes > 0'
         labels:
           severity: warning
+          category: base.disk_forecast
           frequency: daily
         annotations:
           summary: 'Disk full within the week (current = {{ humanizePercentage $value }})'
@@ -85,6 +87,7 @@ groups:
         expr: '(1 - node_filesystem_files_free{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"} / node_filesystem_files) > 0.9 and node_filesystem_readonly == 0'
         labels:
           severity: critical
+          category: base.inodes
         annotations:
           summary: 'Inodes usage is at {{ humanizePercentage $value }}'
           description: '[{{ $labels.instance }}] Device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" has inodes usage > 90% (current = {{ humanizePercentage $value }})'
@@ -94,6 +97,7 @@ groups:
         expr: '(1 - node_filesystem_files_free{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"} / node_filesystem_files) > 0.8 and predict_linear(node_filesystem_files_free{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"}[2d], 7 * 24 * 3600) <= 0 and node_filesystem_files_free > 0'
         labels:
           severity: warning
+          category: base.inodes_forecast
           frequency: daily
         annotations:
           summary: 'Inodes full within the week (current = {{ humanizePercentage $value }})'
@@ -114,7 +118,7 @@ groups:
         for: 15m
         expr: '(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.9'
         labels:
-          severity: info
+          severity: warning
         annotations:
           summary: 'Memory usage is at {{ humanizePercentage $value }}'
           description: '[{{ $labels.instance }}] Memory usage is > 90% (current = {{ humanizePercentage $value }})'
@@ -163,7 +167,7 @@ groups:
         for: 15m
         expr: 'node_load5 / count without (cpu, mode) (node_cpu_seconds_total{mode="idle"}) > 2'
         labels:
-          severity: info
+          severity: warning
         annotations:
           summary: CPU usage is at {{ humanizePercentage $value }}
           description: '[{{ $labels.instance }}] CPU usage is > 200% (value = {{ humanizePercentage $value }})'
@@ -260,7 +264,7 @@ groups:
         expr: 'abs(node_timex_offset_seconds) > 0.05'
         for: 15m
         labels:
-          severity: info
+          severity: warning
         annotations:
           summary: Clock skew detected
           description: "[{{ $labels.instance }}] Clock skew detected. Clock is out of sync. Ensure NTP is configured correctly on this host (current = {{ humanize $value }})"
