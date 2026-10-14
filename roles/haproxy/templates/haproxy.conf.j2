@@ -100,22 +100,27 @@ frontend haproxy-frontend
     http-response set-header alt-svc "h3=\":443\";ma=900;"
 
     # enable HSTS
-    http-response set-header Strict-Transport-Security "max-age=63072000;{% if not letsencrypt_staging %} preload;{% endif %}"
+    http-response set-header Strict-Transport-Security "max-age=63072000"
 
-    # disable FLoC tracking
-    http-response set-header Permissions-Policy "interest-cohort=()"
+    # En-têtes OWASP, sauf si l'application les envoie déjà
+    http-response set-header X-Content-Type-Options "nosniff" unless { res.hdr(X-Content-Type-Options) -m found }
+    http-response set-header X-Frame-Options "SAMEORIGIN" unless { res.hdr(X-Frame-Options) -m found }
+    # no-referrer met Origin à null sur les POST, ce que refuse le CSRF de Django (authentik)
+    http-response set-header Referrer-Policy "same-origin" unless { res.hdr(Referrer-Policy) -m found }
+    http-response set-header Permissions-Policy "accelerometer=(), autoplay=(self), camera=(self), cross-origin-isolated=(), display-capture=(self), encrypted-media=(self), fullscreen=(self), geolocation=(self), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(self), midi=(), payment=(), picture-in-picture=(self), publickey-credentials-get=(self), screen-wake-lock=(self), sync-xhr=(self), usb=(), web-share=(self), xr-spatial-tracking=(), clipboard-read=(self), clipboard-write=(self), gamepad=(), hid=(), idle-detection=(), interest-cohort=(), serial=(), unload=()" unless { res.hdr(Permissions-Policy) -m found }
+    http-response set-header X-Permitted-Cross-Domain-Policies "none" unless { res.hdr(X-Permitted-Cross-Domain-Policies) -m found }
+    http-response set-header X-DNS-Prefetch-Control "off" unless { res.hdr(X-DNS-Prefetch-Control) -m found }
+    http-response set-header X-XSS-Protection "0"
 
-    # disable clients from sniffing the media type
-    http-response set-header X-Content-Type-Options "nosniff"
-
-    # clickjacking protection
-    http-response set-header X-Frame-Options "SAMEORIGIN"
-
-    # keep referrer data off of HTTP connections
-    http-response set-header Referrer-Policy "same-origin"
-
-    # Block pages from loading when they detect reflected XSS attacks
-    http-response set-header X-XSS-Protection "1; mode=block"
+    # En-têtes qui révèlent le logiciel ou sa version
+    http-response del-header Server
+    http-response del-header X-Powered-By
+    http-response del-header X-Generator
+    http-response del-header X-Php-Version
+    http-response del-header X-Redirect-By
+    http-response del-header X-AspNet-Version
+    http-response del-header X-SourceMap
+    http-response del-header SourceMap
 
 {% for redirect in haproxy_redirect %}
     http-request redirect prefix https://{{ redirect.to }} code 301 if { hdr(host),field(1,:) -i {{ redirect.from }} }
