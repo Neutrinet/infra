@@ -4,11 +4,36 @@
     name: rsync
     state: present
 
+- name: Ajouter le dépôt HAProxy
+  ansible.builtin.deb822_repository:
+    name: haproxy
+    types: deb
+    signed_by: https://haproxy.debian.net/haproxy-archive-keyring.gpg
+    uris: https://haproxy.debian.net
+    suites: "{{ ansible_distribution_release }}-backports-{{ haproxy_repo_version }}"
+    components:
+      - main
+    state: present
+  notify: Update apt cache
+
+- name: Pinning du paquet haproxy vers le dépôt officiel
+  ansible.builtin.copy:
+    content: |
+      Package: haproxy
+      Pin: origin haproxy.debian.net
+      Pin-Priority: 900
+    dest: /etc/apt/preferences.d/haproxy
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: Trigger handlers
+  ansible.builtin.meta: flush_handlers
+
 - name: Installation de haproxy
   ansible.builtin.package:
     name: haproxy
     state: present
-    default_release: "{{ ansible_distribution_release }}-backports"
 
 - name: Création du répertoire ssl
   ansible.builtin.file:
@@ -47,6 +72,23 @@
       - --chmod=D755,F644
   become: true
   become_user: haproxy
+  notify: Restart haproxy
+
+- name: Création du dossier des scripts Lua
+  ansible.builtin.file:
+    path: /etc/haproxy/lua
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: Copie du script de calcul de l'empreinte JA4
+  ansible.builtin.copy:
+    src: lua/ja4.lua
+    dest: /etc/haproxy/lua/ja4.lua
+    owner: root
+    group: root
+    mode: "u=r,go=r"
   notify: Restart haproxy
 
 - name: Config de haproxy
