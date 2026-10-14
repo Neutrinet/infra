@@ -4,5 +4,5 @@ letsencrypt_dns_ovh_consumer_key: "{{ vault_dns_ovh_consumer_key }}"
 
 letsencrypt_staging: false
 
-letsencrypt_post_hook: 'systemctl restart haproxy'
+letsencrypt_post_hook: 'systemctl reload haproxy'
 letsencrypt_deploy_hook: '/etc/letsencrypt/haproxy.py'
