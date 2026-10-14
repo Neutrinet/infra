@@ -12,9 +12,6 @@ global
     group haproxy
     daemon
 
-    # https://stackoverflow.com/a/64119235
-    noreuseport
-
     tune.maxrewrite 4096
 
     # Au reload, l'ancien processus garde ses sessions (PostgreSQL, Valkey) jusqu'à leur timeout de 30m
