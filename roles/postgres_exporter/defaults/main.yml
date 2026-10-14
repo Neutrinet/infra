@@ -1,2 +1,2 @@
-postgres_exporter_version: 0.18.0
+postgres_exporter_version: 0.20.1
 postgres_role: primary
