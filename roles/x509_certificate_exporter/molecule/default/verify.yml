@@ -1,0 +1,32 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Récupération de l'état des services
+      ansible.builtin.service_facts:
+
+    - name: Vérification que x509-certificate-exporter est actif et activé au démarrage
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['x509-certificate-exporter.service'].state == 'running'
+          - ansible_facts.services['x509-certificate-exporter.service'].status == 'enabled'
+
+    - name: Vérification de http://localhost:9793/metrics
+      ansible.builtin.uri:
+        url: http://localhost:9793/metrics
+        return_content: true
+      register: _verify_endpoint_0
+      retries: 6
+      delay: 10
+      until: "_verify_endpoint_0.status == 200 and 'x509_exporter_build_info' in _verify_endpoint_0.content"
+
+    - name: Vérification des métriques remontées par Vector
+      ansible.builtin.uri:
+        url: http://localhost:9598/metrics
+        return_content: true
+      register: _verify_vector
+      retries: 12
+      delay: 10
+      until: "_verify_vector.status == 200 and 'x509_exporter_build_info' in _verify_vector.content"
