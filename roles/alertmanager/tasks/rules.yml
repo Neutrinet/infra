@@ -16,6 +16,7 @@
     - bgp
     - ppp
     - monitoring
+    - x509
   loop_control:
     loop_var: rule_group
   notify: Reload victoriametrics-alert
