@@ -139,6 +139,10 @@ frontend haproxy-frontend
 {% endfor %}
 {% endif %}
 {% endfor %}
+    default_backend default-backend
+
+backend default-backend
+    http-request return status 404
 
 {% for host in haproxy %}
 backend {{ host.hostname | replace('.', '-') }}-backend
