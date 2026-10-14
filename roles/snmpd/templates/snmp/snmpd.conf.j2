@@ -1,0 +1,32 @@
+{{ ansible_managed | comment }}
+
+{% set _snmpd_iface = ansible_facts[snmpd_interface] %}
+{% set _snmpd_listen_v4 = ['udp:' ~ _snmpd_iface.ipv4.address ~ ':161'] if _snmpd_iface.ipv4 is defined else [] %}
+{% set _snmpd_listen_v6 = _snmpd_iface.ipv6 | default([]) | selectattr('scope', 'equalto', 'global') | map(attribute='address') | map('regex_replace', '^(.*)$', 'udp6:[\\1]:161') | list %}
+# Écoute uniquement sur l'interface de management : la VRF routing (IX, transit) n'atteint pas snmpd
+agentaddress {{ (_snmpd_listen_v4 + _snmpd_listen_v6) | join(',') }}
+
+view lnms included .1
+# Tables de routage : la table complète de la VRF routing est visible par snmpd
+view lnms excluded .1.3.6.1.2.1.4.21
+view lnms excluded .1.3.6.1.2.1.4.24
+view lnms excluded .1.3.6.1.2.1.55.1.9
+view lnms excluded .1.3.6.1.2.1.55.1.10
+view lnms excluded .1.3.6.1.2.1.55.1.11
+# Lignes de commande des processus et liste des paquets installés
+view lnms excluded .1.3.6.1.2.1.25.4.2.1.5
+view lnms excluded .1.3.6.1.2.1.25.6
+
+rocommunity  {{ snmpd_community }} 10.0.11.109 -V lnms
+rocommunity6 {{ snmpd_community }} 2001:913:1000:11::109 -V lnms
+
+syslocation {{ datacenter_name }}
+syscontact noc@neutrinet.be
+sysName {{ inventory_hostname }}
+
+extend distro /usr/local/bin/distro
+extend bird2 /usr/local/bin/snmpd-bird2
+extend osupdate /usr/local/bin/osupdate
+extend chronyd /usr/local/bin/chrony
+extend linux_softnet_stat '/usr/local/bin/linux_softnet_stat -b'
+pass .1.3.6.1.2.1.31.1.1.1.18 /usr/local/bin/ifAlias

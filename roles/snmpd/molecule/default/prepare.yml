@@ -1,0 +1,17 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Mise à jour du cache APT
+      ansible.builtin.apt:
+        update_cache: true
+
+  tasks:
+    - name: Installation de bird2 et sudo
+      ansible.builtin.apt:
+        name:
+          - bird2
+          - sudo
+        state: present

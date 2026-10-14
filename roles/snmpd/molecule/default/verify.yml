@@ -1,0 +1,90 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Récupération de l'état des services
+      ansible.builtin.service_facts:
+
+    - name: Vérification que snmpd est actif et activé au démarrage
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['snmpd.service'].state == 'running'
+          - ansible_facts.services['snmpd.service'].status == 'enabled'
+
+    - name: Lecture des sockets UDP IPv4
+      ansible.builtin.slurp:
+        src: /proc/net/udp
+      register: _verify_udp
+
+    # /proc/net/udp donne l'adresse en hexadécimal little-endian et le port 161 en 00A1
+    - name: Vérification que snmpd écoute uniquement sur l'adresse de l'interface
+      vars:
+        _verify_listen: "{% for _octet in ansible_facts['default_ipv4']['address'].split('.') | reverse %}{{ '%02X' | format(_octet | int) }}{% endfor %}:00A1"
+      ansible.builtin.assert:
+        that:
+          - _verify_listen in (_verify_udp.content | b64decode)
+          - "'00000000:00A1' not in (_verify_udp.content | b64decode)"
+
+    - name: Lecture de snmpd.conf
+      ansible.builtin.slurp:
+        src: /etc/snmp/snmpd.conf
+      register: _verify_snmpd_conf
+
+    - name: Vérification du contenu de snmpd.conf
+      ansible.builtin.assert:
+        that:
+          - "('agentaddress udp:' ~ ansible_facts['default_ipv4']['address'] ~ ':161') in (_verify_snmpd_conf.content | b64decode)"
+          - "'syslocation molecule' in (_verify_snmpd_conf.content | b64decode)"
+          - "'extend bird2 /usr/local/bin/snmpd-bird2' in (_verify_snmpd_conf.content | b64decode)"
+
+    - name: Récupération du groupe bird
+      ansible.builtin.getent:
+        database: group
+        key: bird
+
+    - name: Vérification que Debian-snmp n'est pas dans le groupe bird
+      ansible.builtin.assert:
+        that:
+          - "'Debian-snmp' not in ansible_facts.getent_group['bird'][2].split(',')"
+
+    - name: Lecture de la règle sudo de snmpd
+      ansible.builtin.slurp:
+        src: /etc/sudoers.d/snmpd-birdc
+      register: _verify_sudoers
+
+    - name: Vérification de la règle sudo limitée à birdc en lecture seule
+      ansible.builtin.assert:
+        that:
+          - "'/usr/sbin/birdc -r show protocols all' in (_verify_sudoers.content | b64decode)"
+
+    - name: Vérification des scripts LibreNMS
+      ansible.builtin.stat:
+        path: "/usr/local/bin/{{ item }}"
+      register: _verify_scripts
+      loop:
+        - distro
+        - ifAlias
+        - snmpd-bird2
+        - osupdate
+        - chrony
+        - linux_softnet_stat
+
+    - name: Vérification que les scripts sont exécutables
+      ansible.builtin.assert:
+        that:
+          - item.stat.executable
+      loop: "{{ _verify_scripts.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Lecture de la commande de snmpd
+      ansible.builtin.systemd:
+        name: snmpd
+      register: _verify_snmpd_unit
+
+    - name: Vérification que les modules de routage sont désactivés
+      ansible.builtin.assert:
+        that:
+          - "'ipCidrRouteTable,inetCidrRouteTable' in _verify_snmpd_unit.status.ExecStart"
