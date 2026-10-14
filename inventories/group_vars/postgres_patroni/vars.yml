@@ -9,6 +9,11 @@ postgresql_patroni_replication_password: "{{ vault_postgresql_patroni_replicatio
 postgresql_patroni_rewind_username: rewind
 postgresql_patroni_rewind_password: "{{ vault_postgresql_patroni_rewind_password }}"
 
+postgresql_patroni_shared_buffers: 2GB
+postgresql_patroni_effective_cache_size: 6GB
+postgresql_patroni_work_mem: 16MB
+postgresql_patroni_maintenance_work_mem: 256MB
+
 etcd_name: neutrinet-patroni
 etcd_data_dir: "/var/lib/etcd/neutrinet-patroni"
 etcd_members:

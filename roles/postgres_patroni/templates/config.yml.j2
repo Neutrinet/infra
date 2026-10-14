@@ -30,6 +30,7 @@ bootstrap:
       use_pg_rewind: true
       use_slots: true
       parameters:
+        max_connections: 300
         wal_keep_segments: 100
 
   initdb:
@@ -45,8 +46,18 @@ postgresql:
   connect_address: "{{ patroni_current_member.ipv4 }}:5432"
 {% endif %}
   use_unix_socket: true
-  max_connections: 300
-  shared_buffers: 384M
+  parameters:
+    shared_buffers: {{ postgresql_patroni_shared_buffers }}
+    effective_cache_size: {{ postgresql_patroni_effective_cache_size }}
+    work_mem: {{ postgresql_patroni_work_mem }}
+    maintenance_work_mem: {{ postgresql_patroni_maintenance_work_mem }}
+    random_page_cost: 1.1
+    effective_io_concurrency: 100
+    jit: "off"
+    max_slot_wal_keep_size: 10GB
+    shared_preload_libraries: pg_stat_statements
+    log_min_duration_statement: 500ms
+    track_io_timing: "on"
 
   data_dir: /media/data/postgresql/{{ postgresql_major_version }}/{{ postgresql_patroni_name }}
   bin_dir: /usr/lib/postgresql/{{ postgresql_major_version }}/bin
