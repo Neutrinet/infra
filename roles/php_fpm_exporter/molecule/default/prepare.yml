@@ -1,0 +1,45 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Mise à jour du cache APT
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Installation de PHP-FPM
+      ansible.builtin.package:
+        name: php8.4-fpm
+        state: present
+
+    - name: Création du groupe caddy
+      ansible.builtin.group:
+        name: caddy
+        system: true
+
+    - name: Configuration d'un pool PHP-FPM de test
+      ansible.builtin.copy:
+        content: |
+          [molecule]
+          user = www-data
+          group = www-data
+          listen = /run/php/molecule.sock
+          listen.owner = www-data
+          listen.group = caddy
+          listen.mode = 0660
+          pm = static
+          pm.max_children = 2
+          pm.status_path = /status
+        dest: /etc/php/8.4/fpm/pool.d/molecule.conf
+        owner: root
+        group: root
+        mode: "u=rw,go=r"
+
+    - name: Redémarrage de PHP-FPM
+      ansible.builtin.service:
+        name: php8.4-fpm
+        state: restarted
+
+  roles:
+    - vector

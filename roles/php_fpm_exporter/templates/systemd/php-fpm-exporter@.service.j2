@@ -1,0 +1,43 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=PHP-FPM exporter pour le pool %i
+After=network.target
+
+[Service]
+Type=simple
+User=php-fpm-exporter
+Group=php-fpm-exporter
+# Les sockets des pools appartiennent au groupe caddy
+SupplementaryGroups=caddy
+EnvironmentFile=/etc/php-fpm-exporter/%i.env
+ExecStart=/usr/local/bin/php-fpm-exporter server
+Restart=always
+RestartSec=5
+
+# Systemd hardening
+CapabilityBoundingSet=
+AmbientCapabilities=
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=noaccess
+ProtectSystem=full
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,19 @@
+---
+
+- name: Installation de PHP-FPM exporter
+  ansible.builtin.import_tasks: php_fpm_exporter.yml
+  tags: ['php_fpm_exporter']
+
+- name: Nettoyage des archives de PHP-FPM exporter
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ['cleanup']
+
+- name: Configuration de vector
+  ansible.builtin.template:
+    src: vector/prometheus_php_fpm_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_php_fpm_exporter_{{ php_fpm_exporter_pool }}.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
