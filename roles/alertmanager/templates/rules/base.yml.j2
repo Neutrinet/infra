@@ -61,10 +61,12 @@ groups:
   - name: Disk Usage
     rules:
       - alert: Low Disk Space
-        for: 1h
+        for: 15m
+        keep_firing_for: 15m
         expr: '(1 - node_filesystem_avail_bytes{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"} / node_filesystem_size_bytes) > 0.9 and node_filesystem_readonly == 0'
         labels:
           severity: critical
+          category: base.disk
         annotations:
           summary: 'Disk usage is at {{ humanizePercentage $value }}'
           description: '[{{ $labels.instance }}] Device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" has disk usage > 90% (current = {{ humanizePercentage $value }})'
@@ -74,6 +76,7 @@ groups:
         expr: '(1 - node_filesystem_avail_bytes{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"} / node_filesystem_size_bytes) > 0.8 and predict_linear(node_filesystem_avail_bytes{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"}[2d], 7 * 24 * 3600) <= 0 and node_filesystem_avail_bytes > 0'
         labels:
           severity: warning
+          category: base.disk_forecast
           frequency: daily
         annotations:
           summary: 'Disk full within the week (current = {{ humanizePercentage $value }})'
@@ -81,18 +84,20 @@ groups:
 
       - alert: Low Inodes
         for: 1h
-        expr: '(1 - node_filesystem_files_free / node_filesystem_files) > 0.9 and node_filesystem_readonly == 0'
+        expr: '(1 - node_filesystem_files_free{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"} / node_filesystem_files) > 0.9 and node_filesystem_readonly == 0'
         labels:
           severity: critical
+          category: base.inodes
         annotations:
           summary: 'Inodes usage is at {{ humanizePercentage $value }}'
           description: '[{{ $labels.instance }}] Device {{ $labels.device }} mounted on "{{ $labels.mountpoint }}" has inodes usage > 90% (current = {{ humanizePercentage $value }})'
 
       - alert: Inodes Full Next Week
         for: 1h
-        expr: '(1 - node_filesystem_files_free / node_filesystem_files) > 0.9 and predict_linear(node_filesystem_files_free{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"}[2d], 7 * 24 * 3600) <= 0 and node_filesystem_files_free > 0'
+        expr: '(1 - node_filesystem_files_free{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"} / node_filesystem_files) > 0.8 and predict_linear(node_filesystem_files_free{fstype!~"^(fuse.*|tmpfs|cifs|nfs)"}[2d], 7 * 24 * 3600) <= 0 and node_filesystem_files_free > 0'
         labels:
           severity: warning
+          category: base.inodes_forecast
           frequency: daily
         annotations:
           summary: 'Inodes full within the week (current = {{ humanizePercentage $value }})'
@@ -113,7 +118,7 @@ groups:
         for: 15m
         expr: '(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.9'
         labels:
-          severity: critical
+          severity: warning
         annotations:
           summary: 'Memory usage is at {{ humanizePercentage $value }}'
           description: '[{{ $labels.instance }}] Memory usage is > 90% (current = {{ humanizePercentage $value }})'
@@ -122,14 +127,14 @@ groups:
         expr: 'rate(node_vmstat_pgmajfault[5m]) > 500'
         for: 15m
         labels:
-          severity: critical
+          severity: info
         annotations:
           summary: 'Memory page faults occurring at high rate (current = {{ humanize $value }})'
           description: "[{{ $labels.instance }}] Instance is under heavy memory pressure. High rate of loading memory pages from disk (current = {{ humanize $value }})"
 
       - alert: Memory Under Utilized
         for: 1h
-        expr: '(1 - avg_over_time(node_memory_MemFree_bytes[1d]) / node_memory_MemTotal_bytes) < 0.4'
+        expr: '(1 - avg_over_time(node_memory_MemAvailable_bytes[1w]) / node_memory_MemTotal_bytes) < 0.4'
         labels:
           severity: info
           frequency: weekly
@@ -139,7 +144,8 @@ groups:
 
       - alert: High Swap Usage
         for: 15m
-        expr: '(1 - node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes) > 0.8'
+        # Le swap plein n'est un problème que si la mémoire disponible est aussi basse.
+        expr: '(1 - node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes) > 0.8 and node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.15'
         labels:
           severity: info
         annotations:
@@ -168,9 +174,9 @@ groups:
 
       - alert: CPU Steal Noisy Neighbor
         expr: 'avg without (cpu, mode) (rate(node_cpu_seconds_total{mode="steal"}[5m])) > 0.1'
-        for: 0m
+        for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: CPU steal increased by {{ humanizePercentage $value }} in the last 5 minutes.
           description: "[{{ $labels.instance }}] CPU steal increased by > 10% in the last 5 minutes (current = {{ humanizePercentage $value }}). A noisy neighbor is killing VM performances or a spot instance may be out of credit."
@@ -179,18 +185,18 @@ groups:
     rules:
       - alert: Unusual Network Receive Bandwidth
         expr: 'rate(node_network_receive_bytes_total[5m]) / node_network_speed_bytes > 0.8'
-        for: 0m
+        for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: Network receive bandwidth is at {{ humanizePercentage $value }}
           description: "[{{ $labels.instance }}] Receive bandwidth is > 80% (current = {{ humanizePercentage $value }})"
 
       - alert: Unusual Network Transmit Bandwidth
         expr: 'rate(node_network_transmit_bytes_total[5m]) / node_network_speed_bytes > 0.8'
-        for: 0m
+        for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
           summary: Network transmit bandwidth is at {{ humanizePercentage $value }}
           description: "[{{ $labels.instance }}] Transmit bandwidth is > 80% (current = {{ humanizePercentage $value }})"
@@ -340,7 +346,7 @@ groups:
         for: 5m
         expr: 'smartctl_device_attribute{attribute_name="Wear_Leveling_Count", attribute_value_type="value"} < 10'
         labels:
-          severity: critical
+          severity: warning
           frequency: weekly
         annotations:
           summary: 'Disk /dev/{{ $labels.device }} wear level is at {{ $value }}%'
@@ -355,6 +361,15 @@ groups:
         annotations:
           summary: 'Disk /dev/{{ $labels.device }} will fail in 30 days (current wear level = {{ $value }}%)'
           description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} will fail in 30 days (current wear level = {{ $value }}%)'
+
+      - alert: Disk Temperature High
+        for: 5m
+        expr: 'max_over_time(smartctl_device_temperature{temperature_type="current"}[10m]) >= on (device, instance) (smartctl_device_temperature{temperature_type="drive_trip"} * 0.8)'
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Disk /dev/{{ $labels.device }} temperature is close to its trip value'
+          description: '[{{ $labels.instance }}] Disk /dev/{{ $labels.device }} temperature is >= 80% of its trip value (current = {{ $value }}°C)'
 
       - alert: EDAC Correctable Errors Detected
         expr: 'increase(node_edac_correctable_errors_total[5m]) > 0'
@@ -376,14 +391,14 @@ groups:
 
   - name: Disk IO
     rules:
-      - alert: Unusual Disk IO
-        expr: 'rate(node_disk_io_time_seconds_total[5m]) > 1'
+      - alert: High CPU IO Wait
+        expr: 'avg without (cpu, mode) (rate(node_cpu_seconds_total{mode="iowait"}[5m])) > 0.1'
         for: 15m
         labels:
-          severity: warning
+          severity: info
         annotations:
-          summary: Unusual disk IO rate (current = {{ humanize $value }})
-          description: "[{{ $labels.instance }}] Disk {{ $labels.device }} is too busy: IO wait increased by > 100% in the last 5 minutes (current = {{ humanize $value }})."
+          summary: CPU IO wait is at {{ humanizePercentage $value }}
+          description: "[{{ $labels.instance }}] CPU spends > 10% of its time waiting for disk IO (current = {{ humanizePercentage $value }})."
 
       - alert: Unusual Disk Read Latency
         expr: 'rate(node_disk_read_time_seconds_total[5m]) / rate(node_disk_reads_completed_total[5m]) > 0.1 and rate(node_disk_reads_completed_total[1m]) > 0'
@@ -478,7 +493,7 @@ groups:
         expr: 'min by (url) (avg_over_time(probe_icmp_duration_seconds[1m])) > 1'
         for: 15m
         labels:
-          severity: warning
+          severity: info
           category: probe.icmp
         annotations:
           summary: Host {{ $labels.url }} is slow to respond to ping

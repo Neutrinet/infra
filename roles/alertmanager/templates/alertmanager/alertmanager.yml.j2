@@ -109,6 +109,19 @@ inhibit_rules:
       - category = base.health
     equal: ['instance']
 
+  # Disk or inodes almost full: hide the prediction for the same filesystem
+  - target_matchers:
+      - category = base.disk_forecast
+    source_matchers:
+      - category = base.disk
+    equal: ['instance', 'device', 'mountpoint']
+
+  - target_matchers:
+      - category = base.inodes_forecast
+    source_matchers:
+      - category = base.inodes
+    equal: ['instance', 'device', 'mountpoint']
+
   # Clock not synchronising on several hosts of a datacenter: hide the alerts per host
   - target_matchers:
       - category = base.clock
