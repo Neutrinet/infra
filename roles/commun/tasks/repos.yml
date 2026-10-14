@@ -103,7 +103,7 @@
     group: root
     mode: "ugo=r"
 
-- name: Creation du repertoir pour les cles gpg
+- name: Creation du répertoire pour les clés GPG
   ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory

@@ -51,7 +51,17 @@
   tags: ['network']
   when: ansible_virtualization_type != "lxc"
 
-- name: Installation de Telegraf
+- name: Installation de Vector
+  ansible.builtin.import_role:
+    name: vector
+  tags: ['vector']
+
+- name: Installation de Node exporter
+  ansible.builtin.import_role:
+    name: node_exporter
+  tags: ['node_exporter']
+
+- name: Désinstallation de Telegraf
   ansible.builtin.import_role:
     name: telegraf
   tags: ['telegraf']

@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+type: "remap"
+inputs:
+    - "prometheus_*"
+source: |
+    .tags.datacenter = "{{ datacenter_name }}"
+    .tags.instance = "{{ inventory_hostname }}"
+    .tags.job = "vector-scraper"
+    .

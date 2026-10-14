@@ -61,7 +61,7 @@
     owner: alertmanager
     group: alertmanager
     mode: "u=rw,g=r,o="
-    validate: amtool check-config %s
+    validate: amtool check-config -v %s
   notify: Reload alertmanager
 
 - name: Configuration du service systemd

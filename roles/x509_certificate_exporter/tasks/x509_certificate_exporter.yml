@@ -1,0 +1,74 @@
+---
+- name: Création de l'utilisateur pour x509 certificate exporter
+  ansible.builtin.user:
+    name: x509-certificate-exporter
+    home: /opt/x509-certificate-exporter
+    shell: /sbin/nologin
+    system: true
+    state: present
+
+- name: Création des dossiers de x509 certificate exporter
+  ansible.builtin.file:
+    path: "{{ x509_certificate_exporter_dir }}"
+    owner: x509-certificate-exporter
+    group: x509-certificate-exporter
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /opt/x509-certificate-exporter
+    - /opt/x509-certificate-exporter/{{ x509_certificate_exporter_version }}
+  loop_control:
+    loop_var: x509_certificate_exporter_dir
+
+- name: Création du dossier des archives de x509 certificate exporter
+  ansible.builtin.file:
+    path: /usr/local/src/x509-certificate-exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: Téléchargement de l'archive de x509 certificate exporter v{{ x509_certificate_exporter_version }}
+  ansible.builtin.get_url:
+    url: https://github.com/enix/x509-certificate-exporter/releases/download/v{{ x509_certificate_exporter_version }}/x509-certificate-exporter-linux-amd64.tar.gz
+    dest: /usr/local/src/x509-certificate-exporter/{{ x509_certificate_exporter_version }}.tar.gz
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    checksum: "sha256:https://github.com/enix/x509-certificate-exporter/releases/download/v{{ x509_certificate_exporter_version }}/x509-certificate-exporter-linux-amd64.tar.gz.sha256"
+
+- name: Décompression de l'archive
+  ansible.builtin.unarchive:
+    src: /usr/local/src/x509-certificate-exporter/{{ x509_certificate_exporter_version }}.tar.gz
+    dest: /opt/x509-certificate-exporter/{{ x509_certificate_exporter_version }}
+    creates: /opt/x509-certificate-exporter/{{ x509_certificate_exporter_version }}/x509-certificate-exporter
+    remote_src: true
+    owner: x509-certificate-exporter
+    group: x509-certificate-exporter
+
+- name: Création du lien symbolique pour le binaire de x509 certificate exporter
+  ansible.builtin.file:
+    src: /opt/x509-certificate-exporter/{{ x509_certificate_exporter_version }}/x509-certificate-exporter
+    dest: /usr/local/bin/x509-certificate-exporter
+    state: link
+  notify: Restart x509-certificate-exporter
+
+- name: Configuration du service systemd
+  ansible.builtin.template:
+    src: systemd/x509-certificate-exporter.service.j2
+    dest: /etc/systemd/system/x509-certificate-exporter.service
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart x509-certificate-exporter
+
+- name: Activation de x509 certificate exporter au démarrage
+  ansible.builtin.service:
+    name: x509-certificate-exporter
+    state: started
+    enabled: true
+
+- name: Trigger handlers
+  # We need to restart x509-certificate-exporter to apply the new config
+  # and expose the metrics for vector
+  ansible.builtin.meta: flush_handlers

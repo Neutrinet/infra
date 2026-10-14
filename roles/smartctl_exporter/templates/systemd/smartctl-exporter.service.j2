@@ -1,0 +1,37 @@
+{{ ansible_managed | comment }}
+# Based on https://aur.archlinux.org/cgit/aur.git/tree/smartctl_exporter.service?h=smartctl_exporter
+
+[Unit]
+Description=Prometheus exporter for S.M.A.R.T. metrics using smartctl
+Requires=network-online.target
+After=network-online.target
+StartLimitIntervalSec=30
+StartLimitBurst=3
+
+[Service]
+ExecStart=/usr/local/bin/smartctl-exporter --web.listen-address '[::1]:9633'
+User=root
+Group=root
+
+Restart=on-failure
+RestartSec=30
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectHostname=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectKernelLogs=true
+LockPersonality=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+MemoryDenyWriteExecute=true
+CapabilityBoundingSet=CAP_SYS_ADMIN CAP_SYS_RAWIO CAP_MKNOD
+AmbientCapabilities=
+
+[Install]
+WantedBy=multi-user.target

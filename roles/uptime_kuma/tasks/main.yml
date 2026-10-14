@@ -14,18 +14,15 @@
   ansible.builtin.import_tasks: uptime_kuma.yml
   tags: ['uptime_kuma']
 
-- name: Installation des plugins Telegraf
+- name: Configuration de vector
   ansible.builtin.template:
-    src: telegraf/uptime-kuma.conf.j2
-    dest: /etc/telegraf/telegraf.d/{{ uptime_kuma_owner }}.conf
-    owner: telegraf
-    group: telegraf
-    mode: "u=rw,g=r,o="
-    validate: telegraf --config %s --test
-  when: uptime_kuma_api_token != ""
-  notify: Restart telegraf
-  no_log: true
-  tags: ['telegraf']
+    src: vector/prometheus_uptime_kuma_exporter.yaml.j2
+    dest: /etc/vector/sources/prometheus_uptime_kuma_exporter.yaml
+    owner: vector
+    group: vector
+    mode: "ug=r,o="
+  notify: Restart vector
+  tags: ['vector_config']
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:

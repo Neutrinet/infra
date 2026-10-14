@@ -1,81 +1,87 @@
 ---
 - name: Provisionning des machines Debian
-  import_playbook: apps/debian_commun.yml
+  ansible.builtin.import_playbook: apps/debian_commun.yml
 
 - name: Configuration de Proxmox
-  import_playbook: apps/proxmox.yml
+  ansible.builtin.import_playbook: apps/proxmox.yml
+
+- name: Configuration de PBS
+  ansible.builtin.import_playbook: apps/pbs.yml
 
 - name: Déploiement de Keepalived
-  import_playbook: apps/keepalived.yml
+  ansible.builtin.import_playbook: apps/keepalived.yml
 
 - name: Déploiement de HAProxy
-  import_playbook: apps/haproxy.yml
+  ansible.builtin.import_playbook: apps/haproxy.yml
 
 - name: Déploiement du cluster Patroni pour PostgreSQL
-  import_playbook: apps/postgres_patroni.yml
+  ansible.builtin.import_playbook: apps/postgres_patroni.yml
 
 - name: Déploiement des sites web statiques
-  import_playbook: apps/web_static.yml
+  ansible.builtin.import_playbook: apps/web_static.yml
 
 - name: Déploiement des webhooks
-  import_playbook: apps/webhook.yml
+  ansible.builtin.import_playbook: apps/webhook.yml
 
 - name: Déploiement du cluster Ceph S3
-  import_playbook: apps/ceph_s3.yml
+  ansible.builtin.import_playbook: apps/ceph_s3.yml
 
 - name: Déploiement de Semaphore
-  import_playbook: apps/semaphore.yml
+  ansible.builtin.import_playbook: apps/semaphore.yml
 
 - name: Déploiement de HedgeDoc
-  import_playbook: apps/hedgedoc.yml
+  ansible.builtin.import_playbook: apps/hedgedoc.yml
 
 - name: Déploiement de Mattermost
-  import_playbook: apps/mattermost.yml
+  ansible.builtin.import_playbook: apps/mattermost.yml
 
 - name: Déploiement de Nextcloud
-  import_playbook: apps/nextcloud.yml
+  ansible.builtin.import_playbook: apps/nextcloud.yml
 
 - name: Déploiement de Accounting
-  import_playbook: apps/accounting.yml
+  ansible.builtin.import_playbook: apps/accounting.yml
 
 - name: Déploiement de Backoffice
-  import_playbook: apps/backoffice.yml
+  ansible.builtin.import_playbook: apps/backoffice.yml
 
 - name: Déploiement de Grav
-  import_playbook: apps/grav.yml
+  ansible.builtin.import_playbook: apps/grav.yml
 
 - name: Déploiement de Dokuwiki
-  import_playbook: apps/dokuwiki.yml
+  ansible.builtin.import_playbook: apps/dokuwiki.yml
 
 - name: Déploiement de Zammad
-  import_playbook: apps/zammad.yml
+  ansible.builtin.import_playbook: apps/zammad.yml
+
+- name: Déploiement de Mobilizon
+  ansible.builtin.import_playbook: apps/mobilizon.yml
 
 - name: Déploiement des probes pour le monitoring
-  import_playbook: apps/probe.yml
+  ansible.builtin.import_playbook: apps/probe.yml
 
 - name: Déploiement de Bird Exporter
-  import_playbook: apps/bird_exporter.yml
+  ansible.builtin.import_playbook: apps/bird_exporter.yml
 
 - name: Déploiement de Collectd Exporter
-  import_playbook: apps/collectd_exporter.yml
+  ansible.builtin.import_playbook: apps/collectd_exporter.yml
 
 - name: Déploiement de VictoriaMetrics
-  import_playbook: apps/victoriametrics.yml
+  ansible.builtin.import_playbook: apps/victoriametrics.yml
 
 - name: Déploiement d'Alertmanager
-  import_playbook: apps/alertmanager.yml
+  ansible.builtin.import_playbook: apps/alertmanager.yml
 
 - name: Déploiement de Grafana
-  import_playbook: apps/grafana.yml
+  ansible.builtin.import_playbook: apps/grafana.yml
 
 - name: Déploiement de Uptime-Kuma
-  import_playbook: apps/uptime_kuma.yml
+  ansible.builtin.import_playbook: apps/uptime_kuma.yml
 
 - name: Déploiement de Gitlab Runner
-  import_playbook: apps/gitlab_runner.yml
+  ansible.builtin.import_playbook: apps/gitlab_runner.yml
 
 - name: Déploiement de Stalwart
-  import_playbook: apps/stalwart.yml
+  ansible.builtin.import_playbook: apps/stalwart.yml
 
 - name: Déploiement de Knot
-  import_playbook: apps/knot.yml
+  ansible.builtin.import_playbook: apps/knot.yml

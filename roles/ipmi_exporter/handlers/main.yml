@@ -1,0 +1,15 @@
+- name: Restart ipmi-exporter
+  ansible.builtin.systemd:
+    name: ipmi-exporter
+    daemon_reload: true
+    state: restarted
+
+- name: Reload ipmi-exporter
+  ansible.builtin.service:
+    name: ipmi-exporter
+    state: reloaded
+
+- name: Restart vector
+  ansible.builtin.service:
+    name: vector
+    state: restarted

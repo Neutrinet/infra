@@ -11,7 +11,7 @@
 - name: Configuration de bird_exporter
   ansible.builtin.import_role:
     name: bird_exporter
-  tags: ['telegraf_config']
+  tags: ['bird_exporter']
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:
