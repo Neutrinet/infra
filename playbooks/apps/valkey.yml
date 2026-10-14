@@ -2,7 +2,6 @@
 - name: Déploiement des valkey
   hosts: valkey
   become: true
-  serial: 1
 
   pre_tasks:
     - name: Mise à jour du cache APT

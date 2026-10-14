@@ -2,8 +2,10 @@
   ansible.builtin.service:
     name: valkey-server@neutrinet.service
     state: restarted
+  throttle: 1
 
 - name: Restart Valkey Sentinel
   ansible.builtin.service:
     name: valkey-sentinel@neutrinet.service
     state: restarted
+  throttle: 1
