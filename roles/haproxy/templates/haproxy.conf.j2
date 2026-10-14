@@ -114,6 +114,9 @@ frontend haproxy-frontend
 {% endfor %}
 {% endif %}
 {% endif %}
+{% for rule in host.http_request_rules | default([]) %}
+    http-request {{ rule.action }} if {{ host.hostname | replace('.', '-') }}-acl {{ rule.condition }}
+{% endfor %}
 
 {% endfor %}
     redirect scheme https code 301 if !{ ssl_fc }

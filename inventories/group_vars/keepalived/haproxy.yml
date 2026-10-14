@@ -169,6 +169,14 @@ haproxy:
     target_port: 3000
     deny_paths:
       - /metrics
+    # Les bots de spam créent des notes par POST /new et par GET /new sans referer, l'interface ne fait que des liens vers /new
+    http_request_rules:
+      - action: deny
+        condition: "METH_POST { path /new }"
+      - action: deny
+        condition: "METH_POST { path_beg /new/ }"
+      - action: redirect location / code 302
+        condition: "{ path /new } !{ req.hdr(referer) -m beg https://doc.neutrinet.be/ }"
     healthcheck: true
     healthcheck_url: "HEAD /status"
     headers:
