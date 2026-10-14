@@ -76,6 +76,15 @@ frontend haproxy-frontend
 
     mode http
 
+    # En-têtes de proxy envoyés par le client supprimés, pour qu'il ne puisse pas
+    # usurper son adresse : les backends reçoivent seulement ceux écrits par HAProxy
+    http-request del-header X-Forwarded-For
+    http-request del-header X-Forwarded-Proto
+    http-request del-header X-Forwarded-Host
+    http-request del-header X-Forwarded-Port
+    http-request del-header X-Real-IP
+    http-request del-header Forwarded
+
     # Empreinte JA4 et User-Agent écrits dans les logs
     http-request lua.fingerprint_ja4 if { ssl_fc }
     http-request capture var(txn.fingerprint_ja4) len 36
