@@ -88,3 +88,6 @@
 
 - name: Déploiement de Knot
   ansible.builtin.import_playbook: apps/knot.yml
+
+- name: Déploiement de Valkey
+  ansible.builtin.import_playbook: apps/valkey.yml

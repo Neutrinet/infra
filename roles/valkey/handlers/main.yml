@@ -1,0 +1,9 @@
+- name: Restart Valkey
+  ansible.builtin.service:
+    name: valkey-server@neutrinet.service
+    state: restarted
+
+- name: Restart Valkey Sentinel
+  ansible.builtin.service:
+    name: valkey-sentinel@neutrinet.service
+    state: restarted
