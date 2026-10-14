@@ -56,6 +56,4 @@
     enabled: true
 
 - name: Trigger Valkey handler
-  # Le paquet Debian démarre déjà valkey avec sa config par défaut : on force le redémarrage
-  # pour que notre config soit appliquée avant la mise en place de sentinel.
   ansible.builtin.meta: flush_handlers
