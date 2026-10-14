@@ -15,6 +15,11 @@ global
     # https://stackoverflow.com/a/64119235
     noreuseport
 
+    # Empreinte JA4 du ClientHello TLS (2048 pour les ClientHello post-quantiques)
+    tune.ssl.capture-buffer-size 2048
+    tune.lua.bool-sample-conversion normal
+    lua-load /etc/haproxy/lua/ja4.lua
+
     # generated 2021-04-28, Mozilla Guideline v5.6, HAProxy 2.2.8, OpenSSL 1.1.1d, intermediate configuration
     # https://ssl-config.mozilla.org/#server=haproxy&version=2.2.8&config=intermediate&openssl=1.1.1d&guideline=5.6
     # intermediate configuration
@@ -70,6 +75,11 @@ frontend haproxy-frontend
 {% endfor %}
 
     mode http
+
+    # Empreinte JA4 et User-Agent écrits dans les logs
+    http-request lua.fingerprint_ja4 if { ssl_fc }
+    http-request capture var(txn.fingerprint_ja4) len 36
+    http-request capture req.hdr(user-agent) len 150
 
     # Enable http3
     http-response set-header alt-svc "h3=\":443\";ma=900;"

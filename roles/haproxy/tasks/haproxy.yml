@@ -74,6 +74,23 @@
   become_user: haproxy
   notify: Restart haproxy
 
+- name: Création du dossier des scripts Lua
+  ansible.builtin.file:
+    path: /etc/haproxy/lua
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: Copie du script de calcul de l'empreinte JA4
+  ansible.builtin.copy:
+    src: lua/ja4.lua
+    dest: /etc/haproxy/lua/ja4.lua
+    owner: root
+    group: root
+    mode: "u=r,go=r"
+  notify: Restart haproxy
+
 - name: Config de haproxy
   ansible.builtin.template:
     dest: /etc/haproxy/haproxy.cfg
