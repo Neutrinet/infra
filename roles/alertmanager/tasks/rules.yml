@@ -17,6 +17,7 @@
     - ppp
     - monitoring
     - x509
+    - postgresql
   loop_control:
     loop_var: rule_group
   notify: Reload victoriametrics-alert
