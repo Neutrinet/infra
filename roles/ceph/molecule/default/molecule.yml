@@ -8,7 +8,7 @@ platforms:
   - name: trixie-ceph-molecule
     box: debian/trixie64
     cpu: 2
-    memory: 512
+    memory: 4096
 provisioner:
   name: ansible
   config_options:

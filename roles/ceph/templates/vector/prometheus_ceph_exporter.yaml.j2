@@ -1,8 +1,10 @@
 {{ ansible_managed | comment }}
 
+# Module prometheus du mgr et compteurs de performance des démons (ceph-exporter, exclus du mgr depuis Reef).
 type: prometheus_scrape
 endpoints:
     - http://localhost:9283/metrics
+    - http://localhost:9926/metrics
 
 scrape_interval_secs: 15
 scrape_timeout_secs: 10

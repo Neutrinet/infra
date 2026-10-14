@@ -61,3 +61,32 @@
     mode: "ug=r,o="
   notify: Restart vector
   tags: ['vector_config']
+
+- name: Installation de ceph-exporter
+  ansible.builtin.package:
+    name: ceph-exporter
+    state: present
+
+- name: Création du dossier de surcharge systemd de ceph-exporter
+  ansible.builtin.file:
+    path: /etc/systemd/system/ceph-exporter.service.d
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Configuration de ceph-exporter
+  ansible.builtin.template:
+    src: systemd/ceph-exporter-override.conf.j2
+    dest: /etc/systemd/system/ceph-exporter.service.d/override.conf
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart ceph-exporter
+
+- name: Activation de ceph-exporter au démarrage
+  ansible.builtin.systemd:
+    name: ceph-exporter
+    state: started
+    enabled: true
+    daemon_reload: true
