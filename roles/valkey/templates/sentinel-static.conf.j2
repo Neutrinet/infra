@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+# Network
+port 26379
+bind * -::*
+
+# Timeouts and configuration
+sentinel down-after-milliseconds neutrinet 5000
+sentinel parallel-syncs neutrinet 1
+sentinel failover-timeout neutrinet 60000
+
+# Logs
+logfile /var/log/valkey/sentinel-neutrinet.log
+pidfile /var/run/valkey-neutrinet/sentinel.pid
+dir /var/lib/valkey
+
+# Security
+protected-mode yes
+requirepass {{ valkey_user_sentinel_password }}
+aclfile /etc/valkey/sentinel-neutrinet-acl.conf
+sentinel auth-user neutrinet sentinel
+sentinel auth-pass neutrinet {{ valkey_user_sentinel_password }}
+sentinel sentinel-user sentinel
+sentinel sentinel-pass {{ valkey_user_sentinel_password }}
+daemonize yes
+sentinel deny-scripts-reconfig yes

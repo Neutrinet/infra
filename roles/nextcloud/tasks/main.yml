@@ -18,6 +18,7 @@
       - imagick
       - intl
       - pgsql
+      - redis
   tags: ['php_fpm']
 
 - name: Création de l'utilisateur {{ nextcloud_owner }}

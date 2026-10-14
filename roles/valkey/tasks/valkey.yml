@@ -1,0 +1,59 @@
+- name: Installation de Valkey
+  ansible.builtin.package:
+    name:
+      - valkey
+      - valkey-server
+      - valkey-tools
+    state: present
+
+- name: Création de la configuration dynamique
+  ansible.builtin.template:
+    src: valkey.conf.j2
+    dest: /etc/valkey/valkey-neutrinet.conf
+    owner: valkey
+    group: valkey
+    mode: "u=rw,go="
+    force: false  # /!\ Ce fichier ne peut plus etre modifié une fois le cluster démarré, sentinel le réécrit (replicaof) à chaque bascule du primary
+  notify: Restart Valkey
+
+- name: Création de la configuration static
+  ansible.builtin.template:
+    src: valkey-static.conf.j2
+    dest: /etc/valkey/valkey-neutrinet-static.conf
+    owner: valkey
+    group: valkey
+    mode: "u=r,go="
+  notify: Restart Valkey
+
+- name: Création de la configuration ACL
+  ansible.builtin.template:
+    src: valkey-acl.conf.j2
+    dest: /etc/valkey/valkey-neutrinet-acl.conf
+    owner: valkey
+    group: valkey
+    mode: "u=r,go="
+  notify: Restart Valkey
+
+- name: Activation overcommit_memory
+  ansible.posix.sysctl:
+    name: "vm.overcommit_memory"
+    value: '1'
+    sysctl_file: /etc/sysctl.d/80-overcommit-memory.conf
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Desactiver le server Valkey par default
+  ansible.builtin.service:
+    name: valkey-server.service
+    state: stopped
+    enabled: false
+
+- name: Activation de Valkey au démarrage
+  ansible.builtin.service:
+    name: valkey-server@neutrinet.service
+    state: started
+    enabled: true
+
+- name: Trigger Valkey handler
+  ansible.builtin.meta: flush_handlers

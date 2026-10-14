@@ -1,0 +1,44 @@
+{{ ansible_managed | comment }}
+
+# Network
+bind * -::*
+port 6379
+unixsocket /var/run/valkey-neutrinet/valkey-server.sock
+unixsocketperm 770
+
+# Authentification
+protected-mode yes
+aclfile /etc/valkey/valkey-neutrinet-acl.conf
+{% if valkey_members | length > 1 %}
+masteruser replication
+masterauth {{ valkey_user_replication_password }}
+{% endif %}
+
+# General
+daemonize yes
+pidfile /var/run/valkey-neutrinet/valkey-server.pid
+logfile /var/log/valkey/valkey-server-neutrinet.log
+dir /var/lib/valkey
+databases {{ valkey_databases }}
+
+# Memory
+maxmemory {{ valkey_maxmemory | human_to_bytes }}
+maxmemory-policy noeviction
+
+# Persistance
+dbfilename dump-neutrinet.rdb
+save 900 1
+save 300 10
+save 60 10000
+
+{% if valkey_members | length > 1 %}
+# Replication
+replica-priority 100
+replica-read-only yes
+{% endif %}
+
+# Replication optimization
+repl-diskless-sync yes
+repl-diskless-sync-delay 5
+repl-ping-replica-period 10
+repl-timeout 60
