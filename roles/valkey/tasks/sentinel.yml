@@ -6,7 +6,7 @@
 - name: Création de la configuration dynamique
   ansible.builtin.template:
     src: sentinel.conf.j2
-    dest: /etc/valkey/sentinel-{{ valkey_name_instance }}.conf
+    dest: /etc/valkey/sentinel-neutrinet.conf
     owner: valkey
     group: valkey
     mode: "u=rw,go="
@@ -16,7 +16,7 @@
 - name: Création de la configuration static
   ansible.builtin.template:
     src: sentinel-static.conf.j2
-    dest: /etc/valkey/sentinel-{{ valkey_name_instance }}-static.conf
+    dest: /etc/valkey/sentinel-neutrinet-static.conf
     owner: valkey
     group: valkey
     mode: "u=r,go="
@@ -25,7 +25,7 @@
 - name: Création de la configuration ACL
   ansible.builtin.template:
     src: sentinel-acl.conf.j2
-    dest: /etc/valkey/sentinel-{{ valkey_name_instance }}-acl.conf
+    dest: /etc/valkey/sentinel-neutrinet-acl.conf
     owner: valkey
     group: valkey
     mode: "u=r,go="
@@ -39,7 +39,7 @@
 
 - name: Activation de Valkey Sentinel au démarrage
   ansible.builtin.service:
-    name: valkey-sentinel@{{ valkey_name_instance }}.service
+    name: valkey-sentinel@neutrinet.service
     state: started
     enabled: true
 

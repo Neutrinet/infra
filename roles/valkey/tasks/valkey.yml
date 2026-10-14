@@ -9,7 +9,7 @@
 - name: Création de la configuration dynamique
   ansible.builtin.template:
     src: valkey.conf.j2
-    dest: /etc/valkey/valkey-{{ valkey_name_instance }}.conf
+    dest: /etc/valkey/valkey-neutrinet.conf
     owner: valkey
     group: valkey
     mode: "u=rw,go="
@@ -19,7 +19,7 @@
 - name: Création de la configuration static
   ansible.builtin.template:
     src: valkey-static.conf.j2
-    dest: /etc/valkey/valkey-{{ valkey_name_instance }}-static.conf
+    dest: /etc/valkey/valkey-neutrinet-static.conf
     owner: valkey
     group: valkey
     mode: "u=r,go="
@@ -28,7 +28,7 @@
 - name: Création de la configuration ACL
   ansible.builtin.template:
     src: valkey-acl.conf.j2
-    dest: /etc/valkey/valkey-{{ valkey_name_instance }}-acl.conf
+    dest: /etc/valkey/valkey-neutrinet-acl.conf
     owner: valkey
     group: valkey
     mode: "u=r,go="
@@ -51,7 +51,7 @@
 
 - name: Activation de Valkey au démarrage
   ansible.builtin.service:
-    name: valkey-server@{{ valkey_name_instance }}.service
+    name: valkey-server@neutrinet.service
     state: started
     enabled: true
 

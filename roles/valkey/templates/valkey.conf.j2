@@ -1,12 +1,12 @@
 {{ ansible_managed | comment }}
 
-include /etc/valkey/valkey-{{ valkey_name_instance }}-static.conf
+include /etc/valkey/valkey-neutrinet-static.conf
 
 {% if (valkey_members | length > 1) and valkey_members[0].name is not equalto inventory_hostname %}
 {% if 'ipv6' in valkey_members[0] %}
-replicaof [{{ valkey_members[0].ipv6 }}] {{ valkey_port }}
+replicaof [{{ valkey_members[0].ipv6 }}] 6379
 {% endif %}
 {% if 'ipv4' in valkey_members[0] %}
-replicaof {{ valkey_members[0].ipv4 }} {{ valkey_port }}
+replicaof {{ valkey_members[0].ipv4 }} 6379
 {% endif %}
 {% endif %}

@@ -1,7 +1,3 @@
-valkey_port: 6379
-valkey_bind: '* -::*'
-valkey_protected_mode: true
-
 valkey_members:
   - name: "trixie-valkey-01-molecule"
     ipv4: 172.29.129.31

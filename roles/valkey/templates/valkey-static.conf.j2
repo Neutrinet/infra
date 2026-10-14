@@ -1,43 +1,40 @@
 {{ ansible_managed | comment }}
 
 # Network
-bind {{ valkey_bind }}
-port {{ valkey_port }}
-{% if valkey_unixsocket is defined %}
-unixsocket {{ valkey_unixsocket }}
-unixsocketperm {{ valkey_unixsocket_perm }}
-{% endif %}
+bind * -::*
+port 6379
+unixsocket /var/run/valkey-neutrinet/valkey-server.sock
+unixsocketperm 770
 
 # Authentification
-protected-mode {{ valkey_protected_mode | ternary('yes', 'no') }}
-{% if valkey_protected_mode %}
-aclfile /etc/valkey/valkey-{{ valkey_name_instance }}-acl.conf
+protected-mode yes
+aclfile /etc/valkey/valkey-neutrinet-acl.conf
 {% if valkey_members | length > 1 %}
 masteruser replication
 masterauth {{ valkey_user_replication_password }}
 {% endif %}
-{% endif %}
 
 # General
 daemonize yes
-pidfile /var/run/valkey-{{ valkey_name_instance }}/valkey-server.pid
-logfile /var/log/valkey/valkey-server-{{ valkey_name_instance }}.log
+pidfile /var/run/valkey-neutrinet/valkey-server.pid
+logfile /var/log/valkey/valkey-server-neutrinet.log
 dir /var/lib/valkey
 databases {{ valkey_databases }}
 
 # Memory
 maxmemory {{ valkey_maxmemory | human_to_bytes }}
-maxmemory-policy {{ valkey_maxmemory_policy }}
+maxmemory-policy noeviction
 
 # Persistance
-dbfilename dump-{{ valkey_name_instance }}.rdb
-{% for save in valkey_saves %}
-save {{ save.times }} {{ save.number_changed }}
-{% endfor %}
+dbfilename dump-neutrinet.rdb
+{# Sauvegarde sur disque si au moins N changements en X secondes : 1 en 900 s, 10 en 300 s, 10000 en 60 s #}
+save 900 1
+save 300 10
+save 60 10000
 
 {% if valkey_members | length > 1 %}
 # Replication
-replica-priority {{ valkey_replica_priority }}
+replica-priority 100
 replica-read-only yes
 {% endif %}
 
