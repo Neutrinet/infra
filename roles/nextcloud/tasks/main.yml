@@ -9,7 +9,6 @@
     name: php_fpm
   vars:
     php_version: "{{ nextcloud_php_version }}"
-    php_fpm_pm_max_children: 16
     php_extra_modules:
       - apcu
       - bcmath
