@@ -6,13 +6,15 @@ groups:
     rules:
       - alert: VPN Down
         for: 5m
-        expr: check_openvpn != 0
+        keep_firing_for: 10m
+        # Au moins 2 probes d'accord : une seule alerte par serveur, pas de faux positif d'une seule probe.
+        expr: count without (instance, datacenter, response) (check_openvpn != 0) >= 2
         labels:
           severity: critical
           category: probe.vpn
         annotations:
           summary: 'VPN server is down.'
-          description: '[{{ $labels.instance }}] Unable to reach the VPN server at {{ $labels.address }}:{{ $labels.port }} with {{ $labels.protocol }}'
+          description: 'Unable to reach the VPN server at {{ $labels.address }}:{{ $labels.port }} with {{ $labels.protocol }} from {{ $value }} probes'
 
       - alert: VPN Few IPv4 Left
         for: 5m

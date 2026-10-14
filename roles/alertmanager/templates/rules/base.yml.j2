@@ -404,67 +404,85 @@ groups:
           description: "[{{ $labels.instance }}] Disk {{ $labels.device }} write latency is growing (write operations > 100ms)"
 
   - name: Probe
+    # Les alertes des probes demandent au moins 2 probes d'accord : une seule alerte par URL,
+    # et pas de faux positif quand une seule probe a un souci réseau.
+    # Le label proxy (ex. doc-neutrinet-be-backend) est commun avec HAProxy et Caddy pour les inhibitions.
     rules:
-      - alert: Certificate Expires Next Month
+      - alert: Certificate Expires Soon
         for: 5m
-        expr: 'round((probe_ssl_earliest_cert_expiry{check_cert_expiry="1"} - time()) / 86400) < 28'
+        expr: 'min by (url, target, module, proxy) (round((probe_ssl_earliest_cert_expiry{check_cert_expiry="1"} - time()) / 86400)) < 21'
+        labels:
+          severity: warning
+          frequency: daily
+          category: probe.cert
+        annotations:
+          summary: 'Certificate for url {{ $labels.module }} will expire in {{ $value }} days'
+          description: '[{{ $labels.module }}] Certificate will expire in {{ $value }} days'
+
+      - alert: Certificate Expires Critical
+        for: 5m
+        expr: 'min by (url, target, module, proxy) (round((probe_ssl_earliest_cert_expiry{check_cert_expiry="1"} - time()) / 86400)) < 7'
         labels:
           severity: critical
           frequency: daily
           category: probe.cert
         annotations:
-          summary: 'Certificate for url {{ $labels.module }} will expire within the month'
-          description: '[{{ $labels.instance }}] [{{ $labels.module }}] Certificate will expire in {{ $value }} days'
+          summary: 'Certificate for url {{ $labels.module }} will expire in {{ $value }} days'
+          description: '[{{ $labels.module }}] Certificate will expire in {{ $value }} days'
 
       - alert: Website Down
         for: 5m
-        expr: 'probe_success{type="http"} == 0'
+        keep_firing_for: 10m
+        expr: 'count by (url, target, module, proxy) (probe_success{type="http"} == 0) >= 2'
         labels:
           severity: critical
-          category: probe.http
+          category: probe.http_down
         annotations:
           summary: 'Website {{ $labels.module }} is down'
-          description: '[{{ $labels.instance }}] [{{ $labels.module }}] Website is down'
+          description: '[{{ $labels.module }}] Website is down for {{ $value }} probes'
 
       - alert: Website HTTP Failure
-        expr: '0 < probe_http_status_code <= 199 OR probe_http_status_code >= 400'
+        expr: 'max by (url, target, module, proxy) (probe_http_status_code >= 400 or 0 < probe_http_status_code <= 199) and on (url) count by (url) (probe_http_status_code >= 400 or 0 < probe_http_status_code <= 199) >= 2'
         for: 5m
+        keep_firing_for: 10m
         labels:
           severity: critical
-          category: probe.http
+          category: probe.http_error
         annotations:
           summary: Website {{ $labels.module }} HTTP status code is {{ $value }}
-          description: "[{{ $labels.instance }}] [{{ $labels.module }}] HTTP status code is {{ $value }}"
+          description: "[{{ $labels.module }}] HTTP status code is {{ $value }}"
 
       - alert: Website Slow
-        expr: 'avg_over_time(probe_http_duration_seconds[10m]) > 5'
+        expr: 'min by (url, target, module, proxy) (avg_over_time(probe_http_duration_seconds[10m])) > 5'
         for: 0m
+        keep_firing_for: 10m
         labels:
           severity: warning
-          category: probe.http
+          category: probe.http_slow
         annotations:
           summary: Website {{ $labels.module }} is slow to respond
-          description: "[{{ $labels.instance }}] [{{ $labels.module }}] Host took > 5s to respond in the last 10min (current = {{ humanize $value }}s)"
+          description: "[{{ $labels.module }}] All probes took > 5s to respond in the last 10min (current = {{ humanize $value }}s)"
 
       - alert: Ping Down
         for: 5m
-        expr: 'probe_success{module="icmp"} == 0'
+        keep_firing_for: 10m
+        expr: 'count by (url) (probe_success{module="icmp"} == 0) >= 2'
         labels:
           severity: critical
           category: probe.icmp
         annotations:
           summary: "Host {{ $labels.url }} doesn't respond to ping"
-          description: "[{{ $labels.instance }}] [{{ $labels.url }}] Host doesn't respond to ping"
+          description: "[{{ $labels.url }}] Host doesn't respond to ping from {{ $value }} probes"
 
       - alert: Ping Slow
-        expr: 'avg_over_time(probe_icmp_duration_seconds[1m]) > 1'
-        for: 0m
+        expr: 'min by (url) (avg_over_time(probe_icmp_duration_seconds[1m])) > 1'
+        for: 15m
         labels:
           severity: warning
           category: probe.icmp
         annotations:
           summary: Host {{ $labels.url }} is slow to respond to ping
-          description: "[{{ $labels.instance }}] [{{ $labels.url }}] Host took > 1s to respond to ping in the last minute (current = {{ humanize $value }}s)"
+          description: "[{{ $labels.url }}] All probes took > 1s to respond to ping in the last minute (current = {{ humanize $value }}s)"
 
   - name: Backup
     rules:
