@@ -13,6 +13,7 @@ vrrp_script {{ script.name }} {
 }
 {% endfor %}
 
+{% if keepalived_instances | length > 1 %}
 vrrp_sync_group VG {
   group {
 {% for instance in keepalived_instances %}
@@ -28,6 +29,7 @@ vrrp_sync_group VG {
   }
 {% endif %}
 }
+{% endif %}
 
 {% for instance in keepalived_instances %}
 vrrp_instance VI_{{ instance.type }}_{{ loop.index }} {
@@ -36,6 +38,14 @@ vrrp_instance VI_{{ instance.type }}_{{ loop.index }} {
   state BACKUP
   priority 100
   advert_int 1
+{% if keepalived_instances | length == 1 and keepalived_vrrp_scripts | length > 0 %}
+
+  track_script {
+{% for script in keepalived_vrrp_scripts %}
+    {{ script.name }}
+{% endfor %}
+  }
+{% endif %}
 
   unicast_src_ip {{ (instance.addresses | intersect(lookup('vars', 'ansible_all_' + instance.type + '_addresses')) | list | first) }}
 
