@@ -44,6 +44,8 @@ defaults
     timeout client  5m
     timeout server  15m
     timeout tunnel  2h
+    timeout client-fin 30s
+    timeout server-fin 30s
     errorfile 400 /etc/haproxy/errors/400.http
     errorfile 403 /etc/haproxy/errors/403.http
     errorfile 408 /etc/haproxy/errors/408.http
@@ -68,18 +70,20 @@ frontend prometheus-frontend
 frontend haproxy-frontend
 {% for ip in haproxy_listen %}
     bind {{ ip }}:80 v4v6
-    bind {{ ip }}:443 v4v6 ssl crt /etc/haproxy/ssl/default.pem crt /etc/haproxy/ssl alpn h2,http/1.1
+    bind {{ ip }}:443 v4v6 ssl crt /etc/haproxy/ssl/default.pem crt /etc/haproxy/ssl strict-sni alpn h2,http/1.1
 {% if ip.startswith('[') %}
-    bind quic6@{{ ip }}:443 ssl crt /etc/haproxy/ssl/default.pem crt /etc/haproxy/ssl alpn h3
+    bind quic6@{{ ip }}:443 ssl crt /etc/haproxy/ssl/default.pem crt /etc/haproxy/ssl strict-sni alpn h3
 {% else %}
-    bind quic4@{{ ip }}:443 ssl crt /etc/haproxy/ssl/default.pem crt /etc/haproxy/ssl alpn h3
+    bind quic4@{{ ip }}:443 ssl crt /etc/haproxy/ssl/default.pem crt /etc/haproxy/ssl strict-sni alpn h3
 {% endif %}
 {% endfor %}
 
     mode http
 
-    # En-têtes de proxy envoyés par le client supprimés, pour qu'il ne puisse pas
-    # usurper son adresse : les backends reçoivent seulement ceux écrits par HAProxy
+    # X_Forwarded-For contournerait les del-header une fois passé en FastCGI
+    option http-restrict-req-hdr-names delete
+
+    # Seuls les en-têtes de proxy écrits par HAProxy arrivent aux backends
     http-request del-header X-Forwarded-For
     http-request del-header X-Forwarded-Proto
     http-request del-header X-Forwarded-Host
@@ -126,7 +130,7 @@ frontend haproxy-frontend
 {% endif %}
 {% if 'deny_paths' in host %}
 {% for deny_path in host.deny_paths %}
-    acl {{ host.hostname | replace('.', '-') }}-deny-acl path_beg {{ deny_path }}
+    acl {{ host.hostname | replace('.', '-') }}-deny-acl path,url_dec,lower,regsub(/+,/,g) -m beg {{ deny_path | lower }}
 {% endfor %}
     http-request deny if {{ host.hostname | replace('.', '-') }}-acl {{ host.hostname | replace('.', '-') }}-deny-acl
 {% if 'alt_hostnames' in host %}
