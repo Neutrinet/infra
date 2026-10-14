@@ -12,7 +12,7 @@
     name: gitlab-runner
     state: restarted
 
-- name: Restart telegraf
+- name: Restart vector
   ansible.builtin.service:
-    name: telegraf
+    name: vector
     state: restarted

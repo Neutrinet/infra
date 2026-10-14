@@ -26,10 +26,10 @@ route:
 
   # If an alert has successfully been sent, wait 'repeat_interval' to
   # resend them.
-  repeat_interval: 3h
+  repeat_interval: {{ alertmanager_repeat_interval }}
 
   # A default receiver
-  receiver: default-receiver
+  receiver: production-receiver
 
   # All the above attributes are inherited by all child routes and can
   # overwritten on each.
@@ -37,60 +37,89 @@ route:
   # The child route trees.
   routes:
     - matchers:
+        - severity = info
+      receiver: dummy-receiver
+{% if alertmanager_staging_labels %}
+    - matchers:
+{% for label_name, label_value in alertmanager_staging_labels.items() %}
+        - {{ label_name }} = {{ label_value }}
+{% endfor %}
+      routes:
+        - matchers:
+            - frequency = monthly
+          repeat_interval: 30d
+          receiver: staging-receiver
+        - matchers:
+            - frequency = weekly
+          repeat_interval: 1w
+          receiver: staging-receiver
+        - matchers:
+            - frequency = daily
+          repeat_interval: 1d
+          receiver: staging-receiver
+        - receiver: staging-receiver
+{% endif %}
+    - matchers:
         - frequency = monthly
       repeat_interval: 30d
-      routes:
-        - receiver: default-receiver
+      receiver: production-receiver
+    - matchers:
+        - frequency = weekly
+      repeat_interval: 1w
+      receiver: production-receiver
     - matchers:
         - frequency = daily
       repeat_interval: 1d
-      routes:
-        - receiver: default-receiver
-    - routes:
-        - receiver: default-receiver
+      receiver: production-receiver
+    - receiver: production-receiver
 
 receivers:
-  - name: default-receiver
+  - name: dummy-receiver
+  - name: production-receiver
     webhook_configs:
-      # Send alerts to matrix-alertbot, which will forward them to a Matrix room
+      # Send alerts to matrix-alertbot, which will forward them to the Matrix room for alerts in production
       - url: http://localhost:4060/alerts/{{ alertmanager_matrix_alertbot_room }}
         send_resolved: true
-
+  - name: staging-receiver
+    webhook_configs:
+      # Send alerts to matrix-alertbot, which will forward them to the Matrix room for alerts in staging
+      - url: http://localhost:4060/alerts/{{ alertmanager_staging_matrix_alertbot_room }}
+        send_resolved: true
 inhibit_rules:
   # Combine Certificate alerts from different probes
   # to single alert from main probe.
   - target_matchers:
-      - host != {{ inventory_hostname }}
+      - instance != {{ inventory_hostname }}
     source_matchers:
       - category = probe.cert
-      - host = {{ inventory_hostname }}
+      - instance = {{ inventory_hostname }}
     equal: ['alertname', 'category', 'url']
 
   # Combine HTTP alerts from different probes
   # to single alert from main probe.
   - target_matchers:
-      - host != {{ inventory_hostname }}
+      - instance != {{ inventory_hostname }}
     source_matchers:
       - category = probe.http
-      - host = {{ inventory_hostname }}
+      - instance = {{ inventory_hostname }}
     equal: ['alertname', 'category', 'url']
 
   # Combine ICMP alerts from different probes
   # to single alert from main probe.
   - target_matchers:
-      - host != {{ inventory_hostname }}
+      - instance != {{ inventory_hostname }}
     source_matchers:
       - category = probe.icmp
-      - host = {{ inventory_hostname }}
+      - instance = {{ inventory_hostname }}
     equal: ['alertname', 'category', 'url']
 
   # Combine VPN alerts from different probes
   # to single alert from main probe.
   - target_matchers:
-      - host != {{ inventory_hostname }}
+      - instance != {{ inventory_hostname }}
     source_matchers:
       - category = probe.vpn
-      - host = {{ inventory_hostname }}
+      - instance = {{ inventory_hostname }}
     equal: ['alertname', 'category', 'address', 'port', 'protocol']
 
   # Combine VPN alerts for different ports and protocols
@@ -103,3 +132,39 @@ inhibit_rules:
       - protocol = tcp
       - port = 1195
     equal: ['alertname', 'category', 'address']
+
+  # Hide Caddy alerts about HTTP errors when reverse proxy is down
+  - target_matchers:
+      - category =~ caddy.http
+    source_matchers:
+      - category = caddy.health
+    equal: ['instance']
+
+  # Hide HAProxy alerts about HTTP errors when backend is down
+  - target_matchers:
+      - category =~ haproxy.http
+    source_matchers:
+      - category = haproxy.health
+    equal: ['instance', 'proxy']
+
+  # Hide HAProxy alerts about HTTP errors when same alerts from Caddy are active
+  - target_matchers:
+      - category =~ haproxy.http
+    source_matchers:
+      - category =~ caddy.http
+    equal: ['server', 'code_category']
+
+  # Hide Probe HTTP alerts when Caddy has HTTP 5xx errors
+  - target_matchers:
+      - category = probe.http
+    source_matchers:
+      - category = caddy.http
+    equal: ['host']
+
+  # Hide Backup errors when {{ inventory_hostname }} is down
+  - target_matchers:
+      - category = base.backup
+      - instance != {{ inventory_hostname }}
+    source_matchers:
+      - category = base.health
+      - instance = {{ inventory_hostname }}

@@ -8,6 +8,11 @@
       ansible.builtin.apt:
         update_cache: true
 
+    - name: Installation de python3-debian
+      ansible.builtin.package:
+        name: python3-debian
+        state: present
+
   roles:
-    - telegraf
+    - vector
     - borgmatic

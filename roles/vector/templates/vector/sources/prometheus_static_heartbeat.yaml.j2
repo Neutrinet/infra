@@ -1,0 +1,12 @@
+{{ ansible_managed | comment }}
+
+type: "static_metrics"
+interval_secs: 15
+metrics:
+    - name: heartbeat
+      kind: absolute
+      value:
+          gauge:
+              value: 1
+      tags:
+          heartbeat: "true"

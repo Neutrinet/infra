@@ -1,4 +1,5 @@
 alertmanager_version: 0.28.1
+alertmanager_repeat_interval: 1h
 
 alertmanager_matrix_username: "neutribot-test"
 alertmanager_matrix_password: !vault |
@@ -11,7 +12,10 @@ alertmanager_matrix_password: !vault |
           3866626638383930336339626361313565336334616665636536
 alertmanager_matrix_host: matrix.domainepublic.net
 
-alertmanager_matrix_alertbot_room: "!wjECRmYYmDbBJcebBt:matrix.domainepublic.net"
+alertmanager_matrix_alertbot_room: "{{ alertmanager_staging_matrix_alertbot_room }}"
 alertmanager_matrix_alertbot_users: []
+
+alertmanager_staging_labels: []
+alertmanager_staging_matrix_alertbot_room: "!wjECRmYYmDbBJcebBt:matrix.domainepublic.net"
 
 postgresql_patroni_hosts: []

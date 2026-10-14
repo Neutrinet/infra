@@ -14,4 +14,4 @@
         state: present
 
   roles:
-    - telegraf
+    - vector

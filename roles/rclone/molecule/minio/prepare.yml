@@ -32,7 +32,7 @@
       notify: Update ca certificates
 
   roles:
-    - telegraf
+    - vector
     - borgmatic
     - haproxy
     - minio

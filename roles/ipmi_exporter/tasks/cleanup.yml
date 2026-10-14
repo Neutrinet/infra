@@ -1,0 +1,44 @@
+- name: Récupération de la liste des dossiers d'installation
+  ansible.builtin.find:
+    path: /opt/ipmi-exporter
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _ipmi_exporter_installed_dirs
+
+- name: Récupération de la liste des archives
+  ansible.builtin.find:
+    path: /usr/local/src/ipmi-exporter
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
+  register: _ipmi_exporter_archives
+
+- name: Récupération de la plus ancienne version et de la version courante
+  ansible.builtin.set_fact:
+    ipmi_exporter_oldest_archive: "{{ ipmi_exporter_sorted_archives | first }}"
+    ipmi_exporter_oldest_install_dir: "{{ ipmi_exporter_sorted_install_dirs | first }}"
+    ipmi_exporter_oldest_version: "{{ ipmi_exporter_sorted_install_dirs | first | basename }}"
+  vars:
+    ipmi_exporter_sorted_archives: |-
+      {{ _ipmi_exporter_archives.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+    ipmi_exporter_sorted_install_dirs: |-
+      {{ _ipmi_exporter_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: Suppression de la plus ancienne version (v{{ ipmi_exporter_oldest_version }})
+  ansible.builtin.file:
+    state: absent
+    path: "{{ ipmi_exporter_oldest_install_dir }}"
+  when: _ipmi_exporter_installed_dirs.files | length > 5
+
+- name: Suppression de la plus ancienne archive
+  ansible.builtin.file:
+    state: absent
+    path: "{{ ipmi_exporter_oldest_archive }}"
+  when: _ipmi_exporter_archives.files | length > 5

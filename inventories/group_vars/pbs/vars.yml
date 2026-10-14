@@ -1,3 +1,2 @@
 ---
-telegraf_ipmi_sensor_enabled: true
 root_password: "{{ vault_root_password }}"

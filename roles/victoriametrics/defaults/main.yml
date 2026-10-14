@@ -6,6 +6,7 @@ victoriametrics_memory_limit: 512MB
 victoriametrics_alert_memory_limit: 512MB
 victoriametrics_alert_datasource: "http://localhost:8428"
 victoriametrics_alert_notifier: "http://localhost:9093"
+victoriametrics_alert_url: ""
 
 victoriametrics_url: "http://localhost:8428"
 

@@ -2,3 +2,8 @@
   ansible.builtin.service:
     name: keepalived
     state: reloaded
+
+- name: Restart vector
+  ansible.builtin.service:
+    name: vector
+    state: restarted
