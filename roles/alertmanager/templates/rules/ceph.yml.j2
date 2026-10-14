@@ -28,23 +28,23 @@ groups:
 
       - alert: Ceph OSD Down
         for: 5m
-        expr: ceph_osd_up == 0
+        expr: (ceph_osd_up == 0) * on (ceph_daemon, instance) group_left (hostname) ceph_osd_metadata
         labels:
           severity: critical
           category: ceph.detail
         annotations:
           summary: 'Ceph OSD {{ $labels.ceph_daemon }} is down'
-          description: 'Ceph OSD {{ $labels.ceph_daemon }} is down.'
+          description: '[{{ $labels.hostname }}] Ceph OSD {{ $labels.ceph_daemon }} is down.'
 
       - alert: Ceph OSD Flapping
-        expr: rate(ceph_osd_up[5m]) * 60 > 1
+        expr: (rate(ceph_osd_up[5m]) * 60 > 1) * on (ceph_daemon, instance) group_left (hostname) ceph_osd_metadata
         for: 0m
         labels:
           severity: warning
           category: ceph.detail
         annotations:
           summary: 'Ceph OSD {{ $labels.ceph_daemon }} is flapping'
-          description: 'Ceph OSD {{ $labels.ceph_daemon }} was marked down and back up more than once a minute in the last 5 minutes, check the network and the disk.'
+          description: '[{{ $labels.hostname }}] Ceph OSD {{ $labels.ceph_daemon }} was marked down and back up more than once a minute in the last 5 minutes, check the network and the disk.'
 
       - alert: Ceph Mon Quorum At Risk
         for: 30s
