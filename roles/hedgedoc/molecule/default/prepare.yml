@@ -8,42 +8,122 @@
       ansible.builtin.apt:
         update_cache: true
 
-    - name: Installation de Git
+    - name: Installation de Git et python3-cryptography
       ansible.builtin.package:
-        name: git
+        name:
+          - git
+          - python3-cryptography
         state: present
 
     - name: Ajout du domaine dans /etc/hosts
       ansible.builtin.lineinfile:
         path: /etc/hosts
-        line: ::1 minio.neutrinet.be s3.neutrinet.be
+        line: ::1 s3.neutrinet.be
         state: present
 
-    - name: Téléchargement du Root CA staging de Let's encrypt
-      # Minio ne permet pas d'ignorer la vérification du certificat
-      # Comme on utilise les certificats de test de Let's encrypt,
-      # on doit donc les ajouter dans les CA de confiance
+    - name: Téléchargement de versitygw
       ansible.builtin.get_url:
-        url: https://letsencrypt.org/certs/staging/{{ ca_name }}.pem
-        dest: /usr/local/share/ca-certificates/{{ ca_name }}.crt
-        mode: "u=rw,go=r"
+        url: https://github.com/versity/versitygw/releases/download/v1.9.0/versitygw_1.9.0_linux_amd64.deb
+        checksum: sha256:https://github.com/versity/versitygw/releases/download/v1.9.0/checksums.txt
+        dest: /usr/local/src/versitygw_1.9.0_linux_amd64.deb
         owner: root
         group: root
-      loop:
-        - letsencrypt-stg-root-x1
-        - letsencrypt-stg-root-x2
-      loop_control:
-        loop_var: ca_name
-      notify: Update ca certificates
+        mode: "u=rw,go=r"
+
+    - name: Installation de versitygw
+      ansible.builtin.apt:
+        deb: /usr/local/src/versitygw_1.9.0_linux_amd64.deb
+
+    - name: Création du bucket hedgedoc
+      ansible.builtin.file:
+        path: /srv/s3/hedgedoc
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,go="
+
+    - name: Configuration de versitygw
+      ansible.builtin.copy:
+        content: |
+          VGW_BACKEND=posix
+          VGW_BACKEND_ARG=/srv/s3
+          ROOT_ACCESS_KEY_ID=minio
+          ROOT_SECRET_ACCESS_KEY=neutrinet
+          VGW_PORT=[::1]:9000
+        dest: /etc/versitygw.d/s3.conf
+        owner: root
+        group: root
+        mode: "u=rw,go="
+
+    - name: Démarrage de versitygw
+      ansible.builtin.service:
+        name: versitygw@s3
+        state: started
+        enabled: true
 
   roles:
     - vector
     - borgmatic
     - haproxy
     - postgres_standalone
-    - minio
+
+  post_tasks:
+    - name: Création du dossier du certificat local
+      ansible.builtin.file:
+        path: /etc/ssl/molecule
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,go="
+
+    - name: Création de la clé du certificat local
+      community.crypto.openssl_privatekey:
+        path: /etc/ssl/molecule/1-molecule.key
+        type: ECC
+        curve: secp256r1
+
+    - name: Création de la demande de certificat local
+      community.crypto.openssl_csr_pipe:
+        privatekey_path: /etc/ssl/molecule/1-molecule.key
+        common_name: s3.neutrinet.be
+        subject_alt_name:
+          - DNS:s3.neutrinet.be
+          - DNS:doc.example.com
+      register: _hedgedoc_molecule_csr
+
+    - name: Création du certificat local autosigné
+      community.crypto.x509_certificate:
+        path: /etc/ssl/molecule/2-molecule.crt
+        csr_content: "{{ _hedgedoc_molecule_csr.csr }}"
+        privatekey_path: /etc/ssl/molecule/1-molecule.key
+        provider: selfsigned
+
+    - name: Certificat local pour HAProxy
+      ansible.builtin.assemble:
+        src: /etc/ssl/molecule
+        dest: /etc/haproxy/ssl/molecule.pem
+        owner: haproxy
+        group: haproxy
+        mode: "u=rw,g=r,o="
+      notify: Restart haproxy
+
+    - name: Certificat local dans les autorités de confiance
+      ansible.builtin.copy:
+        src: /etc/ssl/molecule/2-molecule.crt
+        dest: /usr/local/share/ca-certificates/molecule.crt
+        remote_src: true
+        owner: root
+        group: root
+        mode: "u=rw,go=r"
+      notify: Update ca certificates
 
   handlers:
+    - name: Restart haproxy
+      ansible.builtin.service:
+        name: haproxy
+        state: restarted
+
+
     - name: Update ca certificates
       ansible.builtin.command:
         cmd: update-ca-certificates

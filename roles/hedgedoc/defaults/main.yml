@@ -1,6 +1,6 @@
 hedgedoc_domain: doc.example.com
 hedgedoc_owner: "{{ hedgedoc_domain | replace('.', '-') }}"
-hedgedoc_version: 1.10.7
+hedgedoc_version: 1.12.0
 
 postgresql_host: localhost
 

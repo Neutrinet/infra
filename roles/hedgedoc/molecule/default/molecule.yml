@@ -8,11 +8,7 @@ platforms:
   - name: trixie-hedgedoc-molecule
     box: debian/trixie64
     cpu: 2
-    memory: 1024
-    interfaces:
-      - network_name: private_network
-        type: dhcp
-        auto_config: true
+    memory: 2048
 provisioner:
   name: ansible
   config_options:
