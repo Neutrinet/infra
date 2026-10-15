@@ -15,6 +15,7 @@ Group=victoriametrics
 ExecReload=/bin/kill -s SIGHUP $MAINPID
 ExecStart=/usr/local/bin/victoria-metrics \
   -enableTCP6 \
+  -httpListenAddr=[::1]:8428 \
   -memory.allowedBytes={{victoriametrics_memory_limit | human_to_bytes }} \
   -promscrape.config=/etc/victoriametrics/victoriametrics.yml \
   -storageDataPath={{ victoriametrics_storage_path }} \

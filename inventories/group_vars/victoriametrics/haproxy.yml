@@ -5,13 +5,13 @@ letsencrypt_domains_ovh:
 haproxy:
   - hostname: grafana.neutrinet.be
     target:
-      - 127.0.0.1
+      - "::1"
     target_port: 3000
     healthcheck: true
     healthcheck_url: GET /api/health
   - hostname: victoriametrics.neutrinet.be
     target:
-      - 127.0.0.1
+      - "::1"
     target_port: 8428
     healthcheck: true
     healthcheck_url: GET /-/healthy
