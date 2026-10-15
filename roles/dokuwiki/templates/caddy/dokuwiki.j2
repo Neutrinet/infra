@@ -5,9 +5,7 @@ http://{{ dokuwiki_domain }} {
     encode gzip zstd
     file_server
 
-    php_fastcgi unix//var/run/php/php{{ php_version }}-{{ dokuwiki_owner }}.sock {
-        trusted_proxies {{ caddy_trusted_proxies | join(' ') }}
-    }
+    php_fastcgi unix//var/run/php/php{{ php_version }}-{{ dokuwiki_owner }}.sock
 
     @forbidden {
         path /data/*

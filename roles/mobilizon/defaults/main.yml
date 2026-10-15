@@ -24,5 +24,3 @@ mobilizon_push_public_key: ""
 mobilizon_push_private_key: ""
 
 mobilizon_path: /var/lib/mobilizon
-
-mobilizon_trusted_proxies: []
