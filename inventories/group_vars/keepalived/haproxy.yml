@@ -269,6 +269,7 @@ haproxy:
     target_port: 9443
     healthcheck: true
     healthcheck_url: HEAD /-/health/ready/
+    healthcheck_host: true
     ssl: true
     ssl_verify: false
     deny_paths:

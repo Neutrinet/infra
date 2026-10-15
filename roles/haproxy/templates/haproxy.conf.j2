@@ -173,6 +173,9 @@ backend {{ host.hostname | replace('.', '-') }}-backend
     mode http
 {% if "healthcheck_url" in host and host.healthcheck_url %}
     option httpchk {{ host.healthcheck_url }}
+{% if host.healthcheck_host | default(false) %}
+    http-check send hdr Host {{ host.hostname }}
+{% endif %}
 {% endif %}
     option forwardfor
 {% if host.users is defined %}
