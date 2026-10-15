@@ -11,7 +11,7 @@ Group=blackbox-exporter
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStart=/usr/local/bin/blackbox-exporter \
   --config.file=/etc/blackbox-exporter/config.yml \
-  --web.listen-address='localhost:9115'
+  --web.listen-address='[::1]:9115'
 Restart=always
 RestartSec=5
 
