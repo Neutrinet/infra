@@ -40,10 +40,11 @@
     group: "{{ uptime_kuma_owner }}"
 
 - name: Installation de Uptime-Kuma
-  ansible.builtin.command:
-    cmd: npm install
-    chdir: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
-    creates: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}/node_modules
+  community.general.npm:
+    path: /var/www/{{ uptime_kuma_owner }}/uptime-kuma-{{ uptime_kuma_version }}
+  environment:
+    npm_config_omit: dev
+    npm_config_audit: "false"
   become: true
   become_user: "{{ uptime_kuma_owner }}"
 
