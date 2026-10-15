@@ -1,3 +1,5 @@
+{{ ansible_managed | comment }}
+
 [Unit]
 Description=Authentik Server Container
 After=network-online.target
@@ -11,7 +13,7 @@ Network=host
 PodmanArgs=--memory=1536m
 ShmSize=512mb
 
-Volume=/opt/authentik/media:/media:rw
+Volume=/opt/authentik/data:/data:rw
 Volume=/opt/authentik/templates:/templates:ro
 Volume=/opt/authentik/static/icon_left_brand.svg:/web/dist/assets/icons/icon_left_brand.svg:ro
 Volume=/opt/authentik/static/icon_left_brand.png:/web/dist/assets/icons/icon_left_brand.png:ro
@@ -23,6 +25,12 @@ EnvironmentFile=/etc/default/authentik
 Environment=AUTHENTIK_LISTEN__METRICS=[::1]:9030
 Environment=AUTHENTIK_LISTEN__HTTP=[::1]:9000
 Environment=AUTHENTIK_LISTEN__HTTPS=[::]:9443
+
+HealthCmd=ak healthcheck
+HealthInterval=30s
+HealthTimeout=30s
+HealthStartPeriod=120s
+HealthRetries=3
 
 Exec=server
 

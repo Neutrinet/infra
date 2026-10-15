@@ -16,7 +16,7 @@
     state: directory
   loop:
     - /opt/authentik
-    - /opt/authentik/media
+    - /opt/authentik/data
     - /opt/authentik/templates
     - /opt/authentik/static
     - /opt/authentik/certs

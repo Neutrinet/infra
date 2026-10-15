@@ -6,11 +6,11 @@
     state: present
   tags: ['podman']
 
-- name: Activer le socket Podman
+- name: Désactiver le socket Podman
   ansible.builtin.service:
     name: podman.socket
-    state: started
-    enabled: true
+    state: stopped
+    enabled: false
 
 - name: Créer le répertoire des quadlets
   ansible.builtin.file:
