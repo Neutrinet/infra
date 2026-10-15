@@ -39,9 +39,9 @@
   register: _ceph_module_prometheus_config
 
 - name: Configuration de l'exporteur Prometheus
-  ansible.builtin.command: ceph config set mgr mgr/prometheus/server_addr localhost
+  ansible.builtin.command: ceph config set mgr mgr/prometheus/server_addr ::1
   changed_when: true
-  when: _ceph_module_prometheus_config.stdout != 'localhost'
+  when: _ceph_module_prometheus_config.stdout != '::1'
 
 - name: Vérification que l'exporteur Prometheus est prêt
   ansible.builtin.uri:
