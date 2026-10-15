@@ -4,6 +4,13 @@
   become: true
 
   pre_tasks:
+    - name: Adresse IPv6 fixe sur le réseau privé
+      ansible.builtin.command: ip -6 addr replace fd29:129::{{ _molecule_private_ipv4.split('.')[-1] }}/64 dev {{ _molecule_private_iface }} nodad
+      vars:
+        _molecule_private: "{{ ansible_facts | dict2items | selectattr('value.ipv4.address', 'defined') | selectattr('value.ipv4.address', 'match', '^172\\.29\\.129\\.') | first }}"
+        _molecule_private_iface: "{{ _molecule_private.key }}"
+        _molecule_private_ipv4: "{{ _molecule_private.value.ipv4.address }}"
+      changed_when: false
     - name: Mise à jour du cache APT
       ansible.builtin.apt:
         update_cache: true

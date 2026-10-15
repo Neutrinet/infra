@@ -1,7 +1,7 @@
 etcd_members:
   - name: "trixie-postgres-patroni-01-molecule"
-    ipv4: 172.29.129.41
+    ipv6: "fd29:129::41"
   - name: "trixie-postgres-patroni-02-molecule"
-    ipv4: 172.29.129.42
+    ipv6: "fd29:129::42"
   - name: "trixie-postgres-patroni-03-molecule"
-    ipv4: 172.29.129.43
+    ipv6: "fd29:129::43"
