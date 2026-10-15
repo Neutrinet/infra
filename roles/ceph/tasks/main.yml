@@ -69,7 +69,7 @@
 
 - name: Création du dossier de surcharge systemd de ceph-exporter
   ansible.builtin.file:
-    path: /etc/systemd/system/ceph-exporter.service.d
+    path: /etc/systemd/system/ceph-exporter@.service.d
     owner: root
     group: root
     mode: "u=rwx,go=rx"
@@ -78,7 +78,7 @@
 - name: Configuration de ceph-exporter
   ansible.builtin.template:
     src: systemd/ceph-exporter-override.conf.j2
-    dest: /etc/systemd/system/ceph-exporter.service.d/override.conf
+    dest: /etc/systemd/system/ceph-exporter@.service.d/override.conf
     owner: root
     group: root
     mode: "ugo=r"
@@ -86,7 +86,7 @@
 
 - name: Activation de ceph-exporter au démarrage
   ansible.builtin.systemd:
-    name: ceph-exporter
+    name: ceph-exporter@{{ ansible_facts['hostname'] }}
     state: started
     enabled: true
     daemon_reload: true

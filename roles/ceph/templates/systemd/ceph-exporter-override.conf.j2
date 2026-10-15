@@ -4,4 +4,4 @@
 # --no-mon-config : l'exporter ne lit que les sockets d'admin locales, pas besoin de keyring.
 # --addrs : par défaut il écoute sur 0.0.0.0, l'option exige une IP littérale.
 ExecStart=
-ExecStart=/usr/bin/ceph-exporter -f --no-mon-config --addrs ::1 --setuser ceph --setgroup ceph
+ExecStart=/usr/bin/ceph-exporter -f --id %i --no-mon-config --addrs ::1 --setuser ceph --setgroup ceph

@@ -9,6 +9,6 @@
 
 - name: Restart ceph-exporter
   ansible.builtin.systemd:
-    name: ceph-exporter
+    name: ceph-exporter@{{ ansible_facts['hostname'] }}
     state: restarted
     daemon_reload: true
