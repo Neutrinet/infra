@@ -1,6 +1,6 @@
 ---
 
-authentik_version: "2026.2.7"
+authentik_version: "2026.5.7"
 
 authentik_secret_key: "changeme"  # Générée par openssl rand -base64 60
 authentik_proxy_trusted:
