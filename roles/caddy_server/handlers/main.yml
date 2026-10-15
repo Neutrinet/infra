@@ -2,6 +2,11 @@
   ansible.builtin.apt:
     update_cache: true
 
+- name: Restart caddy
+  ansible.builtin.service:
+    name: caddy
+    state: restarted
+
 - name: Reload caddy
   ansible.builtin.service:
     name: caddy
