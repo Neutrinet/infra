@@ -87,14 +87,14 @@ template:
     dnssec-policy: csk-manual
     master: remote_primary
     notify: remote_primary
-    module: [mod-rrl/default_rrl, mod-cookies/default_cookies]
+    module: [mod-cookies/default_cookies, mod-rrl/default_rrl]
     global-module: mod-stats
     acl: [acl_notify_primary]
 
 zone:
 {% for domain in knot_zone_arpa %}
   - domain: {{ domain }}
-    module: [mod-synthrecord/ip-reverse, mod-onlinesign/dnssec-online]
+    module: [mod-cookies/default_cookies, mod-rrl/default_rrl, mod-synthrecord/ip-reverse, mod-onlinesign/dnssec-online]
 {% endfor %}
   - domain: {{ knot_reverse_domain }}
-    module: [mod-synthrecord/ip-forward, mod-onlinesign/dnssec-online]
+    module: [mod-cookies/default_cookies, mod-rrl/default_rrl, mod-synthrecord/ip-forward, mod-onlinesign/dnssec-online]
