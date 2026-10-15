@@ -23,7 +23,7 @@
   ansible.posix.authorized_key:
     user: "{{ repo.user }}"
     key: "{{ _borgmatic_ssh_public_key.content | b64decode }}"
-    key_options: command="borg serve --restrict-to-path {{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}",restrict
+    key_options: command="ionice -c 3 borg serve --restrict-to-path {{ repo.path }}/{{ inventory_hostname | replace('.', '-') }}",restrict
   delegate_to: "{{ repo.host }}"
   throttle: 1
 
@@ -61,7 +61,7 @@
       | list) }}"
 
 - name: Scan de la clé publique du serveur de backup {{ repo.host }}
-  ansible.builtin.command: ssh-keyscan {{ repo.host }}
+  ansible.builtin.command: ssh-keyscan -t ed25519 {{ repo.host }}
   changed_when: false
   register: _borgmatic_repo_host_ssh_keyscan
   run_once: true
@@ -70,7 +70,7 @@
 - name: Ajout de {{ repo.host }} et de ses IPs dans la liste des serveurs connus
   ansible.builtin.known_hosts:
     name: "{{ host_target }}"
-    key: "{{ _borgmatic_repo_host_ssh_keyscan.stdout }}"
+    key: "{{ host_target }} {{ (_borgmatic_repo_host_ssh_keyscan.stdout_lines | reject('match', '#') | first).split(' ', 1)[1] }}"
     path: /root/.ssh/known_hosts
     hash_host: false
     state: present

@@ -15,12 +15,13 @@
   register: _borg_key_export
   changed_when: false
   when: _pass_key_missing | bool
+  no_log: true
 
 - name: Stocker la clé Borg dans pass pour {{ repo.host }}
   ansible.builtin.set_fact:
     _: >-
       {{ lookup('community.general.passwordstore',
-        'services/borg/' + inventory_hostname,
+        'services/borg/' + inventory_hostname + '/' + (repo.host | replace('.', '-')),
         create=true, overwrite=true, userpass=_borg_key_export.stdout) }}
   when: _pass_key_missing | bool
   no_log: true

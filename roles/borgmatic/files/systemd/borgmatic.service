@@ -6,6 +6,8 @@ ConditionACPower=true
 
 [Service]
 Type=oneshot
+RuntimeDirectory=borgmatic
+StateDirectory=borgmatic
 
 # Security settings for systemd running as root, optional but recommended to improve security. You
 # can disable individual settings if they cause problems for your use case. For more details, see
@@ -37,8 +39,7 @@ SystemCallErrorNumber=EPERM
 ProtectSystem=full
 # ReadWritePaths=-/mnt/my_backup_drive
 # ReadOnlyPaths=-/var/lib/my_backup_source
-# This will mount a tmpfs on top of /root and pass through needed paths
-ProtectHome=tmpfs
+ProtectHome=read-only
 BindPaths=-/root/.cache/borg -/root/.cache/borg -/root/.config/borg -/root/.borgmatic -/root/.ssh
 
 # May interfere with running external programs within borgmatic hooks.
