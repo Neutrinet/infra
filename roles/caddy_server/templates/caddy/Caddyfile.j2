@@ -6,6 +6,7 @@
     }
     servers {
         trusted_proxies static {{ caddy_trusted_proxies | join(' ') }}
+        trusted_proxies_strict
     }
 }
 
