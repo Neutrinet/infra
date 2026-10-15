@@ -23,6 +23,17 @@
       - python3-etcd
     state: present
 
+- name: Création des dossiers de données PostgreSQL
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: postgres
+    group: postgres
+    mode: u=rwx,go=
+    state: directory
+  loop:
+    - /media/data/postgresql
+    - /media/data/postgresql/{{ postgresql_major_version }}
+
 - name: Configuration de Patroni
   ansible.builtin.template:
     src: config.yml.j2
@@ -46,9 +57,17 @@
   ansible.builtin.uri:
     url: http://localhost:8008/health
   register: _postgresql_patroni_health
-  retries: 10
-  delay: 3
+  retries: 60
+  delay: 10
   until: _postgresql_patroni_health is success
+
+- name: Création de l'extension pg_stat_statements
+  community.postgresql.postgresql_ext:
+    name: pg_stat_statements
+    login_db: postgres
+  become: true
+  become_user: postgres
+  when: _postgresql_patroni_health.json.role in ['master', 'primary']
 
 - name: Installation de PostgreSQL exporter
   ansible.builtin.include_role:
