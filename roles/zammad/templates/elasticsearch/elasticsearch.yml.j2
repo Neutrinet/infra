@@ -73,13 +73,6 @@ discovery.type: single-node
 # Performance may suffer if it is set too high.
 http.max_content_length: 400mb
 #
-# Allows the engine to generate larger (more complex) search queries.
-# Elasticsearch will raise an error or deprecation notice if this value is too low,
-# but setting it too high can overload system resources (Default: 1024).
-#
-# Available in version 6.6+ only.
-indices.query.bool.max_clause_count: 2000
-#
 # ---------------------------------- Security ----------------------------------
 #
 #                                 *** WARNING ***
@@ -95,3 +88,5 @@ indices.query.bool.max_clause_count: 2000
 # https://www.elastic.co/guide/en/elasticsearch/reference/7.16/configuring-stack-security.html
 
 xpack.security.enabled: false
+xpack.security.transport.ssl.enabled: false
+xpack.security.http.ssl.enabled: false
