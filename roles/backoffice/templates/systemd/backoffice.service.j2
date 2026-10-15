@@ -7,7 +7,7 @@ After=postgresql.service
 Type=simple
 Restart=always
 RestartSec=2s
-ExecStart=/var/www/{{ backoffice_owner }}/dist/env/bin/gunicorn backoffice.wsgi:application -b localhost:5005 --workers=2 --timeout 180
+ExecStart=/var/www/{{ backoffice_owner }}/dist/env/bin/gunicorn backoffice.wsgi:application -b [::1]:5005 --workers=2 --timeout 180
 ExecReload = /bin/kill -s HUP $MAINPID
 ExecStop = /bin/kill -s TERM $MAINPID
 
