@@ -68,7 +68,7 @@
 
 - name: Vérication que le serveur Hedgedoc est prêt
   ansible.builtin.uri:
-    url: http://localhost:3000/status
+    url: http://[{{ ansible_facts['default_ipv6']['address'] }}]:3000/status
   register: _hedgedoc_server_status
   retries: 10
   delay: 3
