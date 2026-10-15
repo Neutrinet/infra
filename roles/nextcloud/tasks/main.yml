@@ -122,6 +122,14 @@
     postgresql_db_password: "{{ nextcloud_postgresql_password }}"
   tags: ['postgres']
 
+- name: Tâches de fond de Nextcloud
+  ansible.builtin.cron:
+    name: "nextcloud-cron"
+    cron_file: nextcloud-{{ nextcloud_owner }}
+    minute: "*/5"
+    user: "{{ nextcloud_owner }}"
+    job: "/usr/bin/php{{ nextcloud_php_version }} -f /var/www/{{ nextcloud_owner }}/dist/cron.php"
+
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:
     src: borgmatic/nextcloud.yml.j2
