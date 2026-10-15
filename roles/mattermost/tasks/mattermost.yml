@@ -1,6 +1,8 @@
-- name: Installation de rsync
+- name: Installation de rsync et gnupg
   ansible.builtin.package:
-    name: rsync
+    name:
+      - rsync
+      - gnupg
     state: present
 
 - name: Téléchargement de la clé publique GPG de Mattermost
