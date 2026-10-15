@@ -17,7 +17,7 @@ Environment=AUTHENTIK_LISTEN__HTTP=[::1]:9002
 Environment=AUTHENTIK_LISTEN__HTTPS=[::]:9444
 Environment=AUTHENTIK_LISTEN__METRICS=[::1]:9032
 
-HealthCmd=/proxy healthcheck
+HealthCmd=/authentik healthcheck proxy
 HealthInterval=30s
 
 [Service]
