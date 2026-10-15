@@ -1,0 +1,30 @@
+---
+- name: icons | Création du dossier des icônes
+  ansible.builtin.file:
+    path: /opt/authentik/icons
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "u=rwx,go=rx"
+
+- name: icons | Téléchargement des icônes des applications depuis selfh.st
+  ansible.builtin.get_url:
+    url: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/{{ item }}.svg"
+    dest: "/opt/authentik/icons/{{ item }}.svg"
+    owner: "1000"
+    group: "1000"
+    mode: "u=r,go=r"
+    force: false
+  loop: "{{ authentik_icons }}"
+
+- name: icons | Téléchargement des icônes des applications absentes de selfh.st
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "/opt/authentik/icons/{{ item.name }}.svg"
+    owner: "1000"
+    group: "1000"
+    mode: "u=r,go=r"
+    force: false
+  loop: "{{ authentik_icons_url }}"
+  loop_control:
+    label: "{{ item.name }}"

@@ -1,0 +1,56 @@
+---
+- name: outposts | Liste des outposts qui ont un token
+  ansible.builtin.set_fact:
+    _authentik_outposts: "{{ authentik_outpost_tokens | dict2items | selectattr('value') | map(attribute='key') | list }}"
+    _authentik_outposts_absent: "{{ authentik_outpost_tokens | dict2items | rejectattr('value') | map(attribute='key') | list }}"
+
+- name: outposts | Variables d'environnement des outposts
+  ansible.builtin.template:
+    src: authentik-outpost.env.j2
+    dest: "/etc/default/authentik-{{ item }}"
+    owner: root
+    group: root
+    mode: "u=r,go="
+  loop: "{{ _authentik_outposts }}"
+  notify:
+    - Restart authentik outposts
+
+- name: outposts | Quadlets Podman des outposts
+  ansible.builtin.template:
+    src: "containers/authentik-{{ item }}.container.j2"
+    dest: "/etc/containers/systemd/authentik-{{ item }}.container"
+    owner: root
+    group: root
+    mode: "ugo=r"
+  loop: "{{ _authentik_outposts }}"
+  notify:
+    - Restart authentik outposts
+
+- name: outposts | Démarrage des outposts
+  ansible.builtin.systemd_service:
+    name: "authentik-{{ item }}"
+    state: started
+    daemon_reload: true
+  loop: "{{ _authentik_outposts }}"
+
+- name: outposts | Liste des services présents
+  ansible.builtin.service_facts:
+
+- name: outposts | Arrêt des outposts sans token
+  ansible.builtin.systemd_service:
+    name: "authentik-{{ item }}"
+    state: stopped
+  loop: "{{ _authentik_outposts_absent }}"
+  when: ('authentik-' ~ item ~ '.service') in ansible_facts.services
+
+- name: outposts | Suppression des quadlets des outposts sans token
+  ansible.builtin.file:
+    path: "/etc/containers/systemd/authentik-{{ item }}.container"
+    state: absent
+  loop: "{{ _authentik_outposts_absent }}"
+
+- name: outposts | Suppression des variables d'environnement des outposts sans token
+  ansible.builtin.file:
+    path: "/etc/default/authentik-{{ item }}"
+    state: absent
+  loop: "{{ _authentik_outposts_absent }}"
