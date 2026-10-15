@@ -4,7 +4,9 @@
 
 - name: Restart authentik outposts
   ansible.builtin.systemd_service:
-    name: "authentik-{{ item }}"
+    name: "authentik-{{ item.name }}"
     state: restarted
     daemon_reload: true
   loop: "{{ _authentik_outposts }}"
+  loop_control:
+    label: "{{ item.name }}"

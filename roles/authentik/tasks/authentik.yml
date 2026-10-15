@@ -44,16 +44,6 @@
   notify:
     - Restart authentik
 
-- name: Supprimer les anciens services systemd Docker
-  ansible.builtin.file:
-    path: "/etc/systemd/system/{{ item }}.service"
-    state: absent
-  loop:
-    - authentik-server
-    - authentik-worker
-  notify:
-    - Restart authentik
-
 - name: Créer les quadlets Podman
   ansible.builtin.template:
     src: "containers/{{ item }}.container.j2"

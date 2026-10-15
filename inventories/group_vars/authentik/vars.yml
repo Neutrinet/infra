@@ -1,6 +1,8 @@
 authentik_secret_key: "{{ vault_authentik_secret_key }}"
 
-authentik_proxy_trusted: "2001:913:1000:11::11/128,2001:913:1000:11::12/128,10.0.11.11/32,10.0.11.12/32"
+authentik_proxy_trusted:
+  - 2001:913:1000:11::11/128
+  - 2001:913:1000:11::12/128
 authentik_domain: sso.neutrinet.be
 
 authentik_icons:
@@ -32,9 +34,11 @@ authentik_postgresql_host: haproxy-00.patata.louise.neutri.net
 authentik_s3_access_key: "{{ vault_authentik_s3_access_key }}"
 authentik_s3_secret_key: "{{ vault_authentik_s3_secret_key }}"
 
-authentik_outpost_tokens:
-  proxy: "{{ vault_authentik_outpost_proxy_token | default('') }}"
-  ldap: "{{ vault_authentik_outpost_ldap_token | default('') }}"
+authentik_outposts:
+  - name: proxy
+    state: absent
+  - name: ldap
+    state: absent
 
 rclone_backup_host: s3.fr-par.scw.cloud
 rclone_backup_bucket: neutrinet-authentik

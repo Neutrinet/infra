@@ -3,7 +3,8 @@
 authentik_version: "2026.2.7"
 
 authentik_secret_key: "changeme"  # Générée par openssl rand -base64 60
-authentik_proxy_trusted: "::1/128"
+authentik_proxy_trusted:
+  - "::1/128"
 authentik_domain: auth.example.com
 authentik_mail_from: "Authentik <authentik@localhost>"
 
@@ -18,9 +19,7 @@ authentik_s3_bucket: authentik
 authentik_s3_access_key: minio
 authentik_s3_secret_key: neutrinet
 
-authentik_outpost_tokens:
-  proxy: ""
-  ldap: ""
+authentik_outposts: []
 
 authentik_icons: []
 authentik_icons_url: []
