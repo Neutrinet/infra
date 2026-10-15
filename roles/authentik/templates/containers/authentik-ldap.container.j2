@@ -1,0 +1,28 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Authentik LDAP Outpost Container
+After=network-online.target authentik-server.service
+Wants=network-online.target
+
+[Container]
+Image=ghcr.io/goauthentik/ldap:{{ authentik_version }}
+ContainerName=authentik-ldap
+Pull=always
+Network=host
+PodmanArgs=--memory=256m
+
+EnvironmentFile=/etc/default/authentik-ldap
+Environment=AUTHENTIK_LISTEN__LDAP=[::]:3389
+Environment=AUTHENTIK_LISTEN__LDAPS=[::]:6636
+Environment=AUTHENTIK_LISTEN__METRICS=[::1]:9033
+
+HealthCmd=/ldap healthcheck
+HealthInterval=30s
+
+[Service]
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

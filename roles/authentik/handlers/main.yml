@@ -1,0 +1,10 @@
+- name: Restart authentik
+  ansible.builtin.include_tasks:
+    file: tasks/restart-authentik.yml
+
+- name: Restart authentik outposts
+  ansible.builtin.systemd_service:
+    name: "authentik-{{ item }}"
+    state: restarted
+    daemon_reload: true
+  loop: "{{ _authentik_outposts }}"

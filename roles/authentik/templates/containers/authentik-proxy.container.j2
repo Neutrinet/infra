@@ -1,0 +1,28 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Authentik Proxy Outpost Container
+After=network-online.target authentik-server.service
+Wants=network-online.target
+
+[Container]
+Image=ghcr.io/goauthentik/proxy:{{ authentik_version }}
+ContainerName=authentik-proxy
+Pull=always
+Network=host
+PodmanArgs=--memory=256m
+
+EnvironmentFile=/etc/default/authentik-proxy
+Environment=AUTHENTIK_LISTEN__HTTP=[::1]:9002
+Environment=AUTHENTIK_LISTEN__HTTPS=[::]:9444
+Environment=AUTHENTIK_LISTEN__METRICS=[::1]:9032
+
+HealthCmd=/proxy healthcheck
+HealthInterval=30s
+
+[Service]
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

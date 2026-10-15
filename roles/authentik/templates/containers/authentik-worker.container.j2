@@ -1,0 +1,35 @@
+[Unit]
+Description=Authentik Worker Container
+After=network-online.target podman.socket authentik-server.service
+Wants=network-online.target podman.socket
+
+[Container]
+Image=ghcr.io/goauthentik/server:{{ authentik_version }}
+ContainerName=authentik-worker
+Pull=always
+Network=host
+PodmanArgs=--memory=1536m
+ShmSize=512mb
+
+Volume=/run/podman/podman.sock:/var/run/docker.sock
+Volume=/opt/authentik/certs:/certs:rw
+Volume=/opt/authentik/media:/media:rw
+Volume=/opt/authentik/templates:/templates:ro
+Volume=/opt/authentik/static/icon_left_brand.svg:/web/dist/assets/icons/icon_left_brand.svg:ro
+Volume=/opt/authentik/static/icon_left_brand.png:/web/dist/assets/icons/icon_left_brand.png:ro
+Volume=/opt/authentik/static/icon.png:/web/dist/assets/icons/icon.png:ro
+Volume=/opt/authentik/static/flow_background.jpg:/web/dist/assets/images/flow_background.jpg:ro
+
+EnvironmentFile=/etc/default/authentik
+Environment=AUTHENTIK_LISTEN__METRICS=[::1]:9031
+Environment=AUTHENTIK_LISTEN__HTTP=[::1]:9001
+
+Exec=worker
+
+[Service]
+Restart=always
+RestartSec=10s
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target
