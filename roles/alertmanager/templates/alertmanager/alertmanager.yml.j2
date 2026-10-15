@@ -133,6 +133,12 @@ inhibit_rules:
   # to single alert for TCP protocol and 1195 port.
   - target_matchers:
       - protocol != tcp
+    source_matchers:
+      - category = probe.vpn
+      - protocol = tcp
+      - port = 1195
+    equal: ['alertname', 'category', 'address']
+  - target_matchers:
       - port != 1195
     source_matchers:
       - category = probe.vpn

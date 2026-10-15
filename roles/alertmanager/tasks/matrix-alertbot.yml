@@ -55,6 +55,7 @@
     virtualenv: /opt/matrix-alertbot
     virtualenv_python: python3
     state: "latest"
+    extra_args: --upgrade-strategy eager
     chdir: /opt/matrix-alertbot
   notify: Restart matrix-alertbot
 
