@@ -38,9 +38,6 @@ http://{{ mobilizon_domain }} {
     }
     reverse_proxy localhost:4000 {
         header_up X-Real-IP {client_ip}
-{% if mobilizon_trusted_proxies | length > 0 %}
-        trusted_proxies {{ mobilizon_trusted_proxies | join(' ') }}
-{% endif %}
     }
 
     log {
