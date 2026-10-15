@@ -9,7 +9,7 @@ Type=simple
 User=collectd-exporter
 Group=collectd-exporter
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart=/usr/local/bin/collectd-exporter --web.listen-address '[::]:9103'
+ExecStart=/usr/local/bin/collectd-exporter --web.listen-address '[{{ ansible_facts['default_ipv6']['address'] }}]:9103'
 Restart=always
 RestartSec=5
 
