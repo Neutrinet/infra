@@ -20,7 +20,7 @@ global
     # Empreinte JA4 du ClientHello TLS (2048 pour les ClientHello post-quantiques)
     tune.ssl.capture-buffer-size 2048
     tune.lua.bool-sample-conversion normal
-    lua-load /etc/haproxy/lua/ja4.lua
+    lua-load-per-thread /etc/haproxy/lua/ja4.lua
 
     # generated 2026-10-14, TLSRef Guideline v6.0, HAProxy 3.2.25-1~bpo13+1, OpenSSL 3.5.7, intermediate config, HSTS, gitrev=6bcb595
     # https://configurator.tlsref.org/#server=haproxy&version=3.2.25-1~bpo13+1&config=intermediate&openssl=3.5.7&hsts&guideline=6.0
@@ -175,7 +175,6 @@ backend {{ host.hostname | replace('.', '-') }}-backend
     option httpchk {{ host.healthcheck_url }}
 {% endif %}
     option forwardfor
-    option http-server-close
 {% if host.users is defined %}
     http-request auth unless { http_auth({{ host.hostname | replace('.', '-') }}-credentials) }
 {% endif %}

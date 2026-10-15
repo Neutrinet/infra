@@ -36,6 +36,7 @@
     group: "{{ webhook_group }}"
     mode: "u=rw,g=r,o="
   notify: Reload webhook
+  diff: false
 
 - name: Configuration du service systemd
   ansible.builtin.template:

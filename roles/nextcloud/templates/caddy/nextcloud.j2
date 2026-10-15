@@ -28,9 +28,20 @@ http://{{ nextcloud_domain }} {
         path /occ
         path /templates/*
         path /README
+        path /build/*
+        path /tests/*
+        path /autotest*
+        path /issue*
+        path /indie*
+    }
+
+    @forbidden_dotfiles {
+        path /.*
+        not path /.well-known/*
     }
 
     respond @forbidden 404
+    respond @forbidden_dotfiles 404
 
     log {
         output file /var/log/caddy/{{ nextcloud_owner }}.log

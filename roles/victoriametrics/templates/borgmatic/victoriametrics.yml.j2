@@ -5,13 +5,25 @@
 source_directories: !retain
   - "/opt/victoriametrics/{{ victoriametrics_version }}"
   - "/etc/victoriametrics"
-  - "{{ victoriametrics_storage_path }}/snapshots"
+  - "{{ victoriametrics_storage_path }}/borg-snapshot"
   - "/etc/systemd/system/victoriametrics.service"
   - "/etc/systemd/system/victoriametrics-alert.service"
 
+files_cache: mtime,size,inode
+
 before_backup:
-  - curl --fail --silent -X POST http://localhost:8428/snapshot/create || exit 75
-after_backup:
+  - rm -rf {{ victoriametrics_storage_path }}/borg-snapshot
   - curl --fail --silent -X POST http://localhost:8428/snapshot/delete_all
+  - >-
+    name=$(curl --fail --silent -X POST http://localhost:8428/snapshot/create | jq -er .snapshot) || exit 75;
+    cd {{ victoriametrics_storage_path }} &&
+    mkdir borg-snapshot &&
+    mv snapshots/$name borg-snapshot/root &&
+    mv data/small/snapshots/$name borg-snapshot/small &&
+    mv data/big/snapshots/$name borg-snapshot/big &&
+    mv data/indexdb/snapshots/$name borg-snapshot/indexdb &&
+    if [ -d indexdb/snapshots/$name ]; then mv indexdb/snapshots/$name borg-snapshot/legacy-indexdb; fi
+after_backup:
+  - rm -rf {{ victoriametrics_storage_path }}/borg-snapshot
 
 archive_name_format: victoriametrics_{hostname}-{now}

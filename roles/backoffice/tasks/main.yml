@@ -77,3 +77,4 @@
     postgresql_db_name: "{{ backoffice_owner }}"
     postgresql_db_password: "{{ backoffice_postgresql_password }}"
   tags: ['borgmatic_config']
+  diff: false

@@ -10,7 +10,7 @@
     and:
       # Always check Github signature before doing anything
       - match:
-          type: payload-hash-sha256
+          type: payload-hmac-sha256
           secret: {{ webhook_token | string | to_json }}
           parameter:
             source: header

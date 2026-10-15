@@ -34,7 +34,7 @@ ProtectSystem=strict
 ProtectHome=true
 PrivateTmp=true
 SystemCallArchitectures=native
-SystemCallFilter=@system-service
+SystemCallFilter=@system-service pkey_alloc pkey_mprotect
 
 # You may have to adjust these settings
 User={{ hedgedoc_owner }}

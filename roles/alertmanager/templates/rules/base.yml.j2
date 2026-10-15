@@ -304,7 +304,7 @@ groups:
           description: "[{{ $labels.instance }}] Physical hardware component {{ $labels.chip }} is > 90% than max temperature (current = {{ humanizePercentage $value }}, sensor = {{ $labels.sensor }})"
 
       - alert: Temperature Alarm
-        expr: '(node_hwmon_temp_celsius / node_hwmon_temp_critical_celsius > 0.9) or node_hwmon_temp_alarm == 1'
+        expr: '(node_hwmon_temp_celsius / node_hwmon_temp_crit_celsius > 0.9) or node_hwmon_temp_alarm == 1 or node_hwmon_temp_crit_alarm_celsius > 0'
         for: 5m
         labels:
           severity: critical
@@ -391,6 +391,15 @@ groups:
 
   - name: Disk IO
     rules:
+      - alert: Disk Saturated
+        expr: 'rate(node_disk_io_time_seconds_total[5m]) > 0.9'
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: Disk {{ $labels.device }} is saturated (current = {{ humanizePercentage $value }})
+          description: "[{{ $labels.instance }}] Disk {{ $labels.device }} is busy more than 90% of the time for 15 minutes (current = {{ humanizePercentage $value }})."
+
       - alert: High CPU IO Wait
         expr: 'avg without (cpu, mode) (rate(node_cpu_seconds_total{mode="iowait"}[5m])) > 0.1'
         for: 15m

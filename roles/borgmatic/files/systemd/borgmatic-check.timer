@@ -4,7 +4,8 @@ Description="Check borgmatic backup"
 [Timer]
 OnActiveSec=5d
 OnUnitActiveSec=5d
-RandomizedDelaySec=1h
+RandomizedDelaySec=1d
+FixedRandomDelay=true
 Persistent=true
 
 [Install]

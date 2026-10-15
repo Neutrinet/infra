@@ -1,6 +1,8 @@
-- name: Installation de rsync
+- name: Installation de rsync et gnupg
   ansible.builtin.package:
-    name: rsync
+    name:
+      - rsync
+      - gnupg
     state: present
 
 - name: Téléchargement de la clé publique GPG de Mattermost
@@ -201,6 +203,7 @@
     postgresql_db_name: "{{ mattermost_owner }}"
     postgresql_db_password: "{{ mattermost_postgresql_password }}"
   tags: ['borgmatic_config']
+  diff: false
 
 - name: Installation de rclone pour les backups du stockage S3
   ansible.builtin.import_role:

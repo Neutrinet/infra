@@ -39,7 +39,6 @@
     - curl
     - gd
     - mbstring
-    - opcache
     - xml
     - zip
   loop_control:
@@ -61,7 +60,9 @@
 
 - name: Installation de imagemagick
   ansible.builtin.package:
-    name: imagemagick
+    name:
+      - imagemagick
+      - libmagickcore-7.q16-10-extra
     state: present
   when: "'imagick' in php_extra_modules"
 
@@ -74,6 +75,18 @@
     owner: root
     group: root
     mode: "u=rw,go=r"
+  when: "'apcu' in php_extra_modules"
+
+- name: Taille de la mémoire APCu pour php-fpm
+  ansible.builtin.copy:
+    content: |
+      apc.shm_size=128M
+    dest: /etc/php/{{ php_version }}/fpm/conf.d/99-apcu.ini
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - Reload php-fpm
   when: "'apcu' in php_extra_modules"
 
 - name: Copie de la configuration OPCache

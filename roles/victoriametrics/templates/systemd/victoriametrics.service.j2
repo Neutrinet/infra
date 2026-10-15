@@ -19,7 +19,8 @@ ExecStart=/usr/local/bin/victoria-metrics \
   -promscrape.config=/etc/victoriametrics/victoriametrics.yml \
   -storageDataPath={{ victoriametrics_storage_path }} \
   -vmalert.proxyURL http://localhost:8880 \
-  -retentionPeriod={{ victoriametrics_storage_retention }}
+  -retentionPeriod={{ victoriametrics_storage_retention }} \
+  -inmemoryDataFlushInterval=30s
 
 # Systemd hardening
 ReadWritePaths={{ victoriametrics_storage_path }}
@@ -47,7 +48,7 @@ ProtectClock=true
 ProtectHostname=true
 ProtectProc=noaccess
 ProtectSystem=strict
-SystemCallFilter=@system-service
+SystemCallFilter=@system-service mincore
 
 [Install]
 WantedBy=multi-user.target

@@ -25,13 +25,13 @@ bootstrap:
     loop_wait: 10
     retry_timeout: 10
     maximum_lag_on_failover: 1048576
-    master_start_timeout: 300
+    primary_start_timeout: 300
     postgresql:
       use_pg_rewind: true
       use_slots: true
       parameters:
         max_connections: 300
-        wal_keep_segments: 100
+        wal_keep_size: 1600MB
 
   initdb:
     - encoding: UTF8
@@ -46,19 +46,6 @@ postgresql:
   connect_address: "{{ patroni_current_member.ipv4 }}:5432"
 {% endif %}
   use_unix_socket: true
-  parameters:
-    shared_buffers: {{ postgresql_patroni_shared_buffers }}
-    effective_cache_size: {{ postgresql_patroni_effective_cache_size }}
-    work_mem: {{ postgresql_patroni_work_mem }}
-    maintenance_work_mem: {{ postgresql_patroni_maintenance_work_mem }}
-    random_page_cost: 1.1
-    effective_io_concurrency: 100
-    jit: "off"
-    max_slot_wal_keep_size: 10GB
-    shared_preload_libraries: pg_stat_statements
-    log_min_duration_statement: 500ms
-    track_io_timing: "on"
-
   data_dir: /media/data/postgresql/{{ postgresql_major_version }}/{{ postgresql_patroni_name }}
   bin_dir: /usr/lib/postgresql/{{ postgresql_major_version }}/bin
   pgpass: /media/data/postgresql/{{ postgresql_major_version }}-{{ postgresql_patroni_name }}.pgpass
@@ -75,27 +62,38 @@ postgresql:
 
   pg_hba:
     - local all         all                     peer
-    - host  all         all        127.0.0.1/32 md5
-    - host  all         all        ::1/128      md5
+    - host  all         all        127.0.0.1/32 scram-sha-256
+    - host  all         all        ::1/128      scram-sha-256
     - local replication all                     peer
-    - host  replication all        127.0.0.1/32 md5
-    - host  replication all        ::1/128      md5
+    - host  replication all        127.0.0.1/32 scram-sha-256
+    - host  replication all        ::1/128      scram-sha-256
 {% for client in postgresql_patroni_clients %}
-    - host  all         all        {{ client }} md5
+    - host  all         all        {{ client }} scram-sha-256
 {% endfor %}
 {% for member in etcd_members %}
 {% if 'ipv6' in member %}
-    - host  replication {{ postgresql_patroni_replication_username }} {{ member.ipv6 }}/128 md5
-    - host  all         {{ postgresql_patroni_replication_username }} {{ member.ipv6 }}/128 md5
-    - host  all         {{ postgresql_patroni_rewind_username }}     {{ member.ipv6 }}/128 md5
+    - host  replication {{ postgresql_patroni_replication_username }} {{ member.ipv6 }}/128 scram-sha-256
+    - host  all         {{ postgresql_patroni_replication_username }} {{ member.ipv6 }}/128 scram-sha-256
+    - host  all         {{ postgresql_patroni_rewind_username }}     {{ member.ipv6 }}/128 scram-sha-256
 {% elif 'ipv4' in member %}
-    - host  replication {{ postgresql_patroni_replication_username }} {{ member.ipv4 }}/32 md5
-    - host  all         {{ postgresql_patroni_replication_username }} {{ member.ipv4 }}/32 md5
-    - host  all         {{ postgresql_patroni_rewind_username }}     {{ member.ipv4 }}/32 md5
+    - host  replication {{ postgresql_patroni_replication_username }} {{ member.ipv4 }}/32 scram-sha-256
+    - host  all         {{ postgresql_patroni_replication_username }} {{ member.ipv4 }}/32 scram-sha-256
+    - host  all         {{ postgresql_patroni_rewind_username }}     {{ member.ipv4 }}/32 scram-sha-256
 {% endif %}
 {% endfor %}
 
   parameters:
+    shared_buffers: {{ postgresql_patroni_shared_buffers }}
+    effective_cache_size: {{ postgresql_patroni_effective_cache_size }}
+    work_mem: {{ postgresql_patroni_work_mem }}
+    maintenance_work_mem: {{ postgresql_patroni_maintenance_work_mem }}
+    random_page_cost: 1.1
+    effective_io_concurrency: 100
+    jit: "off"
+    max_slot_wal_keep_size: 10GB
+    shared_preload_libraries: pg_stat_statements
+    log_min_duration_statement: 500ms
+    track_io_timing: "on"
     unix_socket_directories: /var/run/postgresql/
     logging_collector: 'on'
     log_directory: /var/log/postgresql

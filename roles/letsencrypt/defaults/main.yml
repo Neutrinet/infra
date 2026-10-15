@@ -1,5 +1,5 @@
 ---
-letsencrypt_certbot_version: 4.0.0
+letsencrypt_certbot_version: 5.8.0
 
 letsencrypt_mail_notification: letsencrypt@exemple.com
 

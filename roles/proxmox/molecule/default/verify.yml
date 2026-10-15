@@ -13,9 +13,17 @@
           - ansible_facts.services[item].state == 'running'
           - ansible_facts.services[item].status == 'enabled'
       loop:
-        - ceph-exporter.service
         - smartctl-exporter.service
         - ipmi-exporter.service
+
+    - name: Vérification que ceph-exporter est actif et activé au démarrage
+      ansible.builtin.systemd_service:
+        name: ceph-exporter@{{ ansible_facts['hostname'] }}
+        state: started
+        enabled: true
+      check_mode: true
+      register: _verify_ceph_exporter_service
+      failed_when: _verify_ceph_exporter_service is changed
 
     - name: Vérification du module prometheus du manager Ceph
       ansible.builtin.uri:

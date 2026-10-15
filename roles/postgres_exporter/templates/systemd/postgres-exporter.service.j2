@@ -9,7 +9,7 @@ Type=simple
 User=postgres-exporter
 Group=postgres-exporter
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart=/usr/local/bin/postgres-exporter --web.listen-address '[::1]:9187'
+ExecStart=/usr/local/bin/postgres-exporter --web.listen-address '[::1]:9187' --collector.stat_checkpointer --collector.stat_statements
 Environment= \
   DATA_SOURCE_NAME="user=postgres-exporter host=/var/run/postgresql/ dbname=postgres sslmode=disable"
 Restart=always

@@ -17,6 +17,7 @@
     mode: "ug=r,o="
   notify: Restart vector
   tags: ['vector_config']
+  diff: false
 
 - name: Ajout de la probe http {{ probe_name }} à la liste des probes installées
   ansible.builtin.set_fact:

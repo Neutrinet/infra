@@ -29,4 +29,4 @@ haproxy_listen:
 haproxy_valkey_password: neutrinet
 haproxy_valkey: []
 
-haproxy_repo_version: "3.2"
+haproxy_repo_version: "3.4"

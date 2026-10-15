@@ -12,6 +12,7 @@
     mode: "u=rw,go="
     force: false  # /!\ Ce fichier ne peux plus etre modifier une fois le cluster démarer, valkey modifie ce fichier pour indiquer la topologie du cluster
   notify: Restart Valkey Sentinel
+  diff: false
 
 - name: Création de la configuration static
   ansible.builtin.template:
@@ -21,6 +22,7 @@
     group: valkey
     mode: "u=r,go="
   notify: Restart Valkey Sentinel
+  diff: false
 
 - name: Création de la configuration ACL
   ansible.builtin.template:
@@ -30,6 +32,7 @@
     group: valkey
     mode: "u=r,go="
   notify: Restart Valkey Sentinel
+  diff: false
 
 - name: Dasactiver le serverValkey Sentinel par default
   ansible.builtin.service:

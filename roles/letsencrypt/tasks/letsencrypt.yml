@@ -6,6 +6,7 @@
       - python3-dev
       - python3-venv
       - python3-virtualenv
+      - python3-packaging
     state: present
 
 - name: Création des dossiers Let's Encrypt
@@ -41,6 +42,7 @@
     virtualenv_python: python3
     state: present
     version: "{{ letsencrypt_certbot_version }}"
+    extra_args: --upgrade --upgrade-strategy eager
     chdir: /opt/letsencrypt
 
 - name: Installation de certbot-dns-ovh
@@ -50,6 +52,7 @@
     virtualenv_python: python3
     state: present
     version: "{{ letsencrypt_certbot_version }}"
+    extra_args: --upgrade --upgrade-strategy eager
     chdir: /opt/letsencrypt
 
 - name: Création d'un lien symbolique pour le binaire certbot
@@ -62,7 +65,8 @@
   ansible.builtin.cron:
     name: "letsencrypt-update"
     cron_file: letsencrypt-update
-    special_time: daily
+    minute: "{{ 59 | random(seed=inventory_hostname) }}"
+    hour: "{{ 23 | random(seed=inventory_hostname ~ 'letsencrypt') }}"
     user: "root"
     job: "/opt/letsencrypt/bin/certbot renew -q"
 

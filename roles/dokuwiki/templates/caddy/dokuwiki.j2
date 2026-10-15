@@ -15,6 +15,10 @@ http://{{ dokuwiki_domain }} {
         path /bin/*
         path /inc/*
         path /install.php
+        path /vendor/*
+        path /.git/*
+        path /VERSION
+        path /composer.*
     }
     respond @forbidden 403
 

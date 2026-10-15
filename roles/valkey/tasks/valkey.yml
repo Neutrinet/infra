@@ -15,6 +15,38 @@
     mode: "u=rw,go="
     force: false  # /!\ Ce fichier ne peut plus etre modifié une fois le cluster démarré, sentinel le réécrit (replicaof) à chaque bascule du primary
   notify: Restart Valkey
+  diff: false
+
+- name: Retrait de la configuration dynamique des directives gérées dans la configuration static
+  ansible.builtin.lineinfile:
+    path: /etc/valkey/valkey-neutrinet.conf
+    regexp: "^{{ item }} "
+    state: absent
+  loop:
+    - bind
+    - port
+    - unixsocket
+    - unixsocketperm
+    - protected-mode
+    - aclfile
+    - masteruser
+    - masterauth
+    - daemonize
+    - pidfile
+    - logfile
+    - dir
+    - databases
+    - maxmemory
+    - maxmemory-policy
+    - dbfilename
+    - save
+    - replica-priority
+    - replica-read-only
+    - repl-diskless-sync
+    - repl-diskless-sync-delay
+    - repl-ping-replica-period
+    - repl-timeout
+  diff: false
 
 - name: Création de la configuration static
   ansible.builtin.template:
@@ -24,6 +56,7 @@
     group: valkey
     mode: "u=r,go="
   notify: Restart Valkey
+  diff: false
 
 - name: Création de la configuration ACL
   ansible.builtin.template:
@@ -33,6 +66,7 @@
     group: valkey
     mode: "u=r,go="
   notify: Restart Valkey
+  diff: false
 
 - name: Activation overcommit_memory
   ansible.posix.sysctl:

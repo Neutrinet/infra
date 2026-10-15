@@ -9,6 +9,7 @@
     mode: 'ug=r,o='
     validate: 'knotc -c %s conf-check'
   notify: Restart knot
+  diff: false
 
 - name: config | Create folders
   ansible.builtin.file:

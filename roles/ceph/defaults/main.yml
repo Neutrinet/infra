@@ -1,2 +1,2 @@
-ceph_proxmox_version: squid
+ceph_proxmox_version: tentacle
 ceph_cluster: default

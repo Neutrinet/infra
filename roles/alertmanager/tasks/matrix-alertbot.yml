@@ -55,6 +55,7 @@
     virtualenv: /opt/matrix-alertbot
     virtualenv_python: python3
     state: "latest"
+    extra_args: --upgrade-strategy eager
     chdir: /opt/matrix-alertbot
   notify: Restart matrix-alertbot
 
@@ -75,6 +76,7 @@
     group: matrix-alertbot
     mode: "u=rw,g=r,o="
   notify: Restart matrix-alertbot
+  diff: false
 
 - name: Configuration de logrotate
   ansible.builtin.copy:

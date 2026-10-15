@@ -37,6 +37,7 @@
     name: borgmatic
     state: present
     version: "{{ borgmatic_version }}"
+    extra_args: --upgrade --upgrade-strategy eager
     virtualenv: /opt/borgmatic
     virtualenv_python: python3
     chdir: /opt/borgmatic

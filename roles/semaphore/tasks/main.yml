@@ -39,9 +39,9 @@
 
 - name: Téléchargement de l'archive Semaphore v{{ semaphore_version }}
   ansible.builtin.get_url:
-    url: https://github.com/semaphoreui/semaphore/releases/download/v{{ semaphore_version }}/semaphore_{{ semaphore_version }}_linux_amd64.tar.gz
+    url: https://github.com/semaphoreui/semaphore/releases/download/v{{ semaphore_version }}/semaphore_community_{{ semaphore_version }}_linux_amd64.tar.gz
     dest: /usr/local/src/semaphore/{{ semaphore_version }}.tar.gz
-    checksum: sha256:https://github.com/semaphoreui/semaphore/releases/download/v{{ semaphore_version }}/semaphore_{{ semaphore_version }}_checksums.txt
+    checksum: sha256:https://github.com/semaphoreui/semaphore/releases/download/v{{ semaphore_version }}/semaphore_community_{{ semaphore_version }}_checksums.txt
     owner: root
     group: root
     mode: "u=rw,go=r"
@@ -108,3 +108,4 @@
     mode: "u=rw,go="
     validate: borgmatic config validate --show -c %s
   tags: ['borgmatic_config']
+  diff: false
