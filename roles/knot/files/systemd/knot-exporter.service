@@ -8,7 +8,7 @@ Requires=knot.service
 Restart=always
 User=knot
 Group=knot
-ExecStart=/usr/sbin/knot-exporter
+ExecStart=/usr/sbin/knot-exporter --web-listen-addr ::1
 TimeoutStopSec=20s
 SendSIGKILL=no
 
