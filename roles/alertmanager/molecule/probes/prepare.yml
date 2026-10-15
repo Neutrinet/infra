@@ -34,3 +34,25 @@
   roles:
     - borgmatic
     - victoriametrics
+
+  post_tasks:
+    - name: Installation de socat
+      ansible.builtin.package:
+        name: socat
+        state: present
+
+    - name: Relais vers VictoriaMetrics pour les sondes, à la place de HAProxy
+      ansible.builtin.copy:
+        content: |
+          [Service]
+          ExecStart=/usr/bin/socat TCP6-LISTEN:8428,fork,reuseaddr TCP6:[::1]:8428
+        dest: /etc/systemd/system/victoriametrics-relay.service
+        owner: root
+        group: root
+        mode: "u=rw,go=r"
+
+    - name: Démarrage du relais vers VictoriaMetrics
+      ansible.builtin.systemd_service:
+        name: victoriametrics-relay
+        state: started
+        daemon_reload: true
