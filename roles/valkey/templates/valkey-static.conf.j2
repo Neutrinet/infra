@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
 # Network
-bind * -::*
+bind ::*
 port 6379
 unixsocket /var/run/valkey-neutrinet/valkey-server.sock
 unixsocketperm 770
