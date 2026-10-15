@@ -75,6 +75,7 @@
     group: matrix-alertbot
     mode: "u=rw,g=r,o="
   notify: Restart matrix-alertbot
+  diff: false
 
 - name: Configuration de logrotate
   ansible.builtin.copy:

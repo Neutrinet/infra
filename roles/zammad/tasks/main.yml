@@ -43,3 +43,4 @@
     postgresql_db_name: "{{ zammad_owner }}"
     postgresql_db_password: "{{ zammad_postgresql_password }}"
   tags: ['borgmatic_config']
+  diff: false

@@ -38,3 +38,4 @@
     postgresql_db_name: "{{ accounting_owner }}"
     postgresql_db_password: "{{ accounting_postgresql_password }}"
   tags: ['borgmatic_config']
+  diff: false

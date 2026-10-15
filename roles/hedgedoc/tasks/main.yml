@@ -49,6 +49,7 @@
     postgresql_db_name: "{{ hedgedoc_owner }}"
     postgresql_db_password: "{{ hedgedoc_postgresql_password }}"
   tags: ['borgmatic_config']
+  diff: false
 
 - name: Installation de rclone pour les backups du stockage S3
   ansible.builtin.import_role:

@@ -24,6 +24,7 @@
     group: valkey
     mode: "u=r,go="
   notify: Restart Valkey
+  diff: false
 
 - name: Création de la configuration ACL
   ansible.builtin.template:
@@ -33,6 +34,7 @@
     group: valkey
     mode: "u=r,go="
   notify: Restart Valkey
+  diff: false
 
 - name: Activation overcommit_memory
   ansible.posix.sysctl:

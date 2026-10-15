@@ -100,6 +100,7 @@
     mode: "u=rw,g=r,o="
     validate: "haproxy -f %s -c -q"
   notify: Reload haproxy
+  diff: false
 
 - name: Activation de haproxy au démarrage
   ansible.builtin.service:

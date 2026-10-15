@@ -108,3 +108,4 @@
     mode: "u=rw,go="
     validate: borgmatic config validate --show -c %s
   tags: ['borgmatic_config']
+  diff: false

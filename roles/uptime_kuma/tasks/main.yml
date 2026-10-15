@@ -23,6 +23,7 @@
     mode: "ug=r,o="
   notify: Restart vector
   tags: ['vector_config']
+  diff: false
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:

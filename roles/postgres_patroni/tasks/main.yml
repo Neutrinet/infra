@@ -34,6 +34,7 @@
   vars:
     patroni_current_member: "{{ etcd_members | selectattr('name', '==', ansible_hostname) | first }}"
   notify: Reload patroni
+  diff: false
 
 - name: Activation de Patroni au démarrage
   ansible.builtin.service:

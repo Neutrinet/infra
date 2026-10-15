@@ -91,3 +91,4 @@
     postgresql_db_name: "{{ mobilizon_owner }}"
     postgresql_db_password: "{{ mobilizon_postgresql_password }}"
   tags: ['borgmatic_config']
+  diff: false
