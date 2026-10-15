@@ -4,7 +4,7 @@ haproxy_postgresql: []
 haproxy:
   - hostname: "{{ ansible_fqdn }}"
     target:
-      - 127.0.0.1
+      - "::1"
     target_port: 8428
     healthcheck: true
     healthcheck_url: GET /-/healthy
