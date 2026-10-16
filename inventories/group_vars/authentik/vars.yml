@@ -26,7 +26,7 @@ authentik_icons_url:
   - name: peering-manager
     url: https://cdn.jsdelivr.net/gh/peering-manager/peering-manager@main/project-static/img/peering-manager.svg
 
-authentik_mail_from: "Neutrinet SSO <noreply@neutrinet.be>"
+authentik_mail_from: "Neutrinet ID <noreply@neutrinet.be>"
 
 authentik_username_blocklist:
   - neutrinet

@@ -13,6 +13,15 @@
       {{ (lookup('ansible.builtin.file', 'username_blocklist.txt').splitlines() + authentik_username_blocklist)
         | select('match', '^[a-z0-9_-]+$') | unique | sort }}
 
+- name: blueprints | Copie des modèles d'e-mail
+  ansible.builtin.copy:
+    src: email/neutrinet/
+    dest: /opt/authentik/templates/neutrinet/
+    owner: 1000
+    group: 1000
+    mode: "u=rwX,g=rX,o="
+    directory_mode: "u=rwx,g=rx,o="
+
 - name: blueprints | Déploiement des blueprints
   ansible.builtin.template:
     src: "blueprints/{{ item }}.yaml.j2"

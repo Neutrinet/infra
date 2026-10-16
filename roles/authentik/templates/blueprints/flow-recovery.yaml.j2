@@ -20,7 +20,7 @@ entries:
       slug: neutrinet-recovery
     attrs:
       name: Password recovery
-      title: Neutrinet
+      title: Neutrinet ID
       designation: recovery
       authentication: require_unauthenticated
 
@@ -78,7 +78,7 @@ entries:
     attrs:
       use_global_settings: true
       subject: {{ _authentik_i18n.subject_recovery[lang] | to_json }}
-      template: email/password_reset.html
+      template: neutrinet/password_reset.html
       token_expiry: minutes=30
       activate_user_on_success: true
   - model: authentik_flows.flowstagebinding

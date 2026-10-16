@@ -25,7 +25,7 @@ entries:
       slug: neutrinet-enrollment
     attrs:
       name: Enrollment
-      title: Neutrinet
+      title: Neutrinet ID
       designation: enrollment
       authentication: require_unauthenticated
 
@@ -152,7 +152,7 @@ entries:
     attrs:
       use_global_settings: true
       subject: {{ _authentik_i18n.subject_enrollment[lang] | to_json }}
-      template: email/account_confirmation.html
+      template: neutrinet/account_confirmation.html
       activate_user_on_success: true
   - model: authentik_flows.flowstagebinding
     id: binding-email-{{ lang }}
