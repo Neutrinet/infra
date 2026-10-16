@@ -24,3 +24,5 @@
   vars:
     _authentik_blueprints:
       - groups
+      - mappings
+      - policies

@@ -1,0 +1,195 @@
+{{ ansible_managed | comment }}
+version: 1
+metadata:
+  name: Neutrinet - Politiques
+entries:
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-is-red
+    attrs:
+      expression: |
+        return ak_is_group_member(request.user, name="red")
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-is-privileged
+    attrs:
+      expression: |
+        return request.user.is_superuser or ak_is_group_member(request.user, name="red")
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-is-not-privileged
+    attrs:
+      expression: |
+        return not (request.user.is_superuser or ak_is_group_member(request.user, name="red"))
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-red-admin-only
+    attrs:
+      expression: |
+        return ak_is_group_member(request.user, name="red") and not request.user.username.endswith("-admin")
+
+  - model: authentik_policies_reputation.reputationpolicy
+    identifiers:
+      name: neutrinet-reputation-ip
+    attrs:
+      check_ip: true
+      check_username: false
+      threshold: -5
+
+  - model: authentik_policies_password.passwordpolicy
+    identifiers:
+      name: neutrinet-password
+    attrs:
+      password_field: password
+      check_static_rules: true
+      length_min: 12
+      amount_digits: 0
+      amount_uppercase: 0
+      amount_lowercase: 0
+      amount_symbols: 0
+      check_have_i_been_pwned: true
+      hibp_allowed_count: 0
+      check_zxcvbn: true
+      zxcvbn_score_threshold: 2
+      error_message: Le mot de passe doit faire au moins 12 caractères et ne pas figurer dans une fuite connue.
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-username
+    attrs:
+      expression: |
+        import re
+        blocklist = set({{ _authentik_username_blocklist | to_json }})
+        username = request.context.get("prompt_data", {}).get("username", "")
+        if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{2,31}", username):
+            ak_message("Le pseudo doit faire de 3 à 32 caractères : lettres minuscules, chiffres, - et _, en commençant par une lettre ou un chiffre.")
+            return False
+        if username.endswith("-admin"):
+            ak_message("Les pseudos finissant par -admin sont réservés aux comptes d'administration.")
+            return False
+        if username in blocklist:
+            ak_message("Ce pseudo est réservé.")
+            return False
+        return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-username-red
+    attrs:
+      expression: |
+        import re
+        blocklist = set({{ _authentik_username_blocklist | to_json }})
+        username = request.context.get("prompt_data", {}).get("username", "")
+        if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{2,25}-admin", username):
+            ak_message("Le pseudo d'un compte d'administration doit être <pseudo>-admin, 32 caractères au plus.")
+            return False
+        if username.removesuffix("-admin") in blocklist:
+            ak_message("Ce pseudo est réservé.")
+            return False
+        return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-email-unique
+    attrs:
+      expression: |
+        from authentik.core.models import User
+        email = request.context.get("prompt_data", {}).get("email", "")
+        others = User.objects.filter(email__iexact=email)
+        if request.user.is_authenticated:
+            others = others.exclude(pk=request.user.pk)
+        if email and others.exists():
+            ak_message("Cette adresse e-mail est déjà utilisée par un autre compte.")
+            return False
+        return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-email-changed
+    attrs:
+      expression: |
+        new = request.context.get("prompt_data", {}).get("email", "")
+        if new.lower() == (request.user.email or "").lower():
+            return False
+        request.context["flow_plan"].context["email"] = new
+        return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-email-notify-old
+    attrs:
+      expression: |
+        new = request.context.get("prompt_data", {}).get("email", "")
+        old = request.user.email
+        if old and new and new.lower() != old.lower():
+            ak_send_email(
+                old,
+                "Neutrinet : adresse e-mail modifiée",
+                body=(
+                    f"Bonjour {request.user.username},\n\n"
+                    f"L'adresse e-mail de ton compte Neutrinet vient d'être remplacée par {new}.\n\n"
+                    "Si tu n'es pas à l'origine de ce changement, écris immédiatement à support@neutrinet.be.\n"
+                ),
+            )
+        return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-invitation-groups
+    attrs:
+      expression: |
+        from authentik.core.models import Group
+        names = request.context.get("prompt_data", {}).get("groups", [])
+        allowed = [name for name in names if name in ("white", "green", "amber")]
+        groups = list(Group.objects.filter(name__in=allowed))
+        if groups:
+            request.context["flow_plan"].context["groups"] = groups
+        return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-red-invitation
+    attrs:
+      expression: |
+        from datetime import timedelta
+        from django.utils.timezone import now
+        invite = request.context.get("invitation")
+        if invite is None:
+            return True
+        if not invite.single_use:
+            return True
+        if not invite.expiring or invite.expires is None or invite.expires > now() + timedelta(days=7):
+            return True
+        if not ak_is_group_member(invite.created_by, name="red"):
+            return True
+        return False
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-user-path
+    attrs:
+      expression: |
+        user = request.user
+        for name in ("red", "amber", "green", "white"):
+            if ak_is_group_member(user, name=name):
+                if user.path != name:
+                    user.path = name
+                    user.save(update_fields=["path"])
+                break
+        return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-terminate-sessions
+    attrs:
+      expression: |
+        from authentik.core.models import Session
+        sessions = Session.objects.filter(authenticatedsession__user=request.user)
+        current = request.http_request.session.session_key
+        if current:
+            sessions = sessions.exclude(session_key=current)
+        sessions.delete()
+        return True

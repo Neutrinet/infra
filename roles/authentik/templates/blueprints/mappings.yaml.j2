@@ -1,0 +1,15 @@
+{{ ansible_managed | comment }}
+version: 1
+metadata:
+  name: Neutrinet - Mappings
+entries:
+  - model: authentik_providers_oauth2.scopemapping
+    identifiers:
+      name: neutrinet-groups
+    attrs:
+      scope_name: groups
+      description: Groupes de l'utilisateur, y compris les groupes hérités
+      expression: |
+        return {
+            "groups": [group.name for group in request.user.all_groups()],
+        }
