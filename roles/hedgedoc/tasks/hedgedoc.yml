@@ -1,6 +1,6 @@
 - name: Création du dossier de Hedgedoc
   ansible.builtin.file:
-    path: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
+    path: /var/www/{{ hedgedoc_owner }}/{{ hedgedoc_version }}
     owner: "{{ hedgedoc_owner }}"
     group: "{{ hedgedoc_owner }}"
     mode: "u=rwx,g=rx,o="
@@ -9,8 +9,8 @@
 - name: Téléchargement de Hedgedoc v{{ hedgedoc_version }}
   ansible.builtin.unarchive:
     src: https://github.com/hedgedoc/hedgedoc/releases/download/{{ hedgedoc_version }}/hedgedoc-{{ hedgedoc_version }}.tar.gz
-    dest: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
-    creates: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/README.md
+    dest: /var/www/{{ hedgedoc_owner }}/{{ hedgedoc_version }}
+    creates: /var/www/{{ hedgedoc_owner }}/{{ hedgedoc_version }}/README.md
     remote_src: true
     extra_opts:
       - --strip-components=1
@@ -25,15 +25,15 @@
 - name: Installation de Hedgedoc
   ansible.builtin.command:
     cmd: yarn workspaces focus --production
-    chdir: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
-    creates: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/node_modules
+    chdir: /var/www/{{ hedgedoc_owner }}/{{ hedgedoc_version }}
+    creates: /var/www/{{ hedgedoc_owner }}/{{ hedgedoc_version }}/node_modules
   become: true
   become_user: "{{ hedgedoc_owner }}"
 
 - name: Configuration de Hedgedoc
   ansible.builtin.template:
     src: hedgedoc/config.json.j2
-    dest: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}/config.json
+    dest: /var/www/{{ hedgedoc_owner }}/{{ hedgedoc_version }}/config.json
     owner: "{{ hedgedoc_owner }}"
     group: "{{ hedgedoc_owner }}"
     mode: "u=rw,g=r,o="
@@ -52,7 +52,7 @@
 
 - name: Création du lien symbolique vers la dernière version de Hedgedoc
   ansible.builtin.file:
-    src: /var/www/{{ hedgedoc_owner }}/hedgedoc-{{ hedgedoc_version }}
+    src: /var/www/{{ hedgedoc_owner }}/{{ hedgedoc_version }}
     dest: /var/www/{{ hedgedoc_owner }}/dist
     state: link
   notify: Restart hedgedoc

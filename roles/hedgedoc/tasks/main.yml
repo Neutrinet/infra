@@ -4,16 +4,16 @@
     name: nodejs
   vars:
     nodejs_major_version: 24
-  tags: ['nodejs']
+  tags: ["nodejs"]
 
 - name: Installation de Yarn
   ansible.builtin.import_role:
     name: yarn
-  tags: ['yarn']
+  tags: ["yarn"]
 
 - name: Création de l'utilisateur
   ansible.builtin.import_tasks: user.yml
-  tags: ['user']
+  tags: ["user"]
 
 - name: Configuration de la base de données PostgreSQL
   ansible.builtin.import_role:
@@ -21,11 +21,15 @@
   vars:
     postgresql_db_name: "{{ hedgedoc_owner }}"
     postgresql_db_password: "{{ hedgedoc_postgresql_password }}"
-  tags: ['postgres']
+  tags: ["postgres"]
 
 - name: Installation de Hedgedoc
   ansible.builtin.import_tasks: hedgedoc.yml
-  tags: ['hedgedoc']
+  tags: ["hedgedoc"]
+
+- name: Nettoyage des anciennes versions
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: ["cleanup"]
 
 - name: Configuration de vector
   ansible.builtin.template:
@@ -35,7 +39,7 @@
     group: vector
     mode: "ug=r,o="
   notify: Restart vector
-  tags: ['vector_config']
+  tags: ["vector_config"]
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:
@@ -48,7 +52,7 @@
   vars:
     postgresql_db_name: "{{ hedgedoc_owner }}"
     postgresql_db_password: "{{ hedgedoc_postgresql_password }}"
-  tags: ['borgmatic_config']
+  tags: ["borgmatic_config"]
   diff: false
 
 - name: Installation de rclone pour les backups du stockage S3
@@ -60,4 +64,4 @@
     rclone_src_access_key: "{{ hedgedoc_s3_access_key }}"
     rclone_src_secret_key: "{{ hedgedoc_s3_secret_key }}"
   when: hedgedoc_s3_enabled
-  tags: ['rclone']
+  tags: ["rclone"]
