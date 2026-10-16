@@ -8,7 +8,7 @@ Wants=network-online.target
 [Container]
 Image=ghcr.io/goauthentik/proxy:{{ authentik_version }}
 ContainerName=authentik-proxy
-Pull=always
+Pull=missing
 Network=host
 PodmanArgs=--memory=256m
 

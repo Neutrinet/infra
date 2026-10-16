@@ -8,7 +8,7 @@ Wants=network-online.target
 [Container]
 Image=ghcr.io/goauthentik/server:{{ authentik_version }}
 ContainerName=authentik-server
-Pull=always
+Pull=missing
 Network=host
 PodmanArgs=--memory=1536m
 ShmSize=512mb
