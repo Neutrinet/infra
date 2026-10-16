@@ -1,0 +1,192 @@
+{{ ansible_managed | comment }}
+version: 1
+metadata:
+  name: Neutrinet - Enrollment
+entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - Groups
+      required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - Policies
+      required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - Stages
+      required: true
+
+  - model: authentik_flows.flow
+    id: flow
+    identifiers:
+      slug: neutrinet-enrollment
+    attrs:
+      name: Enrollment
+      title: Neutrinet
+      designation: enrollment
+      authentication: require_unauthenticated
+
+  - model: authentik_stages_invitation.invitationstage
+    id: invitation
+    identifiers:
+      name: neutrinet-enrollment-invitation
+    attrs:
+      continue_flow_without_invitation: true
+
+  - model: authentik_stages_user_write.userwritestage
+    id: write
+    identifiers:
+      name: neutrinet-enrollment-write
+    attrs:
+      user_creation_mode: always_create
+      create_users_as_inactive: true
+      create_users_group: !Find [authentik_core.group, [name, white]]
+      user_path_template: white
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf invitation
+      order: 10
+{% for lang in _authentik_languages %}
+
+  - model: authentik_stages_prompt.prompt
+    id: field-username-{{ lang }}
+    identifiers:
+      name: neutrinet-enrollment-field-username-{{ lang }}
+    attrs:
+      field_key: username
+      label: {{ _authentik_i18n.username[lang] | to_json }}
+      type: username
+      required: true
+      placeholder: {{ _authentik_i18n.username[lang] | to_json }}
+      placeholder_expression: false
+      sub_text: {{ _authentik_i18n.username_help[lang] | to_json }}
+      order: 0
+  - model: authentik_stages_prompt.prompt
+    id: field-name-{{ lang }}
+    identifiers:
+      name: neutrinet-enrollment-field-name-{{ lang }}
+    attrs:
+      field_key: name
+      label: {{ _authentik_i18n.name[lang] | to_json }}
+      type: text
+      required: true
+      placeholder: {{ _authentik_i18n.name[lang] | to_json }}
+      placeholder_expression: false
+      order: 1
+  - model: authentik_stages_prompt.prompt
+    id: field-email-{{ lang }}
+    identifiers:
+      name: neutrinet-enrollment-field-email-{{ lang }}
+    attrs:
+      field_key: email
+      label: {{ _authentik_i18n.email[lang] | to_json }}
+      type: email
+      required: true
+      placeholder: {{ _authentik_i18n.email[lang] | to_json }}
+      placeholder_expression: false
+      order: 2
+  - model: authentik_stages_prompt.prompt
+    id: field-password-{{ lang }}
+    identifiers:
+      name: neutrinet-enrollment-field-password-{{ lang }}
+    attrs:
+      field_key: password
+      label: {{ _authentik_i18n.password[lang] | to_json }}
+      type: password
+      required: true
+      placeholder: {{ _authentik_i18n.password[lang] | to_json }}
+      placeholder_expression: false
+      order: 3
+  - model: authentik_stages_prompt.prompt
+    id: field-password-repeat-{{ lang }}
+    identifiers:
+      name: neutrinet-enrollment-field-password-repeat-{{ lang }}
+    attrs:
+      field_key: password_repeat
+      label: {{ _authentik_i18n.password_repeat[lang] | to_json }}
+      type: password
+      required: true
+      placeholder: {{ _authentik_i18n.password_repeat[lang] | to_json }}
+      placeholder_expression: false
+      order: 4
+  - model: authentik_stages_prompt.promptstage
+    id: prompt-{{ lang }}
+    identifiers:
+      name: neutrinet-enrollment-prompt-{{ lang }}
+    attrs:
+      fields:
+        - !KeyOf field-username-{{ lang }}
+        - !KeyOf field-name-{{ lang }}
+        - !KeyOf field-email-{{ lang }}
+        - !KeyOf field-password-{{ lang }}
+        - !KeyOf field-password-repeat-{{ lang }}
+      validation_policies:
+        - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-username]]
+        - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-unique]]
+        - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-password-length]]
+        - !Find [authentik_policies_password.passwordpolicy, [name, neutrinet-password]]
+  - model: authentik_flows.flowstagebinding
+    id: binding-prompt-{{ lang }}
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf prompt-{{ lang }}
+      order: {{ 20 + loop.index0 }}
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-prompt-{{ lang }}
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-language-{{ lang }}]]
+      order: 0
+
+  - model: authentik_stages_email.emailstage
+    id: email-{{ lang }}
+    identifiers:
+      name: neutrinet-enrollment-email-{{ lang }}
+    attrs:
+      use_global_settings: true
+      subject: {{ _authentik_i18n.subject_enrollment[lang] | to_json }}
+      template: email/account_confirmation.html
+      activate_user_on_success: true
+  - model: authentik_flows.flowstagebinding
+    id: binding-email-{{ lang }}
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf email-{{ lang }}
+      order: {{ 40 + loop.index0 }}
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-email-{{ lang }}
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-language-{{ lang }}]]
+      order: 0
+{% endfor %}
+
+  - model: authentik_flows.flowstagebinding
+    id: binding-write
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf write
+      order: 30
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-write
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-invitation-groups]]
+      order: 0
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf flow
+      stage: !Find [authentik_stages_user_login.userloginstage, [name, neutrinet-login]]
+      order: 100

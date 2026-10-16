@@ -27,3 +27,5 @@
     - stages
     - flow-password-change
     - flow-recovery
+    - flow-enrollment
+    - flow-enrollment-red
