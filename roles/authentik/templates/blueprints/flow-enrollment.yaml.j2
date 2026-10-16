@@ -45,6 +45,7 @@ entries:
       create_users_as_inactive: true
       create_users_group: !Find [authentik_core.group, [name, white]]
       user_path_template: white
+      user_type: internal
 
   - model: authentik_flows.flowstagebinding
     identifiers:

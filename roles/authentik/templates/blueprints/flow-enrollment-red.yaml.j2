@@ -45,6 +45,7 @@ entries:
       create_users_as_inactive: true
       create_users_group: !Find [authentik_core.group, [name, red]]
       user_path_template: red
+      user_type: internal
   - model: authentik_stages_password.passwordstage
     id: password
     identifiers:
