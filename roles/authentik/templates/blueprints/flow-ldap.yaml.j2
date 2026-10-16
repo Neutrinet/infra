@@ -22,7 +22,7 @@ entries:
       name: LDAP
       title: Neutrinet ID
       designation: authentication
-      authentication: none
+      authentication: require_outpost
 
   - model: authentik_stages_identification.identificationstage
     id: identification
@@ -69,5 +69,5 @@ entries:
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf binding-deny-red
-      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-is-red]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-is-privileged]]
       order: 0

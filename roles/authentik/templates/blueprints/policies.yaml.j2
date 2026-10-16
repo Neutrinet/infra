@@ -85,13 +85,22 @@ entries:
       expression: |
         return ak_is_group_member(request.user, name="red") and not request.user.username.endswith("-admin")
 
-  - model: authentik_policies_reputation.reputationpolicy
+  - model: authentik_policies_expression.expressionpolicy
     identifiers:
       name: neutrinet-reputation-ip
     attrs:
-      check_ip: true
-      check_username: false
-      threshold: -5
+      expression: |
+        from django.db.models import Sum
+        from django.utils.timezone import now
+        from authentik.policies.reputation.models import Reputation
+        from authentik.root.middleware import ClientIPMiddleware
+        ip = ClientIPMiddleware.get_client_ip(request.http_request)
+        failures = (
+            Reputation.objects.filter(ip=ip, score__lt=0, expires__gt=now())
+            .aggregate(total=Sum("score"))["total"]
+            or 0
+        )
+        return failures <= -5
 
   - model: authentik_policies_password.passwordpolicy
     identifiers:
@@ -234,7 +243,9 @@ entries:
             return True
         if not invite.single_use:
             return True
-        if not invite.expiring or invite.expires is None or invite.expires > now() + timedelta(days=7):
+        if not (invite.fixed_data or {}).get("email"):
+            return True
+        if not invite.expiring or invite.expires is None or invite.expires > now() + timedelta(hours=48):
             return True
         if not ak_is_group_member(invite.created_by, name="red"):
             return True
@@ -260,9 +271,12 @@ entries:
     attrs:
       expression: |
         from authentik.core.models import Session
+        from authentik.providers.oauth2.models import AccessToken, RefreshToken
         sessions = Session.objects.filter(authenticatedsession__user=request.user)
         current = request.http_request.session.session_key
         if current:
             sessions = sessions.exclude(session_key=current)
         sessions.delete()
+        RefreshToken.objects.filter(user=request.user).delete()
+        AccessToken.objects.filter(user=request.user).delete()
         return True

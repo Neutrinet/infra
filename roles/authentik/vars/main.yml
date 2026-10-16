@@ -37,10 +37,10 @@ _authentik_i18n:
     nl: "E-mailadres"
     de: "E-Mail-Adresse"
   email_red_help:
-    en: "Different from the one of your usual account."
-    fr: "Différente de celle de ton compte habituel."
-    nl: "Anders dan die van je gewone account."
-    de: "Eine andere als die deines normalen Kontos."
+    en: "Set by the invitation. It must differ from the address of your usual account."
+    fr: "Fixée par l'invitation. Elle doit être différente de celle de ton compte habituel."
+    nl: "Vastgelegd door de uitnodiging. Het moet verschillen van het adres van je gewone account."
+    de: "Durch die Einladung festgelegt. Sie muss sich von der Adresse deines normalen Kontos unterscheiden."
   email_change_link:
     en: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Change my email address</a>"
     fr: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Changer mon adresse e-mail</a>"

@@ -141,7 +141,7 @@ entries:
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf binding-deny-reputation
-      policy: !Find [authentik_policies_reputation.reputationpolicy, [name, neutrinet-reputation-ip]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-reputation-ip]]
       order: 0
   - model: authentik_policies.policybinding
     identifiers:

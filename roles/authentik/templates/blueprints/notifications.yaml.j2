@@ -37,13 +37,17 @@ entries:
 {% endfor %}
 {% endfor %}
   - model: authentik_policies_expression.expressionpolicy
-    id: match-akadmin-login
+    id: match-breakglass-login
     identifiers:
-      name: neutrinet-match-akadmin-login
+      name: neutrinet-match-breakglass-login
     attrs:
       expression: |
+        from authentik.core.models import User
         event = request.context["event"]
-        return event.action == "login" and event.user.get("username") == "akadmin"
+        if event.action != "login":
+            return False
+        user = User.objects.filter(pk=event.user.get("pk")).first()
+        return bool(user) and user.is_superuser and not ak_is_group_member(user, name="red")
 
   - model: authentik_events.notificationrule
     id: notify-user-security
@@ -55,9 +59,9 @@ entries:
       transports:
         - !KeyOf transport-email
   - model: authentik_events.notificationrule
-    id: notify-akadmin-login
+    id: notify-breakglass-login
     identifiers:
-      name: neutrinet-notify-akadmin-login
+      name: neutrinet-notify-breakglass-login
     attrs:
       severity: alert
       destination_group: !Find [authentik_core.group, [name, red]]
@@ -80,6 +84,6 @@ entries:
 {% endfor %}
   - model: authentik_policies.policybinding
     identifiers:
-      target: !KeyOf notify-akadmin-login
-      policy: !KeyOf match-akadmin-login
+      target: !KeyOf notify-breakglass-login
+      policy: !KeyOf match-breakglass-login
       order: 0
