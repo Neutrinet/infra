@@ -1,4 +1,14 @@
 ---
+- name: Vérification de la disponibilité de la version {{ mattermost_version }}
+  ansible.builtin.uri:
+    url: "{{ item }}"
+    method: HEAD
+  loop:
+    - https://releases.mattermost.com/{{ mattermost_version }}/mattermost-{{ mattermost_version }}-linux-amd64.tar.gz
+    - https://packages.framasoft.org/projects/mostlymatter/mostlymatter-amd64-v{{ mattermost_version }}
+  check_mode: false
+  tags: ['mattermost']
+
 - name: Création de l'utilisateur
   ansible.builtin.import_tasks: user.yml
   tags: ['user']

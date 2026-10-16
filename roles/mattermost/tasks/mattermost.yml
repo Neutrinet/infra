@@ -1,8 +1,9 @@
-- name: Installation de rsync et gnupg
+- name: Installation de rsync, gnupg et minisign
   ansible.builtin.package:
     name:
       - rsync
       - gnupg
+      - minisign
     state: present
 
 - name: Téléchargement de la clé publique GPG de Mattermost
@@ -59,6 +60,39 @@
     owner: "{{ mattermost_owner }}"
     group: "{{ mattermost_owner }}"
 
+- name: Téléchargement du binaire Mostlymatter v{{ mattermost_version }}
+  ansible.builtin.get_url:
+    url: https://packages.framasoft.org/projects/mostlymatter/mostlymatter-amd64-v{{ mattermost_version }}
+    checksum: sha512:https://packages.framasoft.org/projects/mostlymatter/mostlymatter-amd64-v{{ mattermost_version }}.sha512
+    dest: /usr/local/src/mostlymatter-amd64-v{{ mattermost_version }}
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: Téléchargement de la signature minisign du binaire Mostlymatter
+  ansible.builtin.get_url:
+    url: https://packages.framasoft.org/projects/mostlymatter/mostlymatter-amd64-v{{ mattermost_version }}.minisig
+    dest: /usr/local/src/mostlymatter-amd64-v{{ mattermost_version }}.minisig
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: Vérification de la signature minisign
+  ansible.builtin.command:
+    cmd: minisign -Vm mostlymatter-amd64-v{{ mattermost_version }} -P RWSoFpHRlDgrwN2JmiT+JoV2nQBDzvhOgk4GGdmpzGRuhSRD4/F81JX3
+    chdir: /usr/local/src
+  changed_when: false
+
+- name: Remplacement du binaire Mattermost par Mostlymatter
+  ansible.builtin.copy:
+    src: /usr/local/src/mostlymatter-amd64-v{{ mattermost_version }}
+    dest: /var/www/{{ mattermost_owner }}/mattermost-{{ mattermost_version }}/bin/mattermost
+    remote_src: true
+    owner: "{{ mattermost_owner }}"
+    group: "{{ mattermost_owner }}"
+    mode: "u=rwx,g=rx,o="
+  notify: Restart mattermost
+
 - name: Vérification si Mattermost est déjà installé
   ansible.builtin.stat:
     path: /var/www/{{ mattermost_owner }}/dist
@@ -82,6 +116,16 @@
     recurse: false
     pattern: '^mattermost-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$'
   register: _mattermost_archives
+
+- name: Récupération de la liste des binaires Mostlymatter
+  ansible.builtin.find:
+    path: /usr/local/src
+    file_type: file
+    use_regex: true
+    recurse: false
+    pattern: '^mostlymatter-amd64-v[0-9]+\.[0-9]+\.[0-9]+(\.minisig)?$'
+    excludes: '^mostlymatter-amd64-v{{ mattermost_version | regex_escape }}(\.minisig)?$'
+  register: _mattermost_old_mostlymatter
 
 - name: Récupération de la plus ancienne version et de la version courante
   ansible.builtin.set_fact:
@@ -190,6 +234,14 @@
     state: absent
     path: "{{ mattermost_oldest_archive }}"
   when: _mattermost_archives.files | length > 5
+
+- name: Suppression des anciens binaires Mostlymatter
+  ansible.builtin.file:
+    state: absent
+    path: "{{ item.path }}"
+  loop: "{{ _mattermost_old_mostlymatter.files }}"
+  loop_control:
+    label: "{{ item.path }}"
 
 - name: Configuration des backups Borgmatic
   ansible.builtin.template:
