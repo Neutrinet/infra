@@ -1,0 +1,85 @@
+{{ ansible_managed | comment }}
+version: 1
+metadata:
+  name: Neutrinet - Notifications
+entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - Groups
+      required: true
+
+  - model: authentik_events.notificationtransport
+    id: transport-email
+    identifiers:
+      name: neutrinet-email
+    attrs:
+      mode: email
+      email_subject_prefix: "Neutrinet ID : "
+      email_template: neutrinet/event_notification.html
+      send_once: false
+
+  - model: authentik_policies_event_matcher.eventmatcherpolicy
+    id: match-password-set
+    identifiers:
+      name: neutrinet-match-password-set
+    attrs:
+      action: password_set
+{% for action in ['model_created', 'model_deleted'] %}
+{% for model in ['authentik_stages_authenticator_webauthn.webauthndevice', 'authentik_stages_authenticator_totp.totpdevice', 'authentik_stages_authenticator_static.staticdevice'] %}
+  - model: authentik_policies_event_matcher.eventmatcherpolicy
+    id: match-{{ action }}-{{ model.split('.')[1] }}
+    identifiers:
+      name: neutrinet-match-{{ action }}-{{ model.split('.')[1] }}
+    attrs:
+      action: {{ action }}
+      model: {{ model }}
+{% endfor %}
+{% endfor %}
+  - model: authentik_policies_expression.expressionpolicy
+    id: match-akadmin-login
+    identifiers:
+      name: neutrinet-match-akadmin-login
+    attrs:
+      expression: |
+        event = request.context["event"]
+        return event.action == "login" and event.user.get("username") == "akadmin"
+
+  - model: authentik_events.notificationrule
+    id: notify-user-security
+    identifiers:
+      name: neutrinet-notify-user-security
+    attrs:
+      severity: warning
+      destination_event_user: true
+      transports:
+        - !KeyOf transport-email
+  - model: authentik_events.notificationrule
+    id: notify-akadmin-login
+    identifiers:
+      name: neutrinet-notify-akadmin-login
+    attrs:
+      severity: alert
+      destination_group: !Find [authentik_core.group, [name, red]]
+      transports:
+        - !KeyOf transport-email
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf notify-user-security
+      policy: !KeyOf match-password-set
+      order: 0
+{% for action in ['model_created', 'model_deleted'] %}
+{% for model in ['webauthndevice', 'totpdevice', 'staticdevice'] %}
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf notify-user-security
+      policy: !KeyOf match-{{ action }}-{{ model }}
+      order: {{ 10 * loop.index + (100 if action == 'model_deleted' else 0) }}
+{% endfor %}
+{% endfor %}
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf notify-akadmin-login
+      policy: !KeyOf match-akadmin-login
+      order: 0

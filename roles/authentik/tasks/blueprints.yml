@@ -40,3 +40,6 @@
     - flow-enrollment-red
     - flow-authentication
     - flow-ldap
+    - flow-user-settings
+    - notifications
+    - brand

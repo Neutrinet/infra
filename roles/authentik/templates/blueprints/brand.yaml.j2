@@ -1,0 +1,35 @@
+{{ ansible_managed | comment }}
+version: 1
+metadata:
+  name: Neutrinet - Brand
+entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - Authentication
+      required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - Recovery
+      required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - User settings
+      required: true
+
+  - model: authentik_brands.brand
+    identifiers:
+      domain: {{ authentik_domain }}
+    attrs:
+      default: false
+      branding_title: Neutrinet ID
+      branding_custom_css: |
+        .pf-c-login__footer li:last-child {
+          display: none;
+        }
+      flow_authentication: !Find [authentik_flows.flow, [slug, neutrinet-authentication]]
+      flow_recovery: !Find [authentik_flows.flow, [slug, neutrinet-recovery]]
+      flow_user_settings: !Find [authentik_flows.flow, [slug, neutrinet-user-settings]]
+      flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
