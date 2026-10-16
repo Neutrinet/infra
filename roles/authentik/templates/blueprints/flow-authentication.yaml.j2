@@ -28,6 +28,16 @@ entries:
       identifiers:
         name: Neutrinet - Enrollment
       required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Authentication flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Password change flow
+      required: false
 
   - model: authentik_flows.flow
     id: flow
@@ -54,7 +64,7 @@ entries:
   - model: authentik_stages_password.passwordstage
     id: password
     identifiers:
-      name: neutrinet-authentication-password
+      name: authentication-password-neutrinet
     attrs:
       backends:
         - authentik.core.auth.InbuiltBackend
@@ -168,3 +178,13 @@ entries:
       target: !KeyOf binding-login
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-user-path]]
       order: 10
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-deny-all]]
+      order: 0
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !Find [authentik_flows.flow, [slug, default-password-change]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-deny-all]]
+      order: 0

@@ -65,10 +65,33 @@ entries:
       order: 0
 
   - model: authentik_flows.flowstagebinding
+    id: binding-mfa-privileged
+    identifiers:
+      target: !KeyOf flow
+      stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, neutrinet-mfa-recovery-privileged]]
+      order: 30
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-mfa-privileged
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-is-privileged]]
+      order: 0
+  - model: authentik_flows.flowstagebinding
+    id: binding-mfa
     identifiers:
       target: !KeyOf flow
       stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, neutrinet-mfa]]
-      order: 30
+      order: 31
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-mfa
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-is-not-privileged]]
+      order: 0
 {% for lang in _authentik_languages %}
 
   - model: authentik_stages_email.emailstage

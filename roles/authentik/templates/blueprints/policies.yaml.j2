@@ -32,6 +32,13 @@ entries:
 
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
+      name: neutrinet-deny-all
+    attrs:
+      expression: |
+        return False
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
       name: neutrinet-is-red
     attrs:
       expression: |
@@ -170,7 +177,7 @@ entries:
         if not new or new.lower() == old.lower():
             return True
         token = request.context.get("is_restored")
-        if not token or token.plan.context.get("email", "").lower() != new.lower():
+        if not token or token.user_id != request.user.pk or token.plan.context.get("email", "").lower() != new.lower():
             return False
         if old:
             ak_send_email(
