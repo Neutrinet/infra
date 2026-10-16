@@ -29,3 +29,5 @@
     - flow-recovery
     - flow-enrollment
     - flow-enrollment-red
+    - flow-authentication
+    - flow-ldap

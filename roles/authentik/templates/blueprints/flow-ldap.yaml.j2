@@ -1,0 +1,73 @@
+{{ ansible_managed | comment }}
+version: 1
+metadata:
+  name: Neutrinet - LDAP
+entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - Policies
+      required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - Stages
+      required: true
+
+  - model: authentik_flows.flow
+    id: flow
+    identifiers:
+      slug: neutrinet-ldap
+    attrs:
+      name: LDAP
+      title: Neutrinet
+      designation: authentication
+      authentication: none
+
+  - model: authentik_stages_identification.identificationstage
+    id: identification
+    identifiers:
+      name: neutrinet-ldap-identification
+    attrs:
+      user_fields:
+        - username
+      pretend_user_exists: true
+      show_matched_user: false
+  - model: authentik_stages_password.passwordstage
+    id: password
+    identifiers:
+      name: neutrinet-ldap-password
+    attrs:
+      backends:
+        - authentik.core.auth.InbuiltBackend
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf identification
+      order: 10
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf password
+      order: 20
+  - model: authentik_flows.flowstagebinding
+    id: binding-deny-red
+    identifiers:
+      target: !KeyOf flow
+      stage: !Find [authentik_stages_deny.denystage, [name, neutrinet-deny-red]]
+      order: 30
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf flow
+      stage: !Find [authentik_stages_user_login.userloginstage, [name, neutrinet-login]]
+      order: 100
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-deny-red
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-is-red]]
+      order: 0
