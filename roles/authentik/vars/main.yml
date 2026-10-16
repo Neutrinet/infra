@@ -46,21 +46,6 @@ _authentik_i18n:
     fr: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Changer mon adresse e-mail</a>"
     nl: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Mijn e-mailadres wijzigen</a>"
     de: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Meine E-Mail-Adresse ändern</a>"
-  back_to_home_link:
-    en: "<a class=\"pf-c-button pf-m-link\" href=\"/\">Back to home</a>"
-    fr: "<a class=\"pf-c-button pf-m-link\" href=\"/\">Retour à l'accueil</a>"
-    nl: "<a class=\"pf-c-button pf-m-link\" href=\"/\">Terug naar de startpagina</a>"
-    de: "<a class=\"pf-c-button pf-m-link\" href=\"/\">Zurück zur Startseite</a>"
-  back_to_login_link:
-    en: "<a class=\"pf-c-button pf-m-link\" href=\"/\">Back to login</a>"
-    fr: "<a class=\"pf-c-button pf-m-link\" href=\"/\">Retour à la connexion</a>"
-    nl: "<a class=\"pf-c-button pf-m-link\" href=\"/\">Terug naar aanmelden</a>"
-    de: "<a class=\"pf-c-button pf-m-link\" href=\"/\">Zurück zur Anmeldung</a>"
-  back_to_profile_link:
-    en: "<a class=\"pf-c-button pf-m-link\" href=\"/if/user/#/settings\">Back to my profile</a>"
-    fr: "<a class=\"pf-c-button pf-m-link\" href=\"/if/user/#/settings\">Retour à mon profil</a>"
-    nl: "<a class=\"pf-c-button pf-m-link\" href=\"/if/user/#/settings\">Terug naar mijn profiel</a>"
-    de: "<a class=\"pf-c-button pf-m-link\" href=\"/if/user/#/settings\">Zurück zu meinem Profil</a>"
   new_email:
     en: "New email address"
     fr: "Nouvelle adresse e-mail"

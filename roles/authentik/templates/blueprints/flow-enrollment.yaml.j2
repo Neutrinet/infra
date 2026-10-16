@@ -115,20 +115,6 @@ entries:
       placeholder: {{ _authentik_i18n.password_repeat[lang] | to_json }}
       placeholder_expression: false
       order: 4
-  - model: authentik_stages_prompt.prompt
-    id: field-back-{{ lang }}
-    identifiers:
-      name: neutrinet-enrollment-field-back-{{ lang }}
-    attrs:
-      field_key: back_to_login
-      label: Back to login
-      type: static
-      required: false
-      placeholder: ""
-      placeholder_expression: false
-      initial_value: {{ _authentik_i18n.back_to_login_link[lang] | to_json }}
-      initial_value_expression: false
-      order: 5
   - model: authentik_stages_prompt.promptstage
     id: prompt-{{ lang }}
     identifiers:
@@ -140,7 +126,6 @@ entries:
         - !KeyOf field-email-{{ lang }}
         - !KeyOf field-password-{{ lang }}
         - !KeyOf field-password-repeat-{{ lang }}
-        - !KeyOf field-back-{{ lang }}
       validation_policies:
         - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-username]]
         - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-unique]]
