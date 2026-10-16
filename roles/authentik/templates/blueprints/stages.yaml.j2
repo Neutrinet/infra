@@ -1,0 +1,79 @@
+{{ ansible_managed | comment }}
+version: 1
+metadata:
+  name: Neutrinet - Stages
+entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - TOTP MFA setup flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - WebAuthn MFA setup flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Static MFA setup flow
+      required: false
+
+  - model: authentik_stages_deny.denystage
+    identifiers:
+      name: neutrinet-deny-reputation
+    attrs:
+      deny_message: Trop de tentatives échouées depuis ton adresse IP. Réessaie dans 24 heures.
+  - model: authentik_stages_deny.denystage
+    identifiers:
+      name: neutrinet-deny-red-name
+    attrs:
+      deny_message: Les comptes du groupe red doivent être des comptes <pseudo>-admin.
+  - model: authentik_stages_deny.denystage
+    identifiers:
+      name: neutrinet-deny-red
+    attrs:
+      deny_message: Les comptes d'administration ne peuvent pas se connecter par LDAP.
+  - model: authentik_stages_deny.denystage
+    identifiers:
+      name: neutrinet-deny-invitation
+    attrs:
+      deny_message: Cette invitation n'est pas valide.
+
+  - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+    identifiers:
+      name: neutrinet-mfa-privileged
+    attrs:
+      device_classes:
+        - webauthn
+        - totp
+        - static
+      not_configured_action: configure
+      webauthn_user_verification: required
+      configuration_stages:
+        - !Find [authentik_stages_authenticator_webauthn.authenticatorwebauthnstage, [name, default-authenticator-webauthn-setup]]
+        - !Find [authentik_stages_authenticator_totp.authenticatortotpstage, [name, default-authenticator-totp-setup]]
+        - !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, default-authenticator-static-setup]]
+  - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+    identifiers:
+      name: neutrinet-mfa
+    attrs:
+      device_classes:
+        - webauthn
+        - totp
+        - static
+      not_configured_action: skip
+
+  - model: authentik_stages_user_login.userloginstage
+    identifiers:
+      name: neutrinet-login-privileged
+    attrs:
+      session_duration: hours=8
+      remember_me_offset: seconds=0
+      network_binding: bind_asn
+  - model: authentik_stages_user_login.userloginstage
+    identifiers:
+      name: neutrinet-login
+    attrs:
+      session_duration: hours=12
+      remember_me_offset: days=30
