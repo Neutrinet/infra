@@ -155,6 +155,7 @@ entries:
         if not new or new.lower() == (request.user.email or "").lower():
             return False
         request.context["flow_plan"].context["email"] = new
+        request.context["flow_plan"].context["pending_user"] = request.user
         return True
 
   - model: authentik_policies_expression.expressionpolicy
@@ -175,6 +176,16 @@ entries:
                 ),
             )
         return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-email-verified
+    attrs:
+      expression: |
+        new = request.context.get("prompt_data", {}).get("email", "")
+        if not new or new.lower() == (request.user.email or "").lower():
+            return True
+        return bool(request.context.get("is_restored"))
 
   - model: authentik_policies_expression.expressionpolicy
     identifiers:

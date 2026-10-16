@@ -191,8 +191,14 @@ entries:
     attrs:
       evaluate_on_plan: false
       re_evaluate_policies: true
+      policy_engine_mode: all
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf binding-write
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-notify-old]]
       order: 0
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-write
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-verified]]
+      order: 10
