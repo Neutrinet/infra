@@ -23,22 +23,22 @@ entries:
     identifiers:
       name: neutrinet-deny-reputation
     attrs:
-      deny_message: Trop de tentatives échouées depuis ton adresse IP. Réessaie dans 24 heures.
+      deny_message: ""
   - model: authentik_stages_deny.denystage
     identifiers:
       name: neutrinet-deny-red-name
     attrs:
-      deny_message: Les comptes du groupe red doivent être des comptes <pseudo>-admin.
+      deny_message: ""
   - model: authentik_stages_deny.denystage
     identifiers:
       name: neutrinet-deny-red
     attrs:
-      deny_message: Les comptes d'administration ne peuvent pas se connecter par LDAP.
+      deny_message: ""
   - model: authentik_stages_deny.denystage
     identifiers:
       name: neutrinet-deny-invitation
     attrs:
-      deny_message: Cette invitation n'est pas valide.
+      deny_message: ""
 
   - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
     identifiers:

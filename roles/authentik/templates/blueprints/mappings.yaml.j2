@@ -8,7 +8,7 @@ entries:
       name: neutrinet-groups
     attrs:
       scope_name: groups
-      description: Groupes de l'utilisateur, y compris les groupes hérités
+      description: User groups, including inherited groups
       expression: |
         return {
             "groups": [group.name for group in request.user.all_groups()],

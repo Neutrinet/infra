@@ -1,8 +1,28 @@
 {{ ansible_managed | comment }}
+{% macro detect_language() %}
+        user = request.user
+        if hasattr(user, "locale"):
+            language = user.locale(request.http_request)
+        else:
+            language = getattr(request.http_request, "LANGUAGE_CODE", "")
+        language = (language or "").replace("_", "-").split("-")[0].lower()
+        if language not in {{ _authentik_languages | to_json }}:
+            language = "en"
+{% endmacro %}
 version: 1
 metadata:
-  name: Neutrinet - Politiques
+  name: Neutrinet - Policies
 entries:
+{% for lang in _authentik_languages %}
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-language-{{ lang }}
+    attrs:
+      expression: |
+{{ detect_language() }}
+        return language == "{{ lang }}"
+
+{% endfor %}
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
       name: neutrinet-is-red
@@ -44,17 +64,23 @@ entries:
       name: neutrinet-password
     attrs:
       password_field: password
-      check_static_rules: true
-      length_min: 12
-      amount_digits: 0
-      amount_uppercase: 0
-      amount_lowercase: 0
-      amount_symbols: 0
+      check_static_rules: false
       check_have_i_been_pwned: true
       hibp_allowed_count: 0
       check_zxcvbn: true
       zxcvbn_score_threshold: 2
-      error_message: Le mot de passe doit faire au moins 12 caractères et ne pas figurer dans une fuite connue.
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-password-length
+    attrs:
+      expression: |
+{{ detect_language() }}
+        messages = {{ _authentik_i18n.msg_password_length | to_json }}
+        if len(request.context.get("prompt_data", {}).get("password", "")) < 12:
+            ak_message(messages[language])
+            return False
+        return True
 
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
@@ -62,16 +88,17 @@ entries:
     attrs:
       expression: |
         import re
+{{ detect_language() }}
         blocklist = set({{ _authentik_username_blocklist | to_json }})
         username = request.context.get("prompt_data", {}).get("username", "")
         if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{2,31}", username):
-            ak_message("Le pseudo doit faire de 3 à 32 caractères : lettres minuscules, chiffres, - et _, en commençant par une lettre ou un chiffre.")
+            ak_message({{ _authentik_i18n.msg_username_format | to_json }}[language])
             return False
         if username.endswith("-admin"):
-            ak_message("Les pseudos finissant par -admin sont réservés aux comptes d'administration.")
+            ak_message({{ _authentik_i18n.msg_username_admin_suffix | to_json }}[language])
             return False
         if username in blocklist:
-            ak_message("Ce pseudo est réservé.")
+            ak_message({{ _authentik_i18n.msg_username_reserved | to_json }}[language])
             return False
         return True
 
@@ -81,13 +108,14 @@ entries:
     attrs:
       expression: |
         import re
+{{ detect_language() }}
         blocklist = set({{ _authentik_username_blocklist | to_json }})
         username = request.context.get("prompt_data", {}).get("username", "")
         if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{2,25}-admin", username):
-            ak_message("Le pseudo d'un compte d'administration doit être <pseudo>-admin, 32 caractères au plus.")
+            ak_message({{ _authentik_i18n.msg_username_red_format | to_json }}[language])
             return False
         if username.removesuffix("-admin") in blocklist:
-            ak_message("Ce pseudo est réservé.")
+            ak_message({{ _authentik_i18n.msg_username_reserved | to_json }}[language])
             return False
         return True
 
@@ -97,12 +125,13 @@ entries:
     attrs:
       expression: |
         from authentik.core.models import User
+{{ detect_language() }}
         email = request.context.get("prompt_data", {}).get("email", "")
         others = User.objects.filter(email__iexact=email)
         if request.user.is_authenticated:
             others = others.exclude(pk=request.user.pk)
         if email and others.exists():
-            ak_message("Cette adresse e-mail est déjà utilisée par un autre compte.")
+            ak_message({{ _authentik_i18n.msg_email_taken | to_json }}[language])
             return False
         return True
 
@@ -112,7 +141,7 @@ entries:
     attrs:
       expression: |
         new = request.context.get("prompt_data", {}).get("email", "")
-        if new.lower() == (request.user.email or "").lower():
+        if not new or new.lower() == (request.user.email or "").lower():
             return False
         request.context["flow_plan"].context["email"] = new
         return True
@@ -122,16 +151,16 @@ entries:
       name: neutrinet-email-notify-old
     attrs:
       expression: |
+{{ detect_language() }}
         new = request.context.get("prompt_data", {}).get("email", "")
         old = request.user.email
         if old and new and new.lower() != old.lower():
             ak_send_email(
                 old,
-                "Neutrinet : adresse e-mail modifiée",
-                body=(
-                    f"Bonjour {request.user.username},\n\n"
-                    f"L'adresse e-mail de ton compte Neutrinet vient d'être remplacée par {new}.\n\n"
-                    "Si tu n'es pas à l'origine de ce changement, écris immédiatement à support@neutrinet.be.\n"
+                {{ _authentik_i18n.mail_email_changed_subject | to_json }}[language],
+                body={{ _authentik_i18n.mail_email_changed_body | to_json }}[language].format(
+                    username=request.user.username,
+                    new=new,
                 ),
             )
         return True
@@ -157,7 +186,7 @@ entries:
         from datetime import timedelta
         from django.utils.timezone import now
         invite = request.context.get("invitation")
-        if invite is None:
+        if invite is None or invite.flow is None:
             return True
         if not invite.single_use:
             return True

@@ -1,0 +1,133 @@
+---
+_authentik_languages:
+  - en
+  - fr
+  - nl
+  - de
+
+_authentik_i18n:
+  username:
+    en: "Username"
+    fr: "Pseudo"
+    nl: "Gebruikersnaam"
+    de: "Benutzername"
+  username_help:
+    en: "3 to 32 characters: lowercase letters, digits, - and _."
+    fr: "3 à 32 caractères : lettres minuscules, chiffres, - et _."
+    nl: "3 tot 32 tekens: kleine letters, cijfers, - en _."
+    de: "3 bis 32 Zeichen: Kleinbuchstaben, Ziffern, - und _."
+  username_red_help:
+    en: "Set by the invitation."
+    fr: "Fixé par l'invitation."
+    nl: "Vastgelegd door de uitnodiging."
+    de: "Durch die Einladung festgelegt."
+  username_settings_help:
+    en: "To change your username, write to support@neutrinet.be."
+    fr: "Pour changer de pseudo, écris à support@neutrinet.be."
+    nl: "Om je gebruikersnaam te wijzigen, schrijf naar support@neutrinet.be."
+    de: "Um deinen Benutzernamen zu ändern, schreib an support@neutrinet.be."
+  name:
+    en: "Display name"
+    fr: "Nom affiché"
+    nl: "Weergavenaam"
+    de: "Anzeigename"
+  email:
+    en: "Email address"
+    fr: "Adresse e-mail"
+    nl: "E-mailadres"
+    de: "E-Mail-Adresse"
+  email_red_help:
+    en: "Different from the one of your usual account."
+    fr: "Différente de celle de ton compte habituel."
+    nl: "Anders dan die van je gewone account."
+    de: "Eine andere als die deines normalen Kontos."
+  email_settings_help:
+    en: "A new address must be confirmed through the link sent to it."
+    fr: "Une nouvelle adresse doit être confirmée par le lien envoyé à cette adresse."
+    nl: "Een nieuw adres moet bevestigd worden via de link die ernaar verstuurd wordt."
+    de: "Eine neue Adresse muss über den an sie gesendeten Link bestätigt werden."
+  password:
+    en: "Password"
+    fr: "Mot de passe"
+    nl: "Wachtwoord"
+    de: "Passwort"
+  password_repeat:
+    en: "Password (confirmation)"
+    fr: "Mot de passe (confirmation)"
+    nl: "Wachtwoord (bevestiging)"
+    de: "Passwort (Bestätigung)"
+  new_password:
+    en: "New password"
+    fr: "Nouveau mot de passe"
+    nl: "Nieuw wachtwoord"
+    de: "Neues Passwort"
+  new_password_repeat:
+    en: "New password (confirmation)"
+    fr: "Nouveau mot de passe (confirmation)"
+    nl: "Nieuw wachtwoord (bevestiging)"
+    de: "Neues Passwort (Bestätigung)"
+  locale:
+    en: "Language"
+    fr: "Langue"
+    nl: "Taal"
+    de: "Sprache"
+  subject_enrollment:
+    en: "Neutrinet: confirm your email address"
+    fr: "Neutrinet : confirme ton adresse e-mail"
+    nl: "Neutrinet: bevestig je e-mailadres"
+    de: "Neutrinet: bestätige deine E-Mail-Adresse"
+  subject_enrollment_red:
+    en: "Neutrinet: confirm the address of your administration account"
+    fr: "Neutrinet : confirme l'adresse de ton compte d'administration"
+    nl: "Neutrinet: bevestig het adres van je beheeraccount"
+    de: "Neutrinet: bestätige die Adresse deines Administrationskontos"
+  subject_recovery:
+    en: "Neutrinet: password reset"
+    fr: "Neutrinet : réinitialisation du mot de passe"
+    nl: "Neutrinet: wachtwoord opnieuw instellen"
+    de: "Neutrinet: Passwort zurücksetzen"
+  subject_email_change:
+    en: "Neutrinet: confirm your new email address"
+    fr: "Neutrinet : confirme ta nouvelle adresse e-mail"
+    nl: "Neutrinet: bevestig je nieuwe e-mailadres"
+    de: "Neutrinet: bestätige deine neue E-Mail-Adresse"
+  msg_username_format:
+    en: "The username must be 3 to 32 characters long: lowercase letters, digits, - and _, starting with a letter or a digit."
+    fr: "Le pseudo doit faire de 3 à 32 caractères : lettres minuscules, chiffres, - et _, en commençant par une lettre ou un chiffre."
+    nl: "De gebruikersnaam moet 3 tot 32 tekens lang zijn: kleine letters, cijfers, - en _, beginnend met een letter of cijfer."
+    de: "Der Benutzername muss 3 bis 32 Zeichen lang sein: Kleinbuchstaben, Ziffern, - und _, beginnend mit einem Buchstaben oder einer Ziffer."
+  msg_username_admin_suffix:
+    en: "Usernames ending in -admin are reserved for administration accounts."
+    fr: "Les pseudos finissant par -admin sont réservés aux comptes d'administration."
+    nl: "Gebruikersnamen die eindigen op -admin zijn voorbehouden aan beheeraccounts."
+    de: "Benutzernamen, die auf -admin enden, sind Administrationskonten vorbehalten."
+  msg_username_reserved:
+    en: "This username is reserved."
+    fr: "Ce pseudo est réservé."
+    nl: "Deze gebruikersnaam is gereserveerd."
+    de: "Dieser Benutzername ist reserviert."
+  msg_username_red_format:
+    en: "An administration account username must be <username>-admin, 32 characters at most."
+    fr: "Le pseudo d'un compte d'administration doit être <pseudo>-admin, 32 caractères au plus."
+    nl: "De gebruikersnaam van een beheeraccount moet <gebruikersnaam>-admin zijn, maximaal 32 tekens."
+    de: "Der Benutzername eines Administrationskontos muss <benutzername>-admin lauten, höchstens 32 Zeichen."
+  msg_email_taken:
+    en: "This email address is already used by another account."
+    fr: "Cette adresse e-mail est déjà utilisée par un autre compte."
+    nl: "Dit e-mailadres wordt al door een ander account gebruikt."
+    de: "Diese E-Mail-Adresse wird bereits von einem anderen Konto verwendet."
+  msg_password_length:
+    en: "The password must be at least 12 characters long."
+    fr: "Le mot de passe doit faire au moins 12 caractères."
+    nl: "Het wachtwoord moet minstens 12 tekens lang zijn."
+    de: "Das Passwort muss mindestens 12 Zeichen lang sein."
+  mail_email_changed_subject:
+    en: "Neutrinet: email address changed"
+    fr: "Neutrinet : adresse e-mail modifiée"
+    nl: "Neutrinet: e-mailadres gewijzigd"
+    de: "Neutrinet: E-Mail-Adresse geändert"
+  mail_email_changed_body:
+    en: "Hello {username},\n\nThe email address of your Neutrinet account has just been replaced by {new}.\n\nIf you did not make this change, write immediately to support@neutrinet.be.\n"
+    fr: "Bonjour {username},\n\nL'adresse e-mail de ton compte Neutrinet vient d'être remplacée par {new}.\n\nSi tu n'es pas à l'origine de ce changement, écris immédiatement à support@neutrinet.be.\n"
+    nl: "Hallo {username},\n\nHet e-mailadres van je Neutrinet-account is zojuist vervangen door {new}.\n\nAls jij deze wijziging niet hebt gedaan, schrijf dan onmiddellijk naar support@neutrinet.be.\n"
+    de: "Hallo {username},\n\ndie E-Mail-Adresse deines Neutrinet-Kontos wurde soeben durch {new} ersetzt.\n\nWenn du diese Änderung nicht vorgenommen hast, schreib sofort an support@neutrinet.be.\n"

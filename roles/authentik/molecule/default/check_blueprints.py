@@ -31,7 +31,11 @@ Loader.add_multi_constructor("!", tag_constructor)
 
 
 def render(path, context):
-    env = jinja2.Environment(undefined=jinja2.StrictUndefined, keep_trailing_newline=True)
+    env = jinja2.Environment(
+        undefined=jinja2.StrictUndefined,
+        keep_trailing_newline=True,
+        trim_blocks=True,
+    )
     env.filters["to_json"] = json.dumps
     env.filters["comment"] = lambda text: "\n".join(f"# {line}" for line in text.splitlines())
     return env.from_string(path.read_text()).render(context)
@@ -57,8 +61,10 @@ def main():
             if re.fullmatch(r"[a-z0-9_-]+", line)
         }
     )
+    role_vars = yaml.safe_load((ROLE / "vars" / "main.yml").read_text())
     context = {
         **defaults,
+        **role_vars,
         "ansible_managed": "Ansible managed",
         "_authentik_username_blocklist": blocklist,
     }
@@ -77,6 +83,7 @@ def main():
             jsonschema.validate(data, schema)
         except jsonschema.ValidationError as exc:
             errors.append(f"{template.name}: {exc.message} ({list(exc.absolute_path)})")
+            continue
         ids = {entry["id"] for entry in data["entries"] if "id" in entry}
         for entry in data["entries"]:
             identifiers = entry.get("identifiers", {})
@@ -86,7 +93,7 @@ def main():
         for suffix, value in tags:
             if suffix == "KeyOf" and value not in ids:
                 errors.append(f"{template.name}: !KeyOf {value} sans id correspondant")
-            if suffix == "Find":
+            if suffix == "Find" and len(value) == 2 and isinstance(value[1], list) and len(value[1]) == 2:
                 finds.append((template.name, value[1][1]))
         print(f"{template.name}: rendu et schéma OK")
 

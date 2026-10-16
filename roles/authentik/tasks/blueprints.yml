@@ -20,12 +20,10 @@
     owner: 1000
     group: 1000
     mode: "ug=r,o="
-  loop: "{{ _authentik_blueprints }}"
-  vars:
-    _authentik_blueprints:
-      - groups
-      - mappings
-      - policies
-      - stages
-      - flow-password-change
-      - flow-recovery
+  loop:
+    - groups
+    - mappings
+    - policies
+    - stages
+    - flow-password-change
+    - flow-recovery
