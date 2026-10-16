@@ -1,0 +1,27 @@
+{{ ansible_managed | comment }}
+version: 1
+metadata:
+  name: Neutrinet - Groupes
+entries:
+  - model: authentik_core.group
+    id: white
+    identifiers:
+      name: white
+  - model: authentik_core.group
+    id: green
+    identifiers:
+      name: green
+    attrs:
+      parents:
+        - !KeyOf white
+  - model: authentik_core.group
+    identifiers:
+      name: amber
+    attrs:
+      parents:
+        - !KeyOf green
+  - model: authentik_core.group
+    identifiers:
+      name: red
+    attrs:
+      is_superuser: true

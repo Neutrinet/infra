@@ -23,3 +23,6 @@ authentik_outposts: []
 
 authentik_icons: []
 authentik_icons_url: []
+
+authentik_username_blocklist: []
+authentik_bootstrap_token: ""

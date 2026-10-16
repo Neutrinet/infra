@@ -28,6 +28,35 @@ authentik_icons_url:
 
 authentik_mail_from: "Neutrinet SSO <noreply@neutrinet.be>"
 
+authentik_username_blocklist:
+  - neutrinet
+  - administrateur
+  - moderateur
+  - benevole
+  - tresorier
+  - president
+  - secretaire
+  - bureau
+  - ca
+  - membres
+  - sso
+  - authentik
+  - akadmin
+  - dokuwiki
+  - grafana
+  - grav
+  - hedgedoc
+  - librenms
+  - mattermost
+  - mobilizon
+  - netbox
+  - nextcloud
+  - passbolt
+  - proxmox
+  - stalwart
+  - zammad
+  - zulip
+
 authentik_postgresql_password: "{{ vault_authentik_postgresql_password }}"
 authentik_postgresql_host: haproxy-00.patata.louise.neutri.net
 

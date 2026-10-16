@@ -25,6 +25,11 @@
     file: authentik.yml
   tags: ['authentik']
 
+- name: Déploiement des blueprints
+  ansible.builtin.import_tasks:
+    file: blueprints.yml
+  tags: ['authentik', 'authentik_blueprints']
+
 - name: Téléchargement des icônes des applications
   ansible.builtin.import_tasks:
     file: icons.yml

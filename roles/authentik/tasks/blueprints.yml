@@ -1,0 +1,26 @@
+---
+- name: blueprints | Création du dossier des blueprints
+  ansible.builtin.file:
+    path: /opt/authentik/blueprints
+    owner: 1000
+    group: 1000
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: blueprints | Composition de la liste des pseudos interdits
+  ansible.builtin.set_fact:
+    _authentik_username_blocklist: >-
+      {{ (lookup('ansible.builtin.file', 'username_blocklist.txt').splitlines() + authentik_username_blocklist)
+        | select('match', '^[a-z0-9_-]+$') | unique | sort }}
+
+- name: blueprints | Déploiement des blueprints
+  ansible.builtin.template:
+    src: "blueprints/{{ item }}.yaml.j2"
+    dest: "/opt/authentik/blueprints/{{ item }}.yaml"
+    owner: 1000
+    group: 1000
+    mode: "ug=r,o="
+  loop: "{{ _authentik_blueprints }}"
+  vars:
+    _authentik_blueprints:
+      - groups
