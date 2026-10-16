@@ -25,6 +25,13 @@ entries:
 {% endfor %}
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
+      name: neutrinet-flow-restored
+    attrs:
+      expression: |
+        return bool(request.context.get("is_restored"))
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
       name: neutrinet-is-red
     attrs:
       expression: |
@@ -107,6 +114,7 @@ entries:
       name: neutrinet-username-red
     attrs:
       expression: |
+        from authentik.core.models import User
         import re
 {{ detect_language() }}
         blocklist = set({{ _authentik_username_blocklist | to_json }})
@@ -116,6 +124,9 @@ entries:
             return False
         if username.removesuffix("-admin") in blocklist:
             ak_message({{ _authentik_i18n.msg_username_reserved | to_json }}[language])
+            return False
+        if User.objects.filter(username=username).exists():
+            ak_message({{ _authentik_i18n.msg_username_taken | to_json }}[language])
             return False
         return True
 

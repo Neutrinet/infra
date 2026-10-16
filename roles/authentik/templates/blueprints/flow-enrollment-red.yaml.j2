@@ -45,6 +45,14 @@ entries:
       create_users_as_inactive: true
       create_users_group: !Find [authentik_core.group, [name, red]]
       user_path_template: red
+  - model: authentik_stages_password.passwordstage
+    id: password
+    identifiers:
+      name: neutrinet-enrollment-red-password
+    attrs:
+      backends:
+        - authentik.core.auth.InbuiltBackend
+      failed_attempts_before_cancel: 5
 
   - model: authentik_flows.flowstagebinding
     identifiers:
@@ -183,6 +191,11 @@ entries:
       target: !KeyOf binding-email-{{ lang }}
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-language-{{ lang }}]]
       order: 0
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-email-{{ lang }}
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-flow-restored]]
+      order: 1
 {% endfor %}
 
   - model: authentik_flows.flowstagebinding
@@ -190,6 +203,11 @@ entries:
       target: !KeyOf flow
       stage: !KeyOf write
       order: 30
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf password
+      order: 45
   - model: authentik_flows.flowstagebinding
     identifiers:
       target: !KeyOf flow

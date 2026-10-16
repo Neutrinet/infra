@@ -168,6 +168,11 @@ entries:
       target: !KeyOf binding-email-{{ lang }}
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-language-{{ lang }}]]
       order: 0
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-email-{{ lang }}
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-flow-restored]]
+      order: 1
 {% endfor %}
 
   - model: authentik_flows.flowstagebinding
