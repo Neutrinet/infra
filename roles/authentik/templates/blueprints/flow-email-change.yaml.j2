@@ -39,7 +39,7 @@ entries:
     identifiers:
       target: !KeyOf flow
       stage: !KeyOf password
-      order: 10
+      order: 25
     attrs:
       evaluate_on_plan: false
       re_evaluate_policies: true
@@ -63,6 +63,20 @@ entries:
       placeholder_expression: false
       sub_text: {{ _authentik_i18n.new_email_help[lang] | to_json }}
       order: 0
+  - model: authentik_stages_prompt.prompt
+    id: field-back-{{ lang }}
+    identifiers:
+      name: neutrinet-email-change-field-back-{{ lang }}
+    attrs:
+      field_key: back_to_profile
+      label: Back to profile
+      type: static
+      required: false
+      placeholder: ""
+      placeholder_expression: false
+      initial_value: {{ _authentik_i18n.back_to_profile_link[lang] | to_json }}
+      initial_value_expression: false
+      order: 1
   - model: authentik_stages_prompt.promptstage
     id: prompt-{{ lang }}
     identifiers:
@@ -70,6 +84,7 @@ entries:
     attrs:
       fields:
         - !KeyOf field-email-{{ lang }}
+        - !KeyOf field-back-{{ lang }}
       validation_policies:
         - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-different]]
         - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-unique]]

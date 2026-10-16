@@ -148,6 +148,20 @@ entries:
       placeholder: {{ _authentik_i18n.new_password_repeat[lang] | to_json }}
       placeholder_expression: false
       order: 1
+  - model: authentik_stages_prompt.prompt
+    id: field-back-{{ lang }}
+    identifiers:
+      name: neutrinet-recovery-field-back-{{ lang }}
+    attrs:
+      field_key: back_to_home
+      label: Back to home
+      type: static
+      required: false
+      placeholder: ""
+      placeholder_expression: false
+      initial_value: {{ _authentik_i18n.back_to_home_link[lang] | to_json }}
+      initial_value_expression: false
+      order: 2
   - model: authentik_stages_prompt.promptstage
     id: prompt-{{ lang }}
     identifiers:
@@ -156,6 +170,7 @@ entries:
       fields:
         - !KeyOf field-password-{{ lang }}
         - !KeyOf field-password-repeat-{{ lang }}
+        - !KeyOf field-back-{{ lang }}
       validation_policies:
         - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-password-length]]
         - !Find [authentik_policies_password.passwordpolicy, [name, neutrinet-password]]
