@@ -1,0 +1,138 @@
+{{ ansible_managed | comment }}
+version: 1
+metadata:
+  name: Neutrinet - Récupération
+entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - Politiques
+      required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Neutrinet - Stages
+      required: true
+
+  - model: authentik_flows.flow
+    id: flow
+    identifiers:
+      slug: neutrinet-recovery
+    attrs:
+      name: Récupération du mot de passe
+      title: Réinitialiser ton mot de passe
+      designation: recovery
+      authentication: require_unauthenticated
+
+  - model: authentik_policies_expression.expressionpolicy
+    id: skip-if-restored
+    identifiers:
+      name: neutrinet-recovery-skip-if-restored
+    attrs:
+      expression: |
+        return bool(request.context.get("is_restored", True))
+
+  - model: authentik_stages_identification.identificationstage
+    id: identification
+    identifiers:
+      name: neutrinet-recovery-identification
+    attrs:
+      user_fields:
+        - username
+        - email
+      pretend_user_exists: true
+      show_matched_user: false
+  - model: authentik_stages_email.emailstage
+    id: email
+    identifiers:
+      name: neutrinet-recovery-email
+    attrs:
+      use_global_settings: true
+      subject: "Neutrinet : réinitialisation du mot de passe"
+      template: email/password_reset.html
+      token_expiry: minutes=30
+      activate_user_on_success: true
+  - model: authentik_stages_prompt.prompt
+    id: field-password
+    identifiers:
+      name: neutrinet-recovery-field-password
+    attrs:
+      field_key: password
+      label: Nouveau mot de passe
+      type: password
+      required: true
+      placeholder: Nouveau mot de passe
+      placeholder_expression: false
+      order: 0
+  - model: authentik_stages_prompt.prompt
+    id: field-password-repeat
+    identifiers:
+      name: neutrinet-recovery-field-password-repeat
+    attrs:
+      field_key: password_repeat
+      label: Nouveau mot de passe (confirmation)
+      type: password
+      required: true
+      placeholder: Nouveau mot de passe (confirmation)
+      placeholder_expression: false
+      order: 1
+  - model: authentik_stages_prompt.promptstage
+    id: prompt
+    identifiers:
+      name: neutrinet-recovery-prompt
+    attrs:
+      fields:
+        - !KeyOf field-password
+        - !KeyOf field-password-repeat
+      validation_policies:
+        - !Find [authentik_policies_password.passwordpolicy, [name, neutrinet-password]]
+  - model: authentik_stages_user_write.userwritestage
+    id: write
+    identifiers:
+      name: neutrinet-recovery-write
+    attrs:
+      user_creation_mode: never_create
+
+  - model: authentik_flows.flowstagebinding
+    id: binding-identification
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf identification
+      order: 10
+    attrs:
+      re_evaluate_policies: true
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf email
+      order: 20
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf flow
+      stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, neutrinet-mfa]]
+      order: 30
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf prompt
+      order: 40
+  - model: authentik_flows.flowstagebinding
+    id: binding-write
+    identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf write
+      order: 50
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-identification
+      policy: !KeyOf skip-if-restored
+      order: 0
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-write
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-terminate-sessions]]
+      order: 0

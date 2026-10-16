@@ -27,3 +27,5 @@
       - mappings
       - policies
       - stages
+      - flow-password-change
+      - flow-recovery
