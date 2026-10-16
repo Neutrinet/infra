@@ -1,0 +1,64 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  vars:
+    _authentik_api: "http://[::1]:9000/api/v3"
+    _authentik_headers:
+      Authorization: "Bearer molecule-0123456789abcdef0123456789abcdef"
+    _authentik_expected_blueprints: 13
+    _authentik_expected_flows:
+      - neutrinet-authentication
+      - neutrinet-enrollment
+      - neutrinet-enrollment-red
+      - neutrinet-recovery
+      - neutrinet-password-change
+      - neutrinet-user-settings
+      - neutrinet-ldap
+
+  tasks:
+    - name: Attente de l'application des blueprints
+      ansible.builtin.uri:
+        url: "{{ _authentik_api }}/managed/blueprints/?path__startswith=custom/&page_size=100"
+        headers: "{{ _authentik_headers }}"
+        return_content: true
+      register: _authentik_blueprints
+      retries: 40
+      delay: 15
+      until:
+        - _authentik_blueprints.status == 200
+        - _authentik_blueprints.json.results | selectattr('path', 'match', '^custom/') | list | length == _authentik_expected_blueprints
+        - _authentik_blueprints.json.results | selectattr('path', 'match', '^custom/') | rejectattr('status', 'equalto', 'successful') | list | length == 0
+
+    - name: Vérification des flows
+      ansible.builtin.uri:
+        url: "{{ _authentik_api }}/flows/instances/{{ item }}/"
+        headers: "{{ _authentik_headers }}"
+      loop: "{{ _authentik_expected_flows }}"
+
+    - name: Vérification des groupes
+      ansible.builtin.uri:
+        url: "{{ _authentik_api }}/core/groups/?name={{ item }}"
+        headers: "{{ _authentik_headers }}"
+        return_content: true
+      register: _authentik_groups
+      loop:
+        - white
+        - green
+        - amber
+        - red
+      failed_when: _authentik_groups.json.pagination.count != 1
+
+    - name: Vérification des politiques de langue
+      ansible.builtin.uri:
+        url: "{{ _authentik_api }}/policies/expression/?name=neutrinet-language-{{ item }}"
+        headers: "{{ _authentik_headers }}"
+        return_content: true
+      register: _authentik_language_policies
+      loop:
+        - en
+        - fr
+        - nl
+        - de
+      failed_when: _authentik_language_policies.json.pagination.count != 1
