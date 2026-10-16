@@ -25,7 +25,7 @@ entries:
       slug: neutrinet-enrollment
     attrs:
       name: Enrollment
-      title: Neutrinet ID
+      title: Create your account
       designation: enrollment
       authentication: require_unauthenticated
 
@@ -102,6 +102,7 @@ entries:
       required: true
       placeholder: {{ _authentik_i18n.password[lang] | to_json }}
       placeholder_expression: false
+      sub_text: {{ _authentik_i18n.password_help[lang] | to_json }}
       order: 3
   - model: authentik_stages_prompt.prompt
     id: field-password-repeat-{{ lang }}

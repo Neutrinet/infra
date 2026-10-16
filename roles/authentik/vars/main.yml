@@ -141,6 +141,11 @@ _authentik_i18n:
     fr: "Le mot de passe doit faire au moins 12 caractères."
     nl: "Het wachtwoord moet minstens 12 tekens lang zijn."
     de: "Das Passwort muss mindestens 12 Zeichen lang sein."
+  password_help:
+    en: "At least 12 characters."
+    fr: "Au moins 12 caractères."
+    nl: "Minstens 12 tekens."
+    de: "Mindestens 12 Zeichen."
   mail_email_changed_subject:
     en: "Neutrinet ID: email address changed"
     fr: "Neutrinet ID : adresse e-mail modifiée"

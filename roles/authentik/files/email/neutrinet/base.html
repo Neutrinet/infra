@@ -1,5 +1,5 @@
 {% load i18n %}{% get_current_language as LANGUAGE_CODE %}<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{% if LANGUAGE_CODE|slice:":2" == "fr" %}fr{% elif LANGUAGE_CODE|slice:":2" == "nl" %}nl{% elif LANGUAGE_CODE|slice:":2" == "de" %}de{% else %}en{% endif %}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">

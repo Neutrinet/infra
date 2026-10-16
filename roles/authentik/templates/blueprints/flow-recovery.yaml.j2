@@ -20,7 +20,7 @@ entries:
       slug: neutrinet-recovery
     attrs:
       name: Password recovery
-      title: Neutrinet ID
+      title: Reset your password
       designation: recovery
       authentication: require_unauthenticated
 
@@ -135,6 +135,7 @@ entries:
       required: true
       placeholder: {{ _authentik_i18n.new_password[lang] | to_json }}
       placeholder_expression: false
+      sub_text: {{ _authentik_i18n.password_help[lang] | to_json }}
       order: 0
   - model: authentik_stages_prompt.prompt
     id: field-password-repeat-{{ lang }}
