@@ -39,6 +39,26 @@ entries:
 
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
+      name: neutrinet-pending-user
+    attrs:
+      expression: |
+        request.context["flow_plan"].context["pending_user"] = request.user
+        return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-email-different
+    attrs:
+      expression: |
+{{ detect_language() }}
+        new = request.context.get("prompt_data", {}).get("email", "")
+        if new.lower() == (request.user.email or "").lower():
+            ak_message({{ _authentik_i18n.msg_email_same | to_json }}[language])
+            return False
+        return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
       name: neutrinet-is-red
     attrs:
       expression: |
@@ -162,7 +182,6 @@ entries:
         if not new or new.lower() == (request.user.email or "").lower():
             return False
         request.context["flow_plan"].context["email"] = new
-        request.context["flow_plan"].context["pending_user"] = request.user
         return True
 
   - model: authentik_policies_expression.expressionpolicy

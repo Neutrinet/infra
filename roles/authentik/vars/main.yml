@@ -41,11 +41,26 @@ _authentik_i18n:
     fr: "Différente de celle de ton compte habituel."
     nl: "Anders dan die van je gewone account."
     de: "Eine andere als die deines normalen Kontos."
-  email_settings_help:
-    en: "A new address must be confirmed through the link sent to it."
-    fr: "Une nouvelle adresse doit être confirmée par le lien envoyé à cette adresse."
-    nl: "Een nieuw adres moet bevestigd worden via de link die ernaar verstuurd wordt."
-    de: "Eine neue Adresse muss über den an sie gesendeten Link bestätigt werden."
+  email_change_link:
+    en: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Change my email address</a>"
+    fr: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Changer mon adresse e-mail</a>"
+    nl: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Mijn e-mailadres wijzigen</a>"
+    de: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Meine E-Mail-Adresse ändern</a>"
+  new_email:
+    en: "New email address"
+    fr: "Nouvelle adresse e-mail"
+    nl: "Nieuw e-mailadres"
+    de: "Neue E-Mail-Adresse"
+  new_email_help:
+    en: "A confirmation link will be sent to this address."
+    fr: "Un lien de confirmation sera envoyé à cette adresse."
+    nl: "Er wordt een bevestigingslink naar dit adres gestuurd."
+    de: "An diese Adresse wird ein Bestätigungslink gesendet."
+  msg_email_same:
+    en: "This is already your email address."
+    fr: "C'est déjà ton adresse e-mail."
+    nl: "Dit is al je e-mailadres."
+    de: "Das ist bereits deine E-Mail-Adresse."
   password:
     en: "Password"
     fr: "Mot de passe"

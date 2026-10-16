@@ -19,14 +19,6 @@ entries:
       designation: stage_configuration
       authentication: require_authenticated
 
-  - model: authentik_stages_password.passwordstage
-    id: password
-    identifiers:
-      name: neutrinet-user-settings-password
-    attrs:
-      backends:
-        - authentik.core.auth.InbuiltBackend
-      failed_attempts_before_cancel: 5
   - model: authentik_stages_user_write.userwritestage
     id: write
     identifiers:
@@ -79,8 +71,8 @@ entries:
     attrs:
       field_key: email
       label: {{ _authentik_i18n.email[lang] | to_json }}
-      type: email
-      required: true
+      type: text_read_only
+      required: false
       placeholder: {{ _authentik_i18n.email[lang] | to_json }}
       placeholder_expression: false
       initial_value: |
@@ -89,7 +81,7 @@ entries:
         except:
             return ''
       initial_value_expression: true
-      sub_text: {{ _authentik_i18n.email_settings_help[lang] | to_json }}
+      sub_text: {{ _authentik_i18n.email_change_link[lang] | to_json }}
       order: 2
   - model: authentik_stages_prompt.prompt
     id: field-locale-{{ lang }}
@@ -119,8 +111,7 @@ entries:
         - !KeyOf field-name-{{ lang }}
         - !KeyOf field-email-{{ lang }}
         - !KeyOf field-locale-{{ lang }}
-      validation_policies:
-        - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-unique]]
+      validation_policies: []
   - model: authentik_flows.flowstagebinding
     id: binding-prompt-{{ lang }}
     identifiers:
@@ -136,51 +127,7 @@ entries:
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-language-{{ lang }}]]
       order: 0
 
-  - model: authentik_stages_email.emailstage
-    id: email-{{ lang }}
-    identifiers:
-      name: neutrinet-user-settings-email-{{ lang }}
-    attrs:
-      use_global_settings: true
-      subject: {{ _authentik_i18n.subject_email_change[lang] | to_json }}
-      template: neutrinet/email_change.html
-      activate_user_on_success: false
-  - model: authentik_flows.flowstagebinding
-    id: binding-email-{{ lang }}
-    identifiers:
-      target: !KeyOf flow
-      stage: !KeyOf email-{{ lang }}
-      order: {{ 30 + loop.index0 }}
-    attrs:
-      evaluate_on_plan: false
-      re_evaluate_policies: true
-      policy_engine_mode: all
-  - model: authentik_policies.policybinding
-    identifiers:
-      target: !KeyOf binding-email-{{ lang }}
-      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-changed]]
-      order: 0
-  - model: authentik_policies.policybinding
-    identifiers:
-      target: !KeyOf binding-email-{{ lang }}
-      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-language-{{ lang }}]]
-      order: 10
 {% endfor %}
-
-  - model: authentik_flows.flowstagebinding
-    id: binding-password
-    identifiers:
-      target: !KeyOf flow
-      stage: !KeyOf password
-      order: 20
-    attrs:
-      evaluate_on_plan: false
-      re_evaluate_policies: true
-  - model: authentik_policies.policybinding
-    identifiers:
-      target: !KeyOf binding-password
-      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-changed]]
-      order: 0
 
   - model: authentik_flows.flowstagebinding
     id: binding-write
@@ -191,9 +138,3 @@ entries:
     attrs:
       evaluate_on_plan: false
       re_evaluate_policies: true
-      policy_engine_mode: all
-  - model: authentik_policies.policybinding
-    identifiers:
-      target: !KeyOf binding-write
-      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-verified]]
-      order: 10

@@ -7,13 +7,14 @@
     _authentik_api: "http://[::1]:9000/api/v3"
     _authentik_headers:
       Authorization: "Bearer molecule-0123456789abcdef0123456789abcdef"
-    _authentik_expected_blueprints: 13
+    _authentik_expected_blueprints: 14
     _authentik_expected_flows:
       - neutrinet-authentication
       - neutrinet-enrollment
       - neutrinet-enrollment-red
       - neutrinet-recovery
       - neutrinet-password-change
+      - neutrinet-email-change
       - neutrinet-user-settings
       - neutrinet-ldap
 
