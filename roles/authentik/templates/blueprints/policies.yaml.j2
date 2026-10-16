@@ -160,13 +160,19 @@ entries:
 
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
-      name: neutrinet-email-notify-old
+      name: neutrinet-email-verified
     attrs:
       expression: |
 {{ detect_language() }}
+        request.user.refresh_from_db()
         new = request.context.get("prompt_data", {}).get("email", "")
-        old = request.user.email
-        if old and new and new.lower() != old.lower() and request.context.get("is_restored"):
+        old = request.user.email or ""
+        if not new or new.lower() == old.lower():
+            return True
+        token = request.context.get("is_restored")
+        if not token or token.plan.context.get("email", "").lower() != new.lower():
+            return False
+        if old:
             ak_send_email(
                 old,
                 {{ _authentik_i18n.mail_email_changed_subject | to_json }}[language],
@@ -176,20 +182,6 @@ entries:
                 ),
             )
         return True
-
-  - model: authentik_policies_expression.expressionpolicy
-    identifiers:
-      name: neutrinet-email-verified
-    attrs:
-      expression: |
-        request.user.refresh_from_db()
-        new = request.context.get("prompt_data", {}).get("email", "")
-        if not new or new.lower() == (request.user.email or "").lower():
-            return True
-        token = request.context.get("is_restored")
-        if not token:
-            return False
-        return token.plan.context.get("email", "").lower() == new.lower()
 
   - model: authentik_policies_expression.expressionpolicy
     identifiers:

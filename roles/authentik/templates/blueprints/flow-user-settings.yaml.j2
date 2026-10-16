@@ -195,10 +195,5 @@ entries:
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf binding-write
-      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-notify-old]]
-      order: 0
-  - model: authentik_policies.policybinding
-    identifiers:
-      target: !KeyOf binding-write
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-verified]]
       order: 10
