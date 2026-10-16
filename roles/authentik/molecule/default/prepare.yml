@@ -9,5 +9,54 @@
         update_cache: true
 
   roles:
+    - vector
     - borgmatic
     - postgres_standalone
+
+  tasks:
+    - name: Socket du proxy HTTPS 443 vers Authentik
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/authentik-https-proxy.socket
+        owner: root
+        group: root
+        mode: "u=rw,go=r"
+        content: |
+          [Unit]
+          Description=Proxy HTTPS 443 vers Authentik
+
+          [Socket]
+          ListenStream=[::]:443
+          BindIPv6Only=both
+
+          [Install]
+          WantedBy=sockets.target
+
+    - name: Service du proxy HTTPS 443 vers Authentik
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/authentik-https-proxy.service
+        owner: root
+        group: root
+        mode: "u=rw,go=r"
+        content: |
+          [Unit]
+          Description=Proxy HTTPS 443 vers Authentik
+          Requires=authentik-https-proxy.socket
+          After=authentik-https-proxy.socket
+
+          [Service]
+          ExecStart=/usr/lib/systemd/systemd-socket-proxyd ip6-localhost:9443
+          DynamicUser=yes
+          LockPersonality=yes
+          NoNewPrivileges=yes
+          PrivateTmp=yes
+          ProtectClock=yes
+          ProtectSystem=strict
+          RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+          SystemCallFilter=@system-service
+
+    - name: Activation du proxy HTTPS 443 vers Authentik
+      ansible.builtin.systemd_service:
+        name: authentik-https-proxy.socket
+        state: started
+        enabled: true
+        daemon_reload: true
