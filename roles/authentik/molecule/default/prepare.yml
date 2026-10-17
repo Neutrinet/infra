@@ -60,3 +60,90 @@
         state: started
         enabled: true
         daemon_reload: true
+
+    - name: Installation de podman pour mailpit
+      ansible.builtin.package:
+        name: podman
+        state: present
+
+    - name: Création du répertoire des quadlets
+      ansible.builtin.file:
+        path: /etc/containers/systemd
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,go=rx"
+
+    - name: Quadlet de mailpit
+      ansible.builtin.copy:
+        dest: /etc/containers/systemd/mailpit.container
+        owner: root
+        group: root
+        mode: "u=rw,go=r"
+        content: |
+          [Unit]
+          Description=Mailpit, capture des e-mails de test
+
+          [Container]
+          Image=docker.io/axllent/mailpit:latest
+          ContainerName=mailpit
+          Network=host
+          Exec=--smtp [::1]:1025 --listen [::]:8025
+
+          [Service]
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Socket du proxy SMTP 25 vers mailpit
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/mailpit-smtp-proxy.socket
+        owner: root
+        group: root
+        mode: "u=rw,go=r"
+        content: |
+          [Unit]
+          Description=Proxy SMTP 25 vers mailpit
+
+          [Socket]
+          ListenStream=[::]:25
+          BindIPv6Only=both
+
+          [Install]
+          WantedBy=sockets.target
+
+    - name: Service du proxy SMTP 25 vers mailpit
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/mailpit-smtp-proxy.service
+        owner: root
+        group: root
+        mode: "u=rw,go=r"
+        content: |
+          [Unit]
+          Description=Proxy SMTP 25 vers mailpit
+          Requires=mailpit-smtp-proxy.socket
+          After=mailpit-smtp-proxy.socket
+
+          [Service]
+          ExecStart=/usr/lib/systemd/systemd-socket-proxyd ip6-localhost:1025
+          DynamicUser=yes
+          LockPersonality=yes
+          NoNewPrivileges=yes
+          PrivateTmp=yes
+          ProtectClock=yes
+          ProtectSystem=strict
+          RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+          SystemCallFilter=@system-service
+
+    - name: Démarrage de mailpit
+      ansible.builtin.systemd_service:
+        name: mailpit.service
+        state: started
+        daemon_reload: true
+
+    - name: Activation du proxy SMTP 25 vers mailpit
+      ansible.builtin.systemd_service:
+        name: mailpit-smtp-proxy.socket
+        state: started
+        enabled: true
