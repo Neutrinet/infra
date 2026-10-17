@@ -513,3 +513,25 @@ entries:
         AccessToken.objects.filter(user=request.user).delete()
         Token.objects.filter(user=request.user).delete()
         return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-password-unchanged
+    attrs:
+      expression: |
+        from django.utils.timezone import now
+        from authentik.core.models import User
+        if request.context.get("pending_user") is None:
+            return False
+        saved = getattr(request.user, "password_change_date", None)
+        current = User.objects.filter(pk=request.user.pk).values_list("password_change_date", flat=True).first()
+        if saved is None or current is None or current > saved:
+            return False
+        token = request.context.get("is_restored")
+        if token is not None:
+            if token.expiring and token.expires is not None and token.expires < now():
+                return False
+            sent = getattr(token.plan.context.get("pending_user"), "password_change_date", None)
+            if sent is None or current > sent:
+                return False
+        return True

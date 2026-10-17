@@ -7,7 +7,7 @@ Sans argument, le schéma est lu dans le clone git d'Authentik désigné par la 
 AUTHENTIK_SRC, au tag de la version déployée (`authentik_version` de `defaults/main.yml`). Sans argument ni
 AUTHENTIK_SRC, les contrôles qui n'ont pas besoin du schéma sont lancés et le contrôle du schéma est signalé
 comme sauté. Code de sortie : 0 si tous les contrôles lancés passent, 1 si un contrôle échoue, 2 si le schéma
-demandé (argument ou AUTHENTIK_SRC) est introuvable.
+demandé (argument ou AUTHENTIK_SRC) est introuvable ou illisible.
 """
 
 import collections
@@ -64,6 +64,9 @@ FAILURE_RESULT_POLICIES = {
     "neutrinet-red-admin-only",
     "neutrinet-red-invitation",
     "neutrinet-email-link-missing",
+}
+FAILURE_RESULT_FALSE_POLICIES = {
+    "neutrinet-password-unchanged",
 }
 
 
@@ -312,7 +315,8 @@ def check_copies(files):
 
 
 def check_failure_result(files):
-    """Les liaisons des politiques de privilège et de refus ont `failure_result: true`."""
+    """Les liaisons des politiques de privilège et de refus ont `failure_result: true`, celles de
+    `neutrinet-password-unchanged` jamais."""
     errors = []
     for name, (data, _tags) in files.items():
         for entry in data["entries"]:
@@ -323,6 +327,8 @@ def check_failure_result(files):
                 continue
             if policy.value[1][1] in FAILURE_RESULT_POLICIES and (entry.get("attrs") or {}).get("failure_result") is not True:
                 errors.append(f"{name}: liaison de {policy.value[1][1]} sans failure_result: true")
+            if policy.value[1][1] in FAILURE_RESULT_FALSE_POLICIES and (entry.get("attrs") or {}).get("failure_result"):
+                errors.append(f"{name}: liaison de {policy.value[1][1]} avec failure_result: true")
     return errors
 
 
@@ -402,7 +408,11 @@ def schema_requested(argv):
 
 def load_schema(argv, version):
     if len(argv) > 1:
-        return json.loads(Path(argv[1]).read_text())
+        try:
+            return json.loads(Path(argv[1]).read_text())
+        except (OSError, ValueError) as exc:
+            print(f"schéma illisible ou introuvable : {argv[1]} ({exc})")
+            return None
     source = os.environ.get("AUTHENTIK_SRC")
     if source:
         result = subprocess.run(

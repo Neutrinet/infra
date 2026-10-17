@@ -38,7 +38,7 @@ entries:
             recipients = User.objects.filter(groups__name="red", is_active=True).exclude(email="").exclude(pk=user.pk)
         elif kind == "token_added":
             token = (
-                Token.objects.filter(pk=model.get("pk"), intent__in=["api", "app_password"])
+                Token.objects.including_expired().filter(pk=model.get("pk"), intent__in=["api", "app_password"])
                 .select_related("user")
                 .first()
             )

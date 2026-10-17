@@ -83,6 +83,13 @@ def test_main_source_introuvable(monkeypatch, tmp_path):
     assert cb.main(["check_blueprints.py"]) == 2
 
 
+def test_main_schema_en_argument_introuvable(monkeypatch, tmp_path, capsys):
+    monkeypatch.delenv("AUTHENTIK_SRC", raising=False)
+    absent = tmp_path / "absent.json"
+    assert cb.main(["check_blueprints.py", str(absent)]) == 2
+    assert f"schéma illisible ou introuvable : {absent}" in capsys.readouterr().out
+
+
 def test_main_schema_d_une_autre_version_refuse(monkeypatch, tmp_path, capsys):
     monkeypatch.delenv("AUTHENTIK_SRC", raising=False)
     other = tmp_path / "schema.json"
@@ -168,6 +175,18 @@ def test_failure_result_absent(files):
     assert len(errors) == 1 and "neutrinet-email-link-missing" in errors[0]
 
 
+def test_failure_result_vrai_refuse(files):
+    binding = next(
+        item for item in files["flow-authentication.yaml.j2"][0]["entries"]
+        if item["model"] == "authentik_policies.policybinding"
+        and item["identifiers"]["policy"].suffix == "Find"
+        and item["identifiers"]["policy"].value[1][1] == "neutrinet-password-unchanged"
+    )
+    binding["attrs"] = {"failure_result": True}
+    errors = cb.check_failure_result(files)
+    assert len(errors) == 1 and "neutrinet-password-unchanged avec failure_result: true" in errors[0]
+
+
 def test_ordre_partage(files):
     bindings = [
         item for item in files["flow-recovery.yaml.j2"][0]["entries"]
@@ -208,11 +227,11 @@ def test_temoin_absent_de_la_cible(files):
 
 def test_reference_placee_apres_le_temoin(files):
     entries = files["policies.yaml.j2"][0]["entries"]
-    witness = entry(files, "policies.yaml.j2", "neutrinet-terminate-sessions")
+    witness = entry(files, "policies.yaml.j2", "neutrinet-password-unchanged")
     entries.remove(witness)
     entries.insert(0, witness)
     errors = cb.check_witnesses(files)
-    assert len(errors) == 1 and "après le témoin neutrinet-terminate-sessions" in errors[0]
+    assert len(errors) == 1 and "après le témoin neutrinet-password-unchanged" in errors[0]
 
 
 def test_reference_sans_dependance(files):

@@ -5,7 +5,7 @@ metadata:
 entries:
   - model: authentik_blueprints.metaapplyblueprint
     conditions:
-      - !Condition [NOR, !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-terminate-sessions]]]
+      - !Condition [NOR, !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-password-unchanged]]]
     attrs:
       identifiers:
         name: Neutrinet - Policies

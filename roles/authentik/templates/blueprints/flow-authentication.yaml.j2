@@ -170,6 +170,11 @@ entries:
       order: 10
   - model: authentik_policies.policybinding
     identifiers:
+      target: !KeyOf binding-login-privileged
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-password-unchanged]]
+      order: 20
+  - model: authentik_policies.policybinding
+    identifiers:
       target: !KeyOf binding-login
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-is-not-privileged]]
       order: 0
@@ -178,3 +183,8 @@ entries:
       target: !KeyOf binding-login
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-user-path]]
       order: 10
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-login
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-password-unchanged]]
+      order: 20
