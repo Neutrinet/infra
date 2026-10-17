@@ -4,15 +4,54 @@ metadata:
   name: Neutrinet - Brand
 entries:
   - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-write-email-only]]]
+    attrs:
+      identifiers:
+        name: Neutrinet - Policies
+      required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_flows.flow, [slug, neutrinet-authentication]]]
     attrs:
       identifiers:
         name: Neutrinet - Authentication
       required: true
   - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_flows.flow, [slug, neutrinet-user-settings]]]
     attrs:
       identifiers:
         name: Neutrinet - User settings
       required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_flows.flow, [slug, default-authentication-flow]]]
+    attrs:
+      identifiers:
+        name: Default - Authentication flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_flows.flow, [slug, default-password-change]]]
+    attrs:
+      identifiers:
+        name: Default - Password change flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_flows.flow, [slug, default-user-settings-flow]]]
+    attrs:
+      identifiers:
+        name: Default - User settings flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_flows.flow, [slug, default-invalidation-flow]]]
+    attrs:
+      identifiers:
+        name: Default - Invalidation flow
+      required: false
 
   - model: authentik_brands.brand
     identifiers:
@@ -22,10 +61,27 @@ entries:
       branding_title: Neutrinet ID
       branding_custom_css: |
         ak-brand-links li:last-child,
-        .pf-c-login__footer li:last-child {
+        .pf-c-login__footer li:last-child,
+        ak-brand-links ul[data-count="1"] {
           display: none;
         }
       flow_authentication: !Find [authentik_flows.flow, [slug, neutrinet-authentication]]
       flow_recovery: !Find [authentik_flows.flow, [slug, neutrinet-recovery]]
       flow_user_settings: !Find [authentik_flows.flow, [slug, neutrinet-user-settings]]
       flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !Find [authentik_policies.policybindingmodel, [flow__slug, default-authentication-flow]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-deny-all]]
+      order: 0
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !Find [authentik_policies.policybindingmodel, [flow__slug, default-password-change]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-deny-all]]
+      order: 0
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !Find [authentik_policies.policybindingmodel, [flow__slug, default-user-settings-flow]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-deny-all]]
+      order: 0

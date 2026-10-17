@@ -5,6 +5,12 @@ _authentik_languages:
   - nl
   - de
 
+_authentik_locale_tags:
+  en: en
+  fr: fr-FR
+  nl: nl-NL
+  de: de-DE
+
 _authentik_i18n:
   username:
     en: "Username"
@@ -122,25 +128,35 @@ _authentik_i18n:
     nl: "Deze gebruikersnaam is gereserveerd."
     de: "Dieser Benutzername ist reserviert."
   msg_username_taken:
-    en: "This username is already taken."
-    fr: "Ce pseudo est déjà pris."
-    nl: "Deze gebruikersnaam is al in gebruik."
-    de: "Dieser Benutzername ist bereits vergeben."
+    en: "This username is already taken. Choose another one."
+    fr: "Ce pseudo est déjà pris. Choisis-en un autre."
+    nl: "Deze gebruikersnaam is al in gebruik. Kies een andere."
+    de: "Dieser Benutzername ist bereits vergeben. Wähle einen anderen."
   msg_username_red_format:
     en: "An administration account username must be <username>-admin, 32 characters at most."
     fr: "Le pseudo d'un compte d'administration doit être <pseudo>-admin, 32 caractères au plus."
     nl: "De gebruikersnaam van een beheeraccount moet <gebruikersnaam>-admin zijn, maximaal 32 tekens."
     de: "Der Benutzername eines Administrationskontos muss <benutzername>-admin lauten, höchstens 32 Zeichen."
   msg_email_taken:
-    en: "This email address is already used by another account."
-    fr: "Cette adresse e-mail est déjà utilisée par un autre compte."
-    nl: "Dit e-mailadres wordt al door een ander account gebruikt."
-    de: "Diese E-Mail-Adresse wird bereits von einem anderen Konto verwendet."
+    en: "This email address is already used by another account. If it is yours, use \"Forgot username or password?\" on the sign-in page."
+    fr: "Cette adresse e-mail est déjà utilisée par un autre compte. Si c'est le tien, utilise « Mot de passe ou nom d'utilisateur oublié ? » sur la page de connexion."
+    nl: "Dit e-mailadres wordt al door een ander account gebruikt. Is het van jou? Gebruik dan \"Gebruikersnaam of wachtwoord vergeten?\" op de aanmeldpagina."
+    de: "Diese E-Mail-Adresse wird bereits von einem anderen Konto verwendet. Wenn es deins ist, nutze „Benutzername oder Passwort vergessen?“ auf der Anmeldeseite."
   msg_password_length:
     en: "The password must be at least 12 characters long."
     fr: "Le mot de passe doit faire au moins 12 caractères."
     nl: "Het wachtwoord moet minstens 12 tekens lang zijn."
     de: "Das Passwort muss mindestens 12 Zeichen lang sein."
+  msg_deny:
+    en: "Access denied. If you think this is a mistake, write to support@neutrinet.be."
+    fr: "Accès refusé. Si tu penses que c'est une erreur, écris à support@neutrinet.be."
+    nl: "Toegang geweigerd. Denk je dat dit een vergissing is? Schrijf naar support@neutrinet.be."
+    de: "Zugriff verweigert. Wenn du denkst, dass das ein Fehler ist, schreib an support@neutrinet.be."
+  msg_deny_reputation:
+    en: "Too many failed attempts from your connection. Try again later, or reset your password."
+    fr: "Trop de tentatives échouées depuis ta connexion. Réessaie plus tard, ou réinitialise ton mot de passe."
+    nl: "Te veel mislukte pogingen vanaf je verbinding. Probeer het later opnieuw, of stel je wachtwoord opnieuw in."
+    de: "Zu viele fehlgeschlagene Versuche von deiner Verbindung. Versuche es später erneut oder setze dein Passwort zurück."
   password_help:
     en: "At least 12 characters."
     fr: "Au moins 12 caractères."

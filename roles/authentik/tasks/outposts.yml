@@ -11,6 +11,7 @@
     owner: root
     group: root
     mode: "u=r,go="
+  diff: false
   loop: "{{ _authentik_outposts }}"
   loop_control:
     label: "{{ item.name }}"

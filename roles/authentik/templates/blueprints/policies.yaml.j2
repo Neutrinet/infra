@@ -15,6 +15,11 @@
             if plan is not None:
                 plan.context["neutrinet_language"] = language
 {% endmacro %}
+{% macro deny_message(key) %}
+        if denied and request.context.get("flow_plan") is not None:
+            request.context["flow_plan"].context["deny_message"] = {{ _authentik_i18n[key] | to_json }}[language]
+        return denied
+{% endmacro %}
 version: 1
 metadata:
   name: Neutrinet - Policies
@@ -82,8 +87,9 @@ entries:
       name: neutrinet-red-admin-only
     attrs:
       expression: |
-        return ak_is_group_member(request.user, name="red") and not request.user.username.endswith("-admin")
-
+{{ detect_language() }}
+        denied = ak_is_group_member(request.user, name="red") and not request.user.username.endswith("-admin")
+{{ deny_message("msg_deny") }}
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
       name: neutrinet-reputation-ip
@@ -93,14 +99,15 @@ entries:
         from django.utils.timezone import now
         from authentik.policies.reputation.models import Reputation
         from authentik.root.middleware import ClientIPMiddleware
+{{ detect_language() }}
         ip = ClientIPMiddleware.get_client_ip(request.http_request)
         failures = (
             Reputation.objects.filter(ip=ip, score__lt=0, expires__gt=now())
             .aggregate(total=Sum("score"))["total"]
             or 0
         )
-        return failures <= -5
-
+        denied = failures <= -5
+{{ deny_message("msg_deny_reputation") }}
   - model: authentik_policies_password.passwordpolicy
     identifiers:
       name: neutrinet-password
@@ -192,14 +199,42 @@ entries:
         request.context["flow_plan"].context["email"] = new
         return True
 
+{% for name, keys in {"password": ["password", "password_repeat"], "email": ["email"]}.items() %}
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-write-{{ name }}-only
+    attrs:
+      expression: |
+        plan = request.context["flow_plan"]
+        data = plan.context.get("prompt_data", {})
+        plan.context["prompt_data"] = {key: value for key, value in data.items() if key in {{ keys | to_json }}}
+        for key in ("groups", "user_path", "user_type"):
+            plan.context.pop(key, None)
+        return True
+
+{% endfor %}
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-reputation-reset
+    attrs:
+      expression: |
+        from authentik.policies.reputation.models import Reputation
+        from authentik.root.middleware import ClientIPMiddleware
+        ip = ClientIPMiddleware.get_client_ip(request.http_request)
+        Reputation.objects.filter(
+            ip=ip, score__lt=0, identifier__in=[request.user.username, request.user.email]
+        ).delete()
+        return True
+
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
       name: neutrinet-email-link-missing
     attrs:
       expression: |
+{{ detect_language() }}
         token = request.context.get("is_restored")
-        return not token or token.user_id != request.user.pk
-
+        denied = not token or token.user_id != request.user.pk
+{{ deny_message("msg_deny") }}
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
       name: neutrinet-email-verified
@@ -243,19 +278,22 @@ entries:
       expression: |
         from datetime import timedelta
         from django.utils.timezone import now
-        invite = request.context.get("invitation")
-        if invite is None or invite.flow is None:
-            return True
-        if not invite.single_use:
-            return True
-        if not (invite.fixed_data or {}).get("email"):
-            return True
-        if not invite.expiring or invite.expires is None or invite.expires > now() + timedelta(hours=48):
-            return True
-        if not ak_is_group_member(invite.created_by, name="red"):
-            return True
-        return False
-
+{{ detect_language() }}
+        def invalid():
+            invite = request.context.get("invitation")
+            if invite is None or invite.flow is None:
+                return True
+            if not invite.single_use:
+                return True
+            if not (invite.fixed_data or {}).get("email"):
+                return True
+            if not invite.expiring or invite.expires is None or invite.expires > now() + timedelta(hours=48):
+                return True
+            if not ak_is_group_member(invite.created_by, name="red"):
+                return True
+            return False
+        denied = invalid()
+{{ deny_message("msg_deny") }}
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
       name: neutrinet-user-path

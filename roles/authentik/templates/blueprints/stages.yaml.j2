@@ -4,11 +4,15 @@ metadata:
   name: Neutrinet - Stages
 entries:
   - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_stages_authenticator_totp.authenticatortotpstage, [name, default-authenticator-totp-setup]]]
     attrs:
       identifiers:
         name: Default - TOTP MFA setup flow
       required: false
   - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_stages_authenticator_webauthn.authenticatorwebauthnstage, [name, default-authenticator-webauthn-setup]]]
     attrs:
       identifiers:
         name: Default - WebAuthn MFA setup flow

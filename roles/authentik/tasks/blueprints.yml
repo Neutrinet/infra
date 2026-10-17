@@ -21,6 +21,8 @@
     group: 1000
     mode: "u=rwX,g=rX,o="
     directory_mode: "u=rwx,g=rx,o="
+  notify:
+    - Restart authentik
 
 - name: blueprints | Déploiement des blueprints
   ansible.builtin.template:

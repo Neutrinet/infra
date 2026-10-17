@@ -24,6 +24,8 @@ def tag_constructor(loader, suffix, node):
     else:
         value = loader.construct_sequence(node, deep=True)
     loader.tags.append((suffix, value))
+    if suffix == "Condition":
+        return True
     return f"!{suffix}"
 
 

@@ -4,9 +4,18 @@ metadata:
   name: Neutrinet - Email change
 entries:
   - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-write-email-only]]]
     attrs:
       identifiers:
         name: Neutrinet - Policies
+      required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_stages_deny.denystage, [name, neutrinet-deny-email-link]]]
+    attrs:
+      identifiers:
+        name: Neutrinet - Stages
       required: true
 
   - model: authentik_flows.flow
@@ -33,6 +42,21 @@ entries:
       name: neutrinet-email-change-write
     attrs:
       user_creation_mode: never_create
+
+  - model: authentik_flows.flowstagebinding
+    id: binding-deny-reputation
+    identifiers:
+      target: !KeyOf flow
+      stage: !Find [authentik_stages_deny.denystage, [name, neutrinet-deny-reputation]]
+      order: 5
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-deny-reputation
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-reputation-ip]]
+      order: 0
 
   - model: authentik_flows.flowstagebinding
     id: binding-password
@@ -128,8 +152,14 @@ entries:
     attrs:
       evaluate_on_plan: false
       re_evaluate_policies: true
+      policy_engine_mode: all
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf binding-write
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-verified]]
       order: 0
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf binding-write
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-write-email-only]]
+      order: 10

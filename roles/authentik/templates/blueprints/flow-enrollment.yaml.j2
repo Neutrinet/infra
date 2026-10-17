@@ -4,16 +4,22 @@ metadata:
   name: Neutrinet - Enrollment
 entries:
   - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_core.group, [name, red]]]
     attrs:
       identifiers:
         name: Neutrinet - Groups
       required: true
   - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-write-email-only]]]
     attrs:
       identifiers:
         name: Neutrinet - Policies
       required: true
   - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_stages_deny.denystage, [name, neutrinet-deny-email-link]]]
     attrs:
       identifiers:
         name: Neutrinet - Stages
@@ -116,6 +122,18 @@ entries:
       placeholder: {{ _authentik_i18n.password_repeat[lang] | to_json }}
       placeholder_expression: false
       order: 4
+  - model: authentik_stages_prompt.prompt
+    id: field-locale-{{ lang }}
+    identifiers:
+      name: neutrinet-enrollment-field-locale-{{ lang }}
+    attrs:
+      field_key: attributes.settings.locale
+      label: {{ _authentik_i18n.locale[lang] | to_json }}
+      type: hidden
+      required: false
+      placeholder: {{ _authentik_locale_tags[lang] | to_json }}
+      placeholder_expression: false
+      order: 5
   - model: authentik_stages_prompt.promptstage
     id: prompt-{{ lang }}
     identifiers:
@@ -127,6 +145,7 @@ entries:
         - !KeyOf field-email-{{ lang }}
         - !KeyOf field-password-{{ lang }}
         - !KeyOf field-password-repeat-{{ lang }}
+        - !KeyOf field-locale-{{ lang }}
       validation_policies:
         - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-username]]
         - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-unique]]
@@ -155,6 +174,7 @@ entries:
       use_global_settings: true
       subject: {{ _authentik_i18n.subject_enrollment[lang] | to_json }}
       template: neutrinet/{{ lang }}/account_confirmation.html
+      token_expiry: hours=24
       activate_user_on_success: true
   - model: authentik_flows.flowstagebinding
     id: binding-email-{{ lang }}

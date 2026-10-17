@@ -5,7 +5,7 @@
 {% if lang == "fr" %}Confirme ton adresse e-mail pour activer ton compte Neutrinet ID.{% elif lang == "nl" %}Bevestig je e-mailadres om je Neutrinet ID-account te activeren.{% elif lang == "de" %}Bestätige deine E-Mail-Adresse, um dein Neutrinet-ID-Konto zu aktivieren.{% else %}Confirm your email address to activate your Neutrinet ID account.{% endif %}
 </td></tr>
 <tr><td align="center" style="padding-bottom:24px;"><a href="{{ url }}" style="display:inline-block;padding:12px 24px;background:#212124;color:#ffffff;text-decoration:none;border-radius:4px;">{% if lang == "fr" %}Confirmer mon adresse e-mail{% elif lang == "nl" %}Mijn e-mailadres bevestigen{% elif lang == "de" %}Meine E-Mail-Adresse bestätigen{% else %}Confirm my email address{% endif %}</a></td></tr>
-<tr><td style="font-size:12px;line-height:1.5;color:#6a6e73;word-break:break-all;">
+<tr><td style="font-size:14px;line-height:1.5;color:#6a6e73;word-break:break-all;">
 {% if lang == "fr" %}Si le bouton ne fonctionne pas, ouvre ce lien :{% elif lang == "nl" %}Werkt de knop niet? Open deze link:{% elif lang == "de" %}Falls der Button nicht funktioniert, öffne diesen Link:{% else %}If the button does not work, open this link:{% endif %} {{ url }}
 </td></tr>
 {% endwith %}{% endblock %}

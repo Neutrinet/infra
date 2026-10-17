@@ -8,3 +8,18 @@
 
   roles:
     - authentik
+
+  post_tasks:
+    - name: Borne basse de la réputation (étape manuelle en production)
+      ansible.builtin.uri:
+        url: "http://[::1]:9000/api/v3/admin/settings/"
+        method: PATCH
+        headers:
+          Authorization: "Bearer {{ authentik_bootstrap_token }}"
+        body_format: json
+        body:
+          reputation_lower_limit: -100
+      register: _authentik_settings
+      retries: 40
+      delay: 15
+      until: _authentik_settings.status == 200

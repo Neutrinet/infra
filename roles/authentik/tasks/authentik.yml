@@ -41,6 +41,7 @@
     owner: root
     group: root
     mode: 'ug=r,o='
+  diff: false
   notify:
     - Restart authentik
 
