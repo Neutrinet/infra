@@ -1,4 +1,4 @@
-{% load i18n %}{% autoescape off %}{% get_current_language as LANGUAGE_CODE %}{% with lang=LANGUAGE_CODE|slice:":2" %}{% if lang == "fr" %}Confirme cette nouvelle adresse e-mail pour ton compte Neutrinet ID :{% elif lang == "nl" %}Bevestig dit nieuwe e-mailadres voor je Neutrinet ID-account:{% elif lang == "de" %}Bestätige diese neue E-Mail-Adresse für dein Neutrinet-ID-Konto:{% else %}Confirm this new email address for your Neutrinet ID account:{% endif %}
+{% load i18n %}{% autoescape off %}{% get_current_language as LANGUAGE_CODE %}{% with lang=LANGUAGE_CODE|slice:":2" %}{% if lang == "fr" %}Confirme cette nouvelle adresse courriel pour ton compte Neutrinet ID :{% elif lang == "nl" %}Bevestig dit nieuwe e-mailadres voor je Neutrinet ID-account:{% elif lang == "de" %}Bestätige diese neue E-Mail-Adresse für dein Neutrinet-ID-Konto:{% else %}Confirm this new email address for your Neutrinet ID account:{% endif %}
 
 {{ url }}
 

@@ -7,7 +7,7 @@
     _authentik_api: "http://[::1]:9000/api/v3"
     _authentik_headers:
       Authorization: "Bearer molecule-0123456789abcdef0123456789abcdef"
-    _authentik_expected_blueprints: 14
+    _authentik_expected_blueprints: "{{ query('ansible.builtin.fileglob', playbook_dir ~ '/../../templates/blueprints/*.yaml.j2') | length }}"
     _authentik_expected_flows:
       - neutrinet-authentication
       - neutrinet-enrollment
@@ -29,7 +29,7 @@
       delay: 15
       until:
         - _authentik_blueprints.status == 200
-        - _authentik_blueprints.json.results | selectattr('path', 'match', '^custom/') | list | length == _authentik_expected_blueprints
+        - _authentik_blueprints.json.results | selectattr('path', 'match', '^custom/') | list | length == _authentik_expected_blueprints | int
         - _authentik_blueprints.json.results | selectattr('path', 'match', '^custom/') | rejectattr('status', 'equalto', 'successful') | list | length == 0
 
     - name: Vérification des flows

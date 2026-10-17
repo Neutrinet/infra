@@ -10,6 +10,13 @@ entries:
       identifiers:
         name: Neutrinet - Policies
       required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_stages_user_write.userwritestage, [name, neutrinet-write]]]
+    attrs:
+      identifiers:
+        name: Neutrinet - Stages
+      required: true
 
   - model: authentik_flows.flow
     id: flow
@@ -21,12 +28,6 @@ entries:
       designation: stage_configuration
       authentication: require_authenticated
 
-  - model: authentik_stages_user_write.userwritestage
-    id: write
-    identifiers:
-      name: neutrinet-user-settings-write
-    attrs:
-      user_creation_mode: never_create
 {% for lang in _authentik_languages %}
 
   - model: authentik_stages_prompt.prompt
@@ -38,7 +39,7 @@ entries:
       label: {{ _authentik_i18n.username[lang] | to_json }}
       type: text_read_only
       required: false
-      placeholder: {{ _authentik_i18n.username[lang] | to_json }}
+      placeholder: ""
       placeholder_expression: false
       initial_value: |
         try:
@@ -57,7 +58,7 @@ entries:
       label: {{ _authentik_i18n.name[lang] | to_json }}
       type: text
       required: true
-      placeholder: {{ _authentik_i18n.name[lang] | to_json }}
+      placeholder: ""
       placeholder_expression: false
       initial_value: |
         try:
@@ -75,7 +76,7 @@ entries:
       label: {{ _authentik_i18n.email[lang] | to_json }}
       type: text_read_only
       required: false
-      placeholder: {{ _authentik_i18n.email[lang] | to_json }}
+      placeholder: ""
       placeholder_expression: false
       initial_value: |
         try:
@@ -83,7 +84,7 @@ entries:
         except:
             return ''
       initial_value_expression: true
-      sub_text: {{ _authentik_i18n.email_change_link[lang] | to_json }}
+      sub_text: {{ ('<a class="pf-c-button pf-m-secondary" href="/if/flow/neutrinet-email-change/">' ~ _authentik_i18n.email_change_link[lang] ~ '</a>') | to_json }}
       order: 2
   - model: authentik_stages_prompt.prompt
     id: field-locale-{{ lang }}
@@ -94,7 +95,7 @@ entries:
       label: {{ _authentik_i18n.locale[lang] | to_json }}
       type: ak-locale
       required: true
-      placeholder: {{ _authentik_i18n.locale[lang] | to_json }}
+      placeholder: ""
       placeholder_expression: false
       initial_value: |
         try:
@@ -135,8 +136,8 @@ entries:
     id: binding-write
     identifiers:
       target: !KeyOf flow
-      stage: !KeyOf write
+      stage: !Find [authentik_stages_user_write.userwritestage, [name, neutrinet-write]]
       order: 40
     attrs:
-      evaluate_on_plan: false
-      re_evaluate_policies: true
+      evaluate_on_plan: true
+      re_evaluate_policies: false

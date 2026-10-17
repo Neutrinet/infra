@@ -1,4 +1,4 @@
-{% load i18n %}{% autoescape off %}{% get_current_language as LANGUAGE_CODE %}{% with lang=LANGUAGE_CODE|slice:":2" %}{% if lang == "fr" %}Confirme ton adresse e-mail pour activer ton compte Neutrinet ID :{% elif lang == "nl" %}Bevestig je e-mailadres om je Neutrinet ID-account te activeren:{% elif lang == "de" %}Bestätige deine E-Mail-Adresse, um dein Neutrinet-ID-Konto zu aktivieren:{% else %}Confirm your email address to activate your Neutrinet ID account:{% endif %}
+{% load i18n %}{% autoescape off %}{% get_current_language as LANGUAGE_CODE %}{% with lang=LANGUAGE_CODE|slice:":2" %}{% if lang == "fr" %}Confirme ton adresse courriel pour activer ton compte Neutrinet ID :{% elif lang == "nl" %}Bevestig je e-mailadres om je Neutrinet ID-account te activeren:{% elif lang == "de" %}Bestätige deine E-Mail-Adresse, um dein Neutrinet-ID-Konto zu aktivieren:{% else %}Confirm your email address to activate your Neutrinet ID account:{% endif %}
 
 {{ url }}
 {% endwith %}{% endautoescape %}

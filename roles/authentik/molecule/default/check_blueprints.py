@@ -92,6 +92,11 @@ def main():
             for key in ("name", "slug"):
                 if key in identifiers:
                     names.add(identifiers[key])
+            attrs = entry.get("attrs") or {}
+            if entry.get("model") == "authentik_flows.flowstagebinding" and not attrs.get(
+                "evaluate_on_plan", False
+            ) and not attrs.get("re_evaluate_policies", True):
+                errors.append(f"{template.name}: liaison de stage sans evaluate_on_plan ni re_evaluate_policies")
         for suffix, value in tags:
             if suffix == "KeyOf" and value not in ids:
                 errors.append(f"{template.name}: !KeyOf {value} sans id correspondant")

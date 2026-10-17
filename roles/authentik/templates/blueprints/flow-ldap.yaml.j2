@@ -12,7 +12,7 @@ entries:
       required: true
   - model: authentik_blueprints.metaapplyblueprint
     conditions:
-      - !Condition [NOR, !Find [authentik_stages_deny.denystage, [name, neutrinet-deny-email-link]]]
+      - !Condition [NOR, !Find [authentik_stages_user_write.userwritestage, [name, neutrinet-write]]]
     attrs:
       identifiers:
         name: Neutrinet - Stages
@@ -37,24 +37,22 @@ entries:
         - username
       pretend_user_exists: true
       show_matched_user: false
-  - model: authentik_stages_password.passwordstage
-    id: password
-    identifiers:
-      name: neutrinet-ldap-password
-    attrs:
-      backends:
-        - authentik.core.auth.InbuiltBackend
-
   - model: authentik_flows.flowstagebinding
     identifiers:
       target: !KeyOf flow
       stage: !KeyOf identification
       order: 10
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false
   - model: authentik_flows.flowstagebinding
     identifiers:
       target: !KeyOf flow
-      stage: !KeyOf password
+      stage: !Find [authentik_stages_password.passwordstage, [name, neutrinet-password-check]]
       order: 20
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false
   - model: authentik_flows.flowstagebinding
     id: binding-deny-red
     identifiers:
@@ -69,6 +67,9 @@ entries:
       target: !KeyOf flow
       stage: !Find [authentik_stages_user_login.userloginstage, [name, neutrinet-login]]
       order: 100
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false
 
   - model: authentik_policies.policybinding
     identifiers:

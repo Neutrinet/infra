@@ -10,7 +10,7 @@
     - authentik
 
   post_tasks:
-    - name: Borne basse de la réputation (étape manuelle en production)
+    - name: Bornes de la réputation (étape manuelle en production)
       ansible.builtin.uri:
         url: "http://[::1]:9000/api/v3/admin/settings/"
         method: PATCH
@@ -19,6 +19,7 @@
         body_format: json
         body:
           reputation_lower_limit: -100
+          reputation_upper_limit: 0
       register: _authentik_settings
       retries: 40
       delay: 15

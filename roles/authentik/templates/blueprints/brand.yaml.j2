@@ -52,6 +52,27 @@ entries:
       identifiers:
         name: Default - Invalidation flow
       required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_flows.flow, [slug, default-source-authentication]]]
+    attrs:
+      identifiers:
+        name: Default - Source authentication flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_flows.flow, [slug, default-source-enrollment]]]
+    attrs:
+      identifiers:
+        name: Default - Source enrollment flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    conditions:
+      - !Condition [NOR, !Find [authentik_flows.flow, [slug, default-source-pre-authentication]]]
+    attrs:
+      identifiers:
+        name: Default - Source pre-authentication flow
+      required: false
 
   - model: authentik_brands.brand
     identifiers:
@@ -83,5 +104,33 @@ entries:
   - model: authentik_policies.policybinding
     identifiers:
       target: !Find [authentik_policies.policybindingmodel, [flow__slug, default-user-settings-flow]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-deny-all]]
+      order: 0
+
+  - model: authentik_flows.flow
+    identifiers:
+      slug: default-source-authentication
+    attrs:
+      policy_engine_mode: all
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !Find [authentik_policies.policybindingmodel, [flow__slug, default-source-authentication]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-deny-all]]
+      order: 0
+
+  - model: authentik_flows.flow
+    identifiers:
+      slug: default-source-enrollment
+    attrs:
+      policy_engine_mode: all
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !Find [authentik_policies.policybindingmodel, [flow__slug, default-source-enrollment]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-deny-all]]
+      order: 0
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !Find [authentik_policies.policybindingmodel, [flow__slug, default-source-pre-authentication]]
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-deny-all]]
       order: 0

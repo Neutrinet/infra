@@ -62,6 +62,9 @@ entries:
       target: !KeyOf flow
       stage: !KeyOf identification
       order: 10
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false
   - model: authentik_flows.flowstagebinding
     id: binding-deny-reputation
     identifiers:
@@ -76,6 +79,9 @@ entries:
       target: !KeyOf flow
       stage: !KeyOf password
       order: 20
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false
   - model: authentik_flows.flowstagebinding
     id: binding-deny-red-name
     identifiers:

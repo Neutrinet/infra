@@ -14,24 +14,24 @@ _authentik_locale_tags:
 _authentik_i18n:
   username:
     en: "Username"
-    fr: "Pseudo"
+    fr: "Nom d'utilisateur"
     nl: "Gebruikersnaam"
-    de: "Benutzername"
+    de: "Anmeldename"
   username_help:
     en: "3 to 32 characters: lowercase letters, digits, - and _."
     fr: "3 à 32 caractères : lettres minuscules, chiffres, - et _."
     nl: "3 tot 32 tekens: kleine letters, cijfers, - en _."
     de: "3 bis 32 Zeichen: Kleinbuchstaben, Ziffern, - und _."
   username_red_help:
-    en: "Set by the invitation."
-    fr: "Fixé par l'invitation."
-    nl: "Vastgelegd door de uitnodiging."
-    de: "Durch die Einladung festgelegt."
+    en: "It must end with -admin (for example alice-admin), 32 characters at most."
+    fr: "Il doit finir par -admin (par exemple alice-admin), 32 caractères au plus."
+    nl: "De naam moet eindigen op -admin (bijvoorbeeld alice-admin), maximaal 32 tekens."
+    de: "Er muss auf -admin enden (zum Beispiel alice-admin), höchstens 32 Zeichen."
   username_settings_help:
     en: "To change your username, write to support@neutrinet.be."
-    fr: "Pour changer de pseudo, écris à support@neutrinet.be."
+    fr: "Pour changer de nom d'utilisateur, écris à support@neutrinet.be."
     nl: "Om je gebruikersnaam te wijzigen, schrijf naar support@neutrinet.be."
-    de: "Um deinen Benutzernamen zu ändern, schreib an support@neutrinet.be."
+    de: "Um deinen Anmeldenamen zu ändern, schreib an support@neutrinet.be."
   name:
     en: "Display name"
     fr: "Nom affiché"
@@ -39,22 +39,27 @@ _authentik_i18n:
     de: "Anzeigename"
   email:
     en: "Email address"
-    fr: "Adresse e-mail"
+    fr: "Adresse courriel"
     nl: "E-mailadres"
     de: "E-Mail-Adresse"
   email_red_help:
-    en: "Set by the invitation. It must differ from the address of your usual account."
-    fr: "Fixée par l'invitation. Elle doit être différente de celle de ton compte habituel."
-    nl: "Vastgelegd door de uitnodiging. Het moet verschillen van het adres van je gewone account."
-    de: "Durch die Einladung festgelegt. Sie muss sich von der Adresse deines normalen Kontos unterscheiden."
+    en: "It must differ from the address of your usual account."
+    fr: "Elle doit être différente de celle de ton compte habituel."
+    nl: "Het moet verschillen van het adres van je gewone account."
+    de: "Sie muss sich von der Adresse deines normalen Kontos unterscheiden."
+  red_pending_notice:
+    en: "Your administration account has been created. It is waiting for validation by a member of the administration team: you will get access once it has been validated."
+    fr: "Ton compte d'administration a été créé. Il attend la validation d'un membre de l'équipe d'administration : tu recevras l'accès une fois qu'il sera validé."
+    nl: "Je beheeraccount is aangemaakt. Het wacht op goedkeuring door een lid van het beheerteam: je krijgt toegang zodra het is goedgekeurd."
+    de: "Dein Administrationskonto wurde erstellt. Es wartet auf die Freigabe durch ein Mitglied des Administrationsteams: Du erhältst Zugriff, sobald es freigegeben ist."
   email_change_link:
-    en: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Change my email address</a>"
-    fr: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Changer mon adresse e-mail</a>"
-    nl: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Mijn e-mailadres wijzigen</a>"
-    de: "<a class=\"pf-c-button pf-m-secondary\" href=\"/if/flow/neutrinet-email-change/\">Meine E-Mail-Adresse ändern</a>"
+    en: "Change my email address"
+    fr: "Changer mon adresse courriel"
+    nl: "Mijn e-mailadres wijzigen"
+    de: "Meine E-Mail-Adresse ändern"
   new_email:
     en: "New email address"
-    fr: "Nouvelle adresse e-mail"
+    fr: "Nouvelle adresse courriel"
     nl: "Nieuw e-mailadres"
     de: "Neue E-Mail-Adresse"
   new_email_help:
@@ -64,7 +69,7 @@ _authentik_i18n:
     de: "An diese Adresse wird ein Bestätigungslink gesendet."
   msg_email_same:
     en: "This is already your email address."
-    fr: "C'est déjà ton adresse e-mail."
+    fr: "C'est déjà ton adresse courriel."
     nl: "Dit is al je e-mailadres."
     de: "Das ist bereits deine E-Mail-Adresse."
   password:
@@ -94,7 +99,7 @@ _authentik_i18n:
     de: "Sprache"
   subject_enrollment:
     en: "Neutrinet ID: confirm your email address"
-    fr: "Neutrinet ID : confirme ton adresse e-mail"
+    fr: "Neutrinet ID : confirme ton adresse courriel"
     nl: "Neutrinet ID: bevestig je e-mailadres"
     de: "Neutrinet ID: bestätige deine E-Mail-Adresse"
   subject_enrollment_red:
@@ -109,37 +114,37 @@ _authentik_i18n:
     de: "Neutrinet ID: Passwort zurücksetzen"
   subject_email_change:
     en: "Neutrinet ID: confirm your new email address"
-    fr: "Neutrinet ID : confirme ta nouvelle adresse e-mail"
+    fr: "Neutrinet ID : confirme ta nouvelle adresse courriel"
     nl: "Neutrinet ID: bevestig je nieuwe e-mailadres"
     de: "Neutrinet ID: bestätige deine neue E-Mail-Adresse"
   msg_username_format:
     en: "The username must be 3 to 32 characters long: lowercase letters, digits, - and _, starting with a letter or a digit."
-    fr: "Le pseudo doit faire de 3 à 32 caractères : lettres minuscules, chiffres, - et _, en commençant par une lettre ou un chiffre."
+    fr: "Le nom d'utilisateur doit faire de 3 à 32 caractères : lettres minuscules, chiffres, - et _, en commençant par une lettre ou un chiffre."
     nl: "De gebruikersnaam moet 3 tot 32 tekens lang zijn: kleine letters, cijfers, - en _, beginnend met een letter of cijfer."
-    de: "Der Benutzername muss 3 bis 32 Zeichen lang sein: Kleinbuchstaben, Ziffern, - und _, beginnend mit einem Buchstaben oder einer Ziffer."
+    de: "Der Anmeldename muss 3 bis 32 Zeichen lang sein: Kleinbuchstaben, Ziffern, - und _, beginnend mit einem Buchstaben oder einer Ziffer."
   msg_username_admin_suffix:
     en: "Usernames ending in -admin are reserved for administration accounts."
-    fr: "Les pseudos finissant par -admin sont réservés aux comptes d'administration."
+    fr: "Les noms d'utilisateur finissant par -admin sont réservés aux comptes d'administration."
     nl: "Gebruikersnamen die eindigen op -admin zijn voorbehouden aan beheeraccounts."
-    de: "Benutzernamen, die auf -admin enden, sind Administrationskonten vorbehalten."
+    de: "Anmeldenamen, die auf -admin enden, sind Administrationskonten vorbehalten."
   msg_username_reserved:
     en: "This username is reserved."
-    fr: "Ce pseudo est réservé."
+    fr: "Ce nom d'utilisateur est réservé."
     nl: "Deze gebruikersnaam is gereserveerd."
-    de: "Dieser Benutzername ist reserviert."
+    de: "Dieser Anmeldename ist reserviert."
   msg_username_taken:
     en: "This username is already taken. Choose another one."
-    fr: "Ce pseudo est déjà pris. Choisis-en un autre."
+    fr: "Ce nom d'utilisateur est déjà pris. Choisis-en un autre."
     nl: "Deze gebruikersnaam is al in gebruik. Kies een andere."
-    de: "Dieser Benutzername ist bereits vergeben. Wähle einen anderen."
+    de: "Dieser Anmeldename ist bereits vergeben. Wähle einen anderen."
   msg_username_red_format:
     en: "An administration account username must be <username>-admin, 32 characters at most."
-    fr: "Le pseudo d'un compte d'administration doit être <pseudo>-admin, 32 caractères au plus."
+    fr: "Le nom d'utilisateur d'un compte d'administration doit être <nom d'utilisateur>-admin, 32 caractères au plus."
     nl: "De gebruikersnaam van een beheeraccount moet <gebruikersnaam>-admin zijn, maximaal 32 tekens."
-    de: "Der Benutzername eines Administrationskontos muss <benutzername>-admin lauten, höchstens 32 Zeichen."
+    de: "Der Anmeldename eines Administrationskontos muss <anmeldename>-admin lauten, höchstens 32 Zeichen."
   msg_email_taken:
     en: "This email address is already used by another account. If it is yours, use \"Forgot username or password?\" on the sign-in page."
-    fr: "Cette adresse e-mail est déjà utilisée par un autre compte. Si c'est le tien, utilise « Mot de passe ou nom d'utilisateur oublié ? » sur la page de connexion."
+    fr: "Cette adresse courriel est déjà utilisée par un autre compte. Si c'est le tien, utilise « Mot de passe ou nom d'utilisateur oublié ? » sur la page de connexion."
     nl: "Dit e-mailadres wordt al door een ander account gebruikt. Is het van jou? Gebruik dan \"Gebruikersnaam of wachtwoord vergeten?\" op de aanmeldpagina."
     de: "Diese E-Mail-Adresse wird bereits von einem anderen Konto verwendet. Wenn es deins ist, nutze „Benutzername oder Passwort vergessen?“ auf der Anmeldeseite."
   msg_password_length:
@@ -164,7 +169,7 @@ _authentik_i18n:
     de: "Mindestens 12 Zeichen."
   mail_email_changed_subject:
     en: "Neutrinet ID: email address changed"
-    fr: "Neutrinet ID : adresse e-mail modifiée"
+    fr: "Neutrinet ID : adresse courriel modifiée"
     nl: "Neutrinet ID: e-mailadres gewijzigd"
     de: "Neutrinet ID: E-Mail-Adresse geändert"
   mail_password_set_subject:
@@ -187,3 +192,8 @@ _authentik_i18n:
     fr: "Neutrinet ID : connexion du compte de secours"
     nl: "Neutrinet ID: aanmelding met het noodaccount"
     de: "Neutrinet ID: Anmeldung mit dem Notfallkonto"
+  mail_red_pending_subject:
+    en: "Neutrinet ID: administration account awaiting validation"
+    fr: "Neutrinet ID : compte d'administration en attente de validation"
+    nl: "Neutrinet ID: beheeraccount wacht op goedkeuring"
+    de: "Neutrinet ID: Administrationskonto wartet auf Freigabe"

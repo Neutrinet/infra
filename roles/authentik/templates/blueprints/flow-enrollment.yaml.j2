@@ -19,7 +19,7 @@ entries:
       required: true
   - model: authentik_blueprints.metaapplyblueprint
     conditions:
-      - !Condition [NOR, !Find [authentik_stages_deny.denystage, [name, neutrinet-deny-email-link]]]
+      - !Condition [NOR, !Find [authentik_stages_user_write.userwritestage, [name, neutrinet-write]]]
     attrs:
       identifiers:
         name: Neutrinet - Stages
@@ -58,6 +58,9 @@ entries:
       target: !KeyOf flow
       stage: !KeyOf invitation
       order: 10
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false
 {% for lang in _authentik_languages %}
 
   - model: authentik_stages_prompt.prompt
@@ -69,22 +72,10 @@ entries:
       label: {{ _authentik_i18n.username[lang] | to_json }}
       type: username
       required: true
-      placeholder: {{ _authentik_i18n.username[lang] | to_json }}
+      placeholder: ""
       placeholder_expression: false
       sub_text: {{ _authentik_i18n.username_help[lang] | to_json }}
       order: 0
-  - model: authentik_stages_prompt.prompt
-    id: field-name-{{ lang }}
-    identifiers:
-      name: neutrinet-enrollment-field-name-{{ lang }}
-    attrs:
-      field_key: name
-      label: {{ _authentik_i18n.name[lang] | to_json }}
-      type: text
-      required: true
-      placeholder: {{ _authentik_i18n.name[lang] | to_json }}
-      placeholder_expression: false
-      order: 1
   - model: authentik_stages_prompt.prompt
     id: field-email-{{ lang }}
     identifiers:
@@ -94,34 +85,9 @@ entries:
       label: {{ _authentik_i18n.email[lang] | to_json }}
       type: email
       required: true
-      placeholder: {{ _authentik_i18n.email[lang] | to_json }}
+      placeholder: ""
       placeholder_expression: false
       order: 2
-  - model: authentik_stages_prompt.prompt
-    id: field-password-{{ lang }}
-    identifiers:
-      name: neutrinet-enrollment-field-password-{{ lang }}
-    attrs:
-      field_key: password
-      label: {{ _authentik_i18n.password[lang] | to_json }}
-      type: password
-      required: true
-      placeholder: {{ _authentik_i18n.password[lang] | to_json }}
-      placeholder_expression: false
-      sub_text: {{ _authentik_i18n.password_help[lang] | to_json }}
-      order: 3
-  - model: authentik_stages_prompt.prompt
-    id: field-password-repeat-{{ lang }}
-    identifiers:
-      name: neutrinet-enrollment-field-password-repeat-{{ lang }}
-    attrs:
-      field_key: password_repeat
-      label: {{ _authentik_i18n.password_repeat[lang] | to_json }}
-      type: password
-      required: true
-      placeholder: {{ _authentik_i18n.password_repeat[lang] | to_json }}
-      placeholder_expression: false
-      order: 4
   - model: authentik_stages_prompt.prompt
     id: field-locale-{{ lang }}
     identifiers:
@@ -141,10 +107,10 @@ entries:
     attrs:
       fields:
         - !KeyOf field-username-{{ lang }}
-        - !KeyOf field-name-{{ lang }}
+        - !Find [authentik_stages_prompt.prompt, [name, neutrinet-field-name-{{ lang }}]]
         - !KeyOf field-email-{{ lang }}
-        - !KeyOf field-password-{{ lang }}
-        - !KeyOf field-password-repeat-{{ lang }}
+        - !Find [authentik_stages_prompt.prompt, [name, neutrinet-field-password-{{ lang }}]]
+        - !Find [authentik_stages_prompt.prompt, [name, neutrinet-field-password-repeat-{{ lang }}]]
         - !KeyOf field-locale-{{ lang }}
       validation_policies:
         - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-username]]
@@ -212,3 +178,6 @@ entries:
       target: !KeyOf flow
       stage: !Find [authentik_stages_user_login.userloginstage, [name, neutrinet-login]]
       order: 100
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false

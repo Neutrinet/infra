@@ -12,7 +12,7 @@ entries:
       required: true
   - model: authentik_blueprints.metaapplyblueprint
     conditions:
-      - !Condition [NOR, !Find [authentik_stages_deny.denystage, [name, neutrinet-deny-email-link]]]
+      - !Condition [NOR, !Find [authentik_stages_user_write.userwritestage, [name, neutrinet-write]]]
     attrs:
       identifiers:
         name: Neutrinet - Stages
@@ -39,18 +39,14 @@ entries:
       pretend_user_exists: true
       show_matched_user: false
 
-  - model: authentik_stages_user_write.userwritestage
-    id: write
-    identifiers:
-      name: neutrinet-recovery-write
-    attrs:
-      user_creation_mode: never_create
-
   - model: authentik_flows.flowstagebinding
     identifiers:
       target: !KeyOf flow
       stage: !KeyOf identification
       order: 10
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false
 
   - model: authentik_flows.flowstagebinding
     id: binding-deny-email-link
@@ -122,47 +118,11 @@ entries:
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-language-{{ lang }}]]
       order: 0
 
-  - model: authentik_stages_prompt.prompt
-    id: field-password-{{ lang }}
-    identifiers:
-      name: neutrinet-recovery-field-password-{{ lang }}
-    attrs:
-      field_key: password
-      label: {{ _authentik_i18n.new_password[lang] | to_json }}
-      type: password
-      required: true
-      placeholder: {{ _authentik_i18n.new_password[lang] | to_json }}
-      placeholder_expression: false
-      sub_text: {{ _authentik_i18n.password_help[lang] | to_json }}
-      order: 0
-  - model: authentik_stages_prompt.prompt
-    id: field-password-repeat-{{ lang }}
-    identifiers:
-      name: neutrinet-recovery-field-password-repeat-{{ lang }}
-    attrs:
-      field_key: password_repeat
-      label: {{ _authentik_i18n.new_password_repeat[lang] | to_json }}
-      type: password
-      required: true
-      placeholder: {{ _authentik_i18n.new_password_repeat[lang] | to_json }}
-      placeholder_expression: false
-      order: 1
-  - model: authentik_stages_prompt.promptstage
-    id: prompt-{{ lang }}
-    identifiers:
-      name: neutrinet-recovery-prompt-{{ lang }}
-    attrs:
-      fields:
-        - !KeyOf field-password-{{ lang }}
-        - !KeyOf field-password-repeat-{{ lang }}
-      validation_policies:
-        - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-password-length]]
-        - !Find [authentik_policies_password.passwordpolicy, [name, neutrinet-password]]
   - model: authentik_flows.flowstagebinding
     id: binding-prompt-{{ lang }}
     identifiers:
       target: !KeyOf flow
-      stage: !KeyOf prompt-{{ lang }}
+      stage: !Find [authentik_stages_prompt.promptstage, [name, neutrinet-new-password-prompt-{{ lang }}]]
       order: {{ 40 + loop.index0 }}
     attrs:
       evaluate_on_plan: false
@@ -178,7 +138,7 @@ entries:
     id: binding-write
     identifiers:
       target: !KeyOf flow
-      stage: !KeyOf write
+      stage: !Find [authentik_stages_user_write.userwritestage, [name, neutrinet-write]]
       order: 50
     attrs:
       evaluate_on_plan: false

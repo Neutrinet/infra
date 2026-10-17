@@ -1,5 +1,14 @@
 {{ ansible_managed | comment }}
-{% macro detect_language() %}
+version: 1
+metadata:
+  name: Neutrinet - Policies
+entries:
+{% for lang in _authentik_languages %}
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-language-{{ lang }}
+    attrs:
+      expression: |
         plan = request.context.get("flow_plan")
         if plan is None and request.http_request is not None:
             plan = request.http_request.session.get("authentik/flows/plan")
@@ -14,23 +23,7 @@
                 language = "en"
             if plan is not None:
                 plan.context["neutrinet_language"] = language
-{% endmacro %}
-{% macro deny_message(key) %}
-        if denied and request.context.get("flow_plan") is not None:
-            request.context["flow_plan"].context["deny_message"] = {{ _authentik_i18n[key] | to_json }}[language]
-        return denied
-{% endmacro %}
-version: 1
-metadata:
-  name: Neutrinet - Policies
-entries:
-{% for lang in _authentik_languages %}
-  - model: authentik_policies_expression.expressionpolicy
-    identifiers:
-      name: neutrinet-language-{{ lang }}
-    attrs:
-      expression: |
-{{ detect_language() }}
+
         return language == "{{ lang }}"
 
 {% endfor %}
@@ -54,7 +47,21 @@ entries:
       name: neutrinet-email-different
     attrs:
       expression: |
-{{ detect_language() }}
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
         new = request.context.get("prompt_data", {}).get("email", "")
         if new.lower() == (request.user.email or "").lower():
             ak_message({{ _authentik_i18n.msg_email_same | to_json }}[language])
@@ -63,15 +70,9 @@ entries:
 
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
-      name: neutrinet-is-red
-    attrs:
-      expression: |
-        return ak_is_group_member(request.user, name="red")
-
-  - model: authentik_policies_expression.expressionpolicy
-    identifiers:
       name: neutrinet-is-privileged
     attrs:
+      failure_result: true
       expression: |
         return request.user.is_superuser or ak_is_group_member(request.user, name="red")
 
@@ -87,27 +88,74 @@ entries:
       name: neutrinet-red-admin-only
     attrs:
       expression: |
-{{ detect_language() }}
-        denied = ak_is_group_member(request.user, name="red") and not request.user.username.endswith("-admin")
-{{ deny_message("msg_deny") }}
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
+        denied = (
+            not request.user.username.endswith("-admin")
+            and ak_is_group_member(request.user, name="red")
+            and not ak_is_group_member(request.user, name="authentik Admins")
+        )
+        if denied and request.context.get("flow_plan") is not None:
+            request.context["flow_plan"].context["deny_message"] = {{ _authentik_i18n.msg_deny | to_json }}[language]
+        return denied
+
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
       name: neutrinet-reputation-ip
     attrs:
       expression: |
+        import ipaddress
         from django.db.models import Sum
         from django.utils.timezone import now
         from authentik.policies.reputation.models import Reputation
         from authentik.root.middleware import ClientIPMiddleware
-{{ detect_language() }}
-        ip = ClientIPMiddleware.get_client_ip(request.http_request)
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
+        address = ipaddress.ip_address(ClientIPMiddleware.get_client_ip(request.http_request))
+        if address.version == 6 and address.ipv4_mapped:
+            address = address.ipv4_mapped
+        if address.version == 6:
+            networks = [str(ipaddress.ip_network(f"{address}/64", strict=False))] * 2
+        else:
+            networks = [f"{address}/32", f"::ffff:{address}/128"]
+        in_network = {"where": ["(ip <<= %s::inet OR ip <<= %s::inet)"], "params": networks}
         failures = (
-            Reputation.objects.filter(ip=ip, score__lt=0, expires__gt=now())
+            Reputation.objects.filter(score__lt=0, expires__gt=now())
+            .extra(**in_network)
             .aggregate(total=Sum("score"))["total"]
             or 0
         )
         denied = failures <= -5
-{{ deny_message("msg_deny_reputation") }}
+        if denied and request.context.get("flow_plan") is not None:
+            request.context["flow_plan"].context["deny_message"] = {{ _authentik_i18n.msg_deny_reputation | to_json }}[language]
+        return denied
+
   - model: authentik_policies_password.passwordpolicy
     identifiers:
       name: neutrinet-password
@@ -124,7 +172,21 @@ entries:
       name: neutrinet-password-length
     attrs:
       expression: |
-{{ detect_language() }}
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
         messages = {{ _authentik_i18n.msg_password_length | to_json }}
         if len(request.context.get("prompt_data", {}).get("password", "")) < 12:
             ak_message(messages[language])
@@ -136,9 +198,24 @@ entries:
       name: neutrinet-username
     attrs:
       expression: |
+        from authentik.core.models import User
         import re
-{{ detect_language() }}
-        blocklist = set({{ _authentik_username_blocklist | to_json }})
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
+        blocklist = { {{ (_authentik_username_blocklist | to_json)[1:-1] }} }
         username = request.context.get("prompt_data", {}).get("username", "")
         if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{2,31}", username):
             ak_message({{ _authentik_i18n.msg_username_format | to_json }}[language])
@@ -149,6 +226,9 @@ entries:
         if username in blocklist:
             ak_message({{ _authentik_i18n.msg_username_reserved | to_json }}[language])
             return False
+        if User.objects.filter(username__iexact=username).exists():
+            ak_message({{ _authentik_i18n.msg_username_taken | to_json }}[language])
+            return False
         return True
 
   - model: authentik_policies_expression.expressionpolicy
@@ -158,8 +238,22 @@ entries:
       expression: |
         from authentik.core.models import User
         import re
-{{ detect_language() }}
-        blocklist = set({{ _authentik_username_blocklist | to_json }})
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
+        blocklist = { {{ (_authentik_username_blocklist | to_json)[1:-1] }} }
         username = request.context.get("prompt_data", {}).get("username", "")
         if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{2,25}-admin", username):
             ak_message({{ _authentik_i18n.msg_username_red_format | to_json }}[language])
@@ -167,7 +261,7 @@ entries:
         if username.removesuffix("-admin") in blocklist:
             ak_message({{ _authentik_i18n.msg_username_reserved | to_json }}[language])
             return False
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(username__iexact=username).exists():
             ak_message({{ _authentik_i18n.msg_username_taken | to_json }}[language])
             return False
         return True
@@ -178,7 +272,21 @@ entries:
     attrs:
       expression: |
         from authentik.core.models import User
-{{ detect_language() }}
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
         email = request.context.get("prompt_data", {}).get("email", "")
         others = User.objects.filter(email__iexact=email)
         if request.user.is_authenticated:
@@ -218,12 +326,20 @@ entries:
       name: neutrinet-reputation-reset
     attrs:
       expression: |
+        import ipaddress
         from authentik.policies.reputation.models import Reputation
         from authentik.root.middleware import ClientIPMiddleware
-        ip = ClientIPMiddleware.get_client_ip(request.http_request)
+        address = ipaddress.ip_address(ClientIPMiddleware.get_client_ip(request.http_request))
+        if address.version == 6 and address.ipv4_mapped:
+            address = address.ipv4_mapped
+        if address.version == 6:
+            networks = [str(ipaddress.ip_network(f"{address}/64", strict=False))] * 2
+        else:
+            networks = [f"{address}/32", f"::ffff:{address}/128"]
+        in_network = {"where": ["(ip <<= %s::inet OR ip <<= %s::inet)"], "params": networks}
         Reputation.objects.filter(
-            ip=ip, score__lt=0, identifier__in=[request.user.username, request.user.email]
-        ).delete()
+            score__lt=0, identifier__in=[request.user.username, request.user.email]
+        ).extra(**in_network).delete()
         return True
 
   - model: authentik_policies_expression.expressionpolicy
@@ -231,16 +347,47 @@ entries:
       name: neutrinet-email-link-missing
     attrs:
       expression: |
-{{ detect_language() }}
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
         token = request.context.get("is_restored")
         denied = not token or token.user_id != request.user.pk
-{{ deny_message("msg_deny") }}
+        if denied and request.context.get("flow_plan") is not None:
+            request.context["flow_plan"].context["deny_message"] = {{ _authentik_i18n.msg_deny | to_json }}[language]
+        return denied
+
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
       name: neutrinet-email-verified
     attrs:
       expression: |
-{{ detect_language() }}
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
         request.user.refresh_from_db()
         new = request.context.get("prompt_data", {}).get("email", "")
         old = request.user.email or ""
@@ -278,14 +425,28 @@ entries:
       expression: |
         from datetime import timedelta
         from django.utils.timezone import now
-{{ detect_language() }}
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
         def invalid():
             invite = request.context.get("invitation")
             if invite is None or invite.flow is None:
                 return True
             if not invite.single_use:
                 return True
-            if not (invite.fixed_data or {}).get("email"):
+            if invite.fixed_data:
                 return True
             if not invite.expiring or invite.expires is None or invite.expires > now() + timedelta(hours=48):
                 return True
@@ -293,19 +454,44 @@ entries:
                 return True
             return False
         denied = invalid()
-{{ deny_message("msg_deny") }}
+        if denied and request.context.get("flow_plan") is not None:
+            request.context["flow_plan"].context["deny_message"] = {{ _authentik_i18n.msg_deny | to_json }}[language]
+        return denied
+
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
       name: neutrinet-user-path
     attrs:
       expression: |
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
+
         user = request.user
-        for name in ("red", "amber", "green", "white"):
-            if ak_is_group_member(user, name=name):
-                if user.path != name:
-                    user.path = name
-                    user.save(update_fields=["path"])
-                break
+        fields = []
+        names = set(user.all_groups().values_list("name", flat=True))
+        path = next((name for name in ("red", "amber", "green", "white") if name in names), None)
+        if path and user.path != path:
+            user.path = path
+            fields.append("path")
+        settings = user.attributes.get("settings") or {}
+        if not settings.get("locale"):
+            settings["locale"] = {{ _authentik_locale_tags | to_json }}[language]
+            user.attributes["settings"] = settings
+            fields.append("attributes")
+        if fields:
+            user.save(update_fields=fields)
         return True
 
   - model: authentik_policies_expression.expressionpolicy

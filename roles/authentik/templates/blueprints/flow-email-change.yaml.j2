@@ -12,7 +12,7 @@ entries:
       required: true
   - model: authentik_blueprints.metaapplyblueprint
     conditions:
-      - !Condition [NOR, !Find [authentik_stages_deny.denystage, [name, neutrinet-deny-email-link]]]
+      - !Condition [NOR, !Find [authentik_stages_user_write.userwritestage, [name, neutrinet-write]]]
     attrs:
       identifiers:
         name: Neutrinet - Stages
@@ -27,21 +27,6 @@ entries:
       title: Change your email address
       designation: stage_configuration
       authentication: require_authenticated
-
-  - model: authentik_stages_password.passwordstage
-    id: password
-    identifiers:
-      name: neutrinet-email-change-password
-    attrs:
-      backends:
-        - authentik.core.auth.InbuiltBackend
-      failed_attempts_before_cancel: 5
-  - model: authentik_stages_user_write.userwritestage
-    id: write
-    identifiers:
-      name: neutrinet-email-change-write
-    attrs:
-      user_creation_mode: never_create
 
   - model: authentik_flows.flowstagebinding
     id: binding-deny-reputation
@@ -62,7 +47,7 @@ entries:
     id: binding-password
     identifiers:
       target: !KeyOf flow
-      stage: !KeyOf password
+      stage: !Find [authentik_stages_password.passwordstage, [name, neutrinet-password-check]]
       order: 10
     attrs:
       evaluate_on_plan: false
@@ -83,7 +68,7 @@ entries:
       label: {{ _authentik_i18n.new_email[lang] | to_json }}
       type: email
       required: true
-      placeholder: {{ _authentik_i18n.new_email[lang] | to_json }}
+      placeholder: ""
       placeholder_expression: false
       sub_text: {{ _authentik_i18n.new_email_help[lang] | to_json }}
       order: 0
@@ -147,7 +132,7 @@ entries:
     id: binding-write
     identifiers:
       target: !KeyOf flow
-      stage: !KeyOf write
+      stage: !Find [authentik_stages_user_write.userwritestage, [name, neutrinet-write]]
       order: 40
     attrs:
       evaluate_on_plan: false
