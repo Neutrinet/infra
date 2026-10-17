@@ -1,13 +1,19 @@
 {{ ansible_managed | comment }}
 {% macro detect_language() %}
-        user = request.user
-        if hasattr(user, "locale"):
-            language = user.locale(request.http_request)
-        else:
-            language = getattr(request.http_request, "LANGUAGE_CODE", "")
-        language = (language or "").replace("_", "-").split("-")[0].lower()
-        if language not in {{ _authentik_languages | to_json }}:
-            language = "en"
+        plan = request.context.get("flow_plan")
+        if plan is None and request.http_request is not None:
+            plan = request.http_request.session.get("authentik/flows/plan")
+        language = plan.context.get("neutrinet_language", "") if plan is not None else ""
+        if not language:
+            attributes = getattr(request.user, "attributes", None) or {}
+            language = (attributes.get("settings") or {}).get("locale", "")
+            if not language and request.http_request is not None:
+                language = getattr(request.http_request, "LANGUAGE_CODE", "")
+            language = (language or "").replace("_", "-").split("-")[0].lower()
+            if language not in {{ _authentik_languages | to_json }}:
+                language = "en"
+            if plan is not None:
+                plan.context["neutrinet_language"] = language
 {% endmacro %}
 version: 1
 metadata:
@@ -23,13 +29,6 @@ entries:
         return language == "{{ lang }}"
 
 {% endfor %}
-  - model: authentik_policies_expression.expressionpolicy
-    identifiers:
-      name: neutrinet-flow-restored
-    attrs:
-      expression: |
-        return bool(request.context.get("is_restored"))
-
   - model: authentik_policies_expression.expressionpolicy
     identifiers:
       name: neutrinet-deny-all
@@ -192,6 +191,14 @@ entries:
             return False
         request.context["flow_plan"].context["email"] = new
         return True
+
+  - model: authentik_policies_expression.expressionpolicy
+    identifiers:
+      name: neutrinet-email-link-missing
+    attrs:
+      expression: |
+        token = request.context.get("is_restored")
+        return not token or token.user_id != request.user.pk
 
   - model: authentik_policies_expression.expressionpolicy
     identifiers:

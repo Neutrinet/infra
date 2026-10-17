@@ -95,7 +95,7 @@ entries:
     attrs:
       use_global_settings: true
       subject: {{ _authentik_i18n.subject_email_change[lang] | to_json }}
-      template: neutrinet/email_change.html
+      template: neutrinet/{{ lang }}/email_change.html
       activate_user_on_success: false
   - model: authentik_flows.flowstagebinding
     id: binding-email-{{ lang }}

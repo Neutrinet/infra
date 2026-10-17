@@ -34,6 +34,11 @@ entries:
       name: neutrinet-deny-invitation
     attrs:
       deny_message: ""
+  - model: authentik_stages_deny.denystage
+    identifiers:
+      name: neutrinet-deny-email-link
+    attrs:
+      deny_message: ""
 
   - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
     identifiers:
