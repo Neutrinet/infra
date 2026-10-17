@@ -151,8 +151,23 @@ _authentik_i18n:
     fr: "Neutrinet ID : adresse e-mail modifiée"
     nl: "Neutrinet ID: e-mailadres gewijzigd"
     de: "Neutrinet ID: E-Mail-Adresse geändert"
-  mail_email_changed_body:
-    en: "Hello {username},\n\nThe email address of your Neutrinet ID account has just been replaced by {new}.\n\nIf you did not make this change, write immediately to support@neutrinet.be.\n"
-    fr: "Bonjour {username},\n\nL'adresse e-mail de ton compte Neutrinet ID vient d'être remplacée par {new}.\n\nSi tu n'es pas à l'origine de ce changement, écris immédiatement à support@neutrinet.be.\n"
-    nl: "Hallo {username},\n\nHet e-mailadres van je Neutrinet ID-account is zojuist vervangen door {new}.\n\nAls jij deze wijziging niet hebt gedaan, schrijf dan onmiddellijk naar support@neutrinet.be.\n"
-    de: "Hallo {username},\n\ndie E-Mail-Adresse deines Neutrinet-ID-Kontos wurde soeben durch {new} ersetzt.\n\nWenn du diese Änderung nicht vorgenommen hast, schreib sofort an support@neutrinet.be.\n"
+  mail_password_set_subject:
+    en: "Neutrinet ID: password changed"
+    fr: "Neutrinet ID : mot de passe modifié"
+    nl: "Neutrinet ID: wachtwoord gewijzigd"
+    de: "Neutrinet ID: Passwort geändert"
+  mail_device_added_subject:
+    en: "Neutrinet ID: two-factor device added"
+    fr: "Neutrinet ID : appareil de double authentification ajouté"
+    nl: "Neutrinet ID: apparaat voor tweestapsverificatie toegevoegd"
+    de: "Neutrinet ID: Gerät für Zwei-Faktor-Authentifizierung hinzugefügt"
+  mail_device_removed_subject:
+    en: "Neutrinet ID: two-factor device removed"
+    fr: "Neutrinet ID : appareil de double authentification retiré"
+    nl: "Neutrinet ID: apparaat voor tweestapsverificatie verwijderd"
+    de: "Neutrinet ID: Gerät für Zwei-Faktor-Authentifizierung entfernt"
+  mail_breakglass_subject:
+    en: "Neutrinet ID: emergency account sign-in"
+    fr: "Neutrinet ID : connexion du compte de secours"
+    nl: "Neutrinet ID: aanmelding met het noodaccount"
+    de: "Neutrinet ID: Anmeldung mit dem Notfallkonto"

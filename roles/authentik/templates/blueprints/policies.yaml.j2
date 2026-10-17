@@ -211,10 +211,8 @@ entries:
             ak_send_email(
                 old,
                 {{ _authentik_i18n.mail_email_changed_subject | to_json }}[language],
-                body={{ _authentik_i18n.mail_email_changed_body | to_json }}[language].format(
-                    username=request.user.username,
-                    new=new,
-                ),
+                template="neutrinet/email_changed.html",
+                context={"lang": language, "username": request.user.username, "new": new},
             )
         return True
 

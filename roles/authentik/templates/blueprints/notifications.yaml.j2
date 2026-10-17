@@ -1,4 +1,9 @@
 {{ ansible_managed | comment }}
+{% macro user_language(var) %}
+        {{ var }}_language = ({{ var }}.locale() or "").replace("_", "-").split("-")[0].lower()
+        if {{ var }}_language not in {{ _authentik_languages | to_json }}:
+            {{ var }}_language = "en"
+{% endmacro %}
 version: 1
 metadata:
   name: Neutrinet - Notifications
@@ -9,45 +14,69 @@ entries:
         name: Neutrinet - Groups
       required: true
 
-  - model: authentik_events.notificationtransport
-    id: transport-email
-    identifiers:
-      name: neutrinet-email
-    attrs:
-      mode: email
-      email_subject_prefix: "Neutrinet ID : "
-      email_template: neutrinet/event_notification.html
-      send_once: false
-
-  - model: authentik_policies_event_matcher.eventmatcherpolicy
-    id: match-password-set
-    identifiers:
-      name: neutrinet-match-password-set
-    attrs:
-      action: password_set
-{% for action in ['model_created', 'model_deleted'] %}
-{% for model in ['authentik_stages_authenticator_webauthn.webauthndevice', 'authentik_stages_authenticator_totp.totpdevice', 'authentik_stages_authenticator_static.staticdevice'] %}
-  - model: authentik_policies_event_matcher.eventmatcherpolicy
-    id: match-{{ action }}-{{ model.split('.')[1] }}
-    identifiers:
-      name: neutrinet-match-{{ action }}-{{ model.split('.')[1] }}
-    attrs:
-      action: {{ action }}
-      model: {{ model }}
-{% endfor %}
-{% endfor %}
   - model: authentik_policies_expression.expressionpolicy
-    id: match-breakglass-login
+    id: notify-user-security-policy
     identifiers:
-      name: neutrinet-match-breakglass-login
+      name: neutrinet-notify-user-security
+    attrs:
+      expression: |
+        event = request.context["event"]
+        devices = (
+            "authentik_stages_authenticator_webauthn.webauthndevice",
+            "authentik_stages_authenticator_totp.totpdevice",
+            "authentik_stages_authenticator_static.staticdevice",
+        )
+        model = event.context.get("model", {})
+        model_name = f"{model.get('app')}.{model.get('model_name')}"
+        if event.action == "password_set":
+            kind = "password_set"
+        elif event.action == "model_created" and model_name in devices:
+            kind = "device_added"
+        elif event.action == "model_deleted" and model_name in devices:
+            kind = "device_removed"
+        else:
+            return False
+        user = request.user
+        if not getattr(user, "email", ""):
+            return False
+{{ user_language("user") }}
+        subjects = {
+            "password_set": {{ _authentik_i18n.mail_password_set_subject | to_json }},
+            "device_added": {{ _authentik_i18n.mail_device_added_subject | to_json }},
+            "device_removed": {{ _authentik_i18n.mail_device_removed_subject | to_json }},
+        }
+        ak_send_email(
+            user.email,
+            subjects[kind][user_language],
+            template="neutrinet/security_notice.html",
+            context={"lang": user_language, "kind": kind, "username": user.username, "ip": event.client_ip},
+        )
+        return False
+
+  - model: authentik_policies_expression.expressionpolicy
+    id: notify-breakglass-login-policy
+    identifiers:
+      name: neutrinet-notify-breakglass-login
     attrs:
       expression: |
         from authentik.core.models import User
         event = request.context["event"]
         if event.action != "login":
             return False
-        user = User.objects.filter(pk=event.user.get("pk")).first()
-        return bool(user) and user.is_superuser and not ak_is_group_member(user, name="red")
+        account = User.objects.filter(pk=event.user.get("pk")).first()
+        if not account or not account.is_superuser or ak_is_group_member(account, name="red"):
+            return False
+        for member in User.objects.filter(groups__name="red", is_active=True).exclude(email=""):
+            member_language = (member.locale() or "").replace("_", "-").split("-")[0].lower()
+            if member_language not in {{ _authentik_languages | to_json }}:
+                member_language = "en"
+            ak_send_email(
+                member.email,
+                {{ _authentik_i18n.mail_breakglass_subject | to_json }}[member_language],
+                template="neutrinet/security_notice.html",
+                context={"lang": member_language, "kind": "breakglass_login", "username": account.username, "ip": event.client_ip},
+            )
+        return False
 
   - model: authentik_events.notificationrule
     id: notify-user-security
@@ -55,35 +84,24 @@ entries:
       name: neutrinet-notify-user-security
     attrs:
       severity: warning
-      destination_event_user: true
-      transports:
-        - !KeyOf transport-email
+      destination_event_user: false
+      transports: []
   - model: authentik_events.notificationrule
     id: notify-breakglass-login
     identifiers:
       name: neutrinet-notify-breakglass-login
     attrs:
       severity: alert
-      destination_group: !Find [authentik_core.group, [name, red]]
-      transports:
-        - !KeyOf transport-email
+      destination_event_user: false
+      transports: []
 
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf notify-user-security
-      policy: !KeyOf match-password-set
+      policy: !KeyOf notify-user-security-policy
       order: 0
-{% for action in ['model_created', 'model_deleted'] %}
-{% for model in ['webauthndevice', 'totpdevice', 'staticdevice'] %}
-  - model: authentik_policies.policybinding
-    identifiers:
-      target: !KeyOf notify-user-security
-      policy: !KeyOf match-{{ action }}-{{ model }}
-      order: {{ 10 * loop.index + (100 if action == 'model_deleted' else 0) }}
-{% endfor %}
-{% endfor %}
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf notify-breakglass-login
-      policy: !KeyOf match-breakglass-login
+      policy: !KeyOf notify-breakglass-login-policy
       order: 0

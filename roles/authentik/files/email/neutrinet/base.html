@@ -1,5 +1,5 @@
-{% load i18n %}{% get_current_language as LANGUAGE_CODE %}<!DOCTYPE html>
-<html lang="{% if LANGUAGE_CODE|slice:":2" == "fr" %}fr{% elif LANGUAGE_CODE|slice:":2" == "nl" %}nl{% elif LANGUAGE_CODE|slice:":2" == "de" %}de{% else %}en{% endif %}">
+{% load i18n %}{% get_current_language as LANGUAGE_CODE %}{% firstof lang LANGUAGE_CODE as code %}<!DOCTYPE html>
+<html lang="{% with lang=code|slice:":2" %}{% if lang == "fr" %}fr{% elif lang == "nl" %}nl{% elif lang == "de" %}de{% else %}en{% endif %}{% endwith %}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
