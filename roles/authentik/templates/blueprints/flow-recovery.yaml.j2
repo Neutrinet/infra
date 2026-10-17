@@ -5,7 +5,7 @@ metadata:
 entries:
   - model: authentik_blueprints.metaapplyblueprint
     conditions:
-      - !Condition [NOR, !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-write-email-only]]]
+      - !Condition [NOR, !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-terminate-sessions]]]
     attrs:
       identifiers:
         name: Neutrinet - Policies
@@ -62,6 +62,8 @@ entries:
       target: !KeyOf binding-deny-email-link
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-email-link-missing]]
       order: 0
+    attrs:
+      failure_result: true
 
   - model: authentik_flows.flowstagebinding
     id: binding-mfa-privileged
@@ -77,6 +79,8 @@ entries:
       target: !KeyOf binding-mfa-privileged
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-is-privileged]]
       order: 0
+    attrs:
+      failure_result: true
   - model: authentik_flows.flowstagebinding
     id: binding-mfa
     identifiers:

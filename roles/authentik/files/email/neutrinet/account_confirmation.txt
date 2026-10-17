@@ -1,4 +1,6 @@
 {% load i18n %}{% autoescape off %}{% get_current_language as LANGUAGE_CODE %}{% with lang=LANGUAGE_CODE|slice:":2" %}{% if lang == "fr" %}Confirme ton adresse courriel pour activer ton compte Neutrinet ID :{% elif lang == "nl" %}Bevestig je e-mailadres om je Neutrinet ID-account te activeren:{% elif lang == "de" %}Bestätige deine E-Mail-Adresse, um dein Neutrinet-ID-Konto zu aktivieren:{% else %}Confirm your email address to activate your Neutrinet ID account:{% endif %}
 
 {{ url }}
+
+{% if lang == "fr" %}Ce lien est valable 24 heures.{% elif lang == "nl" %}Deze link is 24 uur geldig.{% elif lang == "de" %}Dieser Link ist 24 Stunden gültig.{% else %}This link is valid for 24 hours.{% endif %}
 {% endwith %}{% endautoescape %}

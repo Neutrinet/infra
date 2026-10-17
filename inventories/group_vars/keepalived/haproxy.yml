@@ -274,6 +274,8 @@ haproxy:
     ssl_verify: false
     deny_paths:
       - /if/flow/initial-setup/
+      - /setup
+      - /api/v3/flows/executor/initial-setup/
 
   - hostname: stalwart.neutrinet.be
     alt_hostnames:

@@ -72,7 +72,6 @@ entries:
     identifiers:
       name: neutrinet-is-privileged
     attrs:
-      failure_result: true
       expression: |
         return request.user.is_superuser or ak_is_group_member(request.user, name="red")
 
@@ -104,8 +103,7 @@ entries:
                 plan.context["neutrinet_language"] = language
 
         denied = (
-            not request.user.username.endswith("-admin")
-            and ak_is_group_member(request.user, name="red")
+            request.user.username.endswith("-admin") != ak_is_group_member(request.user, name="red")
             and not ak_is_group_member(request.user, name="authentik Admins")
         )
         if denied and request.context.get("flow_plan") is not None:
@@ -347,6 +345,7 @@ entries:
       name: neutrinet-email-link-missing
     attrs:
       expression: |
+        from authentik.core.models import User
         plan = request.context.get("flow_plan")
         if plan is None and request.http_request is not None:
             plan = request.http_request.session.get("authentik/flows/plan")
@@ -364,6 +363,10 @@ entries:
 
         token = request.context.get("is_restored")
         denied = not token or token.user_id != request.user.pk
+        if not denied:
+            sent_to = token.plan.context["pending_user"].email or ""
+            current = User.objects.filter(pk=request.user.pk).values_list("email", flat=True).first() or ""
+            denied = sent_to.lower() != current.lower()
         if denied and request.context.get("flow_plan") is not None:
             request.context["flow_plan"].context["deny_message"] = {{ _authentik_i18n.msg_deny | to_json }}[language]
         return denied
@@ -499,7 +502,7 @@ entries:
       name: neutrinet-terminate-sessions
     attrs:
       expression: |
-        from authentik.core.models import Session
+        from authentik.core.models import Session, Token
         from authentik.providers.oauth2.models import AccessToken, RefreshToken
         sessions = Session.objects.filter(authenticatedsession__user=request.user)
         current = request.http_request.session.session_key
@@ -508,4 +511,5 @@ entries:
         sessions.delete()
         RefreshToken.objects.filter(user=request.user).delete()
         AccessToken.objects.filter(user=request.user).delete()
+        Token.objects.filter(user=request.user, intent__in=["api", "app_password"], managed__isnull=True).delete()
         return True

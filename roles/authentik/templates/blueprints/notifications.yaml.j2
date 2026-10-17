@@ -10,7 +10,7 @@ entries:
       name: neutrinet-notify-security
     attrs:
       expression: |
-        from authentik.core.models import User
+        from authentik.core.models import Token, User
         event = request.context["event"]
         user = request.user
         devices = (
@@ -28,21 +28,36 @@ entries:
             kind = "device_added"
         elif event.action == "model_deleted" and model_name in devices:
             kind = "device_removed"
+        elif event.action == "model_created" and model_name == "authentik_core.token":
+            kind = "token_added"
         else:
             return False
         if kind == "breakglass_login":
             if not ak_is_group_member(user, name="authentik Admins"):
                 return False
             recipients = User.objects.filter(groups__name="red", is_active=True).exclude(email="").exclude(pk=user.pk)
+        elif kind == "token_added":
+            token = (
+                Token.objects.filter(pk=model.get("pk"), intent__in=["api", "app_password"], managed__isnull=True)
+                .select_related("user")
+                .first()
+            )
+            if token is None or not token.user.email:
+                return False
+            user = token.user
+            recipients = [user]
         elif getattr(user, "email", ""):
             recipients = [user]
         else:
             return False
+        path = (event.context.get("http_request") or {}).get("path", "")
+        revoked = kind == "password_set" and path.rstrip("/").rsplit("/", 1)[-1] in ("neutrinet-recovery", "neutrinet-password-change")
         subjects = {
             "breakglass_login": {{ _authentik_i18n.mail_breakglass_subject | to_json }},
             "password_set": {{ _authentik_i18n.mail_password_set_subject | to_json }},
             "device_added": {{ _authentik_i18n.mail_device_added_subject | to_json }},
             "device_removed": {{ _authentik_i18n.mail_device_removed_subject | to_json }},
+            "token_added": {{ _authentik_i18n.mail_token_added_subject | to_json }},
         }
         for recipient in recipients:
             recipient_language = (recipient.locale() or "").replace("_", "-").split("-")[0].lower()
@@ -52,7 +67,7 @@ entries:
                 recipient.email,
                 subjects[kind][recipient_language],
                 template="neutrinet/security_notice.html",
-                context={"lang": recipient_language, "kind": kind, "username": user.username, "ip": event.client_ip},
+                context={"lang": recipient_language, "kind": kind, "username": user.username, "ip": event.client_ip, "revoked": revoked},
             )
         return False
 

@@ -32,6 +32,7 @@
     - flow_background.jpg
     - icon_left_brand.svg
     - icon_left_brand.png
+    - icon_left_brand_email.png
     - icon.png
 
 - name: Créer les variables d'environnement

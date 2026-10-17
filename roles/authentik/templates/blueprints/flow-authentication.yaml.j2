@@ -135,16 +135,22 @@ entries:
       target: !KeyOf binding-deny-reputation
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-reputation-ip]]
       order: 0
+    attrs:
+      failure_result: true
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf binding-deny-red-name
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-red-admin-only]]
       order: 0
+    attrs:
+      failure_result: true
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf binding-mfa-privileged
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-is-privileged]]
       order: 0
+    attrs:
+      failure_result: true
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf binding-mfa
@@ -155,6 +161,8 @@ entries:
       target: !KeyOf binding-login-privileged
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-is-privileged]]
       order: 0
+    attrs:
+      failure_result: true
   - model: authentik_policies.policybinding
     identifiers:
       target: !KeyOf binding-login-privileged

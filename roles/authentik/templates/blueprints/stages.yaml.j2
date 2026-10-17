@@ -5,7 +5,7 @@ metadata:
 entries:
   - model: authentik_blueprints.metaapplyblueprint
     conditions:
-      - !Condition [NOR, !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-write-email-only]]]
+      - !Condition [NOR, !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-terminate-sessions]]]
     attrs:
       identifiers:
         name: Neutrinet - Policies
@@ -114,12 +114,6 @@ entries:
       backends:
         - authentik.core.auth.InbuiltBackend
       failed_attempts_before_cancel: 5
-
-  - model: authentik_stages_user_write.userwritestage
-    identifiers:
-      name: neutrinet-write
-    attrs:
-      user_creation_mode: never_create
 {% for lang in _authentik_languages %}
 
   - model: authentik_stages_prompt.prompt
@@ -182,6 +176,20 @@ entries:
       placeholder: ""
       placeholder_expression: false
       order: 1
+  - model: authentik_stages_prompt.prompt
+    id: field-new-password-notice-{{ lang }}
+    identifiers:
+      name: neutrinet-field-new-password-notice-{{ lang }}
+    attrs:
+      field_key: neutrinet_revoke_notice
+      label: Revocation notice
+      type: static
+      required: false
+      placeholder: ""
+      placeholder_expression: false
+      initial_value: {{ _authentik_i18n.new_password_revoke_notice[lang] | to_json }}
+      initial_value_expression: false
+      order: 2
   - model: authentik_stages_prompt.promptstage
     identifiers:
       name: neutrinet-new-password-prompt-{{ lang }}
@@ -189,10 +197,17 @@ entries:
       fields:
         - !KeyOf field-new-password-{{ lang }}
         - !KeyOf field-new-password-repeat-{{ lang }}
+        - !KeyOf field-new-password-notice-{{ lang }}
       validation_policies:
         - !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-password-length]]
         - !Find [authentik_policies_password.passwordpolicy, [name, neutrinet-password]]
 {% endfor %}
+
+  - model: authentik_stages_user_write.userwritestage
+    identifiers:
+      name: neutrinet-write
+    attrs:
+      user_creation_mode: never_create
 {% for kind in ["totp", "webauthn", "static"] %}
 
   - model: authentik_flows.flowstagebinding
@@ -209,6 +224,8 @@ entries:
       target: !KeyOf {{ kind }}-binding-deny-reputation
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, neutrinet-reputation-ip]]
       order: 0
+    attrs:
+      failure_result: true
   - model: authentik_flows.flowstagebinding
     id: {{ kind }}-binding-password
     identifiers:

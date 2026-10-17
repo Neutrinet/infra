@@ -48,10 +48,10 @@ _authentik_i18n:
     nl: "Het moet verschillen van het adres van je gewone account."
     de: "Sie muss sich von der Adresse deines normalen Kontos unterscheiden."
   red_pending_notice:
-    en: "Your administration account has been created. It is waiting for validation by a member of the administration team: you will get access once it has been validated."
-    fr: "Ton compte d'administration a été créé. Il attend la validation d'un membre de l'équipe d'administration : tu recevras l'accès une fois qu'il sera validé."
-    nl: "Je beheeraccount is aangemaakt. Het wacht op goedkeuring door een lid van het beheerteam: je krijgt toegang zodra het is goedgekeurd."
-    de: "Dein Administrationskonto wurde erstellt. Es wartet auf die Freigabe durch ein Mitglied des Administrationsteams: Du erhältst Zugriff, sobald es freigegeben ist."
+    en: "Your administration account has been created. It is waiting for validation by a member of the administration team: you will get access once it has been validated. You can close this page."
+    fr: "Ton compte d'administration a été créé. Il attend la validation d'un membre de l'équipe d'administration : tu recevras l'accès une fois qu'il sera validé. Tu peux fermer cette page."
+    nl: "Je beheeraccount is aangemaakt. Het wacht op goedkeuring door een lid van het beheerteam: je krijgt toegang zodra het is goedgekeurd. Je kunt deze pagina sluiten."
+    de: "Dein Administrationskonto wurde erstellt. Es wartet auf die Freigabe durch ein Mitglied des Administrationsteams: Du erhältst Zugriff, sobald es freigegeben ist. Du kannst diese Seite schließen."
   email_change_link:
     en: "Change my email address"
     fr: "Changer mon adresse courriel"
@@ -92,6 +92,11 @@ _authentik_i18n:
     fr: "Nouveau mot de passe (confirmation)"
     nl: "Nieuw wachtwoord (bevestiging)"
     de: "Neues Passwort (Bestätigung)"
+  new_password_revoke_notice:
+    en: "After this change, your other sessions will be closed and your app passwords and API tokens revoked."
+    fr: "Après ce changement, tes autres sessions seront fermées, et tes mots de passe d'application et jetons d'API révoqués."
+    nl: "Na deze wijziging worden je andere sessies afgesloten en je app-wachtwoorden en API-tokens ingetrokken."
+    de: "Nach dieser Änderung werden deine anderen Sitzungen beendet und deine App-Passwörter und API-Tokens widerrufen."
   locale:
     en: "Language"
     fr: "Langue"
@@ -197,3 +202,8 @@ _authentik_i18n:
     fr: "Neutrinet ID : compte d'administration en attente de validation"
     nl: "Neutrinet ID: beheeraccount wacht op goedkeuring"
     de: "Neutrinet ID: Administrationskonto wartet auf Freigabe"
+  mail_token_added_subject:
+    en: "Neutrinet ID: API token or app password created"
+    fr: "Neutrinet ID : jeton d'API ou mot de passe d'application créé"
+    nl: "Neutrinet ID: API-token of app-wachtwoord aangemaakt"
+    de: "Neutrinet ID: API-Token oder App-Passwort erstellt"
