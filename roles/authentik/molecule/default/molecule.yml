@@ -9,16 +9,11 @@ platforms:
     box: debian/trixie64
     cpu: 4
     memory: 4096
-    interfaces:
-      - network_name: private_network
-        type: dhcp
-        auto_config: true
 provisioner:
   name: ansible
   config_options:
     defaults:
       interpreter_python: /usr/bin/python3
-      vault_password_file: "${MOLECULE_PROJECT_DIRECTORY}/../../vault.key"
     ssh_connection:
       pipelining: true
 verifier:

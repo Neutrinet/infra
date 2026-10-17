@@ -5,6 +5,7 @@ ansible-compat~=26.4
 # See https://github.com/ansible-community/molecule-plugins/issues/301
 molecule~=25.1.0
 molecule-plugins[vagrant]~=25.8
+pytest~=9.1
 pre-commit~=4.5
 python-vagrant~=1.0.0
 mitogen~=0.3
