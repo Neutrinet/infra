@@ -4,7 +4,10 @@
 Usage : check_blueprints.py [schema.json]
 
 Sans argument, le schéma est lu dans le clone git d'Authentik désigné par la variable d'environnement
-AUTHENTIK_SRC, au tag de la version déployée (`authentik_version` de `defaults/main.yml`).
+AUTHENTIK_SRC, au tag de la version déployée (`authentik_version` de `defaults/main.yml`). Sans argument ni
+AUTHENTIK_SRC, les contrôles qui n'ont pas besoin du schéma sont lancés et le contrôle du schéma est signalé
+comme sauté. Code de sortie : 0 si tous les contrôles lancés passent, 1 si un contrôle échoue, 2 si le schéma
+demandé (argument ou AUTHENTIK_SRC) est introuvable.
 """
 
 import collections
@@ -38,6 +41,29 @@ COPIED_BLOCKS = {
     "détection de la langue": LANGUAGE_BLOCK,
     "réseau de la réputation": NETWORK_BLOCK,
     "langue du destinataire": RECIPIENT_BLOCK,
+}
+COPIED_MARKERS = {
+    "détection de la langue": (
+        'plan = request.context.get("flow_plan")\nif plan is None and request.http_request is not None:',
+        'language = (language or "").replace("_", "-").split("-")[0].lower()',
+        "neutrinet_language",
+    ),
+    "réseau de la réputation": (
+        "ClientIPMiddleware.get_client_ip",
+        "/64",
+        "in_network = {",
+    ),
+    "langue du destinataire": (
+        "recipient.locale()",
+        'recipient_language = "en"',
+    ),
+}
+FAILURE_RESULT_POLICIES = {
+    "neutrinet-is-privileged",
+    "neutrinet-reputation-ip",
+    "neutrinet-red-admin-only",
+    "neutrinet-red-invitation",
+    "neutrinet-email-link-missing",
 }
 
 
@@ -234,19 +260,69 @@ def check_i18n(role_vars):
     return errors
 
 
+def expressions(files):
+    for name, (data, _tags) in files.items():
+        for entry in data["entries"]:
+            expression = (entry.get("attrs") or {}).get("expression", "")
+            if expression:
+                yield f"{name}:{entry_name(entry)}", expression
+
+
+def expected_copies(files):
+    """{bloc: nombre d'expressions qui contiennent un de ses marqueurs}, soit le nombre de copies attendues."""
+    return {
+        label: sum(1 for _where, expression in expressions(files) if any(marker in expression for marker in markers))
+        for label, markers in COPIED_MARKERS.items()
+    }
+
+
+def marker_positions(expression, marker):
+    start = expression.find(marker)
+    while start != -1:
+        yield start
+        start = expression.find(marker, start + 1)
+
+
 def check_copies(files):
-    """Les blocs recopiés d'une expression à l'autre restent identiques."""
+    """Les blocs recopiés d'une expression à l'autre restent complets et identiques.
+
+    Toute expression qui contient un marqueur d'un bloc (début, fin ou ligne caractéristique) en contient une copie
+    complète, et chaque occurrence d'un marqueur se trouve dans une copie complète ; toutes les copies sont identiques.
+    """
     errors = []
     for label, pattern in COPIED_BLOCKS.items():
         variants = collections.defaultdict(list)
-        for name, (data, _tags) in files.items():
-            for entry in data["entries"]:
-                expression = (entry.get("attrs") or {}).get("expression", "")
-                for match in pattern.finditer(expression):
-                    variants[match.group(0)].append(f"{name}:{entry_name(entry)}")
+        for where, expression in expressions(files):
+            spans = []
+            for match in pattern.finditer(expression):
+                variants[match.group(0)].append(where)
+                spans.append(match.span())
+            outside = [
+                marker
+                for marker in COPIED_MARKERS[label]
+                for start in marker_positions(expression, marker)
+                if not any(begin <= start and start + len(marker) <= end for begin, end in spans)
+            ]
+            if outside:
+                errors.append(f"{where}: bloc « {label} » incomplet ou modifié (« {outside[0].splitlines()[0]} » hors d'une copie complète)")
         if len(variants) > 1:
             groups = sorted(variants.values(), key=len)
             errors.append(f"bloc « {label} » divergent : {groups[:-1]} diffèrent de {groups[-1][:3]}…")
+    return errors
+
+
+def check_failure_result(files):
+    """Les liaisons des politiques de privilège et de refus ont `failure_result: true`."""
+    errors = []
+    for name, (data, _tags) in files.items():
+        for entry in data["entries"]:
+            if entry["model"] != "authentik_policies.policybinding":
+                continue
+            policy = (entry.get("identifiers") or {}).get("policy")
+            if not isinstance(policy, Tag) or policy.suffix != "Find" or not is_find(policy.value):
+                continue
+            if policy.value[1][1] in FAILURE_RESULT_POLICIES and (entry.get("attrs") or {}).get("failure_result") is not True:
+                errors.append(f"{name}: liaison de {policy.value[1][1]} sans failure_result: true")
     return errors
 
 
@@ -320,6 +396,10 @@ def check_witnesses(files):
     return errors
 
 
+def schema_requested(argv):
+    return len(argv) > 1 or bool(os.environ.get("AUTHENTIK_SRC"))
+
+
 def load_schema(argv, version):
     if len(argv) > 1:
         return json.loads(Path(argv[1]).read_text())
@@ -334,44 +414,61 @@ def load_schema(argv, version):
             return json.loads(result.stdout)
         print(f"schéma introuvable dans {source} au tag version/{version} : {result.stderr.strip()}")
         return None
+    print_usage(argv, version)
+    return None
+
+
+def print_usage(argv, version):
     print(
         f"usage : {argv[0]} [schema.json]\n"
         f"Sans argument, AUTHENTIK_SRC doit désigner un clone git d'Authentik qui contient le tag version/{version}.\n"
         f"Schéma de la version déployée : https://raw.githubusercontent.com/goauthentik/authentik/version/{version}/blueprints/schema.json"
     )
-    return None
 
 
-def main(argv):
-    defaults, role_vars = role_files()
-    version = defaults["authentik_version"]
-    schema = load_schema(argv, version)
-    if schema is None:
-        return 2
-    title = schema.get("title", "")
-    if f" {version} " not in f" {title} ":
-        print(f"ERREUR schéma « {title} » : la version déployée est {version}")
-        return 1
-
-    files = render_all(build_context(defaults, role_vars))
-    if not files:
-        print("aucun blueprint trouvé")
-        return 1
-    schema_errors = check_schema(files, schema)
-    for name in files:
-        if not any(error.startswith(f"{name}:") for error in schema_errors):
-            print(f"{name}: rendu et schéma OK")
-    errors = schema_errors + (
-        check_attributes(files, schema)
-        + check_references(files)
+def run_checks(files, role_vars, schema=None):
+    """Erreurs de tous les contrôles ; sans schéma, ceux qui en ont besoin ne sont pas lancés."""
+    errors = []
+    if schema is not None:
+        errors += check_schema(files, schema) + check_attributes(files, schema)
+    return errors + (
+        check_references(files)
         + check_binding_evaluation(files)
+        + check_failure_result(files)
         + check_orders(files)
         + check_i18n(role_vars)
         + check_copies(files)
         + check_witnesses(files)
     )
+
+
+def main(argv):
+    defaults, role_vars = role_files()
+    version = defaults["authentik_version"]
+    schema = None
+    if schema_requested(argv):
+        schema = load_schema(argv, version)
+        if schema is None:
+            return 2
+        title = schema.get("title", "")
+        if f" {version} " not in f" {title} ":
+            print(f"ERREUR schéma « {title} » : la version déployée est {version}")
+            return 1
+
+    files = render_all(build_context(defaults, role_vars))
+    if not files:
+        print("aucun blueprint trouvé")
+        return 1
+    errors = run_checks(files, role_vars, schema)
+    status = "rendu et schéma OK" if schema is not None else "rendu OK"
+    for name in files:
+        if not any(error.startswith(f"{name}:") for error in errors):
+            print(f"{name}: {status}")
     for error in errors:
         print(f"ERREUR {error}")
+    if schema is None:
+        print_usage(argv, version)
+        print("CONTRÔLE DU SCHÉMA SAUTÉ (schéma et attributs des modèles) : aucun schéma donné.")
     return 1 if errors else 0
 
 

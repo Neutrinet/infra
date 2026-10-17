@@ -511,5 +511,5 @@ entries:
         sessions.delete()
         RefreshToken.objects.filter(user=request.user).delete()
         AccessToken.objects.filter(user=request.user).delete()
-        Token.objects.filter(user=request.user, intent__in=["api", "app_password"], managed__isnull=True).delete()
+        Token.objects.filter(user=request.user).delete()
         return True

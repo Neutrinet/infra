@@ -18,15 +18,15 @@ _authentik_i18n:
     nl: "Gebruikersnaam"
     de: "Anmeldename"
   username_help:
-    en: "3 to 32 characters: lowercase letters, digits, - and _."
-    fr: "3 à 32 caractères : lettres minuscules, chiffres, - et _."
-    nl: "3 tot 32 tekens: kleine letters, cijfers, - en _."
-    de: "3 bis 32 Zeichen: Kleinbuchstaben, Ziffern, - und _."
+    en: "3 to 32 characters: lowercase letters, digits, - and _, starting with a letter or a digit, not ending with -admin."
+    fr: "3 à 32 caractères : lettres minuscules, chiffres, - et _, en commençant par une lettre ou un chiffre, sans finir par -admin."
+    nl: "3 tot 32 tekens: kleine letters, cijfers, - en _, beginnend met een letter of cijfer, niet eindigend op -admin."
+    de: "3 bis 32 Zeichen: Kleinbuchstaben, Ziffern, - und _, beginnend mit einem Buchstaben oder einer Ziffer, nicht auf -admin endend."
   username_red_help:
-    en: "It must end with -admin (for example alice-admin), 32 characters at most."
-    fr: "Il doit finir par -admin (par exemple alice-admin), 32 caractères au plus."
-    nl: "De naam moet eindigen op -admin (bijvoorbeeld alice-admin), maximaal 32 tekens."
-    de: "Er muss auf -admin enden (zum Beispiel alice-admin), höchstens 32 Zeichen."
+    en: "It must end with -admin (for example alice-admin). Before -admin: 3 to 26 characters, lowercase letters, digits, - and _, starting with a letter or a digit."
+    fr: "Il doit finir par -admin (par exemple alice-admin). Avant -admin : 3 à 26 caractères, lettres minuscules, chiffres, - et _, en commençant par une lettre ou un chiffre."
+    nl: "De naam moet eindigen op -admin (bijvoorbeeld alice-admin). Vóór -admin: 3 tot 26 tekens, kleine letters, cijfers, - en _, beginnend met een letter of cijfer."
+    de: "Er muss auf -admin enden (zum Beispiel alice-admin). Vor -admin: 3 bis 26 Zeichen, Kleinbuchstaben, Ziffern, - und _, beginnend mit einem Buchstaben oder einer Ziffer."
   username_settings_help:
     en: "To change your username, write to support@neutrinet.be."
     fr: "Pour changer de nom d'utilisateur, écris à support@neutrinet.be."
@@ -48,10 +48,10 @@ _authentik_i18n:
     nl: "Het moet verschillen van het adres van je gewone account."
     de: "Sie muss sich von der Adresse deines normalen Kontos unterscheiden."
   red_pending_notice:
-    en: "Your administration account has been created. It is waiting for validation by a member of the administration team: you will get access once it has been validated. You can close this page."
-    fr: "Ton compte d'administration a été créé. Il attend la validation d'un membre de l'équipe d'administration : tu recevras l'accès une fois qu'il sera validé. Tu peux fermer cette page."
-    nl: "Je beheeraccount is aangemaakt. Het wacht op goedkeuring door een lid van het beheerteam: je krijgt toegang zodra het is goedgekeurd. Je kunt deze pagina sluiten."
-    de: "Dein Administrationskonto wurde erstellt. Es wartet auf die Freigabe durch ein Mitglied des Administrationsteams: Du erhältst Zugriff, sobald es freigegeben ist. Du kannst diese Seite schließen."
+    en: "Your administration account has been created. It is waiting for validation by a member of the administration team, who will contact you through another channel to verify your identity. You can close this page."
+    fr: "Ton compte d'administration a été créé. Il attend la validation d'un membre de l'équipe d'administration, qui te contactera par un autre canal pour vérifier ton identité. Tu peux fermer cette page."
+    nl: "Je beheeraccount is aangemaakt. Het wacht op goedkeuring door een lid van het beheerteam, dat via een ander kanaal contact met je opneemt om je identiteit te controleren. Je kunt deze pagina sluiten."
+    de: "Dein Administrationskonto wurde erstellt. Es wartet auf die Freigabe durch ein Mitglied des Administrationsteams, das dich über einen anderen Kanal kontaktiert, um deine Identität zu prüfen. Du kannst diese Seite schließen."
   email_change_link:
     en: "Change my email address"
     fr: "Changer mon adresse courriel"
@@ -143,10 +143,10 @@ _authentik_i18n:
     nl: "Deze gebruikersnaam is al in gebruik. Kies een andere."
     de: "Dieser Anmeldename ist bereits vergeben. Wähle einen anderen."
   msg_username_red_format:
-    en: "An administration account username must be <username>-admin, 32 characters at most."
-    fr: "Le nom d'utilisateur d'un compte d'administration doit être <nom d'utilisateur>-admin, 32 caractères au plus."
-    nl: "De gebruikersnaam van een beheeraccount moet <gebruikersnaam>-admin zijn, maximaal 32 tekens."
-    de: "Der Anmeldename eines Administrationskontos muss <anmeldename>-admin lauten, höchstens 32 Zeichen."
+    en: "An administration account username must end with -admin, preceded by 3 to 26 characters: lowercase letters, digits, - and _, starting with a letter or a digit."
+    fr: "Le nom d'utilisateur d'un compte d'administration doit finir par -admin, précédé de 3 à 26 caractères : lettres minuscules, chiffres, - et _, en commençant par une lettre ou un chiffre."
+    nl: "De gebruikersnaam van een beheeraccount moet eindigen op -admin, met daarvoor 3 tot 26 tekens: kleine letters, cijfers, - en _, beginnend met een letter of cijfer."
+    de: "Der Anmeldename eines Administrationskontos muss auf -admin enden, davor 3 bis 26 Zeichen: Kleinbuchstaben, Ziffern, - und _, beginnend mit einem Buchstaben oder einer Ziffer."
   msg_email_taken:
     en: "This email address is already used by another account. If it is yours, use \"Forgot username or password?\" on the sign-in page."
     fr: "Cette adresse courriel est déjà utilisée par un autre compte. Si c'est le tien, utilise « Mot de passe ou nom d'utilisateur oublié ? » sur la page de connexion."
@@ -163,10 +163,10 @@ _authentik_i18n:
     nl: "Toegang geweigerd. Denk je dat dit een vergissing is? Schrijf naar support@neutrinet.be."
     de: "Zugriff verweigert. Wenn du denkst, dass das ein Fehler ist, schreib an support@neutrinet.be."
   msg_deny_reputation:
-    en: "Too many failed attempts from your connection. Try again later, or reset your password."
-    fr: "Trop de tentatives échouées depuis ta connexion. Réessaie plus tard, ou réinitialise ton mot de passe."
-    nl: "Te veel mislukte pogingen vanaf je verbinding. Probeer het later opnieuw, of stel je wachtwoord opnieuw in."
-    de: "Zu viele fehlgeschlagene Versuche von deiner Verbindung. Versuche es später erneut oder setze dein Passwort zurück."
+    en: "Too many failed attempts from your connection. Try again later (in 24 hours at the latest), or reset your password."
+    fr: "Trop de tentatives échouées depuis ta connexion. Réessaie plus tard (dans 24 heures au plus tard), ou réinitialise ton mot de passe."
+    nl: "Te veel mislukte pogingen vanaf je verbinding. Probeer het later opnieuw (uiterlijk over 24 uur), of stel je wachtwoord opnieuw in."
+    de: "Zu viele fehlgeschlagene Versuche von deiner Verbindung. Versuche es später erneut (spätestens in 24 Stunden) oder setze dein Passwort zurück."
   password_help:
     en: "At least 12 characters."
     fr: "Au moins 12 caractères."

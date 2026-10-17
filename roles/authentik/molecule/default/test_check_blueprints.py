@@ -5,6 +5,7 @@ demandent le schéma d'Authentik sont sautés si AUTHENTIK_SRC ne désigne pas u
 """
 
 import copy
+import json
 import os
 
 import pytest
@@ -48,18 +49,46 @@ def test_schema_par_defaut_sans_source(monkeypatch, capsys):
     assert f"version/{VERSION}" in capsys.readouterr().out
 
 
-def test_arbre_actuel_sans_erreur(files, schema):
-    errors = (
-        cb.check_schema(files, schema)
-        + cb.check_attributes(files, schema)
-        + cb.check_references(files)
-        + cb.check_binding_evaluation(files)
-        + cb.check_orders(files)
-        + cb.check_i18n(ROLE_VARS)
-        + cb.check_copies(files)
-        + cb.check_witnesses(files)
-    )
-    assert errors == []
+def test_arbre_actuel_sans_erreur_hors_schema(files):
+    assert cb.run_checks(files, ROLE_VARS) == []
+
+
+def test_arbre_actuel_conforme_au_schema(files, schema):
+    assert cb.check_schema(files, schema) + cb.check_attributes(files, schema) == []
+
+
+def test_main_sans_schema(monkeypatch, capsys):
+    monkeypatch.delenv("AUTHENTIK_SRC", raising=False)
+    assert cb.main(["check_blueprints.py"]) == 0
+    out = capsys.readouterr().out
+    assert "CONTRÔLE DU SCHÉMA SAUTÉ" in out
+    assert "ERREUR" not in out
+
+
+def test_main_sans_schema_controle_en_echec(monkeypatch, capsys):
+    monkeypatch.delenv("AUTHENTIK_SRC", raising=False)
+    monkeypatch.setattr(cb, "check_i18n", lambda role_vars: ["traduction absente"])
+    assert cb.main(["check_blueprints.py"]) == 1
+    assert "ERREUR traduction absente" in capsys.readouterr().out
+
+
+def test_main_avec_schema(schema, capsys):
+    assert cb.main(["check_blueprints.py"]) == 0
+    out = capsys.readouterr().out
+    assert "rendu et schéma OK" in out and "SAUTÉ" not in out
+
+
+def test_main_source_introuvable(monkeypatch, tmp_path):
+    monkeypatch.setenv("AUTHENTIK_SRC", str(tmp_path / "absent"))
+    assert cb.main(["check_blueprints.py"]) == 2
+
+
+def test_main_schema_d_une_autre_version_refuse(monkeypatch, tmp_path, capsys):
+    monkeypatch.delenv("AUTHENTIK_SRC", raising=False)
+    other = tmp_path / "schema.json"
+    other.write_text(json.dumps({"title": "authentik 2025.10.1 Blueprint schema", "type": "object"}))
+    assert cb.main(["check_blueprints.py", str(other)]) == 1
+    assert f"la version déployée est {VERSION}" in capsys.readouterr().out
 
 
 def test_attribut_inconnu_refuse(files, schema):
@@ -90,16 +119,53 @@ def test_bloc_recopie_divergent(files, template, name, old, new):
     assert len(errors) == 1 and name in errors[0]
 
 
+def copies(files):
+    return {
+        label: sum(len(pattern.findall(expression)) for _where, expression in cb.expressions(files))
+        for label, pattern in cb.COPIED_BLOCKS.items()
+    }
+
+
 def test_bloc_recopie_present_partout(files):
-    counts = {label: 0 for label in cb.COPIED_BLOCKS}
-    for data, _tags in files.values():
-        for item in data["entries"]:
-            expression = (item.get("attrs") or {}).get("expression", "")
-            for label, pattern in cb.COPIED_BLOCKS.items():
-                counts[label] += len(pattern.findall(expression))
-    assert counts["détection de la langue"] >= 12
-    assert counts["réseau de la réputation"] == 2
-    assert counts["langue du destinataire"] == 2
+    expected = cb.expected_copies(files)
+    assert all(count > 0 for count in expected.values())
+    assert copies(files) == expected
+
+
+@pytest.mark.parametrize("template,name,label,old,new", [
+    ("policies.yaml.j2", "neutrinet-email-verified", "détection de la langue",
+     'plan = request.context.get("flow_plan")\n', 'plan = request.context.get("flow_plan") \n'),
+    ("policies.yaml.j2", "neutrinet-email-verified", "détection de la langue",
+     'plan.context["neutrinet_language"] = language\n', 'plan.context["neutrinet_language"] = language or "en"\n'),
+    ("policies.yaml.j2", "neutrinet-reputation-reset", "réseau de la réputation",
+     "address = ipaddress.ip_address(ClientIPMiddleware.get_client_ip(request.http_request))\n",
+     "address = ipaddress.ip_address(ClientIPMiddleware.get_client_ip(request.http_request)) \n"),
+    ("policies.yaml.j2", "neutrinet-reputation-reset", "réseau de la réputation",
+     'in_network = {"where"', 'in_network = dict(**{"where"'),
+    ("notifications.yaml.j2", "neutrinet-notify-security", "langue du destinataire",
+     'recipient_language = (recipient.locale() or "")', 'recipient_language = (recipient.locale() or "en")'),
+    ("notifications.yaml.j2", "neutrinet-notify-security", "langue du destinataire",
+     'recipient_language = "en"\n', 'recipient_language = "en" \n'),
+])
+def test_bloc_recopie_premiere_ou_derniere_ligne_modifiee(files, template, name, label, old, new):
+    attrs = entry(files, template, name, "authentik_policies_expression.expressionpolicy")["attrs"]
+    assert attrs["expression"].count(old) == 1
+    attrs["expression"] = attrs["expression"].replace(old, new)
+    errors = cb.check_copies(files)
+    assert len(errors) == 1 and name in errors[0] and label in errors[0]
+    assert copies(files)[label] == cb.expected_copies(files)[label] - 1
+
+
+def test_failure_result_absent(files):
+    binding = next(
+        item for item in files["flow-recovery.yaml.j2"][0]["entries"]
+        if item["model"] == "authentik_policies.policybinding"
+        and item["identifiers"]["policy"].suffix == "Find"
+        and item["identifiers"]["policy"].value[1][1] == "neutrinet-email-link-missing"
+    )
+    del binding["attrs"]["failure_result"]
+    errors = cb.check_failure_result(files)
+    assert len(errors) == 1 and "neutrinet-email-link-missing" in errors[0]
 
 
 def test_ordre_partage(files):

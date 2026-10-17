@@ -34,6 +34,8 @@
     - icon_left_brand.png
     - icon_left_brand_email.png
     - icon.png
+  notify:
+    - Restart authentik
 
 - name: Créer les variables d'environnement
   ansible.builtin.template:

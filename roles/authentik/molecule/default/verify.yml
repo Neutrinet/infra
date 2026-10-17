@@ -19,6 +19,26 @@
       - neutrinet-ldap
 
   tasks:
+    - name: Liste des blueprints déployés
+      ansible.builtin.find:
+        paths: /opt/authentik/blueprints
+        patterns: "*.yaml"
+      register: _authentik_blueprint_files
+
+    - name: Lecture des blueprints déployés
+      ansible.builtin.slurp:
+        src: "{{ item.path }}"
+      loop: "{{ _authentik_blueprint_files.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+      register: _authentik_blueprint_contents
+
+    - name: Empreintes attendues des blueprints
+      ansible.builtin.set_fact:
+        _authentik_expected_hashes: >-
+          {{ dict(_authentik_blueprint_contents.results | map(attribute='source') | map('basename') | map('regex_replace', '^', 'custom/')
+            | zip(_authentik_blueprint_contents.results | map(attribute='content') | map('b64decode') | map('hash', 'sha512'))) }}
+
     - name: Attente de l'application des blueprints
       ansible.builtin.uri:
         url: "{{ _authentik_api }}/managed/blueprints/?path__startswith=custom/&page_size=100"
@@ -29,8 +49,10 @@
       delay: 15
       until:
         - _authentik_blueprints.status == 200
+        - _authentik_expected_hashes | length == _authentik_expected_blueprints | int
         - _authentik_blueprints.json.results | selectattr('path', 'match', '^custom/') | list | length == _authentik_expected_blueprints | int
         - _authentik_blueprints.json.results | selectattr('path', 'match', '^custom/') | rejectattr('status', 'equalto', 'successful') | list | length == 0
+        - (_authentik_blueprints.json.results | selectattr('path', 'match', '^custom/') | items2dict(key_name='path', value_name='last_applied_hash')) == _authentik_expected_hashes
 
     - name: Vérification des flows
       ansible.builtin.uri:
