@@ -1,4 +1,6 @@
+# renovate: datasource=ruby-version depName=ruby
 ruby_version: 3.4.11
 ruby_owner: root
 
+# renovate: datasource=github-tags depName=rbenv/ruby-build versioning=loose
 ruby_build_version: v20261013

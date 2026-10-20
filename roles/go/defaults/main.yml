@@ -1,1 +1,2 @@
+# renovate: datasource=golang-version depName=go
 go_version: "1.27.2"

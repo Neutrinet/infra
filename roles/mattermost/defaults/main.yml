@@ -1,5 +1,6 @@
 mattermost_domain: chat.example.com
 mattermost_owner: "{{ mattermost_domain | replace('.', '-') }}"
+# renovate: datasource=github-releases depName=mattermost/mattermost extractVersion=^v(?<version>.+)$
 mattermost_version: 11.7.12
 
 postgresql_host: localhost
@@ -12,6 +13,7 @@ mattermost_s3_bucket: mattermost
 mattermost_s3_access_key: minio
 mattermost_s3_secret_key: neutrinet
 
+# renovate: datasource=github-releases depName=42wim/matterbridge extractVersion=^v(?<version>.+)$
 matterbridge_version: 1.26.0
 # Ignore failing bridge on startup. Useful for testing purposes.
 # After running the playbook, consider checking the logs to see if any bridge is failing
