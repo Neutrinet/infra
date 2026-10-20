@@ -46,14 +46,11 @@
     state: started
     enabled: true
 
-- name: Création d'un cron job pour nettoyer les images docker chaque semaine
+- name: Suppression du cron job de nettoyage des images docker
   ansible.builtin.cron:
     name: docker-prune
     cron_file: docker-prune
-    state: present
-    special_time: weekly
-    user: root
-    job: docker system prune -af --filter "until=$((30*24))h" > /dev/null
+    state: absent
 
 - name: Trigger docker handler
   ansible.builtin.meta: flush_handlers

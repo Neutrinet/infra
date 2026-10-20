@@ -1,0 +1,16 @@
+[Unit]
+Description=Clear the Docker cache of GitLab Runner
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+Environment=IMAGE_FILTER_FLAGS=until=720h
+ExecStart=/usr/share/gitlab-runner/clear-docker-cache prune
+LockPersonality=true
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectClock=true
+ProtectSystem=full
+RestrictAddressFamilies=AF_UNIX
+SystemCallFilter=@system-service
