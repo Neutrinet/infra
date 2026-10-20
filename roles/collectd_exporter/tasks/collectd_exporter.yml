@@ -6,7 +6,6 @@
     home: /opt/collectd-exporter
     shell: /sbin/nologin
     system: true
-    append: true
     state: present
 
 - name: Création des dossiers de collectd exporter
