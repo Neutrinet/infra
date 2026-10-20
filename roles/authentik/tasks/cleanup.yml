@@ -1,0 +1,10 @@
+---
+
+- name: cleanup | Redémarrage des conteneurs sur les nouvelles images
+  ansible.builtin.meta: flush_handlers
+
+- name: cleanup | Suppression des images non utilisées par un conteneur
+  containers.podman.podman_prune:
+    image: true
+    image_filters:
+      dangling_only: false

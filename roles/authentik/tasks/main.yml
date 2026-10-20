@@ -44,3 +44,8 @@
   ansible.builtin.import_tasks:
     file: backup.yml
   tags: ['backup']
+
+- name: Nettoyage des anciennes images
+  ansible.builtin.import_tasks:
+    file: cleanup.yml
+  tags: ['cleanup']
