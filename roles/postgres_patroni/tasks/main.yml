@@ -43,7 +43,7 @@
     mode: "u=rw,g=r,o="
     validate: patroni --ignore-listen-port --validate-config %s
   vars:
-    patroni_current_member: "{{ etcd_members | selectattr('name', '==', ansible_hostname) | first }}"
+    patroni_current_member: "{{ etcd_members | selectattr('name', '==', ansible_facts['hostname']) | first }}"
   notify: Reload patroni
   diff: false
 

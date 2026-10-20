@@ -9,7 +9,7 @@
     types: deb
     signed_by: https://download.docker.com/linux/debian/gpg
     uris: https://download.docker.com/linux/debian
-    suites: "{{ ansible_distribution_release | lower }}"
+    suites: "{{ ansible_facts['distribution_release'] | lower }}"
     components:
       - stable
     state: present

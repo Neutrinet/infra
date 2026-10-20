@@ -16,8 +16,8 @@
       ansible.builtin.apt:
         name: borgbackup
         state: latest
-        default_release: "{{ ansible_distribution_release }}-backports"
-      when: ansible_distribution == 'Debian' and ansible_distribution_major_version | int <= 12
+        default_release: "{{ ansible_facts['distribution_release'] }}-backports"
+      when: ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version'] | int <= 12
 
     - name: Upgrade TAM du dépôt
       ansible.builtin.command: borgmatic borg upgrade --tam

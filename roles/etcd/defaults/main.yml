@@ -2,4 +2,4 @@ etcd_name: neutrinet-patroni
 etcd_data_dir: "/var/lib/etcd/neutrinet-patroni"
 etcd_members:
   - name: "{{ inventory_hostname }}"
-    ipv4: "{{ ansible_default_ipv4.address }}"
+    ipv4: "{{ ansible_facts['default_ipv4'].address }}"

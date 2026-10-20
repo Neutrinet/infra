@@ -9,7 +9,7 @@
     types: deb
     signed_by: https://go.packager.io/srv/deb/zammad/zammad/gpg-key.gpg
     uris: https://go.packager.io/srv/deb/zammad/zammad/stable/debian
-    suites: "{{ ansible_distribution_major_version }}"
+    suites: "{{ ansible_facts['distribution_major_version'] }}"
     components:
       - main
     state: present

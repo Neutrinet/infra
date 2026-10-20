@@ -47,10 +47,10 @@ vrrp_instance VI_{{ instance.type }}_{{ loop.index }} {
   }
 {% endif %}
 
-  unicast_src_ip {{ (instance.addresses | intersect(lookup('vars', 'ansible_all_' + instance.type + '_addresses')) | list | first) }}
+  unicast_src_ip {{ (instance.addresses | intersect(ansible_facts['all_' + instance.type + '_addresses']) | list | first) }}
 
   unicast_peer {
-{% for ip in instance.addresses if ip not in lookup('vars', 'ansible_all_' + instance.type + '_addresses') %}
+{% for ip in instance.addresses if ip not in ansible_facts['all_' + instance.type + '_addresses'] %}
     {{ ip }}
 {% endfor %}
   }

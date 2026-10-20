@@ -9,7 +9,7 @@
     name: caddy-stable
     types: deb
     signed_by: https://dl.cloudsmith.io/public/caddy/stable/gpg.155B6D79CA56EA34.key
-    uris: https://dl.cloudsmith.io/public/caddy/stable/deb/{{ ansible_distribution | lower }}
+    uris: https://dl.cloudsmith.io/public/caddy/stable/deb/{{ ansible_facts['distribution'] | lower }}
     suites: any-version
     components:
       - main

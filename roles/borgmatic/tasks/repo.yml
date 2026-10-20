@@ -2,7 +2,7 @@
   community.crypto.openssh_keypair:
     path: "/root/.ssh/{{ repo.host | replace('.', '-') }}"
     type: ed25519
-    comment: root@{{ ansible_fqdn }}
+    comment: root@{{ inventory_hostname }}
 
 - name: Récupération de la clé publique du client SSH
   ansible.builtin.slurp:

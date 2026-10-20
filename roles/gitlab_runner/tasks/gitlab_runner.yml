@@ -9,7 +9,7 @@
     types: deb
     signed_by: https://packages.gitlab.com/runner/gitlab-runner/gpgkey
     uris: https://packages.gitlab.com/runner/gitlab-runner/debian/
-    suites: "{{ ansible_distribution_release | lower }}"
+    suites: "{{ ansible_facts['distribution_release'] | lower }}"
     components:
       - main
     state: present

@@ -39,17 +39,17 @@
 - name: Configuration du client NTP
   ansible.builtin.import_tasks: ntp.yml
   tags: ['ntp']
-  when: ansible_virtualization_type != "lxc"
+  when: ansible_facts['virtualization_type'] != "lxc"
 
 - name: Configuration de la swap
   ansible.builtin.import_tasks: swap.yml
   tags: ['swap']
-  when: ansible_virtualization_type != "lxc"
+  when: ansible_facts['virtualization_type'] != "lxc"
 
 - name: Optimisation réseau
   ansible.builtin.import_tasks: network.yml
   tags: ['network']
-  when: ansible_virtualization_type != "lxc"
+  when: ansible_facts['virtualization_type'] != "lxc"
 
 - name: Installation de Vector
   ansible.builtin.import_role:
@@ -76,7 +76,7 @@
   vars:
     serial_number: 0
   tags: ['serial']
-  when: ansible_virtualization_type == "kvm" or ansible_product_name == "PowerEdge R620"
+  when: ansible_facts['virtualization_type'] == "kvm" or ansible_facts['product_name'] == "PowerEdge R620"
 
 - name: Configuration de opensmtpd
   ansible.builtin.include_tasks: opensmtpd.yml

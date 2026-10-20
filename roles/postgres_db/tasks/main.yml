@@ -14,7 +14,7 @@
     types: deb
     signed_by: https://www.postgresql.org/media/keys/ACCC4CF8.asc
     uris: http://apt.postgresql.org/pub/repos/apt
-    suites: "{{ ansible_distribution_release }}-pgdg"
+    suites: "{{ ansible_facts['distribution_release'] }}-pgdg"
     components:
       - main
     state: present
