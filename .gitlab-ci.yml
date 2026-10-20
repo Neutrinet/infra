@@ -46,6 +46,7 @@ linting full:
   extends: .linting
   script:
     - pre-commit run --all-files --color always
+    - pre-commit run --all-files --color always --hook-stage manual gitleaks-tree
   rules:
     # Run full linting anytime except in draft MR
     - if: $CI_PIPELINE_SOURCE != "merge_request_event" || $CI_MERGE_REQUEST_DRAFT == "false"

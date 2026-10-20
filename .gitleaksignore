@@ -1,0 +1,11 @@
+.gitsecret/paths/mapping.cfg:generic-api-key:1
+plugins/strategy/mitogen/tests/data/docker/mitogen__has_sudo_pubkey.key:private-key:1
+roles/accounting/defaults/main.yml:generic-api-key:8
+roles/commun/molecule/default/files/id_rsa:private-key:1
+roles/grafana/templates/grafana/grafana.ini.j2:generic-api-key:219
+roles/haproxy/files/default.pem:private-key:1
+roles/knot/defaults/main.yml:generic-api-key:11
+roles/knot/defaults/main.yml:generic-api-key:12
+roles/mobilizon/defaults/main.yml:generic-api-key:20
+roles/mobilizon/defaults/main.yml:generic-api-key:21
+roles/semaphore/defaults/main.yml:generic-api-key:16
