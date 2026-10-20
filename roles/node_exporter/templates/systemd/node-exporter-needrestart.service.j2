@@ -1,0 +1,34 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Collect needrestart metrics for node-exporter
+ConditionPathExists=/usr/sbin/needrestart
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/bin/sh -c '/usr/local/libexec/node-exporter/needrestart_info.py > /var/lib/node-exporter/textfile_collector/needrestart.prom.tmp && mv /var/lib/node-exporter/textfile_collector/needrestart.prom.tmp /var/lib/node-exporter/textfile_collector/needrestart.prom'
+
+# Systemd hardening
+LockPersonality=true
+MemoryDenyWriteExecute=true
+NoNewPrivileges=true
+PrivateNetwork=true
+PrivateTmp=true
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHome=read-only
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/node-exporter/textfile_collector
+RemoveIPC=true
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
