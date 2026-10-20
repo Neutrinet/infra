@@ -14,12 +14,18 @@ listen_address = "localhost:9252"
   url = "{{ gitlab_runner_api_url }}"
   token = "{{ gitlab_runner_token }}"
   executor = "docker"
+  request_concurrency = 2
+  [runners.feature_flags]
+    FF_USE_INIT_WITH_DOCKER_EXECUTOR = true
+    FF_GIT_URLS_WITHOUT_TOKENS = true
   [runners.cache]
     [runners.cache.s3]
   [runners.docker]
     tls_verify = false
     image = "alpine:latest"
     privileged = false
+    memory = "1536m"
+    security_opt = ["no-new-privileges:true"]
     disable_entrypoint_overwrite = false
     oom_kill_disable = false
     disable_cache = false
