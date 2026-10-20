@@ -1,0 +1,16 @@
+[project]
+name = "infra-ansible"
+version = "0"
+requires-python = "==3.13.*"
+dependencies = [
+    "ansible>=14.5.0",
+    "ansible-lint>=26.10.1",
+    "dnspython>=2.9.0",
+    "molecule>=26.10.0",
+    "molecule-plugins[vagrant]>=26.10.12",
+    "passlib>=1.7.4",
+    "pre-commit>=4.7.0",
+]
+
+[tool.uv]
+package = false
