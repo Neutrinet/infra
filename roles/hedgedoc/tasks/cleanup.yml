@@ -1,0 +1,24 @@
+- name: Récupération de la liste des dossiers d'installation
+  ansible.builtin.find:
+    path: /var/www/{{ hedgedoc_owner }}
+    file_type: directory
+    use_regex: true
+    recurse: false
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  register: _hedgedoc_installed_dirs
+
+- name: Récupération de la plus ancienne version et de la version courante
+  ansible.builtin.set_fact:
+    hedgedoc_oldest_install_dir: "{{ hedgedoc_sorted_install_dirs | first }}"
+    hedgedoc_oldest_version: "{{ hedgedoc_sorted_install_dirs | first | basename }}"
+  vars:
+    hedgedoc_sorted_install_dirs: |-
+      {{ _hedgedoc_installed_dirs.files
+        | map(attribute='path')
+        | community.general.version_sort }}
+
+- name: Suppression de la plus ancienne version (v{{ hedgedoc_oldest_version }})
+  ansible.builtin.file:
+    state: absent
+    path: "{{ hedgedoc_oldest_install_dir }}"
+  when: _hedgedoc_installed_dirs.files | length > 5
