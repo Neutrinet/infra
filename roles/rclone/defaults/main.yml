@@ -1,3 +1,4 @@
+# renovate: datasource=github-releases depName=rclone/rclone extractVersion=^v(?<version>.+)$
 rclone_version: 1.75.2
 
 rclone_src_host: s3.neutrinet.be

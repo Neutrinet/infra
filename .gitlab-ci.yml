@@ -7,6 +7,7 @@ workflow:
 
 stages:
   - quality
+  - dependencies
 
 .linting:
   image: ghcr.io/astral-sh/uv:0.13.3-python3.13-trixie
@@ -38,6 +39,8 @@ linting full:
     - pre-commit run --all-files --color always
     - pre-commit run --all-files --color always --hook-stage manual gitleaks-tree
   rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
     # Run full linting anytime except in draft MR
     - if: $CI_PIPELINE_SOURCE != "merge_request_event" || $CI_MERGE_REQUEST_DRAFT == "false"
     # Allow manual trigger of full linting in draft MR
@@ -46,3 +49,21 @@ linting full:
   needs:
     - job: linting on changes
       optional: true
+
+renovate:
+  image: ghcr.io/renovatebot/renovate:44.171.1
+  stage: dependencies
+  variables:
+    GIT_STRATEGY: none
+    RENOVATE_PLATFORM: gitlab
+    RENOVATE_ENDPOINT: ${CI_API_V4_URL}
+    RENOVATE_REPOSITORIES: ${CI_PROJECT_PATH}
+    RENOVATE_ONBOARDING: "false"
+    RENOVATE_REQUIRE_CONFIG: required
+    LOG_LEVEL: info
+  script:
+    - renovate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $RENOVATE_TOKEN
+  resource_group: renovate
+  interruptible: false

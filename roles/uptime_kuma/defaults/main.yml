@@ -1,5 +1,6 @@
 uptime_kuma_domain: uptime.example.com
 uptime_kuma_owner: "{{ uptime_kuma_domain | replace('.', '-') }}"
+# renovate: datasource=github-releases depName=louislam/uptime-kuma
 uptime_kuma_version: 2.5.6
 
 # We first need to create the admin user

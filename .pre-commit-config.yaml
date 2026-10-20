@@ -26,6 +26,12 @@ repos:
         entry: gitleaks dir --redact --verbose
         stages: [manual]
 
+  - repo: https://github.com/renovatebot/pre-commit-hooks
+    rev: 44.168.2
+    hooks:
+      - id: renovate-config-validator
+        args: [--strict]
+
   - repo: local
     hooks:
       - id: ansible-vault-encrypted

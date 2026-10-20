@@ -1,3 +1,4 @@
 [submodule "plugins/strategy/mitogen"]
 	path = plugins/strategy/mitogen
 	url = https://github.com/mitogen-hq/mitogen.git
+	branch = v0.3.54

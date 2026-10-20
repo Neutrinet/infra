@@ -1,1 +1,2 @@
+# renovate: datasource=github-releases depName=czerwonk/bird_exporter extractVersion=^v(?<version>.+)$
 bird_exporter_version: 1.7.0

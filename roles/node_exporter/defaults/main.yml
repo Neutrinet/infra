@@ -1,1 +1,2 @@
+# renovate: datasource=github-releases depName=prometheus/node_exporter extractVersion=^v(?<version>.+)$
 node_exporter_version: 1.12.1

@@ -29,4 +29,5 @@ haproxy_listen:
 haproxy_valkey_password: neutrinet
 haproxy_valkey: []
 
+# renovate: datasource=custom.haproxy-debian depName=haproxy versioning=regex:^(?<major>\d+)\.(?<minor>\d+)$ extractVersion=^trixie-backports-(?<version>\d+\.\d*[02468])/$
 haproxy_repo_version: "3.4"
