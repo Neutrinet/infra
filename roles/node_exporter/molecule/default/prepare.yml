@@ -8,5 +8,10 @@
       ansible.builtin.apt:
         update_cache: true
 
+    - name: Installation de needrestart
+      ansible.builtin.package:
+        name: needrestart
+        state: present
+
   roles:
     - vector

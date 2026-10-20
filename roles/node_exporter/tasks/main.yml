@@ -2,6 +2,10 @@
   ansible.builtin.import_tasks: node-exporter.yml
   tags: ['node_exporter']
 
+- name: Installation des collecteurs textfile
+  ansible.builtin.import_tasks: textfile.yml
+  tags: ['node_exporter']
+
 - name: Nettoyage des archives de Node exporter
   ansible.builtin.import_tasks: cleanup.yml
   tags: ['cleanup']

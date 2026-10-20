@@ -1,0 +1,63 @@
+- name: textfile | Installation des dépendances des collecteurs
+  ansible.builtin.package:
+    name:
+      - moreutils
+      - python3-apt
+      - python3-prometheus-client
+    state: present
+
+- name: textfile | Création du dossier des collecteurs
+  ansible.builtin.file:
+    path: /usr/local/libexec/node-exporter
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: textfile | Copie des collecteurs
+  ansible.builtin.copy:
+    src: textfile/{{ node_exporter_collector }}
+    dest: /usr/local/libexec/node-exporter/{{ node_exporter_collector }}
+    owner: root
+    group: root
+    mode: "ugo=rx"
+  loop:
+    - apt_info.py
+    - needrestart_info.py
+  loop_control:
+    loop_var: node_exporter_collector
+
+- name: textfile | Configuration des services et timers des collecteurs
+  ansible.builtin.template:
+    src: systemd/{{ node_exporter_collector_unit }}.j2
+    dest: /etc/systemd/system/{{ node_exporter_collector_unit }}
+    owner: root
+    group: root
+    mode: "ugo=r"
+  loop:
+    - node-exporter-apt.service
+    - node-exporter-apt.timer
+    - node-exporter-needrestart.service
+    - node-exporter-needrestart.timer
+  loop_control:
+    loop_var: node_exporter_collector_unit
+  notify: Reload systemd
+
+- name: textfile | Activation des timers des collecteurs
+  ansible.builtin.systemd:
+    name: "{{ node_exporter_collector_timer }}"
+    state: started
+    enabled: true
+  loop:
+    - node-exporter-apt.timer
+    - node-exporter-needrestart.timer
+  loop_control:
+    loop_var: node_exporter_collector_timer
+
+- name: textfile | Mise à jour des métriques après chaque passage d'apt
+  ansible.builtin.template:
+    src: apt/99node-exporter.j2
+    dest: /etc/apt/apt.conf.d/99node-exporter
+    owner: root
+    group: root
+    mode: "ugo=r"
