@@ -21,17 +21,3 @@ widely recommended `'--user' flag`_ when invoking ``pip``.
 .. code-block:: bash
 
     $ pip install 'molecule_vagrant'
-
-Contrôle des blueprints
-=======================
-
-Contrôle des blueprints, sans VM (rendu, schéma de la version déployée,
-garde-fous du rôle), puis tests de non-régression de ces garde-fous.
-``AUTHENTIK_SRC`` désigne un clone git d'Authentik qui contient le tag
-``version/<authentik_version>`` ; à défaut, passer le chemin d'un
-``schema.json`` en argument :
-
-.. code-block:: bash
-
-    $ AUTHENTIK_SRC=<clone> .venv/bin/python roles/authentik/molecule/default/check_blueprints.py
-    $ AUTHENTIK_SRC=<clone> .venv/bin/python -m pytest roles/authentik/molecule/default/test_check_blueprints.py
