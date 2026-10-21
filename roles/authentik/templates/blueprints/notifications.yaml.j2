@@ -11,6 +11,7 @@ entries:
     attrs:
       expression: |
         from authentik.core.models import Token, User
+        from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
         event = request.context["event"]
         user = request.user
         devices = (
@@ -51,7 +52,17 @@ entries:
         else:
             return False
         path = (event.context.get("http_request") or {}).get("path", "")
-        revoked = kind == "password_set" and path.rstrip("/").rsplit("/", 1)[-1] in ("neutrinet-recovery", "neutrinet-password-change")
+        flow = path.rstrip("/").rsplit("/", 1)[-1]
+        revoked = kind == "password_set" and flow in ("neutrinet-recovery", "neutrinet-password-change")
+        if kind == "password_set":
+            by_admin = flow not in ("neutrinet-recovery", "neutrinet-password-change", "neutrinet-enrollment", "neutrinet-enrollment-red")
+        elif kind == "token_added":
+            by_admin = (event.user or {}).get("pk") != user.pk
+        else:
+            by_admin = False
+        ip = "" if by_admin else (event.client_ip or "")
+        asn = {} if by_admin else (event.context.get("asn") or {})
+        city = GEOIP_CONTEXT_PROCESSOR.city(ip) if ip else None
         subjects = {
             "breakglass_login": {{ _authentik_i18n.mail_breakglass_subject | to_json }},
             "password_set": {{ _authentik_i18n.mail_password_set_subject | to_json }},
@@ -63,11 +74,23 @@ entries:
             recipient_language = (recipient.locale() or "").replace("_", "-").split("-")[0].lower()
             if recipient_language not in {{ _authentik_languages | to_json }}:
                 recipient_language = "en"
+            country = ""
+            if city is not None and city.country.iso_code:
+                country = city.country.names.get(recipient_language) or city.country.names.get("en") or city.country.iso_code
             ak_send_email(
                 recipient.email,
                 subjects[kind][recipient_language],
                 template=f"neutrinet/{recipient_language}/security_notice.html",
-                context={"lang": recipient_language, "kind": kind, "username": user.username, "ip": event.client_ip, "revoked": revoked},
+                context={
+                    "kind": kind,
+                    "username": user.username,
+                    "revoked": revoked,
+                    "by_admin": by_admin,
+                    "ip": ip,
+                    "asn": asn.get("asn"),
+                    "as_org": asn.get("as_org") or "",
+                    "country": country,
+                },
             )
         return False
 

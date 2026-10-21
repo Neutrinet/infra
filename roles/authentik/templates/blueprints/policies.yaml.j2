@@ -400,11 +400,27 @@ entries:
         if not token or token.user_id != request.user.pk or token.plan.context.get("email", "").lower() != new.lower():
             return False
         if old:
+            from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
+            from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
+            from authentik.root.middleware import ClientIPMiddleware
+            ip = ClientIPMiddleware.get_client_ip(request.http_request) if request.http_request is not None else ""
+            asn = (ASN_CONTEXT_PROCESSOR.asn_dict(ip) if ip else None) or {}
+            city = GEOIP_CONTEXT_PROCESSOR.city(ip) if ip else None
+            country = ""
+            if city is not None and city.country.iso_code:
+                country = city.country.names.get(language) or city.country.names.get("en") or city.country.iso_code
             ak_send_email(
                 old,
                 {{ _authentik_i18n.mail_email_changed_subject | to_json }}[language],
                 template=f"neutrinet/{language}/email_changed.html",
-                context={"lang": language, "username": request.user.username, "new": new},
+                context={
+                    "username": request.user.username,
+                    "new": new,
+                    "ip": ip,
+                    "asn": asn.get("asn"),
+                    "as_org": asn.get("as_org") or "",
+                    "country": country,
+                },
             )
         return True
 

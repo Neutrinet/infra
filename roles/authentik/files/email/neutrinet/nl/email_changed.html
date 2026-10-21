@@ -13,6 +13,12 @@
 <tr><td style="padding-bottom:24px;font-size:16px;line-height:1.5;">
 Hallo {{ username }}, het e-mailadres van je Neutrinet ID-account is zojuist vervangen door {{ new }}.
 </td></tr>
+{% if ip %}
+<tr><td style="padding-bottom:24px;font-size:14px;line-height:1.5;color:#6a6e73;">
+IP-adres: {{ ip }}{% if asn %}<br>
+Netwerkoperator: AS{{ asn }} {{ as_org }}{% endif %}{% if country %}<br>
+Land: {{ country }}{% endif %}
+</td></tr>{% endif %}
 <tr><td style="font-size:16px;line-height:1.5;">
 Als jij deze wijziging niet hebt gedaan, schrijf dan onmiddellijk naar support@neutrinet.be.
 </td></tr>

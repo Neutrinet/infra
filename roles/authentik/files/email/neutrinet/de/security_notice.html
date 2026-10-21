@@ -11,8 +11,17 @@
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border-radius:8px;padding:32px;">
 <tr><td align="center" style="padding-bottom:24px;"><img src="cid:logo" alt="Neutrinet ID" width="222" height="48"></td></tr>
 <tr><td style="padding-bottom:24px;font-size:16px;line-height:1.5;">
-{% if kind == "password_set" %}Das Passwort deines Neutrinet-ID-Kontos wurde geändert.{% elif kind == "device_added" %}Deinem Neutrinet-ID-Konto wurde ein Gerät für die Zwei-Faktor-Authentifizierung hinzugefügt.{% elif kind == "device_removed" %}Von deinem Neutrinet-ID-Konto wurde ein Gerät für die Zwei-Faktor-Authentifizierung entfernt.{% elif kind == "breakglass_login" %}Das Notfallkonto {{ username }} hat sich soeben von der IP-Adresse {{ ip }} angemeldet.{% elif kind == "red_pending" %}Das Administrationskonto {{ username }} ({{ address }}) wurde über eine Einladung erstellt und seine E-Mail-Adresse ist bestätigt. Es hat noch keine Gruppe. Einladung ausgestellt von {{ inviter }}.{% elif kind == "token_added" %}Für dein Neutrinet-ID-Konto wurde von der IP-Adresse {{ ip }} aus ein API-Token oder ein App-Passwort erstellt.{% endif %}{% if revoked %} Deine anderen Sitzungen wurden beendet und deine App-Passwörter und API-Tokens widerrufen.{% endif %}
+{% if kind == "password_set" %}Das Passwort deines Neutrinet-ID-Kontos wurde geändert.{% elif kind == "device_added" %}Deinem Neutrinet-ID-Konto wurde ein Gerät für die Zwei-Faktor-Authentifizierung hinzugefügt.{% elif kind == "device_removed" %}Von deinem Neutrinet-ID-Konto wurde ein Gerät für die Zwei-Faktor-Authentifizierung entfernt.{% elif kind == "breakglass_login" %}Das Notfallkonto {{ username }} hat sich soeben angemeldet.{% elif kind == "red_pending" %}Das Administrationskonto {{ username }} ({{ address }}) wurde über eine Einladung erstellt und seine E-Mail-Adresse ist bestätigt. Es hat noch keine Gruppe. Einladung ausgestellt von {{ inviter }}.{% elif kind == "token_added" %}Für dein Neutrinet-ID-Konto wurde ein API-Token oder ein App-Passwort erstellt.{% endif %}{% if revoked %} Deine anderen Sitzungen wurden beendet und deine App-Passwörter und API-Tokens widerrufen.{% endif %}
 </td></tr>
+{% if by_admin %}
+<tr><td style="padding-bottom:24px;font-size:14px;line-height:1.5;color:#6a6e73;">
+Diese Änderung wurde vom Administrationsteam von Neutrinet vorgenommen.
+</td></tr>{% elif ip %}
+<tr><td style="padding-bottom:24px;font-size:14px;line-height:1.5;color:#6a6e73;">
+IP-Adresse: {{ ip }}{% if asn %}<br>
+Netzbetreiber: AS{{ asn }} {{ as_org }}{% endif %}{% if country %}<br>
+Land: {{ country }}{% endif %}
+</td></tr>{% endif %}
 <tr><td style="font-size:16px;line-height:1.5;">
 {% if kind == "red_pending" %}Prüfe die Identität der Person über einen anderen Kanal und füge das Konto dann der Gruppe red hinzu, um es freizugeben. Wenn niemand dieses Konto erwartet, lösche es.{% elif kind == "token_added" %}Falls du das nicht warst, ändere zuerst dein Passwort: Nur so werden deine anderen Sitzungen beendet, und dabei werden alle API-Tokens und App-Passwörter widerrufen. Prüfe danach in deinen Kontoeinstellungen, ob dieses Token verschwunden ist, lösche es andernfalls und schreib dann an support@neutrinet.be.{% elif kind == "password_set" and revoked %}Falls du das nicht warst, schreib sofort an support@neutrinet.be. Sobald du wieder Zugriff auf dein Konto hast, prüfe deine Geräte für die Zwei-Faktor-Authentifizierung in deinen Kontoeinstellungen, lösche die Geräte, die du nicht kennst, und erzeuge neue Wiederherstellungscodes (statische Token).{% else %}Falls du das nicht warst, schreib sofort an support@neutrinet.be.{% endif %}
 </td></tr>

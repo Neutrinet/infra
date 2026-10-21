@@ -13,6 +13,12 @@
 <tr><td style="padding-bottom:24px;font-size:16px;line-height:1.5;">
 Bonjour {{ username }}, l'adresse courriel de ton compte Neutrinet ID vient d'être remplacée par {{ new }}.
 </td></tr>
+{% if ip %}
+<tr><td style="padding-bottom:24px;font-size:14px;line-height:1.5;color:#6a6e73;">
+Adresse IP : {{ ip }}{% if asn %}<br>
+Opérateur réseau : AS{{ asn }} {{ as_org }}{% endif %}{% if country %}<br>
+Pays : {{ country }}{% endif %}
+</td></tr>{% endif %}
 <tr><td style="font-size:16px;line-height:1.5;">
 Si tu n'es pas à l'origine de ce changement, écris immédiatement à support@neutrinet.be.
 </td></tr>
