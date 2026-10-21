@@ -1,1 +1,27 @@
-{% load i18n %}{% language "nl" %}{% include "neutrinet/account_confirmation.html" %}{% endlanguage %}
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neutrinet ID</title>
+</head>
+<body style="margin:0;padding:24px;background:#f4f4f5;font-family:Arial,Helvetica,sans-serif;color:#212124;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border-radius:8px;padding:32px;">
+<tr><td align="center" style="padding-bottom:24px;"><img src="cid:logo" alt="Neutrinet ID" width="222" height="48"></td></tr>
+<tr><td style="padding-bottom:24px;font-size:16px;line-height:1.5;">
+Bevestig je e-mailadres om je Neutrinet ID-account te activeren.
+</td></tr>
+<tr><td align="center" style="padding-bottom:24px;"><a href="{{ url }}" style="display:inline-block;padding:12px 24px;background:#212124;color:#ffffff;text-decoration:none;border-radius:4px;">Mijn e-mailadres bevestigen</a></td></tr>
+<tr><td style="padding-bottom:16px;font-size:14px;line-height:1.5;color:#6a6e73;overflow-wrap:anywhere;">
+Werkt de knop niet? Open deze link: <a href="{{ url }}" style="color:#0066cc;">{{ url }}</a>
+</td></tr>
+<tr><td style="font-size:14px;line-height:1.5;color:#6a6e73;">
+Deze link is 24 uur geldig.
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>

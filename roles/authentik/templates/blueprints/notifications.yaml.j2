@@ -66,7 +66,7 @@ entries:
             ak_send_email(
                 recipient.email,
                 subjects[kind][recipient_language],
-                template="neutrinet/security_notice.html",
+                template=f"neutrinet/{recipient_language}/security_notice.html",
                 context={"lang": recipient_language, "kind": kind, "username": user.username, "ip": event.client_ip, "revoked": revoked},
             )
         return False

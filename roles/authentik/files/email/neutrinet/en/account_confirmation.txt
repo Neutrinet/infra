@@ -1,1 +1,6 @@
-{% load i18n %}{% language "en" %}{% include "neutrinet/account_confirmation.txt" %}{% endlanguage %}
+{% autoescape off %}Confirm your email address to activate your Neutrinet ID account:
+
+{{ url }}
+
+This link is valid for 24 hours.
+{% endautoescape %}

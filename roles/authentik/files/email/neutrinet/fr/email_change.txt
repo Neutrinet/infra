@@ -1,1 +1,6 @@
-{% load i18n %}{% language "fr" %}{% include "neutrinet/email_change.txt" %}{% endlanguage %}
+{% autoescape off %}Confirme cette nouvelle adresse courriel pour ton compte Neutrinet ID :
+
+{{ url }}
+
+Ce lien est valable 30 minutes. Si tu n'es pas à l'origine de cette demande, ignore ce message.
+{% endautoescape %}

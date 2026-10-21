@@ -1,1 +1,6 @@
-{% load i18n %}{% language "nl" %}{% include "neutrinet/email_change.txt" %}{% endlanguage %}
+{% autoescape off %}Bevestig dit nieuwe e-mailadres voor je Neutrinet ID-account:
+
+{{ url }}
+
+Deze link is 30 minuten geldig. Heb je dit niet aangevraagd? Dan kun je deze e-mail negeren.
+{% endautoescape %}

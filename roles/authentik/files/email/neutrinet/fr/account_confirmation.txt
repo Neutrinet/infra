@@ -1,1 +1,6 @@
-{% load i18n %}{% language "fr" %}{% include "neutrinet/account_confirmation.txt" %}{% endlanguage %}
+{% autoescape off %}Confirme ton adresse courriel pour activer ton compte Neutrinet ID :
+
+{{ url }}
+
+Ce lien est valable 24 heures.
+{% endautoescape %}

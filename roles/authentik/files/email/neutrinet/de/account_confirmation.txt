@@ -1,1 +1,6 @@
-{% load i18n %}{% language "de" %}{% include "neutrinet/account_confirmation.txt" %}{% endlanguage %}
+{% autoescape off %}Bestätige deine E-Mail-Adresse, um dein Neutrinet-ID-Konto zu aktivieren:
+
+{{ url }}
+
+Dieser Link ist 24 Stunden gültig.
+{% endautoescape %}

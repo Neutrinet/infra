@@ -1,1 +1,6 @@
-{% load i18n %}{% language "nl" %}{% include "neutrinet/account_confirmation.txt" %}{% endlanguage %}
+{% autoescape off %}Bevestig je e-mailadres om je Neutrinet ID-account te activeren:
+
+{{ url }}
+
+Deze link is 24 uur geldig.
+{% endautoescape %}

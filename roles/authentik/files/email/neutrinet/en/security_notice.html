@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neutrinet ID</title>
+</head>
+<body style="margin:0;padding:24px;background:#f4f4f5;font-family:Arial,Helvetica,sans-serif;color:#212124;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border-radius:8px;padding:32px;">
+<tr><td align="center" style="padding-bottom:24px;"><img src="cid:logo" alt="Neutrinet ID" width="222" height="48"></td></tr>
+<tr><td style="padding-bottom:24px;font-size:16px;line-height:1.5;">
+{% if kind == "password_set" %}The password of your Neutrinet ID account has been changed.{% elif kind == "device_added" %}A two-factor authentication device has been added to your Neutrinet ID account.{% elif kind == "device_removed" %}A two-factor authentication device has been removed from your Neutrinet ID account.{% elif kind == "breakglass_login" %}The emergency account {{ username }} has just signed in from the IP address {{ ip }}.{% elif kind == "red_pending" %}The administration account {{ username }} ({{ address }}) was created from an invitation and its email address is confirmed. It has no group yet. Invitation issued by {{ inviter }}.{% elif kind == "token_added" %}An API token or an app password has been created for your Neutrinet ID account from the IP address {{ ip }}.{% endif %}{% if revoked %} Your other sessions have been closed and your app passwords and API tokens revoked.{% endif %}
+</td></tr>
+<tr><td style="font-size:16px;line-height:1.5;">
+{% if kind == "red_pending" %}Check the identity of the person through another channel, then add the account to the red group to validate it. If nobody expects this account, delete it.{% elif kind == "token_added" %}If you did not do this, first change your password: it is the only way to close your other sessions, and it revokes all API tokens and app passwords. Then check in your account settings that this token is gone, delete it otherwise, and write to support@neutrinet.be.{% elif kind == "password_set" and revoked %}If you did not make this change, write immediately to support@neutrinet.be. As soon as you have access to your account again, check your two-factor authentication devices in your account settings, delete those you do not recognise and regenerate your recovery codes (static tokens).{% else %}If you did not do this, write immediately to support@neutrinet.be.{% endif %}
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>

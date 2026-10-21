@@ -1,5 +1,5 @@
-{% load i18n %}{% get_current_language as LANGUAGE_CODE %}{% firstof lang LANGUAGE_CODE as code %}<!DOCTYPE html>
-<html lang="{% with lang=code|slice:":2" %}{% if lang == "fr" %}fr{% elif lang == "nl" %}nl{% elif lang == "de" %}de{% else %}en{% endif %}{% endwith %}">
+<!DOCTYPE html>
+<html lang="nl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,12 @@
 <tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border-radius:8px;padding:32px;">
 <tr><td align="center" style="padding-bottom:24px;"><img src="cid:logo" alt="Neutrinet ID" width="222" height="48"></td></tr>
-{% block content %}{% endblock %}
+<tr><td style="padding-bottom:24px;font-size:16px;line-height:1.5;">
+Hallo {{ username }}, het e-mailadres van je Neutrinet ID-account is zojuist vervangen door {{ new }}.
+</td></tr>
+<tr><td style="font-size:16px;line-height:1.5;">
+Als jij deze wijziging niet hebt gedaan, schrijf dan onmiddellijk naar support@neutrinet.be.
+</td></tr>
 </table>
 </td></tr>
 </table>

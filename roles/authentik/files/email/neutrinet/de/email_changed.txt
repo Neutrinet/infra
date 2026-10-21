@@ -1,0 +1,4 @@
+{% autoescape off %}Hallo {{ username }}, die E-Mail-Adresse deines Neutrinet-ID-Kontos wurde soeben durch {{ new }} ersetzt.
+
+Wenn du diese Änderung nicht vorgenommen hast, schreib sofort an support@neutrinet.be.
+{% endautoescape %}
