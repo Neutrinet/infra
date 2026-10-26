@@ -1,7 +1,7 @@
 ---
 - name: Importation des variables spécifiques à l'OS
   ansible.builtin.include_vars:
-    file: "{{ ansible_distribution_release }}.yml"
+    file: "{{ ansible_facts['distribution_release'] }}.yml"
 
 - name: Installation de Ceph
   ansible.builtin.import_role:
@@ -19,7 +19,7 @@
     types: deb
     signed_by: "{{ proxmox_gpg_key_url }}"
     uris: http://download.proxmox.com/debian/pve
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
     components:
       - pve-no-subscription
     state: present

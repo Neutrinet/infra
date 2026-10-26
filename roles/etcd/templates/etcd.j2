@@ -3,7 +3,7 @@
 DAEMON_ARGS="--heartbeat-interval 250 --election-timeout 1250"
 
 # [Member]
-ETCD_NAME="{{ ansible_hostname }}"
+ETCD_NAME="{{ ansible_facts['hostname'] }}"
 ETCD_DATA_DIR="{{ etcd_data_dir }}"
 ETCD_AUTO_COMPACTION_MODE="periodic"
 ETCD_AUTO_COMPACTION_RETENTION="1h"

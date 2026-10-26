@@ -15,7 +15,7 @@
       - contrib
       - non-free
       - non-free-firmware
-  when: ansible_distribution_major_version | int >= 12
+  when: ansible_facts['distribution_major_version'] | int >= 12
   notify: Update apt cache
 
 - name: Repos debian-updates (deb822)
@@ -30,7 +30,7 @@
       - contrib
       - non-free
       - non-free-firmware
-  when: ansible_distribution_major_version | int >= 12
+  when: ansible_facts['distribution_major_version'] | int >= 12
   notify: Update apt cache
 
 - name: Repos debian-backports (deb822)
@@ -45,7 +45,7 @@
       - contrib
       - non-free
       - non-free-firmware
-  when: ansible_distribution_major_version | int >= 12
+  when: ansible_facts['distribution_major_version'] | int >= 12
   notify: Update apt cache
 
 - name: Repos debian-security (deb822)
@@ -60,7 +60,7 @@
       - contrib
       - non-free
       - non-free-firmware
-  when: ansible_distribution_major_version | int >= 12
+  when: ansible_facts['distribution_major_version'] | int >= 12
   notify: Update apt cache
 
 - name: Empty old sources.list (deb822)
@@ -70,7 +70,7 @@
     owner: root
     group: root
     mode: "ugo=r"
-  when: ansible_distribution_major_version | int >= 12
+  when: ansible_facts['distribution_major_version'] | int >= 12
   notify: Update apt cache
 
 - name: Repos debian (sources.list)
@@ -80,7 +80,7 @@
     owner: root
     group: root
     mode: "ugo=r"
-  when: ansible_distribution_major_version | int < 12
+  when: ansible_facts['distribution_major_version'] | int < 12
   notify: Update apt cache
 
 - name: Trigger APT handler

@@ -14,7 +14,7 @@ modules:
       fail_if_body_not_matches_regexp:
         - {{ probe.body | to_json }}
 {% endif %}
-{% if not ansible_default_ipv6 or (probe.ip_version is defined and probe.ip_version == 4) %}
+{% if not ansible_facts['default_ipv6'] or (probe.ip_version is defined and probe.ip_version == 4) %}
       preferred_ip_protocol: ip4
 {% endif %}
 {% endfor %}
@@ -22,7 +22,7 @@ modules:
   tcp:
     prober: tcp
     timeout: 10s
-{% if not ansible_default_ipv6 %}
+{% if not ansible_facts['default_ipv6'] %}
     tcp:
       preferred_ip_protocol: ip4
 {% endif %}
@@ -30,7 +30,7 @@ modules:
   icmp:
     prober: icmp
     timeout: 10s
-{% if not ansible_default_ipv6 %}
+{% if not ansible_facts['default_ipv6'] %}
     icmp:
       preferred_ip_protocol: ip4
 {% endif %}

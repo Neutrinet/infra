@@ -9,16 +9,16 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v4 {
    if reject_v4_default_route("import", "{{ item.type }}")     then reject;
    if reject_v4_invalid_rpki("import", "{{ item.type }}")      then reject;
 
-{% if 'verixi' in ansible_fqdn %}
+{% if 'verixi' in inventory_hostname %}
    bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "private")));
 {% endif %}
-{% if 'bnix' in ansible_fqdn %}
+{% if 'bnix' in inventory_hostname %}
    bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "bnix")));
 {% endif %}
-{% if 'nlix' in ansible_fqdn %}
+{% if 'nlix' in inventory_hostname %}
    bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "nlix")));
 {% endif %}
-{% if 'belgiumix' in ansible_fqdn %}
+{% if 'belgiumix' in inventory_hostname %}
    bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "belgiumix")));
 {% endif %}
 
@@ -26,17 +26,17 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v4 {
    bgp_local_pref = 100;
 {% endif %}
 
-{% if item.type == 'route-server' and 'belgiumix' in ansible_fqdn %}
+{% if item.type == 'route-server' and 'belgiumix' in inventory_hostname %}
    bgp_local_pref = 111;
 {% endif %}
-{% if item.type == 'route-server' and not 'belgiumix' in ansible_fqdn %}
+{% if item.type == 'route-server' and not 'belgiumix' in inventory_hostname %}
    bgp_local_pref = 110;
 {% endif %}
 
-{% if item.type == 'peering' and 'belgiumix' in ansible_fqdn %}
+{% if item.type == 'peering' and 'belgiumix' in inventory_hostname %}
    bgp_local_pref = 121;
 {% endif %}
-{% if item.type == 'peering' and not 'belgiumix' in ansible_fqdn %}
+{% if item.type == 'peering' and not 'belgiumix' in inventory_hostname %}
    bgp_local_pref = 120;
 {% endif %}
 
@@ -70,16 +70,16 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v6 {
    if reject_v6_default_route("import", "{{ item.type }}")     then reject;
    if reject_v6_invalid_rpki("import", "{{ item.type }}")      then reject;
 
-{% if 'verixi' in ansible_fqdn %}
+{% if 'verixi' in inventory_hostname %}
    bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "private")));
 {% endif %}
-{% if 'bnix' in ansible_fqdn %}
+{% if 'bnix' in inventory_hostname %}
    bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "bnix")));
 {% endif %}
-{% if 'nlix' in ansible_fqdn %}
+{% if 'nlix' in inventory_hostname %}
    bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "nlix")));
 {% endif %}
-{% if 'belgiumix' in ansible_fqdn %}
+{% if 'belgiumix' in inventory_hostname %}
    bgp_large_community.add((my_asn, 6696, bgp_community_calcul("{{ item.type }}", "belgiumix")));
 {% endif %}
 
@@ -87,17 +87,17 @@ filter {{ item.type | replace('-', '_') }}_{{ item.slug }}_import_v6 {
    bgp_local_pref = 100;
 {% endif %}
 
-{% if item.type == 'route-server' and 'belgiumix' in ansible_fqdn %}
+{% if item.type == 'route-server' and 'belgiumix' in inventory_hostname %}
    bgp_local_pref = 111;
 {% endif %}
-{% if item.type == 'route-server' and not 'belgiumix' in ansible_fqdn %}
+{% if item.type == 'route-server' and not 'belgiumix' in inventory_hostname %}
    bgp_local_pref = 110;
 {% endif %}
 
-{% if item.type == 'peering' and 'belgiumix' in ansible_fqdn %}
+{% if item.type == 'peering' and 'belgiumix' in inventory_hostname %}
    bgp_local_pref = 121;
 {% endif %}
-{% if item.type == 'peering' and not 'belgiumix' in ansible_fqdn %}
+{% if item.type == 'peering' and not 'belgiumix' in inventory_hostname %}
    bgp_local_pref = 120;
 {% endif %}
 

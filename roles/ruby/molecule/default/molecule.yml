@@ -14,5 +14,6 @@ provisioner:
   config_options:
     defaults:
       interpreter_python: /usr/bin/python3
+      roles_path: "${MOLECULE_PROJECT_DIRECTORY}/.."
 verifier:
   name: ansible

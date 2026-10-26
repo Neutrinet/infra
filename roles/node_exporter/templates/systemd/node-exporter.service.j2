@@ -10,7 +10,7 @@ User=node-exporter
 Group=node-exporter
 ExecStart=/usr/local/bin/node-exporter \
   --web.listen-address=[::1]:9100 \
-{% if ansible_virtualization_role == 'host' %}
+{% if ansible_facts['virtualization_role'] == 'host' %}
   --collector.interrupts \
   --collector.meminfo_numa \
   --collector.ethtool \

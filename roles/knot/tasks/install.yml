@@ -10,7 +10,7 @@
     types: deb
     signed_by: https://pkg.labs.nic.cz/gpg
     uris: https://pkg.labs.nic.cz/knot-dns
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
     components:
       - main
     state: present

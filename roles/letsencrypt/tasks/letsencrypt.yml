@@ -25,7 +25,7 @@
 
 - name: Vérifier si la version Python de venv correspond au système actuel
   ansible.builtin.stat:
-    path: "/opt/letsencrypt/lib/python{{ ansible_python.version.major }}.{{ ansible_python.version.minor }}"
+    path: "/opt/letsencrypt/lib/python{{ ansible_facts['python'].version.major }}.{{ ansible_facts['python'].version.minor }}"
   register: python_version_match
 
 - name: Supprimer l'environnement virtuel incompatible

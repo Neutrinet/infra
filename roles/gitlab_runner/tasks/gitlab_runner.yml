@@ -9,7 +9,7 @@
     types: deb
     signed_by: https://packages.gitlab.com/runner/gitlab-runner/gpgkey
     uris: https://packages.gitlab.com/runner/gitlab-runner/debian/
-    suites: "{{ ansible_distribution_release | lower }}"
+    suites: "{{ ansible_facts['distribution_release'] | lower }}"
     components:
       - main
     state: present
@@ -43,6 +43,29 @@
   # We need to restart gitlab-runner to apply the new config
   # and expose the metrics for vector
   ansible.builtin.meta: flush_handlers
+
+- name: gitlab_runner | Déploiement du timer de nettoyage du cache Docker
+  ansible.builtin.copy:
+    src: systemd/{{ systemd_unit }}
+    dest: /etc/systemd/system/{{ systemd_unit }}
+    owner: root
+    group: root
+    mode: "u=r,go=r"
+  loop:
+    - clear-docker-cache.service
+    - clear-docker-cache.timer
+  loop_control:
+    loop_var: systemd_unit
+  notify: Reload systemd
+
+- name: gitlab_runner | Trigger handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: gitlab_runner | Activation du timer de nettoyage du cache Docker
+  ansible.builtin.service:
+    name: clear-docker-cache.timer
+    state: started
+    enabled: true
 
 - name: Configuration de vector
   ansible.builtin.template:

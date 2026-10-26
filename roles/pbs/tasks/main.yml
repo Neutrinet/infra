@@ -1,7 +1,7 @@
 ---
 - name: Importation des variables spécifiques à l'OS
   ansible.builtin.include_vars:
-    file: "{{ ansible_distribution_release }}.yml"
+    file: "{{ ansible_facts['distribution_release'] }}.yml"
 
 - name: Suppression de l'ancien dépôt APT PBS
   ansible.builtin.file:
@@ -13,7 +13,7 @@
     name: pbs-no-subscription
     types: deb
     uris: http://download.proxmox.com/debian/pbs
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
     components: pbs-no-subscription
     architectures: amd64
     signed_by: "{{ proxmox_gpg_key_url }}"

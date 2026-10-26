@@ -103,7 +103,7 @@
 - name: Configuration des route static pour bird
   ansible.builtin.template:
     src: "bird/static-route.conf.j2"
-    dest: "/etc/bird/conf.d/10_static_{{ ansible_fqdn | replace('.', '_') | replace('-', '_') }}.conf"
+    dest: "/etc/bird/conf.d/10_static_{{ inventory_hostname | replace('.', '_') | replace('-', '_') }}.conf"
     owner: bird
     group: bird
     mode: "ug=r,o="

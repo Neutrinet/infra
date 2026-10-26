@@ -16,7 +16,7 @@
     types: deb
     signed_by: https://packages.nlnetlabs.nl/aptkey.asc
     uris: https://packages.nlnetlabs.nl/linux/debian
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
     components:
       - main
     state: present
