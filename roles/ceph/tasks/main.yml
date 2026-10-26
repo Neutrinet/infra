@@ -1,7 +1,7 @@
 ---
 - name: Importation des variables spécifiques à l'OS
   ansible.builtin.include_vars:
-    file: "{{ ansible_distribution_release }}.yml"
+    file: "{{ ansible_facts['distribution_release'] }}.yml"
 
 - name: Suppression de l'ancien dépôt APT pour Ceph
   ansible.builtin.file:
@@ -14,7 +14,7 @@
     types: deb
     signed_by: "{{ proxmox_gpg_key_url }}"
     uris: http://download.proxmox.com/debian/ceph-{{ ceph_proxmox_version }}
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
     components:
       - no-subscription
     state: present

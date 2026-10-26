@@ -2,7 +2,7 @@ letsencrypt_domains_ovh: []
 haproxy_redirect: []
 haproxy_postgresql: []
 haproxy:
-  - hostname: "{{ ansible_fqdn }}"
+  - hostname: "{{ inventory_hostname }}"
     target:
       - 127.0.0.1
     target_port: 8428

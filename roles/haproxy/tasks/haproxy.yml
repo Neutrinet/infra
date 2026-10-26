@@ -10,7 +10,7 @@
     types: deb
     signed_by: https://haproxy.debian.net/haproxy-archive-keyring.gpg
     uris: https://haproxy.debian.net
-    suites: "{{ ansible_distribution_release }}-backports-{{ haproxy_repo_version }}"
+    suites: "{{ ansible_facts['distribution_release'] }}-backports-{{ haproxy_repo_version }}"
     components:
       - main
     state: present

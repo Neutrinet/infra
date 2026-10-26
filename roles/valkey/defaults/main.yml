@@ -3,7 +3,7 @@
 
 valkey_members:
   - name: "{{ inventory_hostname }}"
-    ipv4: "{{ ansible_default_ipv4.address }}"
+    ipv4: "{{ ansible_facts['default_ipv4'].address }}"
 
 valkey_maxmemory: 100MB
 valkey_databases: 16

@@ -20,7 +20,7 @@
       ansible.builtin.lineinfile:
         path: /etc/hosts
         regexp: "^127\\.0\\.1\\.1"
-        line: "{{ ansible_default_ipv4.address }} {{ ansible_hostname }}"
+        line: "{{ ansible_facts['default_ipv4'].address }} {{ ansible_facts['hostname'] }}"
 
     - name: Ajout des dépôts APT pour Proxmox et Ceph
       ansible.builtin.deb822_repository:
@@ -67,18 +67,18 @@
 
     - name: Initialisation de la configuration Ceph
       ansible.builtin.command:
-        cmd: pveceph init --network {{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.prefix }}
+        cmd: pveceph init --network {{ ansible_facts['default_ipv4'].network }}/{{ ansible_facts['default_ipv4'].prefix }}
         creates: /etc/pve/ceph.conf
 
     - name: Création du moniteur Ceph
       ansible.builtin.command:
         cmd: pveceph mon create
-        creates: /var/lib/ceph/mon/ceph-{{ ansible_hostname }}
+        creates: /var/lib/ceph/mon/ceph-{{ ansible_facts['hostname'] }}
 
     - name: Création du manager Ceph
       ansible.builtin.command:
         cmd: pveceph mgr create
-        creates: /var/lib/ceph/mgr/ceph-{{ ansible_hostname }}
+        creates: /var/lib/ceph/mgr/ceph-{{ ansible_facts['hostname'] }}
 
   roles:
     - vector

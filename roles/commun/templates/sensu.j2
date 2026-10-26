@@ -1,10 +1,10 @@
 {
   "client": {
-    "name": "{{ ansible_fqdn }}",
-    "address": "{{ ansible_fqdn }}",
+    "name": "{{ inventory_hostname }}",
+    "address": "{{ inventory_hostname }}",
     "subscriptions": [
       "default",
-      "{{ ansible_fqdn }}"
+      "{{ inventory_hostname }}"
     ]
   }
 }

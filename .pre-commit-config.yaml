@@ -12,16 +12,28 @@ repos:
       - id: no-commit-to-branch
       - id: mixed-line-ending
       - id: check-executables-have-shebangs
-      - id: check-merge-conflict
       - id: fix-byte-order-marker
+      - id: check-json
+      - id: check-toml
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.30.1
     hooks:
       - id: gitleaks
+      - id: gitleaks
+        alias: gitleaks-tree
+        name: Detect hardcoded secrets in the whole tree
+        entry: gitleaks dir --redact --verbose
+        stages: [manual]
 
   - repo: local
     hooks:
+      - id: ansible-vault-encrypted
+        name: ansible-vault-encrypted
+        entry: '^\$ANSIBLE_VAULT;'
+        language: pygrep
+        args: [--negate]
+        files: 'vault[^/]*\.ya?ml$'
       - id: ansible-lint
         name: ansible-lint
         entry: ansible-lint

@@ -14,7 +14,7 @@
     types: deb
     signed_by: /usr/share/keyrings/deb.sury.org-php.gpg
     uris: https://packages.sury.org/php/
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
     components:
       - main
     state: present

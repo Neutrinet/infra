@@ -1,8 +1,8 @@
 {
     "exec-opts": ["native.cgroupdriver=systemd"],
-    "log-driver": "json-file",
-    "log-opts": {
-        "max-size": "100m"
-    },
+    "ipv6": true,
+    "fixed-cidr-v6": "fd9d:ac50:93c0::/64",
+    "live-restore": true,
+    "log-driver": "local",
     "storage-driver": "overlay2"
 }

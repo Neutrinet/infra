@@ -26,6 +26,7 @@ provisioner:
   config_options:
     defaults:
       interpreter_python: /usr/bin/python3
+      roles_path: "${MOLECULE_PROJECT_DIRECTORY}/.."
       vault_password_file: "${MOLECULE_PROJECT_DIRECTORY}/../../vault.key"
     ssh_connection:
       pipelining: true
