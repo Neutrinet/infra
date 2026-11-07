@@ -26,6 +26,7 @@ users:
     state: present
     keys:
       - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM6Izdo7R5QpxfIu9lTIuNWLCluXayVuPfo+oCGkdvF1 YubiKey"
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID/HNMGdqkat2iYaeDvAxlYq7sDN4Md1BeG53D2/ZUGa tharyrok_warpgate"
   #  - name: jim
   #    state: absent
   #    keys:
