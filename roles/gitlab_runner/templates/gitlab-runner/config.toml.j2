@@ -15,6 +15,8 @@ listen_address = "localhost:9252"
   token = "{{ gitlab_runner_token }}"
   executor = "docker"
   request_concurrency = 2
+  # Job log size in KB: a [[runners]] option, ignored under [runners.docker]
+  output_limit = 32768
   [runners.feature_flags]
     FF_USE_INIT_WITH_DOCKER_EXECUTOR = true
     FF_GIT_URLS_WITHOUT_TOKENS = true
@@ -32,7 +34,6 @@ listen_address = "localhost:9252"
     volumes = ["/cache"]
     shm_size = 0
     pull_policy = "if-not-present"
-    output_limit = 32768
 {% endif %}
 
 # initramfs job of mikrotik-openwrt (tag neutrinet-openwrt): full OpenWrt build
@@ -42,6 +43,7 @@ listen_address = "localhost:9252"
   token = "{{ gitlab_runner_openwrt_token }}"
   executor = "docker"
   limit = 1
+  output_limit = 32768
   [runners.feature_flags]
     FF_USE_INIT_WITH_DOCKER_EXECUTOR = true
     FF_GIT_URLS_WITHOUT_TOKENS = true
@@ -58,4 +60,3 @@ listen_address = "localhost:9252"
     volumes = ["openwrt-cache:/cache"]
     shm_size = 0
     pull_policy = "if-not-present"
-    output_limit = 32768
