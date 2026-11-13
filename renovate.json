@@ -1,0 +1,98 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "timezone": "Europe/Brussels",
+  "minimumReleaseAge": "14 days",
+  "internalChecksFilter": "strict",
+  "osvVulnerabilityAlerts": true,
+  "git-submodules": {
+    "enabled": true
+  },
+  "pre-commit": {
+    "enabled": true
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "* 0-6 * * 1"
+    ]
+  },
+  "customDatasources": {
+    "haproxy-debian": {
+      "defaultRegistryUrlTemplate": "https://haproxy.debian.net/dists/",
+      "format": "html"
+    }
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Versions pinned in role defaults",
+      "managerFilePatterns": [
+        "roles/*/defaults/main.yml"
+      ],
+      "matchStrings": [
+        "#\\s*renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?( extractVersion=(?<extractVersion>\\S+))?\\n[a-z_]+:\\s*\"?(?<currentValue>[^\"\\s]+)\"?"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "pep621"
+      ],
+      "rangeStrategy": "bump"
+    },
+    {
+      "description": "Python is set by the CI image",
+      "matchManagers": [
+        "pep621"
+      ],
+      "matchDepNames": [
+        "python"
+      ],
+      "enabled": false
+    },
+    {
+      "groupName": "molecule",
+      "matchPackageNames": [
+        "molecule",
+        "molecule-plugins"
+      ]
+    },
+    {
+      "description": "Patch releases: shorter cooldown",
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "No release timestamp available",
+      "matchDatasources": [
+        "git-refs",
+        "custom.haproxy-debian"
+      ],
+      "minimumReleaseAge": null
+    },
+    {
+      "description": "No release timestamp outside Docker Hub",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/**"
+      ],
+      "minimumReleaseAge": null
+    },
+    {
+      "description": "Mattermost ESR line",
+      "matchDepNames": [
+        "mattermost/mattermost"
+      ],
+      "allowedVersions": "/^11\\.7\\./"
+    }
+  ]
+}

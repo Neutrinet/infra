@@ -1,5 +1,6 @@
 semaphore_domain: semaphore.example.com
 semaphore_owner: "{{ semaphore_domain | replace('.', '-') }}"
+# renovate: datasource=github-releases depName=semaphoreui/semaphore extractVersion=^v(?<version>.+)$
 semaphore_version: 2.19.16
 
 semaphore_admin_username: admin

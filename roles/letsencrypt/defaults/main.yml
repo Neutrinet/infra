@@ -1,4 +1,5 @@
 ---
+# renovate: datasource=pypi depName=certbot
 letsencrypt_certbot_version: 5.8.0
 
 letsencrypt_mail_notification: letsencrypt@exemple.com

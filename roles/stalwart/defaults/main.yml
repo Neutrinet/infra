@@ -1,3 +1,4 @@
+# renovate: datasource=github-releases depName=stalwartlabs/stalwart extractVersion=^v(?<version>.+)$
 stalwart_version: 0.14.1
 stalwart_storage_path: /var/lib/stalwart
 stalwart_admin_username: admin

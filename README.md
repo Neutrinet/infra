@@ -18,23 +18,29 @@ git submodule update --init --recursive
 
 **Debian:**
 ```shell
-sudo apt install python3 python3-venv direnv git-secret
+sudo apt install direnv git-secret pipx
+pipx ensurepath
+pipx install uv
 ```
+
+`pipx ensurepath` adds `~/.local/bin` to the `PATH`: open a new shell before running `uv`.
 
 **Fedora:**
 ```shell
-sudo dnf install python3 direnv git-secret
+sudo dnf install direnv git-secret uv
 ```
+
+On Fedora 43, uv is only in `updates-testing`: add `--enablerepo=updates-testing` to the command.
 
 **Manjaro:**
 ```shell
-sudo pacman -S python direnv
+sudo pacman -S direnv uv
 yay -S git-secret
 ```
 
 ### 3. Set up direnv
 
-direnv automatically activates the Python virtualenv whenever you enter the project directory.
+direnv automatically installs the Python dependencies with uv and activates the `.venv/` virtualenv whenever you enter the project directory.
 
 ```shell
 cp .envrc.default .envrc
@@ -47,13 +53,15 @@ Then add direnv to your shell. Add the following to your `~/.bashrc` (or `~/.zsh
 eval "$(direnv hook bash)"
 ```
 
-### 4. Install Python dependencies
+### 4. Python dependencies
+
+Python dependencies are declared in `pyproject.toml` and pinned in `uv.lock`. uv uses a Python 3.13 interpreter, the version of the CI image, and downloads one if the system does not provide it.
+
+To add or upgrade a dependency, commit both files:
 
 ```shell
-pip install -r requirements.txt
+uv add <package>
 ```
-
-direnv will have activated the `.venv/` virtualenv automatically.
 
 ### 5. Decrypt secrets
 

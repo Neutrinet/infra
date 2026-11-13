@@ -8,4 +8,4 @@ roles/knot/defaults/main.yml:generic-api-key:11
 roles/knot/defaults/main.yml:generic-api-key:12
 roles/mobilizon/defaults/main.yml:generic-api-key:20
 roles/mobilizon/defaults/main.yml:generic-api-key:21
-roles/semaphore/defaults/main.yml:generic-api-key:16
+roles/semaphore/defaults/main.yml:generic-api-key:17
