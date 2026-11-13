@@ -155,6 +155,30 @@ haproxy:
     headers:
       Content-Security-Policy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';"
 
+  # Images OpenWrt de mikrotik-openwrt en lecture seule : RGW (rgw_dns_name s3.neutrinet.be, rgw_resolve_cname) prend
+  # un Host hors de s3.neutrinet.be comme nom de bucket, d'où le bucket openwrt.neutrinet.be sans réécriture du chemin
+  # Seulement GET/HEAD, sans sous-ressource S3 (la query est retirée) ni "..", et "/" sert l'index.html du dossier
+  - hostname: openwrt.neutrinet.be
+    target:
+      - topi.louise.neutri.net
+      - nam.louise.neutri.net
+      - bour.louise.neutri.net
+    target_port: 7480
+    http_request_rules:
+      - action: deny
+        condition: "!METH_GET"
+      - action: deny
+        condition: "{ path,url_dec -m sub /.. }"
+      - action: set-path %[path]index.html
+        condition: "{ ssl_fc } { path_end / }"
+      - action: set-uri %[path]
+        condition: "{ ssl_fc }"
+    healthcheck: true
+    healthcheck_url: HEAD /
+    headers:
+      # Pages de s3-genindex : styles et SVG en ligne, aucun script
+      Content-Security-Policy: "default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none';"
+
   - hostname: librenms.neutrinet.be
     target:
       - librenms.patata.louise.neutri.net
