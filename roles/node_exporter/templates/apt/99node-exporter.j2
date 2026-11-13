@@ -1,0 +1,4 @@
+{{ ansible_managed | comment('c') }}
+
+APT::Update::Post-Invoke-Success { "systemctl start --no-block node-exporter-apt.service || true"; };
+DPkg::Post-Invoke { "systemctl start --no-block node-exporter-apt.service node-exporter-needrestart.service || true"; };

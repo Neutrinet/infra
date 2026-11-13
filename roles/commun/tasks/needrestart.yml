@@ -1,0 +1,12 @@
+- name: needrestart | Installation de needrestart
+  ansible.builtin.package:
+    name: needrestart
+    state: present
+
+- name: needrestart | Liste des services à redémarrer sans les redémarrer
+  ansible.builtin.template:
+    src: needrestart/restart.conf.j2
+    dest: /etc/needrestart/conf.d/restart.conf
+    owner: root
+    group: root
+    mode: "ugo=r"

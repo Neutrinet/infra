@@ -1,0 +1,35 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Collect apt metrics for node-exporter
+
+[Service]
+Type=oneshot
+User=node-exporter
+Group=node-exporter
+ExecStart=/bin/sh -c '/usr/local/libexec/node-exporter/apt_info.py > /var/lib/node-exporter/textfile_collector/apt.prom.tmp && mv /var/lib/node-exporter/textfile_collector/apt.prom.tmp /var/lib/node-exporter/textfile_collector/apt.prom'
+
+# Systemd hardening
+CapabilityBoundingSet=
+LockPersonality=true
+MemoryDenyWriteExecute=true
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateNetwork=true
+PrivateTmp=true
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/node-exporter/textfile_collector
+RemoveIPC=true
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
