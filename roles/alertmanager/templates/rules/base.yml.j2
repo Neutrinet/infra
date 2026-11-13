@@ -258,6 +258,58 @@ groups:
           summary: Kernel version changed
           description: "[{{ $labels.instance }}] Kernel version has changed (current = {{ $labels.release }})"
 
+      - alert: Textfile Collector Stale
+        expr: 'time() - node_textfile_mtime_seconds > 3 * 3600'
+        for: 15m
+        labels:
+          severity: info
+          frequency: daily
+        annotations:
+          summary: Textfile {{ $labels.file }} is stale
+          description: "[{{ $labels.instance }}] Textfile {{ $labels.file }} has not been updated for {{ humanizeDuration $value }}"
+
+  - name: Updates
+    rules:
+      - alert: Security Updates Pending
+        expr: 'sum by (instance) (apt_upgrades_pending{origin=~".*-security/.*"}) > 0'
+        for: 2d
+        labels:
+          severity: info
+          frequency: daily
+        annotations:
+          summary: Security updates pending (current = {{ $value }})
+          description: "[{{ $labels.instance }}] {{ $value }} security updates have been pending for more than 2 days, check unattended-upgrades"
+
+      - alert: APT Cache Outdated
+        expr: 'time() - apt_package_cache_timestamp_seconds > 2 * 86400'
+        for: 1h
+        labels:
+          severity: info
+          frequency: daily
+        annotations:
+          summary: APT cache is outdated
+          description: "[{{ $labels.instance }}] Last successful apt update was {{ humanizeDuration $value }} ago"
+
+      - alert: Reboot Required
+        expr: 'max by (instance) (node_reboot_required) > 0 or max by (instance) (needrestart_kernel_status_info) > 1'
+        for: 7d
+        labels:
+          severity: info
+          frequency: daily
+        annotations:
+          summary: Reboot required
+          description: "[{{ $labels.instance }}] A newer kernel has been installed for more than 7 days, reboot the instance"
+
+      - alert: Services Restart Required
+        expr: 'needrestart_services_total > 0'
+        for: 7d
+        labels:
+          severity: info
+          frequency: daily
+        annotations:
+          summary: Services restart required (current = {{ $value }})
+          description: "[{{ $labels.instance }}] {{ $value }} services have been running outdated libraries for more than 7 days, restart them or reboot the instance"
+
   - name: Time
     rules:
       - alert: Clock Skew

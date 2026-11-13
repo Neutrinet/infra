@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Collect needrestart metrics for node-exporter every hour
+
+[Timer]
+OnActiveSec=0
+OnUnitActiveSec=1h
+
+[Install]
+WantedBy=timers.target

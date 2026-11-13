@@ -16,6 +16,10 @@
   ansible.builtin.import_tasks: tools.yml
   tags: ['tools']
 
+- name: Configuration de needrestart
+  ansible.builtin.import_tasks: needrestart.yml
+  tags: ['needrestart']
+
 - name: Configuration de ZSH
   ansible.builtin.import_tasks: zsh.yml
   tags: ['zsh']

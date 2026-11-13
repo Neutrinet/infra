@@ -22,6 +22,20 @@
       delay: 10
       until: "_verify_endpoint_0.status == 200 and 'node_uname_info' in _verify_endpoint_0.content"
 
+    - name: Vérification des métriques des collecteurs textfile
+      ansible.builtin.uri:
+        url: http://localhost:9100/metrics
+        return_content: true
+      register: _verify_textfile
+      retries: 6
+      delay: 10
+      until: >-
+        _verify_textfile.status == 200
+        and 'apt_upgrades_pending' in _verify_textfile.content
+        and 'node_reboot_required' in _verify_textfile.content
+        and 'needrestart_services_total' in _verify_textfile.content
+        and 'node_textfile_scrape_error 0' in _verify_textfile.content
+
     - name: Vérification des métriques remontées par Vector
       ansible.builtin.uri:
         url: http://localhost:9598/metrics
