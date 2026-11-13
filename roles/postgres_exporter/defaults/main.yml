@@ -1,2 +1,3 @@
+# renovate: datasource=github-releases depName=prometheus-community/postgres_exporter extractVersion=^v(?<version>.+)$
 postgres_exporter_version: 0.20.1
 postgres_role: primary

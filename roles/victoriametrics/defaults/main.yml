@@ -1,3 +1,4 @@
+# renovate: datasource=github-releases depName=VictoriaMetrics/VictoriaMetrics extractVersion=^v(?<version>.+)$
 victoriametrics_version: 1.154.0
 victoriametrics_username: victoriametrics
 victoriametrics_password: neutrinet

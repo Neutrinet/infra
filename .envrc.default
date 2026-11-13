@@ -2,5 +2,7 @@
 export VAGRANT_DEFAULT_PROVIDER=libvirt
 export PASSWORD_STORE_DIR=/home/neutrinet/.password-store
 
-export VIRTUAL_ENV=.venv
-layout python3
+watch_file pyproject.toml uv.lock
+uv sync --locked --quiet
+export VIRTUAL_ENV="$PWD/.venv"
+PATH_add .venv/bin

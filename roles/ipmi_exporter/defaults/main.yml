@@ -1,1 +1,2 @@
+# renovate: datasource=github-releases depName=prometheus-community/ipmi_exporter extractVersion=^v(?<version>.+)$
 ipmi_exporter_version: 1.10.1

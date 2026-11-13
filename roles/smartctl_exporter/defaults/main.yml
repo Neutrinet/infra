@@ -1,1 +1,2 @@
+# renovate: datasource=github-releases depName=prometheus-community/smartctl_exporter extractVersion=^v(?<version>.+)$
 smartctl_exporter_version: 0.14.0

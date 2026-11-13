@@ -1,5 +1,6 @@
 hedgedoc_domain: doc.example.com
 hedgedoc_owner: "{{ hedgedoc_domain | replace('.', '-') }}"
+# renovate: datasource=github-releases depName=hedgedoc/hedgedoc
 hedgedoc_version: 1.12.0
 
 postgresql_host: localhost
