@@ -23,6 +23,20 @@
     name: gitlab-runner
     state: present
 
+- name: Création du volume de cache du runner OpenWrt
+  ansible.builtin.command:
+    cmd: docker volume create openwrt-cache
+    creates: /var/lib/docker/volumes/openwrt-cache/_data
+
+# Le job initramfs tourne avec l'utilisateur buildbot (uid 1000) de l'image buildworker
+- name: Propriétaire du volume de cache du runner OpenWrt
+  ansible.builtin.file:
+    path: /var/lib/docker/volumes/openwrt-cache/_data
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "u=rwx,go=rx"
+
 - name: Configuration de Gitlab Runner
   ansible.builtin.template:
     src: gitlab-runner/config.toml.j2
