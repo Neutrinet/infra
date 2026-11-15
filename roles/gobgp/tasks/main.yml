@@ -1,0 +1,12 @@
+---
+- name: Installation de GoBGP
+  ansible.builtin.import_tasks: install.yml
+  tags: ["gobgp_install"]
+
+- name: Configuration de GoBGP
+  ansible.builtin.import_tasks: config.yml
+  tags: ["gobgp_config"]
+
+- name: Activation du service GoBGP
+  ansible.builtin.import_tasks: service.yml
+  tags: ["gobgp_service"]

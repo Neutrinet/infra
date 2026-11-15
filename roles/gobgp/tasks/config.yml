@@ -1,0 +1,43 @@
+---
+- name: config | Déployer la configuration de gobgpd
+  ansible.builtin.template:
+    src: gobgpd.conf.j2
+    dest: /etc/gobgpd.conf
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart gobgpd
+
+- name: config | Créer le dossier de surcharge systemd pour gobgpd
+  ansible.builtin.file:
+    path: /etc/systemd/system/gobgpd.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: config | Corriger l'unité gobgpd du paquet Debian (flag --syslog inexistant)
+  ansible.builtin.template:
+    src: systemd/gobgpd-override.conf.j2
+    dest: /etc/systemd/system/gobgpd.service.d/override.conf
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart gobgpd
+
+- name: config | Créer le dossier des dumps MRT
+  ansible.builtin.file:
+    path: /var/lib/gobgpd
+    state: directory
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+
+- name: config | Déployer l'unité d'injection automatique des dumps MRT
+  ansible.builtin.template:
+    src: systemd/gobgp-mrt-inject.service.j2
+    dest: /etc/systemd/system/gobgp-mrt-inject.service
+    owner: root
+    group: root
+    mode: "ugo=r"
+  notify: Restart gobgpd

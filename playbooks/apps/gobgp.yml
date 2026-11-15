@@ -1,0 +1,6 @@
+- name: Déploiement de GoBGP
+  hosts: gobgp
+  become: true
+
+  roles:
+    - gobgp

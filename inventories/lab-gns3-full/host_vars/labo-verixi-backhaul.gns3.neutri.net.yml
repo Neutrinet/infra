@@ -1,0 +1,12 @@
+gobgp_local_asn: 65264
+gobgp_router_id: 100.64.23.41
+
+gobgp_neighbors:
+  - address: 100.64.23.42
+    peer_as: 204059
+  - address: 100.64.23.43
+    peer_as: 204059
+  - address: "2001:913:1000:5::42"
+    peer_as: 204059
+  - address: "2001:913:1000:5::43"
+    peer_as: 204059

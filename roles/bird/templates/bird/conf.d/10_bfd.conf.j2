@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+protocol bfd {
+	vrf "routing";
+	accept direct;
+	interface "*" {
+		interval 500ms;
+		multiplier 6;
+	};
+}

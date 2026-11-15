@@ -1,0 +1,34 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Rafraichissement des prefix-lists IRR pour bird
+After=network-online.target bird.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/bird-irr-refresh.sh
+TimeoutStartSec=30min
+User=bird
+Group=bird
+LockPersonality=true
+NoNewPrivileges=true
+ProtectClock=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallFilter=@system-service
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/etc/bird/irr -/run/bird
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+MemoryDenyWriteExecute=true
+CapabilityBoundingSet=
+PrivateDevices=true
+ProtectHostname=true
+ProtectKernelLogs=true
+RestrictNamespaces=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+UMask=0077

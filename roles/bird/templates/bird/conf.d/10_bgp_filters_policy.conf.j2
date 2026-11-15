@@ -1,0 +1,485 @@
+{{ ansible_managed | comment }}
+
+function match_rtbh_v4(string direction; string locality; int AS) -> bool
+{
+	if direction = "import" then {
+		if (bgp_community ~ [(65535, 666)]) then {
+			if (net.len = 32) then {
+				dest = RTD_BLACKHOLE;
+				bgp_local_pref = 900;
+
+				print "[", direction, "][", locality, "] RTBH: Add to blackhole: ", net, " ", bgp_path;
+				return true;
+			} else {
+				print "[", direction, "][", locality, "] Reject: Invalid mask to blackhole: ", net, " ", bgp_path;
+				bgp_community.delete((65535, 666));
+				return false;
+			}
+		}
+	}
+
+	if direction = "export" && (bgp_community ~ [(65535, 666)]) then {
+		bgp_community.delete((65535, 666));
+
+		case AS {
+			6696: { bgp_community.add((6696, 666)); bgp_community.add((65535, 65281)); }
+			35137: bgp_community.add((65535, 666));
+			34307: bgp_community.add((65535, 666));
+			5406: bgp_community.add((5406, 666));
+			24785: { bgp_community.add((24785, 666)); bgp_community.add((65535, 65281)); }
+			20562: { bgp_community.add((20562, 666)); bgp_community.add((65535, 65281)); }
+			else: return false;
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+function match_rtbh_v6(string direction; string locality; int AS) -> bool
+{
+	if direction = "import" then {
+		if (bgp_community ~ [(65535, 666)]) then {
+			if (net.len = 128) then {
+				dest = RTD_BLACKHOLE;
+				bgp_local_pref = 900;
+
+				print "[", direction, "][", locality, "] RTBH: Add to blackhole: ", net, " ", bgp_path;
+				return true;
+			} else {
+				print "[", direction, "][", locality, "] Reject: Invalid mask to blackhole: ", net, " ", bgp_path;
+				bgp_community.delete((65535, 666));
+				return false;
+			}
+		}
+	}
+
+	if direction = "export" && (bgp_community ~ [(65535, 666)]) then {
+		bgp_community.delete((65535, 666));
+
+		case AS {
+			6696: { bgp_community.add((6696, 666)); bgp_community.add((65535, 65281)); }
+			35137: bgp_community.add((65535, 666));
+			34307: bgp_community.add((65535, 666));
+			5406: bgp_community.add((5406, 666));
+			24785: { bgp_community.add((24785, 666)); bgp_community.add((65535, 65281)); }
+			20562: { bgp_community.add((20562, 666)); bgp_community.add((65535, 65281)); }
+			else: return false;
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+function bgp_community_calcul(string type_filter; string locality) -> int
+int community;
+{
+	if ! (type_filter = "internal" || type_filter = "transit" || type_filter = "route-server" || type_filter = "peering") then {
+		print "bgp_community_calcul: parametre type_filter invalide: ", type_filter;
+		return 0;
+	}
+
+	if ! (locality = "internal" || locality = "private" || locality = "belgiumix" || locality = "bnix" || locality = "nlix") then {
+		print "bgp_community_calcul: parametre locality invalide: ", locality;
+		return 0;
+	}
+
+	community = 0;
+
+	if locality = "internal"        then community = community + 1000;
+	if locality = "private"         then community = community + 2000;
+	if locality = "belgiumix"       then community = community + 3000;
+	if locality = "bnix"            then community = community + 3100;
+	if locality = "nlix"            then community = community + 3200;
+
+	if type_filter = "internal"     then community = community + 10;
+	if type_filter = "transit"      then community = community + 20;
+	if type_filter = "route-server" then community = community + 30;
+	if type_filter = "peering"      then community = community + 31;
+
+	return community;
+}
+
+function bgp_local_pref_calcul(string type_filter) -> int
+int local_pref;
+{
+	local_pref = 190;
+
+	if type_filter = "transit"      then local_pref = 100;
+	if type_filter = "route-server" then local_pref = 110;
+	if type_filter = "peering"      then local_pref = 120;
+
+	return local_pref;
+}
+
+function bgp_apply_graceful_shutdown()
+{
+	if ((65535, 0) ~ bgp_community) then bgp_local_pref = 0;
+}
+
+function bgp_learned_by_ebgp() -> bool
+{
+	return bgp_large_community ~ [(my_asn, 0, 20)];
+}
+
+function bgp_learned_by_client() -> bool
+{
+	return bgp_large_community ~ [(my_asn, 0, 30)];
+}
+
+function bgp_is_own_network() -> bool
+{
+	return bgp_large_community ~ [(my_asn, 0, 40)];
+}
+
+function bgp_is_bogon_blackhole() -> bool
+{
+	return bgp_large_community ~ [(my_asn, 0, 60)];
+}
+
+function bgp_import_transit_to_border(int AS; int local_pref) -> bool
+{
+	bgp_large_community.delete([(my_asn, *, *)]);
+	bgp_community.delete((65535, 666));
+
+	if net.type = NET_IP4 && bgp_import_reject_v4("transit") then return false;
+	if net.type = NET_IP6 && bgp_import_reject_v6("transit") then return false;
+
+{% if bird_ixp_locality is defined %}
+	bgp_large_community.add((my_asn, AS, bgp_community_calcul("transit", "{{ bird_ixp_locality }}")));
+{% endif %}
+	bgp_local_pref = bgp_local_pref_calcul("transit");
+	if local_pref > 0 then bgp_local_pref = local_pref;
+	bgp_apply_graceful_shutdown();
+
+	bgp_large_community.add((my_asn, 0, 20));
+
+	return true;
+}
+
+function bgp_export_border_to_transit(int AS; int prepend_count) -> bool
+bool rtbh;
+{
+	if bgp_learned_by_ebgp() then return false;
+	if !bgp_learned_by_client() && !bgp_is_own_network() && !(bgp_community ~ [(65535, 666)]) then return false;
+
+	if net.type = NET_IP4 then {
+		rtbh = match_rtbh_v4("export", "transit", AS);
+		if rtbh then bgp_path.delete(PRIVATE_ASNS);
+		if rtbh && (reject_bogon_asns("export", "transit") || reject_v4_bogon_prefixes("export", "transit")) then return false;
+		if !rtbh && bgp_export_reject_v4("transit") then return false;
+	}
+	if net.type = NET_IP6 then {
+		rtbh = match_rtbh_v6("export", "transit", AS);
+		if rtbh then bgp_path.delete(PRIVATE_ASNS);
+		if rtbh && (reject_bogon_asns("export", "transit") || reject_v6_bogon_prefixes("export", "transit")) then return false;
+		if !rtbh && bgp_export_reject_v6("transit") then return false;
+	}
+
+{% if bird_ixp_locality is defined %}
+	bgp_large_community.add((my_asn, AS, bgp_community_calcul("transit", "{{ bird_ixp_locality }}")));
+{% endif %}
+	bgp_large_community.delete([(my_asn, 0, *)]);
+
+	if bgp_path.len = 0 then {
+		if prepend_count >= 1 then bgp_path.prepend(my_asn);
+		if prepend_count >= 2 then bgp_path.prepend(my_asn);
+		if prepend_count >= 3 then bgp_path.prepend(my_asn);
+	}
+
+	return true;
+}
+
+function bgp_import_route_server_to_border(int AS) -> bool
+{
+	bgp_large_community.delete([(my_asn, *, *)]);
+	bgp_community.delete((65535, 666));
+
+	if net.type = NET_IP4 && bgp_import_reject_v4("route-server") then return false;
+	if net.type = NET_IP6 && bgp_import_reject_v6("route-server") then return false;
+	if reject_tier1_asns("import", "route-server") then return false;
+
+{% if bird_ixp_locality is defined %}
+	bgp_large_community.add((my_asn, AS, bgp_community_calcul("route-server", "{{ bird_ixp_locality }}")));
+{% endif %}
+	bgp_local_pref = bgp_local_pref_calcul("route-server");
+	bgp_apply_graceful_shutdown();
+
+	bgp_large_community.add((my_asn, 0, 20));
+
+	return true;
+}
+
+function bgp_export_border_to_route_server(int AS) -> bool
+bool rtbh;
+{
+	if bgp_learned_by_ebgp() then return false;
+	if !bgp_learned_by_client() && !bgp_is_own_network() && !(bgp_community ~ [(65535, 666)]) then return false;
+
+	if net.type = NET_IP4 then {
+		rtbh = match_rtbh_v4("export", "route-server", AS);
+		if rtbh then bgp_path.delete(PRIVATE_ASNS);
+		if rtbh && (reject_bogon_asns("export", "route-server") || reject_v4_bogon_prefixes("export", "route-server")) then return false;
+		if !rtbh && bgp_export_reject_v4("route-server") then return false;
+	}
+	if net.type = NET_IP6 then {
+		rtbh = match_rtbh_v6("export", "route-server", AS);
+		if rtbh then bgp_path.delete(PRIVATE_ASNS);
+		if rtbh && (reject_bogon_asns("export", "route-server") || reject_v6_bogon_prefixes("export", "route-server")) then return false;
+		if !rtbh && bgp_export_reject_v6("route-server") then return false;
+	}
+
+	if (bgp_large_community ~ [(my_asn, 398987, *)]) then {
+		bgp_community.add((0, 6939));
+	}
+
+{% if bird_ixp_locality is defined %}
+	bgp_large_community.add((my_asn, AS, bgp_community_calcul("route-server", "{{ bird_ixp_locality }}")));
+{% endif %}
+	bgp_large_community.delete([(my_asn, 0, *)]);
+{% if bird_transit_asns is defined %}
+{% for transit_asn in bird_transit_asns %}
+	bgp_large_community.add((AS, 0, {{ transit_asn }}));
+{% endfor %}
+{% endif %}
+
+	return true;
+}
+
+function bgp_import_peering_to_border(int AS; prefix set irr_v4; prefix set irr_v6) -> bool
+{
+	bgp_large_community.delete([(my_asn, *, *)]);
+	bgp_community.delete((65535, 666));
+
+	if (bgp_next_hop != from) then {
+		print "[import][peering] Reject: next hop is not the neighbor: ", net, " ", bgp_next_hop, " ", from;
+		return false;
+	}
+	if net.type = NET_IP4 then {
+		if bgp_import_reject_v4("peering") then return false;
+		if (net !~ irr_v4) then return false;
+	}
+	if net.type = NET_IP6 then {
+		if bgp_import_reject_v6("peering") then return false;
+		if (net !~ irr_v6) then return false;
+	}
+	if reject_tier1_asns("import", "peering") then return false;
+
+{% if bird_ixp_locality is defined %}
+	bgp_large_community.add((my_asn, AS, bgp_community_calcul("peering", "{{ bird_ixp_locality }}")));
+{% endif %}
+	bgp_local_pref = bgp_local_pref_calcul("peering");
+	bgp_apply_graceful_shutdown();
+
+	bgp_large_community.add((my_asn, 0, 20));
+
+	return true;
+}
+
+function bgp_export_border_to_peering(int AS) -> bool
+bool rtbh;
+{
+	if bgp_learned_by_ebgp() then return false;
+	if !bgp_learned_by_client() && !bgp_is_own_network() && !(bgp_community ~ [(65535, 666)]) then return false;
+
+	if (AS = 6939 && (bgp_large_community ~ [(my_asn, 398987, *)])) then return false;
+
+	if net.type = NET_IP4 then {
+		rtbh = match_rtbh_v4("export", "peering", AS);
+		if rtbh then bgp_path.delete(PRIVATE_ASNS);
+		if rtbh && (reject_bogon_asns("export", "peering") || reject_v4_bogon_prefixes("export", "peering")) then return false;
+		if !rtbh && bgp_export_reject_v4("peering") then return false;
+	}
+	if net.type = NET_IP6 then {
+		rtbh = match_rtbh_v6("export", "peering", AS);
+		if rtbh then bgp_path.delete(PRIVATE_ASNS);
+		if rtbh && (reject_bogon_asns("export", "peering") || reject_v6_bogon_prefixes("export", "peering")) then return false;
+		if !rtbh && bgp_export_reject_v6("peering") then return false;
+	}
+
+{% if bird_ixp_locality is defined %}
+	bgp_large_community.add((my_asn, AS, bgp_community_calcul("peering", "{{ bird_ixp_locality }}")));
+{% endif %}
+	bgp_large_community.delete([(my_asn, 0, *)]);
+
+	return true;
+}
+
+function bgp_import_client_to_access(int AS; prefix set irr_v4; prefix set irr_v6; bool static_prefixes) -> bool
+bool rtbh;
+{
+	bgp_large_community.delete([(my_asn, *, *)]);
+
+	if reject_tier1_asns("import", "client") then return false;
+	if net.type = NET_IP4 then {
+		rtbh = match_rtbh_v4("import", "client", AS);
+		if (net !~ irr_v4) then return false;
+		if !rtbh && static_prefixes && bgp_import_reject_static_client_v4("client") then return false;
+		if !rtbh && !static_prefixes && bgp_import_reject_v4("client") then return false;
+	}
+	if net.type = NET_IP6 then {
+		rtbh = match_rtbh_v6("import", "client", AS);
+		if (net !~ irr_v6) then return false;
+		if !rtbh && static_prefixes && bgp_import_reject_static_client_v6("client") then return false;
+		if !rtbh && !static_prefixes && bgp_import_reject_v6("client") then return false;
+	}
+
+	bgp_large_community.add((my_asn, AS, bgp_community_calcul("internal", "internal")));
+	if AS = my_asn then bgp_large_community.add((my_asn, 0, 40));
+	else bgp_large_community.add((my_asn, 0, 30));
+
+	if !rtbh then bgp_local_pref = bgp_local_pref_calcul("client");
+	if !rtbh then bgp_apply_graceful_shutdown();
+
+	return true;
+}
+
+function bgp_export_access_to_client(int AS) -> bool
+{
+	if (source != RTS_BGP) then return false;
+	if net.type = NET_IP4 then {
+		if (net = 0.0.0.0/0) then return true;
+	}
+	if net.type = NET_IP6 then {
+		if (net = ::/0) then return true;
+	}
+	return false;
+}
+
+function bgp_export_own_network_direct(int AS) -> bool
+{
+	if (proto = "direct1") then {
+		if (net.type = NET_IP4 && net ~ NEUTRINET_PREFIXES_V4) then {
+			bgp_large_community.add((my_asn, 0, 40));
+			bgp_local_pref = 190;
+			return true;
+		}
+		if (net.type = NET_IP6 && net ~ NEUTRINET_PREFIXES_V6) then {
+			bgp_large_community.add((my_asn, 0, 40));
+			bgp_local_pref = 190;
+			return true;
+		}
+	}
+	return false;
+}
+
+function bgp_import_core_to_border(int AS) -> bool
+{
+	if bgp_is_bogon_blackhole() then return true;
+	if (bgp_community ~ [(65535, 666)]) then {
+		dest = RTD_BLACKHOLE;
+		bgp_local_pref = 900;
+	}
+	if bgp_learned_by_client() then return true;
+	if bgp_is_own_network() then return true;
+	if (bgp_community ~ [(65535, 666)]) then return true;
+	return false;
+}
+
+function bgp_import_core_to_access(int AS) -> bool
+{
+	if bgp_is_bogon_blackhole() then return true;
+	if net.type = NET_IP4 then { if (net ~ [0.0.0.0/0]) then return true; }
+	if net.type = NET_IP6 then { if (net ~ [::/0]) then return true; }
+	return false;
+}
+
+function bgp_export_border_to_core(int AS) -> bool
+{
+	if (proto = "direct1") then {
+		bgp_export_own_network_direct(AS);
+	}
+	if bgp_learned_by_ebgp() then return true;
+	if bgp_learned_by_client() then return true;
+	if bgp_is_own_network() then return true;
+	return false;
+}
+
+function bgp_export_access_to_core(int AS) -> bool
+{
+	if (proto = "direct1") then {
+		bgp_export_own_network_direct(AS);
+	}
+{% if bird_client_export_local_pref is defined %}
+	if bgp_learned_by_client() then bgp_local_pref = {{ bird_client_export_local_pref }};
+{% endif %}
+	if bgp_learned_by_client() then return true;
+	if bgp_is_own_network() then return true;
+	return false;
+}
+
+function bgp_import_border_to_core(int AS) -> bool
+{
+	if (bgp_community ~ [(65535, 666)]) then {
+		dest = RTD_BLACKHOLE;
+		bgp_local_pref = 900;
+	}
+	if bgp_learned_by_ebgp() then return true;
+	if bgp_is_own_network() then return true;
+	if (bgp_community ~ [(65535, 666)]) then return true;
+	return false;
+}
+
+function bgp_import_access_to_core(int AS) -> bool
+{
+	if (bgp_community ~ [(65535, 666)]) then {
+		dest = RTD_BLACKHOLE;
+		bgp_local_pref = 900;
+	}
+	if bgp_learned_by_client() then return true;
+	if bgp_is_own_network() then return true;
+	if (bgp_community ~ [(65535, 666)]) then return true;
+	return false;
+}
+
+function bgp_export_core_to_border(int AS) -> bool
+{
+	if bgp_is_bogon_blackhole() then return true;
+	if bgp_learned_by_client() then return true;
+	if bgp_is_own_network() then return true;
+	return bgp_export_own_network_direct(AS);
+}
+
+function bgp_export_core_to_access(int AS) -> bool
+{
+	if bgp_is_bogon_blackhole() then return true;
+	if net.type = NET_IP4 then {
+		if (proto = "default_gw_v4") then return dest = RTD_UNICAST;
+	}
+	if net.type = NET_IP6 then {
+		if (proto = "default_gw_v6") then return dest = RTD_UNICAST;
+	}
+	return false;
+}
+
+function bgp_export_core_to_tools(int AS) -> bool
+{
+	if bgp_learned_by_ebgp() then return true;
+	if !bgp_learned_by_client() then return false;
+	if (bgp_community ~ [(65535, 666)]) then return false;
+	if net.type = NET_IP4 && bgp_export_reject_v4("tools") then return false;
+	if net.type = NET_IP6 && bgp_export_reject_v6("tools") then return false;
+	bgp_large_community.delete([(my_asn, 0, *)]);
+	return true;
+}
+
+function bgp_import_bogons_to_core(int AS) -> bool
+{
+	if !((65332, 888) ~ bgp_community) then return false;
+	if net.len = 0 then return false;
+	if net.type = NET_IP4 && net ~ NEUTRINET_PREFIXES_V4 then return false;
+	if net.type = NET_IP6 && net ~ NEUTRINET_PREFIXES_V6 then return false;
+	if net.type = NET_IP4 && net ~ [23.128.97.0/24+] then return false;
+	if net.type = NET_IP6 && net ~ [2607:7c80:53::/48+] then return false;
+
+	bgp_large_community.delete([(my_asn, *, *)]);
+	bgp_community.delete((65535, 666));
+	bgp_large_community.add((my_asn, 0, 60));
+	bgp_local_pref = 500;
+	dest = RTD_BLACKHOLE;
+
+	return true;
+}

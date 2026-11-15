@@ -1,0 +1,93 @@
+{{ ansible_managed | comment('xml') }}
+# Référence des communautés BGP
+
+Ce fichier reprend la logique des communautés de `conf.d/10_bgp_filters_policy.conf.j2`. Il n'est pas généré à partir de ce fichier : toute
+modification de l'un doit être reportée dans l'autre.
+
+## Communautés larges (`{{ bird_my_asn }}:X:Y`)
+
+| Communauté | Sens |
+| --- | --- |
+| `{{ bird_my_asn }}:0:20` | Route apprise en eBGP (transitaire, route-server ou peering) ; jamais réannoncée à l'extérieur |
+| `{{ bird_my_asn }}:0:30` | Route d'un client eBGP, ou l'un de nos agrégats (route statique sur les cores) ; annoncée à l'extérieur |
+| `{{ bird_my_asn }}:0:40` | Nos réseaux internes (voir ci-dessous) |
+| `{{ bird_my_asn }}:0:60` | Bogon Team Cymru (session `bogons` des cores), jamais exporté hors de l'AS |
+| `{{ bird_my_asn }}:<asn>:<code>` | Marque informative par session (voir ci-dessous) |
+
+`{{ bird_my_asn }}:0:40` couvre les réseaux connectés compris dans `NEUTRINET_PREFIXES_V4/V6`, les routes de `bird_internal_service_routes` et les
+routes d'un client iBGP. `{{ bird_my_asn }}:0:60` est relayée en iBGP et la route est installée en blackhole dans le noyau.
+
+`{{ bird_my_asn }}:<asn>:<code>` est ajoutée à l'import d'une session externe ou d'un client, et à l'export vers une session externe ; `<code>`
+dépend du type de session et de l'IX.
+
+Les communautés `{{ bird_my_asn }}:0:*` sont retirées de toute route exportée vers l'extérieur, et toutes les communautés `{{ bird_my_asn }}:*:*`
+reçues de l'extérieur sont retirées à l'import.
+
+### Code de localité et de type (`<code>` ci-dessus)
+
+Calculé par `bgp_community_calcul()` comme la somme d'une base de localité et d'une base de type.
+
+Base de localité :
+
+| Localité | Base |
+| --- | --- |
+| internal | 1000 |
+| private | 2000 |
+| belgiumix | 3000 |
+| bnix | 3100 |
+| nlix | 3200 |
+
+Base de type :
+
+| Type | Base |
+| --- | --- |
+| internal | 10 |
+| transit | 20 |
+| route-server | 30 |
+| peering | 31 |
+
+Exemples : un transitaire sur un routeur avec `bird_ixp_locality: private` est marqué `{{ bird_my_asn }}:<asn>:2020` ; un client est toujours
+marqué `{{ bird_my_asn }}:<asn>:1010`.
+
+### Motifs particuliers
+
+| Motif | Sens |
+| --- | --- |
+| `{{ bird_my_asn }}:398987:*` | Toute route apprise du client NS-Global (AS 398987), quelle que soit la valeur exacte |
+| `<asn-du-route-server>:0:<asn-du-transitaire>` | Ajoutée à chaque export vers un route-server, une fois par ASN de `bird_transit_asns` |
+
+Le premier motif sert à exclure les routes de NS-Global de certains exports. Le second suit la convention des route-servers « ne pas annoncer au
+membre X », pour que nos transitaires membres du même IX ne reçoivent pas nos routes une seconde fois.
+
+## Communautés classiques (`X:Y`)
+
+| Communauté | Sens |
+| --- | --- |
+| `65535:0` | GRACEFUL_SHUTDOWN (RFC 8326) : à l'import d'une session externe ou d'un client, la local preference passe à 0 |
+| `65535:666` | BLACKHOLE (RFC 7999) : demande de RTBH d'un client sur un /32 ou un /128 |
+| `65535:65281` | NO_EXPORT : ajoutée à toute route RTBH exportée vers un transitaire |
+| `0:6939` | Convention des route-servers « ne pas annoncer à l'AS 6939 (Hurricane Electric) » |
+| `65332:888` | Marque des routes Team Cymru fullbogons, seules acceptées sur les sessions `bogons` |
+
+`65535:666` est traduite à l'export vers la convention RTBH du voisin (voir ci-dessous). Reçue d'un transitaire, d'un route-server ou d'un
+peering, elle est retirée.
+
+`0:6939` est ajoutée aux routes de NS-Global (AS 398987, reconnues par `{{ bird_my_asn }}:398987:*`) exportées vers un route-server.
+
+### Traduction du RTBH (`65535:666`) à l'export
+
+`match_rtbh_v4` et `match_rtbh_v6` signalent la demande de blackhole avec la communauté RTBH du voisin et retirent les ASN privés du chemin.
+`NO_EXPORT` n'est ajoutée que vers les transitaires : un route-server doit pouvoir redistribuer le blackhole à ses membres.
+
+| ASN de destination | Type | Exportée comme |
+| --- | --- | --- |
+| 6696 | transitaire | `6696:666` et `NO_EXPORT` |
+| 35137 | route-server | `65535:666` (inchangée) |
+| 34307 | route-server | `65535:666` (inchangée) |
+| 5406 | route-server | `5406:666` |
+| 24785 | transitaire | `24785:666` et `NO_EXPORT` |
+| 20562 | transitaire | `20562:666` et `NO_EXPORT` |
+| tout autre ASN | | pas de traduction : la route n'est pas traitée comme un RTBH vers ce voisin et passe par le filtrage normal, qui la rejette |
+
+Exclusion directe de Hurricane Electric : sur une session de peering avec l'AS 6939, toute route de NS-Global est refusée, en plus du signal
+`0:6939` envoyé aux route-servers.

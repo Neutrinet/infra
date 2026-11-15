@@ -1,0 +1,42 @@
+{{ ansible_managed | comment }}
+{% for item in peer_group[1] %}
+protocol bgp core_{{ item.slug }}_v6 from bgp_internal_std {
+	neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
+{% if item.multihop | default(false) %}
+	multihop;
+{% endif %}
+{% if 'neighbor_ipv6_interface' in item %}
+	interface "{{ item.neighbor_ipv6_interface }}";
+	direct;
+{% endif %}
+{% if 'neighbor_ipv6_password' in item %}
+	password "{{ item.neighbor_ipv6_password }}";
+{% endif %}
+{% if item.passive | default(false) %}
+	passive on;
+{% endif %}
+	description "[core] {{ item.name }} ({{ item.asn }})";
+
+	ipv4 {
+{% if bird_role == 'border' %}
+		import where bgp_import_core_to_border({{ item.asn }});
+		export where bgp_export_border_to_core({{ item.asn }});
+{% elif bird_role == 'access' %}
+		import where bgp_import_core_to_access({{ item.asn }});
+		export where bgp_export_access_to_core({{ item.asn }});
+{% endif %}
+		add paths on;
+		extended next hop on;
+	};
+	ipv6 {
+{% if bird_role == 'border' %}
+		import where bgp_import_core_to_border({{ item.asn }});
+		export where bgp_export_border_to_core({{ item.asn }});
+{% elif bird_role == 'access' %}
+		import where bgp_import_core_to_access({{ item.asn }});
+		export where bgp_export_access_to_core({{ item.asn }});
+{% endif %}
+		add paths on;
+	};
+}
+{%- endfor %}

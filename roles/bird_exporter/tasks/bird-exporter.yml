@@ -2,7 +2,7 @@
 - name: Création de l'utilisateur pour Bird exporter
   ansible.builtin.user:
     name: bird-exporter
-    home: /opt/bird-exporter
+    home: /var/lib/bird-exporter
     shell: /sbin/nologin
     system: true
     groups:

@@ -2,5 +2,11 @@
   hosts: nftables
   become: true
 
+  pre_tasks:
+    - name: Collecte des facts réseau
+      ansible.builtin.setup:
+        gather_subset:
+          - network
+
   roles:
     - nftables

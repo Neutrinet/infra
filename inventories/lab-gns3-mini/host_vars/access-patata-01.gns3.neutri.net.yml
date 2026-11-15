@@ -1,0 +1,64 @@
+bird_router_id: 169.254.0.220
+bird_my_asn: 204059
+bird_router_source_ipv4: 80.67.181.10
+bird_router_source_ipv6: "2001:913:1000:100::220"
+bird_server_rpki_01: "fd25:6f26:9410::190"
+bird_server_rpki_02: "fd25:6f26:9410::190"
+bird_role: access
+bird_peers_upstreams:
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:190"
+    neighbor_ipv6_interface: ens1
+    name: Core Main 01
+    slug: "204059_190"
+    type: core
+bird_peers_downstreams:
+  - asn: 398987
+    neighbor_ipv4: 80.67.181.24
+    neighbor_ipv6: "2001:913:1000:200::24"
+    neighbor_ipv6_interface: ens2
+    name: NS-Global
+    slug: "398987_24"
+    type: client
+    max_prefix_v4: 10
+    max_prefix_v6: 10
+    irr_static_v4:
+      - "23.128.97.0/24+"
+    irr_static_v6:
+      - "2607:7c80:53::/48+"
+keepalived_interface: ens2
+keepalived_vrrp_scripts:
+  - name: check_bird
+    cmd: /usr/bin/killall -0 bird
+keepalived_instances:
+  - vip: 80.67.181.17/32
+    additional_vip:
+      - 80.67.181.33/32
+    addresses:
+      - 80.67.181.18
+    type: ipv4
+  - vip: "2001:913:1000:200::17/128"
+    additional_vip:
+      - "2001:913:1000:300::33/128"
+    addresses:
+      - "2001:913:1000:200::18"
+    type: ipv6
+nftables_allowed_nets_ipv4:
+  - 80.67.181.16/28
+  - 80.67.181.32/28
+  - 23.128.97.0/24
+nftables_allowed_nets_ipv6:
+  - "2001:913:1000:200::/56"
+  - "2001:913:1000:300::/56"
+  - "2001:913:1000:10::/64"
+  - "2001:913:1000:11::/64"
+  - "2607:7c80:53::/48"
+
+nftables_sources_by_mac:
+  - name: NS-Global
+    macs:
+      - "0c:a4:bb:24:00:01"
+    prefixes_ipv4:
+      - "23.128.97.0/24"
+    prefixes_ipv6:
+      - "2607:7c80:53::/48"

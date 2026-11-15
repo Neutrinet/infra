@@ -1,0 +1,57 @@
+bird_router_id: 169.254.0.190
+bird_my_asn: 204059
+bird_router_source_ipv4: 80.67.181.1
+bird_router_source_ipv6: "2001:913:1000:100::191"
+bird_server_rpki_01: "fd25:6f26:9410::190"
+bird_server_rpki_02: "fd25:6f26:9410::190"
+bird_role: core
+bird_peers_upstreams:
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:200"
+    neighbor_ipv6_interface: ens1
+    name: Border Verixi 01
+    slug: "204059_200"
+    type: border
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:205"
+    neighbor_ipv6_interface: ens1
+    name: Border Joint Transit
+    slug: "204059_205"
+    type: border
+
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:201"
+    neighbor_ipv6_interface: ens1
+    name: Border BelgiumIX
+    slug: "204059_201"
+    type: border
+
+  - asn: 65332
+    neighbor_ipv6: "2001:913:1000:101::3:161"
+    name: bgp.tools (labo-tools)
+    slug: "65332_3"
+    type: tools
+    multihop: true
+  - asn: 65332
+    neighbor_ipv6: "2001:913:1000:101::2:161"
+    name: Team Cymru fullbogons (labo-tools)
+    slug: "65332_2"
+    type: bogons
+    multihop: true
+    max_prefix_v4: 50000
+    max_prefix_v6: 500000
+    max_prefix_action: warn
+
+bird_peers_downstreams:
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:220"
+    neighbor_ipv6_interface: ens1
+    name: Access Patata 01
+    slug: "204059_220"
+    type: access
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:222"
+    neighbor_ipv6_interface: ens1
+    name: Access Backhaul 01
+    slug: "204059_222"
+    type: access

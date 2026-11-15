@@ -1,0 +1,6 @@
+---
+- name: install | Installation de gobgpd
+  ansible.builtin.apt:
+    name: gobgpd
+    state: present
+    default_release: "{{ ansible_distribution_release }}-backports"

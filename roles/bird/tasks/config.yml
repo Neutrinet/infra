@@ -1,0 +1,231 @@
+---
+- name: config | Vérifier que les peers filtrés par IRR ont une prefix-list statique pour les deux familles ou aucune
+  ansible.builtin.assert:
+    that: (item.irr_static_v4 is defined) == (item.irr_static_v6 is defined)
+    fail_msg: "{{ item.slug }} : irr_static_v4 et irr_static_v6 vont ensemble"
+    quiet: true
+  loop: "{{ bird_peers_upstreams + bird_peers_downstreams }}"
+  when: item.type == 'client' or (item.irr_filtered | default(false))
+
+- name: config | Vérifier que chaque client a une prefix-list statique, qui sert aussi à l'anti-spoofing
+  ansible.builtin.assert:
+    that: item.irr_static_v4 is defined and item.irr_static_v6 is defined
+    fail_msg: "{{ item.slug }} : un client doit avoir irr_static_v4 et irr_static_v6"
+    quiet: true
+  loop: "{{ (bird_peers_upstreams + bird_peers_downstreams) | selectattr('type', 'equalto', 'client') | list }}"
+
+- name: config | Vérifier que chaque peer eBGP a une limite de préfixes pour les deux familles
+  ansible.builtin.assert:
+    that:
+      - item.max_prefix_v4 is defined
+      - item.max_prefix_v6 is defined
+    fail_msg: "{{ item.slug }} : max_prefix_v4 et max_prefix_v6 sont obligatoires pour un peer {{ item.type }}"
+    quiet: true
+  loop: "{{ (bird_peers_upstreams + bird_peers_downstreams) | selectattr('type', 'in', ['transit', 'route-server', 'peering', 'client']) | list }}"
+
+- name: config | Vérifier que chaque peering est filtré par IRR
+  ansible.builtin.assert:
+    that: item.irr_filtered | default(false)
+    fail_msg: "{{ item.slug }} : irr_filtered est obligatoire pour un peering"
+    quiet: true
+  loop: "{{ (bird_peers_upstreams + bird_peers_downstreams) | selectattr('type', 'equalto', 'peering') | list }}"
+
+- name: config | Vérifier que le filtrage IRR n'est demandé que sur un peering ou un client
+  ansible.builtin.assert:
+    that: not (item.irr_filtered | default(false))
+    fail_msg: "{{ item.slug }} : irr_filtered ne filtre rien sur un peer {{ item.type }}"
+    quiet: true
+  loop: "{{ (bird_peers_upstreams + bird_peers_downstreams) | selectattr('type', 'in', ['transit', 'route-server']) | list }}"
+
+- name: config | Vérifier que le nombre de prepends vers les transits est compris entre 0 et 3
+  ansible.builtin.assert:
+    that: item.prepend | default(0) in [0, 1, 2, 3]
+    fail_msg: "{{ item.slug }} : prepend doit valoir 0, 1, 2 ou 3"
+    quiet: true
+  loop: "{{ bird_peers_upstreams | selectattr('type', 'equalto', 'transit') | list }}"
+
+- name: config | Vérifier que chaque voisin iBGP est dans le VLAN de routage
+  ansible.builtin.assert:
+    that: item.neighbor_ipv6 is match('^2001:913:1000:101::1:[0-9a-f]{1,4}$')
+    fail_msg: "{{ item.slug }} : neighbor_ipv6 doit être 2001:913:1000:101::1:<id>"
+    quiet: true
+  loop: "{{ (bird_peers_upstreams + bird_peers_downstreams) | selectattr('type', 'in', ['core', 'border', 'access']) | list }}"
+
+- name: config | Création des dossiers pour bird
+  ansible.builtin.file:
+    path: "{{ bird_dir }}"
+    owner: bird
+    group: bird
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  loop:
+    - /etc/bird
+    - /etc/bird/conf.d
+    - /etc/bird/irr
+    - /etc/bird/peers
+    - /etc/bird/peers/upstreams
+    - /etc/bird/peers/downstreams
+  loop_control:
+    loop_var: bird_dir
+
+- name: config | Déployer un fichier de garde dans /etc/bird/irr
+  ansible.builtin.template:
+    src: bird/irr/00_placeholder.conf.j2
+    dest: /etc/bird/irr/00_placeholder.conf
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  notify: Reload bird
+
+- name: config | Déployer le manifeste des peers filtrés par IRR
+  ansible.builtin.template:
+    src: bird/irr-refresh-manifest.conf.j2
+    dest: /etc/bird/irr/refresh.manifest
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  register: _bird_irr_manifest
+
+- name: config | Déployer les prefix-lists IRR statiques (gérées par Ansible, hors timer)
+  ansible.builtin.template:
+    src: bird/irr/static.conf.j2
+    dest: "/etc/bird/irr/irr_{{ item.slug }}_static.conf"
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  loop: "{{ (bird_peers_upstreams + bird_peers_downstreams) | selectattr('type', 'in', ['peering', 'client']) | list }}"
+  when: item.irr_static_v4 is defined or item.irr_static_v6 is defined
+  register: _bird_irr_static
+  notify: Reload bird
+
+- name: config | Lister les prefix-lists IRR statiques présentes
+  ansible.builtin.find:
+    paths: /etc/bird/irr
+    patterns: "irr_*_static.conf"
+  register: _bird_irr_static_present
+
+- name: config | Supprimer les prefix-lists IRR statiques des peers qui n'en ont plus
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ _bird_irr_static_present.files | map(attribute='path') | difference(_bird_irr_static.results | selectattr('dest', 'defined') | map(attribute='dest')) }}"
+  notify: Reload bird
+
+- name: config | Déployer le script de rafraîchissement IRR
+  ansible.builtin.template:
+    src: systemd/bird-irr-refresh.sh.j2
+    dest: /usr/local/bin/bird-irr-refresh.sh
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+  register: _bird_irr_script
+
+- name: config | Déployer le service et le timer systemd de rafraîchissement IRR
+  ansible.builtin.template:
+    src: "systemd/{{ bird_irr_unit }}.j2"
+    dest: "/etc/systemd/system/{{ bird_irr_unit }}"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  loop:
+    - bird-irr-refresh.service
+    - bird-irr-refresh.timer
+  loop_control:
+    loop_var: bird_irr_unit
+  register: _bird_irr_units
+  notify: Reload systemd
+
+- name: config | Déployer les fichiers de conf.d communs
+  ansible.builtin.template:
+    src: "bird/conf.d/{{ bird_conf }}.j2"
+    dest: "/etc/bird/conf.d/{{ bird_conf }}"
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  loop:
+    - 10_bgp_filters_hygiene.conf
+    - 10_bgp_filters_policy.conf
+    - 10_protocols.conf
+    - 10_bfd.conf
+    - 16_bgp_templates.conf
+    - 20_bgp_rpki.conf
+    - 80_static.conf
+    - 90_kernel.conf
+  loop_control:
+    loop_var: bird_conf
+  notify: Reload bird
+
+- name: config | Déployer les routes statiques spécifiques à ce host
+  ansible.builtin.template:
+    src: bird/conf.d/80_static-host.conf.j2
+    dest: "/etc/bird/conf.d/80_static_{{ inventory_hostname | replace('.', '_') | replace('-', '_') }}.conf"
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  notify: Reload bird
+
+- name: config | Configuration de base de bird
+  ansible.builtin.template:
+    src: bird/bird.conf.j2
+    dest: /etc/bird/bird.conf
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  notify: Reload bird
+
+- name: config | Déployer la documentation des communautés BGP
+  ansible.builtin.template:
+    src: bird/community.md.j2
+    dest: /etc/bird/community.md
+    owner: bird
+    group: bird
+    mode: "a=r"
+
+- name: config | Configuration des variables d'environnement pour bird
+  ansible.builtin.template:
+    src: bird/envvars.j2
+    dest: /etc/bird/envvars
+    owner: root
+    group: root
+    mode: "ug=r,o="
+  notify: Restart bird
+
+- name: config | Déployer les peers upstreams par type
+  ansible.builtin.template:
+    src: "bird/peers/{{ peer_group[0] }}.conf.j2"
+    dest: "/etc/bird/peers/upstreams/{{ peer_group[0] }}.conf"
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  loop: "{{ bird_peers_upstreams | groupby('type') }}"
+  loop_control:
+    loop_var: peer_group
+  notify: Reload bird
+
+- name: config | Purger les fichiers de type de peer upstream obsolètes
+  ansible.builtin.file:
+    path: "/etc/bird/peers/upstreams/{{ item }}.conf"
+    state: absent
+  loop: "{{ ['transit', 'route-server', 'peering', 'client', 'core', 'border', 'access', 'tools', 'bogons']
+            | difference(bird_peers_upstreams | map(attribute='type') | unique | list) }}"
+  notify: Reload bird
+
+- name: config | Déployer les peers downstreams par type
+  ansible.builtin.template:
+    src: "bird/peers/{{ peer_group[0] }}.conf.j2"
+    dest: "/etc/bird/peers/downstreams/{{ peer_group[0] }}.conf"
+    owner: bird
+    group: bird
+    mode: "ug=r,o="
+  loop: "{{ bird_peers_downstreams | groupby('type') }}"
+  loop_control:
+    loop_var: peer_group
+  notify: Reload bird
+
+- name: config | Purger les fichiers de type de peer downstream obsolètes
+  ansible.builtin.file:
+    path: "/etc/bird/peers/downstreams/{{ item }}.conf"
+    state: absent
+  loop: "{{ ['transit', 'route-server', 'peering', 'client', 'core', 'border', 'access', 'tools', 'bogons']
+            | difference(bird_peers_downstreams | map(attribute='type') | unique | list) }}"
+  notify: Reload bird

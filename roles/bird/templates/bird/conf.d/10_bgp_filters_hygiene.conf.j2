@@ -1,0 +1,374 @@
+{{ ansible_managed | comment }}
+
+define NEUTRINET_PREFIXES_V4 = [
+	80.67.181.0/24+,
+	80.67.191.0/24+
+];
+
+define NEUTRINET_PREFIXES_V6 = [
+	2001:913:1000::/36+
+];
+
+define IXP_LAN_PREFIXES_V4 = [
+	185.1.127.0/24+,
+	193.239.116.0/22+,
+	194.53.172.0/24+
+];
+
+define IXP_LAN_PREFIXES_V6 = [
+	2001:7f8:13::/48+,
+	2001:7f8:26::/48+,
+	2001:7f8:d2::/48+
+];
+
+define PRIVATE_ASNS = [
+	64512..65534,
+	4200000000..4294967294
+];
+
+define BOGON_ASNS = [
+	0,
+	23456,
+	64496..64511,
+	64512..65534,
+	65535,
+	65536..65551,
+	65552..131071,
+	4200000000..4294967294,
+	4294967295
+];
+
+function reject_bogon_asns(string direction; string locality) -> bool
+int set bogon_asns;
+{
+	bogon_asns = BOGON_ASNS;
+
+	if (bgp_path ~ bogon_asns) then {
+		print "[", direction, "][", locality, "] Reject: bogon AS_PATH: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+define TIER1_ASNS = [174, 701, 1299, 2914, 3257, 3320, 3356, 3491, 4134, 5511, 6453, 6461, 6762, 6830, 7018, 12956];
+
+function reject_tier1_asns(string direction; string locality) -> bool
+int set tier1_asns;
+{
+	tier1_asns = TIER1_ASNS;
+
+	if (bgp_path ~ tier1_asns) then {
+		print "[", direction, "][", locality, "] Reject: tier 1 AS in AS_PATH: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_too_many_communities(string direction; string locality) -> bool
+{
+	if (bgp_community.len + bgp_ext_community.len + bgp_large_community.len > 100) then {
+		print "[", direction, "][", locality, "] Reject: Too many communities: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_long_aspaths(string direction; string locality) -> bool
+{
+	if (bgp_path.len > 100) then {
+		print "[", direction, "][", locality, "] Reject: Too long AS path: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+define BOGON_PREFIXES_V4 = [
+	0.0.0.0/8+,
+	10.0.0.0/8+,
+	100.64.0.0/10+,
+	127.0.0.0/8+,
+	169.254.0.0/16+,
+	172.16.0.0/12+,
+	192.0.0.0/24+,
+	192.0.2.0/24+,
+	192.88.99.0/24+,
+	192.168.0.0/16+,
+	198.18.0.0/15+,
+	198.51.100.0/24+,
+	203.0.113.0/24+,
+	224.0.0.0/4+,
+	240.0.0.0/4+
+];
+
+function reject_v4_bogon_prefixes(string direction; string locality) -> bool
+prefix set bogon_prefixes;
+{
+	bogon_prefixes = BOGON_PREFIXES_V4;
+
+	if (net ~ bogon_prefixes) then {
+		print "[", direction, "][", locality, "] Reject: Bogon prefix: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v4_own_prefixes(string direction; string locality) -> bool
+{
+	if (net ~ NEUTRINET_PREFIXES_V4) then {
+		print "[", direction, "][", locality, "] Reject: Own prefix: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v4_ixp_lan_prefixes(string direction; string locality) -> bool
+{
+	if (net ~ IXP_LAN_PREFIXES_V4) then {
+		print "[", direction, "][", locality, "] Reject: IXP LAN prefix: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v4_short_prefixes(string direction; string locality) -> bool
+{
+	if (net.len < 8) then {
+		print "[", direction, "][", locality, "] Reject: Too short prefix: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v4_small_prefixes(string direction; string locality) -> bool
+{
+	if (net.len > 24) then {
+		print "[", direction, "][", locality, "] Reject: Too small prefix: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v4_default_route(string direction; string locality) -> bool
+{
+	if (net ~ [0.0.0.0/0]) then {
+		print "[", direction, "][", locality, "] Reject: default route: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v4_invalid_rpki(string direction; string locality) -> bool
+{
+	if bgp_path.len = 0 then {
+		if direction = "import" then return false;
+		if roa_check(roa_v4, net, my_asn) = ROA_INVALID then {
+			print "[", direction, "][", locality, "] Reject: Invalid RPKI for our own origin: ", net;
+			return true;
+		}
+		return false;
+	}
+
+	if roa_check(roa_v4, net, bgp_path.last_nonaggregated) = ROA_INVALID then {
+		print "[", direction, "][", locality, "] Reject: Invalid RPKI: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+define BOGON_PREFIXES_V6 = [
+	::/8+,
+	0100::/64+,
+	2001:2::/48+,
+	2001:10::/28+,
+	2001:db8::/32+,
+	2002::/16+,
+	3ffe::/16+,
+	3fff::/20+,
+	5f00::/16+,
+	fc00::/7+,
+	fe80::/10+,
+	fec0::/10+,
+	ff00::/8+
+];
+
+function reject_v6_bogon_prefixes(string direction; string locality) -> bool
+prefix set bogon_prefixes;
+{
+	bogon_prefixes = BOGON_PREFIXES_V6;
+
+	if (net ~ bogon_prefixes) then {
+		print "[", direction, "][", locality, "] Reject: Bogon prefix: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v6_own_prefixes(string direction; string locality) -> bool
+{
+	if (net ~ NEUTRINET_PREFIXES_V6) then {
+		print "[", direction, "][", locality, "] Reject: Own prefix: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v6_ixp_lan_prefixes(string direction; string locality) -> bool
+{
+	if (net ~ IXP_LAN_PREFIXES_V6) then {
+		print "[", direction, "][", locality, "] Reject: IXP LAN prefix: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v6_short_prefixes(string direction; string locality) -> bool
+{
+	if (net.len < 16) then {
+		print "[", direction, "][", locality, "] Reject: Too short prefix: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v6_not_global_unicast(string direction; string locality) -> bool
+{
+	if (net !~ [2000::/3+]) then {
+		print "[", direction, "][", locality, "] Reject: Not global unicast: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v6_small_prefixes(string direction; string locality) -> bool
+{
+	if (net.len > 48) then {
+		print "[", direction, "][", locality, "] Reject: Too small prefix: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v6_default_route(string direction; string locality) -> bool
+{
+	if (net ~ [::/0]) then {
+		print "[", direction, "][", locality, "] Reject: default route: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_v6_invalid_rpki(string direction; string locality) -> bool
+{
+	if bgp_path.len = 0 then {
+		if direction = "import" then return false;
+		if roa_check(roa_v6, net, my_asn) = ROA_INVALID then {
+			print "[", direction, "][", locality, "] Reject: Invalid RPKI for our own origin: ", net;
+			return true;
+		}
+		return false;
+	}
+
+	if roa_check(roa_v6, net, bgp_path.last_nonaggregated) = ROA_INVALID then {
+		print "[", direction, "][", locality, "] Reject: Invalid RPKI: ", net, " ", bgp_path;
+		return true;
+	}
+	return false;
+}
+
+function reject_invalid_aspa(string direction; string locality) -> bool
+{
+	if bgp_path.len = 0 then return false;
+
+	if locality = "transit" then {
+		if (aspa_check_downstream(aspa_t) = ASPA_INVALID) then {
+			print "[", direction, "][", locality, "] Reject: Invalid ASPA: ", net, " ", bgp_path;
+			return true;
+		}
+	}
+	else if (locality = "peering" || locality = "route-server" || locality = "client") then {
+		if (aspa_check_upstream(aspa_t) = ASPA_INVALID) then {
+			print "[", direction, "][", locality, "] Reject: Invalid ASPA: ", net, " ", bgp_path;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function bgp_import_reject_v4(string type_filter) -> bool
+{
+	if reject_bogon_asns("import", type_filter)          then return true;
+	if reject_long_aspaths("import", type_filter)         then return true;
+	if reject_too_many_communities("import", type_filter) then return true;
+	if reject_v4_default_route("import", type_filter)     then return true;
+	if reject_v4_short_prefixes("import", type_filter)    then return true;
+	if reject_v4_bogon_prefixes("import", type_filter)    then return true;
+	if reject_v4_ixp_lan_prefixes("import", type_filter)  then return true;
+	if reject_v4_own_prefixes("import", type_filter)      then return true;
+	if reject_v4_small_prefixes("import", type_filter)    then return true;
+	if reject_v4_invalid_rpki("import", type_filter)      then return true;
+	if reject_invalid_aspa("import", type_filter)         then return true;
+	return false;
+}
+
+function bgp_import_reject_v6(string type_filter) -> bool
+{
+	if reject_bogon_asns("import", type_filter)          then return true;
+	if reject_long_aspaths("import", type_filter)         then return true;
+	if reject_too_many_communities("import", type_filter) then return true;
+	if reject_v6_default_route("import", type_filter)     then return true;
+	if reject_v6_short_prefixes("import", type_filter)    then return true;
+	if reject_v6_not_global_unicast("import", type_filter) then return true;
+	if reject_v6_bogon_prefixes("import", type_filter)    then return true;
+	if reject_v6_ixp_lan_prefixes("import", type_filter)  then return true;
+	if reject_v6_own_prefixes("import", type_filter)      then return true;
+	if reject_v6_small_prefixes("import", type_filter)    then return true;
+	if reject_v6_invalid_rpki("import", type_filter)      then return true;
+	if reject_invalid_aspa("import", type_filter)         then return true;
+	return false;
+}
+
+function bgp_import_reject_static_client_v4(string type_filter) -> bool
+{
+	if reject_long_aspaths("import", type_filter)         then return true;
+	if reject_too_many_communities("import", type_filter) then return true;
+	if reject_v4_default_route("import", type_filter)     then return true;
+	if !(bgp_path.last_nonaggregated ~ PRIVATE_ASNS) && reject_v4_invalid_rpki("import", type_filter) then return true;
+	if reject_invalid_aspa("import", type_filter)         then return true;
+	return false;
+}
+
+function bgp_import_reject_static_client_v6(string type_filter) -> bool
+{
+	if reject_long_aspaths("import", type_filter)         then return true;
+	if reject_too_many_communities("import", type_filter) then return true;
+	if reject_v6_default_route("import", type_filter)     then return true;
+	if !(bgp_path.last_nonaggregated ~ PRIVATE_ASNS) && reject_v6_invalid_rpki("import", type_filter) then return true;
+	if reject_invalid_aspa("import", type_filter)         then return true;
+	return false;
+}
+
+function bgp_export_reject_v4(string type_filter) -> bool
+{
+	if reject_bogon_asns("export", type_filter)          then return true;
+	if reject_long_aspaths("export", type_filter)         then return true;
+	if reject_v4_default_route("export", type_filter)     then return true;
+	if reject_v4_short_prefixes("export", type_filter)    then return true;
+	if reject_v4_bogon_prefixes("export", type_filter)    then return true;
+	if reject_v4_small_prefixes("export", type_filter)    then return true;
+	if reject_v4_invalid_rpki("export", type_filter)      then return true;
+	return false;
+}
+
+function bgp_export_reject_v6(string type_filter) -> bool
+{
+	if reject_bogon_asns("export", type_filter)          then return true;
+	if reject_long_aspaths("export", type_filter)         then return true;
+	if reject_v6_default_route("export", type_filter)     then return true;
+	if reject_v6_short_prefixes("export", type_filter)    then return true;
+	if reject_v6_not_global_unicast("export", type_filter) then return true;
+	if reject_v6_bogon_prefixes("export", type_filter)    then return true;
+	if reject_v6_small_prefixes("export", type_filter)    then return true;
+	if reject_v6_invalid_rpki("export", type_filter)      then return true;
+	return false;
+}

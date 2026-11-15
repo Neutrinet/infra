@@ -1,4 +1,15 @@
 ---
+- name: Collecte des adresses des VM réseau
+  hosts: louise_network
+  gather_facts: false
+
+  tasks:
+    - name: Collecte des facts réseau
+      ansible.builtin.setup:
+        gather_subset:
+          - network
+      tags: ["pf_mcast"]
+
 - name: Déploiement des Proxmox
   hosts: proxmox
   become: true

@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+
+[global.config]
+  as = {{ gobgp_local_asn }}
+  router-id = "{{ gobgp_router_id }}"
+
+{% for neighbor in gobgp_neighbors %}
+[[neighbors]]
+  [neighbors.config]
+    neighbor-address = "{{ neighbor.address }}"
+    peer-as = {{ neighbor.peer_as }}
+{% if neighbor.auth_password is defined %}
+    auth-password = "{{ neighbor.auth_password }}"
+{% endif %}
+  [neighbors.transport.config]
+    passive-mode = {{ neighbor.passive | default(false) | lower }}
+{% endfor %}

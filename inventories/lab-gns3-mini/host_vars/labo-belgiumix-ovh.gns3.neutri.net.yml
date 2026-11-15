@@ -1,0 +1,8 @@
+gobgp_local_asn: 16276
+gobgp_router_id: 185.1.127.25
+
+gobgp_neighbors:
+  - address: 185.1.127.16
+    peer_as: 204059
+  - address: "2001:7f8:d2::16"
+    peer_as: 204059

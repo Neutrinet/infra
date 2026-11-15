@@ -1,0 +1,8 @@
+gobgp_local_asn: 5406
+gobgp_router_id: 194.53.172.1
+
+gobgp_neighbors:
+  - address: 194.53.172.101
+    peer_as: 204059
+  - address: "2001:7f8:26::a520:4059:1"
+    peer_as: 204059

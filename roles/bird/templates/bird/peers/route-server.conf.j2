@@ -1,0 +1,30 @@
+{{ ansible_managed | comment }}
+{% for item in peer_group[1] %}
+{% for af in ['4', '6'] %}
+{% set addr = item['neighbor_ipv' ~ af] %}
+{% if addr is defined and (addr | length > 0) %}
+protocol bgp route_server_{{ item.slug }}_v{{ af }} from bgp_std {
+	neighbor {{ addr }} as {{ item.asn }};
+	local role rs_client;
+{% if ('neighbor_ipv' ~ af ~ '_interface') in item %}
+	interface "{{ item['neighbor_ipv' ~ af ~ '_interface'] }}";
+	direct;
+{% endif %}
+{% if ('neighbor_ipv' ~ af ~ '_password') in item %}
+	password "{{ item['neighbor_ipv' ~ af ~ '_password'] }}";
+{% endif %}
+{% if item.passive | default(false) %}
+	passive on;
+{% endif %}
+	description "[route-server] {{ item.name }} ({{ item.asn }})";
+
+	ipv{{ af }} {
+		import where bgp_import_route_server_to_border({{ item.asn }});
+		export where bgp_export_border_to_route_server({{ item.asn }});
+		import limit {{ item['max_prefix_v' ~ af] }} action restart;
+		receive limit {{ item['max_prefix_v' ~ af] * 2 }} action restart;
+	};
+}
+{% endif %}
+{% endfor %}
+{% endfor %}

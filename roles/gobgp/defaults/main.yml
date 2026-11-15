@@ -1,0 +1,4 @@
+---
+gobgp_local_asn: 4200000000
+gobgp_router_id: 192.0.2.1
+gobgp_neighbors: []

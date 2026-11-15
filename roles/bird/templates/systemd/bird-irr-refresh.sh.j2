@@ -1,0 +1,174 @@
+#!/bin/sh
+{{ ansible_managed | comment }}
+#
+# Rafraîchit les prefix-lists IRR (MANRS Action 1) pour chaque peer listé
+# dans le manifeste, à partir des objets IRR réels (bgpq4). Ne recharge la
+# configuration bird que si au moins une prefix-list a réellement changé.
+set -eu
+
+MANIFEST=/etc/bird/irr/refresh.manifest
+IRR_DIR=/etc/bird/irr
+BIRD_CONFIG=/etc/bird/bird.conf
+BIRD_SOCKET=/var/run/bird/bird.ctl
+SOURCES=RIPE,RADB,ARIN,APNIC,AFRINIC,LACNIC
+BGPQ4_TIMEOUT_S=120
+MAX_ATTEMPTS=3
+MAX_CHANGE_PERCENT=20
+MIN_PREFIXES_FOR_CHANGE_CHECK=20
+RETRY_DELAY_S=5
+FAILED=0
+REPLACED_FILES=""
+
+refresh_one() {
+	slug=$1
+	as_set=$2
+	af_flag=$3
+	af=$4
+	max_length=$5
+	dest="$IRR_DIR/irr_${slug}_${af}.conf"
+	new_file=$(mktemp "$IRR_DIR/.irr_${slug}_${af}.XXXXXX")
+	attempt=1
+	while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
+		if timeout "$BGPQ4_TIMEOUT_S" bgpq4 -b -A -S "$SOURCES" "$af_flag" -R "$max_length" -l "irr_${slug}_${af}" -- "$as_set" > "$new_file"; then
+			if grep -q '/' "$new_file" && ! change_is_too_large "$new_file" "$dest"; then
+				sed -i '1s/^/define /' "$new_file"
+				install_list "$new_file" "$dest" "irr_${slug}_${af}"
+			elif grep -q '/' "$new_file"; then
+				echo "bird-irr-refresh: $slug ($af) changed by more than $MAX_CHANGE_PERCENT%, previous list kept (delete $dest to accept)" >&2
+				rm -f "$new_file"
+				FAILED=1
+			elif [ -f "$dest" ]; then
+				echo "bird-irr-refresh: no prefix registered for $slug ($af), previous list kept" >&2
+				rm -f "$new_file"
+			else
+				write_unmatchable_list "$new_file" "$dest" "irr_${slug}_${af}" "$af"
+			fi
+			return 0
+		fi
+		echo "bird-irr-refresh: bgpq4 failed for $slug ($af), attempt $attempt/$MAX_ATTEMPTS" >&2
+		attempt=$((attempt + 1))
+		[ "$attempt" -le "$MAX_ATTEMPTS" ] && sleep "$RETRY_DELAY_S"
+	done
+	if [ -f "$dest" ]; then
+		rm -f "$new_file"
+	else
+		write_unmatchable_list "$new_file" "$dest" "irr_${slug}_${af}" "$af"
+	fi
+	FAILED=1
+}
+
+change_is_too_large() {
+	new_file=$1
+	dest=$2
+	[ -f "$dest" ] || return 1
+	previous_count=$(grep -c '/' "$dest" || true)
+	new_count=$(grep -c '/' "$new_file" || true)
+	[ "$previous_count" -ge "$MIN_PREFIXES_FOR_CHANGE_CHECK" ] || return 1
+	difference=$((new_count - previous_count))
+	[ "$difference" -ge 0 ] || difference=$((-difference))
+	[ $((difference * 100)) -gt $((previous_count * MAX_CHANGE_PERCENT)) ]
+}
+
+install_list() {
+	new_file=$1
+	dest=$2
+	name=$3
+	if cmp -s "$new_file" "$dest" 2>/dev/null; then
+		rm -f "$new_file"
+		return 0
+	fi
+	chmod 0440 "$new_file"
+	if [ -f "$dest" ]; then
+		cp -p "$dest" "$IRR_DIR/.previous_$name"
+	fi
+	mv "$new_file" "$dest"
+	REPLACED_FILES="$REPLACED_FILES $name"
+}
+
+# A peer without any registered prefix still needs its symbol defined for
+# bird to parse; this set only matches a prefix the hygiene filters reject.
+write_unmatchable_list() {
+	new_file=$1
+	dest=$2
+	name=$3
+	af=$4
+	if [ "$af" = "v4" ]; then
+		echo "define $name = [ 0.0.0.0/32 ];" > "$new_file"
+	else
+		echo "define $name = [ ::/128 ];" > "$new_file"
+	fi
+	install_list "$new_file" "$dest" "$name"
+}
+
+restore_previous_files() {
+	for name in $REPLACED_FILES; do
+		if [ -f "$IRR_DIR/.previous_$name" ]; then
+			mv "$IRR_DIR/.previous_$name" "$IRR_DIR/$name.conf"
+		else
+			rm -f "$IRR_DIR/$name.conf"
+		fi
+	done
+}
+
+drop_previous_files() {
+	for name in $REPLACED_FILES; do
+		rm -f "$IRR_DIR/.previous_$name"
+	done
+}
+
+remove_unlisted_lists() {
+	for list_file in "$IRR_DIR"/irr_*_v4.conf "$IRR_DIR"/irr_*_v6.conf; do
+		[ -f "$list_file" ] || continue
+		name=$(basename "$list_file" .conf)
+		slug=${name#irr_}
+		slug=${slug%_v[46]}
+		if ! grep -q "^$slug " "$MANIFEST"; then
+			cp -p "$list_file" "$IRR_DIR/.previous_$name"
+			rm -f "$list_file"
+			REPLACED_FILES="$REPLACED_FILES $name"
+		fi
+	done
+}
+
+on_interrupt() {
+	restore_previous_files
+	rm -f "$IRR_DIR"/.irr_*
+	exit 1
+}
+
+[ -f "$MANIFEST" ] || exit 0
+
+trap on_interrupt INT TERM
+
+rm -f "$IRR_DIR"/.previous_* "$IRR_DIR"/.irr_*
+
+while read -r slug as_set as_set_v6; do
+	[ -n "$slug" ] || continue
+	case "$slug" in
+		\#*) continue ;;
+	esac
+	refresh_one "$slug" "$as_set" -4 v4 32
+	sleep 0.3
+	refresh_one "$slug" "${as_set_v6:-$as_set}" -6 v6 128
+	sleep 0.3
+done < "$MANIFEST"
+
+remove_unlisted_lists
+
+if [ -n "$REPLACED_FILES" ]; then
+	if ! bird -p -c "$BIRD_CONFIG"; then
+		echo "bird-irr-refresh: new prefix-lists rejected by bird -p, previous lists restored" >&2
+		restore_previous_files
+		exit 1
+	fi
+	if [ -S "$BIRD_SOCKET" ] && ! birdc -s "$BIRD_SOCKET" configure; then
+		echo "bird-irr-refresh: birdc configure failed, previous lists restored" >&2
+		restore_previous_files
+		exit 1
+	fi
+	drop_previous_files
+fi
+
+trap - INT TERM
+
+exit "$FAILED"

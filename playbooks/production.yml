@@ -2,6 +2,9 @@
 - name: Provisionning des machines Debian
   ansible.builtin.import_playbook: apps/debian_commun.yml
 
+- name: Déploiement de nftables
+  ansible.builtin.import_playbook: apps/nftables.yml
+
 - name: Configuration de Proxmox
   ansible.builtin.import_playbook: apps/proxmox.yml
 
@@ -59,11 +62,14 @@
 - name: Déploiement des probes pour le monitoring
   ansible.builtin.import_playbook: apps/probe.yml
 
+- name: Déploiement de Bird
+  ansible.builtin.import_playbook: apps/bird.yml
+
 - name: Déploiement de Bird Exporter
   ansible.builtin.import_playbook: apps/bird_exporter.yml
 
 - name: Déploiement de snmpd
-  import_playbook: apps/snmpd.yml
+  ansible.builtin.import_playbook: apps/snmpd.yml
 
 - name: Déploiement de Collectd Exporter
   ansible.builtin.import_playbook: apps/collectd_exporter.yml

@@ -1,0 +1,36 @@
+bird_router_id: 169.254.0.201
+bird_my_asn: 204059
+bird_router_source_ipv4: 80.67.181.0
+bird_router_source_ipv6: 2001:913:1000:100::201
+bird_server_rpki_01: fd25:6f26:9410::190
+bird_server_rpki_02: "fd25:6f26:9410::190"
+bird_role: border
+bird_ixp_locality: belgiumix
+bird_peers_upstreams:
+  - asn: 16276
+    neighbor_ipv4: 185.1.127.25
+    neighbor_ipv6: 2001:7f8:d2::25
+    name: OVHcloud
+    slug: '16276_25'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-OVH"
+    max_prefix_v4: 10000
+    max_prefix_v6: 2000
+  - asn: 35137
+    neighbor_ipv4: 185.1.127.2
+    neighbor_ipv6: 2001:7f8:d2::2
+    name: BelgiumIX Route Servers
+    slug: '35137_2'
+    type: route-server
+    max_prefix_v4: 121522
+    max_prefix_v6: 57216
+    neighbor_ipv4_password: neutrinet-rs-lab
+    neighbor_ipv6_password: neutrinet-rs-lab
+bird_peers_downstreams:
+  - asn: 204059
+    neighbor_ipv6: 2001:913:1000:101::1:190
+    neighbor_ipv6_interface: ens2
+    name: Core Main 01
+    slug: '204059_190'
+    type: core

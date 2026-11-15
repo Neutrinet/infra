@@ -1,0 +1,104 @@
+bird_router_id: 169.254.0.190
+bird_my_asn: 204059
+bird_router_source_ipv4: 80.67.181.1
+bird_router_source_ipv6: "2001:913:1000:100::191"
+bird_server_rpki_01: "2001:913:1000:10::190"
+bird_server_rpki_02: "2001:913:1000:10::191"
+bird_role: core
+bird_peers_upstreams:
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:201"
+    neighbor_ipv6_interface: ens19
+    name: belgiumix
+    slug: '204059_201'
+    type: border
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:202"
+    neighbor_ipv6_interface: ens19
+    name: Edge bnix
+    slug: '204059_202'
+    type: border
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:205"
+    neighbor_ipv6_interface: ens19
+    name: Edge Joint Transit
+    slug: '204059_205'
+    type: border
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:203"
+    neighbor_ipv6_interface: ens19
+    name: Edge nlix
+    slug: '204059_203'
+    type: border
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:200"
+    neighbor_ipv6_interface: ens19
+    name: Edge verixi 01
+    slug: '204059_200'
+    type: border
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:204"
+    neighbor_ipv6_interface: ens19
+    name: Edge verixi 02
+    slug: '204059_204'
+    type: border
+  - asn: 212232
+    neighbor_ipv6: "2a0c:2f07:9459::b14"
+    name: bgp.tools
+    slug: 212232_b14
+    type: tools
+    multihop: true
+  - asn: 65000
+    neighbor_ipv6: "2a01:4f8:10a:3c21::2"
+    name: bgproutes.io
+    slug: '65000_2'
+    type: tools
+    multihop: true
+  - asn: 65332
+    neighbor_ipv6: "2604:8800:50:81:216:31:3:81"
+    neighbor_ipv6_password: "{{ vault_bird_cymru_bogons_password }}"
+    name: Team Cymru fullbogons 1
+    slug: '65332_1'
+    type: bogons
+    multihop: true
+    max_prefix_v4: 50000
+    max_prefix_v6: 500000
+    max_prefix_action: warn
+  - asn: 65332
+    neighbor_ipv6: "2604:8800:60:81:216:31:7:81"
+    neighbor_ipv6_password: "{{ vault_bird_cymru_bogons_password }}"
+    name: Team Cymru fullbogons 2
+    slug: '65332_2'
+    type: bogons
+    multihop: true
+    max_prefix_v4: 50000
+    max_prefix_v6: 500000
+    max_prefix_action: warn
+bird_peers_downstreams:
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:222"
+    neighbor_ipv6_interface: ens19
+    name: core bra 01
+    slug: '204059_222'
+    type: access
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:223"
+    neighbor_ipv6_interface: ens19
+    name: Core bra 02
+    slug: '204059_223'
+    type: access
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:220"
+    neighbor_ipv6_interface: ens19
+    name: core patata 01
+    slug: '204059_220'
+    type: access
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:221"
+    neighbor_ipv6_interface: ens19
+    name: Core patata 02
+    slug: '204059_221'
+    type: access
+commun_ntp_clients:
+  - address: "2001:913:1000:10::61"
+  - address: "2001:913:1000:10::62"

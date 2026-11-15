@@ -4,9 +4,17 @@
   ansible.builtin.import_tasks: sysctl.yml
   tags: ['bird']
 
-# - name: Installation de Bird2
-#   ansible.builtin.import_tasks: bird.yml
-#   tags: ['bird']
+- name: Installation de bird3
+  ansible.builtin.import_tasks: install.yml
+  tags: ['bird', 'bird_install']
+
+- name: Configuration de bird3
+  ansible.builtin.import_tasks: config.yml
+  tags: ['bird', 'bird_config']
+
+- name: Activation du service bird
+  ansible.builtin.import_tasks: service.yml
+  tags: ['bird', 'bird_config']
 
 - name: Configuration de bird_exporter
   ansible.builtin.import_role:

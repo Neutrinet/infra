@@ -1,0 +1,8 @@
+gobgp_local_asn: 6696
+gobgp_router_id: 62.112.29.66
+
+gobgp_neighbors:
+  - address: 62.112.29.67
+    peer_as: 204059
+  - address: 2a00:1528:3201:5::22
+    peer_as: 204059

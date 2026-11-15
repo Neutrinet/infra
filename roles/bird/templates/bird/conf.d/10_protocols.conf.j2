@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+
+protocol device { scan time 30; }
+
+protocol direct {
+	vrf "routing";
+	ipv4;
+	ipv6;
+}

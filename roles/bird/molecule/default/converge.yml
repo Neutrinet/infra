@@ -3,6 +3,22 @@
   hosts: all
   become: true
 
+  vars:
+    bird_role: border
+    bird_peers_upstreams:
+      - asn: 204059
+        neighbor_ipv6: "2001:913:1000:101::1:190"
+        neighbor_ipv6_interface: changeme
+        name: "Core Main 01"
+        slug: core_main_01
+        type: core
+      - asn: 204059
+        neighbor_ipv6: "2001:913:1000:101::1:191"
+        neighbor_ipv6_interface: changeme
+        name: "Core Main 02"
+        slug: core_main_02
+        type: core
+
   pre_tasks:
     - name: Mise à jour du cache APT
       ansible.builtin.apt:

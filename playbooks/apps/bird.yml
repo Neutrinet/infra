@@ -1,7 +1,12 @@
+- name: Pare-feu des routeurs avant les routes (filtre de sortie des bordures)
+  hosts: louise_network
+  become: true
+
 - name: Déploiement de Bird
   hosts: bird
   become: true
   serial: 1
+  force_handlers: true
 
   roles:
     - bird

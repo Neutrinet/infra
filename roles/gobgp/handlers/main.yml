@@ -1,0 +1,6 @@
+---
+- name: Restart gobgpd
+  ansible.builtin.systemd:
+    name: gobgpd
+    daemon_reload: true
+    state: restarted

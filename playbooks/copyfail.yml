@@ -1,0 +1,30 @@
+---
+- name: Disable algif_aead kernel module
+  hosts: all
+  become: true
+  tasks:
+    - name: Disable algif_aead in modprobe configuration
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/disable-algif.conf
+        line: install algif_aead /bin/false
+        create: true
+        mode: "u=rw,go=r"
+
+    - name: Remove algif_aead module
+      community.general.modprobe:
+        name: algif_aead
+        state: absent
+
+    - name: Check that algif_aead cannot be loaded
+      community.general.modprobe:
+        name: algif_aead
+        state: present
+      register: modprobe_result
+      ignore_errors: true
+
+    - name: Assert that algif_aead cannot be loaded
+      ansible.builtin.assert:
+        that: modprobe_result is failed
+        fail_msg: "algif_aead module can still be loaded, check modprobe configuration"
+        success_msg: "algif_aead module is successfully disabled and cannot be loaded"
+      when: not ansible_check_mode

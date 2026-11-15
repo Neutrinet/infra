@@ -1,0 +1,29 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=OpenBSD Secure Shell server in the routing VRF
+Documentation=man:sshd(8) man:sshd_config(5)
+After=network.target networking.service nss-user-lookup.target auditd.service nftables.service
+Wants=networking.service
+Requires=nftables.service
+ConditionPathExists=!/etc/ssh/sshd_not_to_be_run
+
+[Service]
+ExecStartPre=/usr/sbin/sshd -t -o "ListenAddress 0.0.0.0 rdomain routing" -o "ListenAddress :: rdomain routing" -o "PidFile none" \
+	-o "LoginGraceTime 20" -o "MaxStartups 4:50:20" -o "PerSourceNetBlockSize 32:64" -o "Banner none" \
+	-o "X11Forwarding no" -o "AllowTcpForwarding no" -o "AllowAgentForwarding no"
+ExecStart=/usr/sbin/sshd -D -o "ListenAddress 0.0.0.0 rdomain routing" -o "ListenAddress :: rdomain routing" -o "PidFile none" \
+	-o "LoginGraceTime 20" -o "MaxStartups 4:50:20" -o "PerSourceNetBlockSize 32:64" -o "Banner none" \
+	-o "X11Forwarding no" -o "AllowTcpForwarding no" -o "AllowAgentForwarding no"
+ExecReload=/usr/sbin/sshd -t -o "ListenAddress 0.0.0.0 rdomain routing" -o "ListenAddress :: rdomain routing" -o "PidFile none" \
+	-o "LoginGraceTime 20" -o "MaxStartups 4:50:20" -o "PerSourceNetBlockSize 32:64" -o "Banner none" \
+	-o "X11Forwarding no" -o "AllowTcpForwarding no" -o "AllowAgentForwarding no"
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=10
+RuntimeDirectory=sshd
+RuntimeDirectoryMode=0755
+RuntimeDirectoryPreserve=yes
+
+[Install]
+WantedBy=multi-user.target

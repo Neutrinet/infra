@@ -28,6 +28,11 @@
 - name: Trigger handlers
   ansible.builtin.meta: flush_handlers
 
+- name: Abonnement multicast du PF aux groupes des VF
+  ansible.builtin.import_tasks: pf_mcast.yml
+  when: inventory_hostname in groups['proxmox_patata']
+  tags: ["pf_mcast"]
+
 - name: Configuration de la source InfluxDB de Vector pour Proxmox
   ansible.builtin.template:
     src: vector/prometheus_proxmox_influxdb.yaml.j2

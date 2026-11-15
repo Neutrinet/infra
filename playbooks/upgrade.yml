@@ -1,0 +1,68 @@
+# Routers: one at a time, and every daemon (bird, ...) keeps its running binary;
+# the new versions start at the planned reboot of the VM.
+- name: Mise a jours des routeurs sans redemarrer les services
+  hosts: louise_network
+  become: true
+  serial: 1
+  max_fail_percentage: 0
+
+  tasks:
+    - name: Lire l'etat de policy-rc.d
+      ansible.builtin.stat:
+        path: /usr/sbin/policy-rc.d
+      register: upgrade_policy_rc
+
+    - name: Lire le policy-rc.d existant
+      ansible.builtin.slurp:
+        path: /usr/sbin/policy-rc.d
+      register: upgrade_policy_rc_content
+      when: upgrade_policy_rc.stat.exists
+
+    - name: Verifier qu'aucun policy-rc.d etranger n'existe deja
+      ansible.builtin.assert:
+        that: not upgrade_policy_rc.stat.exists or 'playbooks/upgrade.yml' in (upgrade_policy_rc_content.content | b64decode)
+        fail_msg: "/usr/sbin/policy-rc.d existe deja, la mise a jour ne peut pas garantir que bird ne redemarre pas"
+        quiet: true
+
+    - name: Retirer le blocage laisse par une execution precedente
+      ansible.builtin.file:
+        path: /usr/sbin/policy-rc.d
+        state: absent
+
+    - name: Apt upgrade
+      block:
+        - name: Bloquer les redemarrages de services
+          ansible.builtin.copy:
+            dest: /usr/sbin/policy-rc.d
+            mode: "u=rwx,go=rx"
+            content: |
+              #!/bin/sh
+              # Set by infra-ansible playbooks/upgrade.yml during the upgrade.
+              exit 101
+
+        - name: Apt upgrade
+          ansible.builtin.apt:
+            update_cache: true
+            upgrade: dist
+            clean: true
+          environment:
+            NEEDRESTART_SUSPEND: "1"
+            DEBIAN_FRONTEND: noninteractive
+      always:
+        - name: Retirer le blocage des redemarrages
+          ansible.builtin.file:
+            path: /usr/sbin/policy-rc.d
+            state: absent
+
+    - name: Attendre que la machine reste joignable
+      ansible.builtin.wait_for_connection:
+        timeout: 120
+
+    - name: Lire l'etat des services
+      ansible.builtin.service_facts:
+
+    - name: Verifier que bird tourne toujours
+      ansible.builtin.assert:
+        that: ansible_facts.services['bird.service'].state == 'running'
+        fail_msg: "bird ne tourne plus apres la mise a jour"
+        quiet: true

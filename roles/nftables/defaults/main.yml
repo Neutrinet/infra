@@ -1,2 +1,11 @@
 ---
 # defaults file for nftables
+nftables_management_interface: ""
+nftables_management_networks_ipv4: []
+nftables_management_networks_ipv6: []
+nftables_librenms_ipv4: []
+nftables_librenms_ipv6: []
+nftables_peering_interface: ""
+nftables_allowed_nets_ipv4: []
+nftables_allowed_nets_ipv6: []
+nftables_sources_by_mac: []

@@ -1,0 +1,43 @@
+---
+- name: service | Générer les prefix-lists IRR avant de (re)charger bird
+  ansible.builtin.systemd:
+    name: bird-irr-refresh.service
+    state: started
+    daemon_reload: true
+  register: _bird_irr_refresh
+  failed_when: false
+  when: _bird_irr_manifest is changed or _bird_irr_script is changed or _bird_irr_units is changed
+
+- name: service | Signaler l'échec du rafraîchissement IRR
+  ansible.builtin.debug:
+    msg: "bird-irr-refresh.service a échoué, les listes précédentes sont gardées : journalctl -u bird-irr-refresh.service"
+  when: _bird_irr_refresh.msg is defined
+
+- name: service | Créer le dossier de surcharge de bird.service
+  ansible.builtin.file:
+    path: /etc/systemd/system/bird.service.d
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: service | Démarrer bird après le réseau
+  ansible.builtin.template:
+    src: systemd/bird-after-networking.conf.j2
+    dest: /etc/systemd/system/bird.service.d/10-after-networking.conf
+    owner: root
+    group: root
+    mode: "u=r,go=r"
+  notify: Reload systemd
+
+- name: service | Activer et démarrer bird
+  ansible.builtin.systemd:
+    name: bird
+    state: started
+    enabled: true
+
+- name: service | Activer et démarrer le timer de rafraîchissement IRR
+  ansible.builtin.systemd:
+    name: bird-irr-refresh.timer
+    state: started
+    enabled: true

@@ -1,0 +1,14 @@
+{{ ansible_managed | comment }}
+# Every IPv6 address carried by a VF of a network VM: the PF bond subscribes to its solicited-node group.
+{% for network_host in groups['louise_network'] | sort %}
+{% set network_facts = hostvars[network_host]['ansible_facts'] %}
+{% for device in network_facts['interfaces'] | sort %}
+{% set root_facts = network_facts[device.split('.')[0] | replace('-', '_')] %}
+{% set root_slave_modules = root_facts['slaves'] | default([], true) | map('replace', '-', '_') | map('extract', network_facts) | map(attribute='module') | list %}
+{% if root_facts['module'] | default('') == 'iavf' or 'iavf' in root_slave_modules %}
+{% for address in network_facts[device | replace('-', '_')]['ipv6'] | default([]) %}
+{{ address['address'] }}  # {{ network_host }} {{ device }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endfor %}

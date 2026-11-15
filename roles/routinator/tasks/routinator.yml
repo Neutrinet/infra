@@ -5,11 +5,6 @@
     state: present
   tags: ["routinator_install"]
 
-- name: Suppression de l'ancien dépôt APT pour Routinator
-  ansible.builtin.file:
-    path: /etc/apt/sources.list.d/routinator.list
-    state: absent
-
 - name: Ajout du dépôt APT pour Routinator
   ansible.builtin.deb822_repository:
     name: routinator
@@ -31,6 +26,20 @@
     state: present
   tags: ["routinator_install"]
 
+- name: Déploiement des ROA locaux, servis à la place des données des RIR
+  ansible.builtin.copy:
+    content: >-
+      {{ {'slurmVersion': 1,
+          'validationOutputFilters': {'prefixFilters': [], 'bgpsecFilters': []},
+          'locallyAddedAssertions': {'prefixAssertions': routinator_local_roas, 'bgpsecAssertions': []}} | to_nice_json }}
+    dest: /etc/routinator/local-roas.json
+    owner: routinator
+    group: routinator
+    mode: "ug=r,o="
+  when: routinator_local_roas | length > 0
+  notify: Restart routinator
+  tags: ["routinator_config"]
+
 - name: Configuration de routinator
   ansible.builtin.template:
     src: routinator.conf.j2
@@ -40,25 +49,6 @@
     mode: "ug=r,o="
     validate: routinator --config %s config
   notify: Restart routinator
-  tags: ["routinator_config"]
-
-- name: Ajout exception Neutrinet pour routinator
-  ansible.builtin.copy:
-    src: exceptions.json
-    dest: /etc/routinator/exceptions.json
-    owner: routinator
-    group: routinator
-    mode: "ug=r,o="
-  notify: Restart routinator
-  tags: ["routinator_config"]
-
-- name: Initialisation de routinator
-  ansible.builtin.command:
-    cmd: /usr/bin/routinator --config /etc/routinator/routinator.conf init --accept-arin-rpa
-    creates: /var/lib/routinator/rpki-cache
-    chdir: /var/lib/routinator
-  become: true
-  become_user: routinator
   tags: ["routinator_config"]
 
 - name: Activation du service routinator au démarage

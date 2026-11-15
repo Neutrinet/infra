@@ -1,0 +1,25 @@
+---
+snmpd_community: "{{ vault_snmpd_community }}"
+
+# ASN de tous nos transitaires payants (peers type: transit, tous edges
+# confondus). Utilisé sur les sessions type: route-server pour ne jamais
+# leur annoncer (via le RS d'un IX) nos routes ni celles de nos
+# downstreams — ils les reçoivent déjà directement via leur session
+# transit dédiée.
+bird_transit_asns:
+  - 6696    # Verixi (edge-verixi-01/02)
+  - 20562   # OpenPeering (edge-joint-transit)
+  - 24785   # Joint Transit (edge-joint-transit)
+
+commun_ssh_routing_vrf: true
+
+nftables_management_interface: ens18
+nftables_management_networks_ipv4:
+  - 10.0.10.0/24
+nftables_management_networks_ipv6:
+  - "2001:913:1000:10::/64"
+nftables_librenms_ipv4:
+  - 10.0.11.109
+nftables_librenms_ipv6:
+  - "2001:913:1000:11::109"
+  - "2001:913:1000:11::114"

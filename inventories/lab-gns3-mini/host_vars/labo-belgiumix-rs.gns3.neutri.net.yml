@@ -1,0 +1,10 @@
+gobgp_local_asn: 35137
+gobgp_router_id: 185.1.127.2
+
+gobgp_neighbors:
+  - address: 185.1.127.16
+    peer_as: 204059
+    auth_password: neutrinet-rs-lab
+  - address: "2001:7f8:d2::16"
+    peer_as: 204059
+    auth_password: neutrinet-rs-lab

@@ -8,6 +8,14 @@
     name: ssh
     state: restarted
 
+- name: Restart ssh-routing
+  ansible.builtin.systemd:
+    name: ssh-routing
+    state: restarted
+    daemon_reload: true
+  listen: Restart ssh
+  when: commun_ssh_routing_vrf
+
 - name: Restart unbound
   ansible.builtin.service:
     name: unbound

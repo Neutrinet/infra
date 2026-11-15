@@ -1,0 +1,46 @@
+{{ ansible_managed | comment }}
+{% if bird_role == 'core' %}
+protocol static {{ inventory_hostname | replace('.', '_') | replace('-', '_') }}_v4 {
+	ipv4;
+	vrf "routing";
+	route 80.67.181.0/24 unreachable {
+		bgp_large_community.add((my_asn, 0, 30));
+		bgp_local_pref = 190;
+	};
+	route 80.67.191.0/24 unreachable {
+		bgp_large_community.add((my_asn, 0, 30));
+		bgp_local_pref = 190;
+	};
+}
+
+protocol static {{ inventory_hostname | replace('.', '_') | replace('-', '_') }}_v6 {
+	ipv6;
+	vrf "routing";
+	route 2001:913:1000::/36 unreachable {
+		bgp_large_community.add((my_asn, 0, 30));
+		bgp_local_pref = 190;
+	};
+}
+{% elif bird_internal_service_routes is defined and (bird_internal_service_routes | length > 0) %}
+protocol static {{ inventory_hostname | replace('.', '_') | replace('-', '_') }}_v4 {
+	ipv4;
+	vrf "routing";
+{% for route in bird_internal_service_routes | selectattr('af', 'equalto', 'v4') %}
+	route {{ route.prefix }} via {{ route.via }} {
+		bgp_large_community.add((my_asn, 0, 40));
+		bgp_local_pref = 190;
+	};
+{% endfor %}
+}
+
+protocol static {{ inventory_hostname | replace('.', '_') | replace('-', '_') }}_v6 {
+	ipv6;
+	vrf "routing";
+{% for route in bird_internal_service_routes | selectattr('af', 'equalto', 'v6') %}
+	route {{ route.prefix }} via {{ route.via }} {
+		bgp_large_community.add((my_asn, 0, 40));
+		bgp_local_pref = 190;
+	};
+{% endfor %}
+}
+{% endif %}

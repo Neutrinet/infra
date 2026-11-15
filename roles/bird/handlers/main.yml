@@ -2,13 +2,23 @@
   ansible.builtin.service:
     name: bird
     state: restarted
+  throttle: 1
 
 - name: Reload bird
   ansible.builtin.service:
     name: bird
     state: reloaded
 
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
 - name: Restart vector
   ansible.builtin.service:
     name: vector
+    state: restarted
+
+- name: Restart systemd-sysctl
+  ansible.builtin.systemd:
+    name: systemd-sysctl
     state: restarted

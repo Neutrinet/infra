@@ -47,6 +47,7 @@ vrrp_instance VI_{{ instance.type }}_{{ loop.index }} {
   }
 {% endif %}
 
+{% if instance.addresses | difference(ansible_facts['all_' + instance.type + '_addresses']) | length > 0 %}
   unicast_src_ip {{ (instance.addresses | intersect(ansible_facts['all_' + instance.type + '_addresses']) | list | first) }}
 
   unicast_peer {
@@ -54,6 +55,7 @@ vrrp_instance VI_{{ instance.type }}_{{ loop.index }} {
     {{ ip }}
 {% endfor %}
   }
+{% endif %}
   virtual_router_id {{ keepalived_virtual_router_id | int }}
   virtual_ipaddress {
     {{ instance.vip }}

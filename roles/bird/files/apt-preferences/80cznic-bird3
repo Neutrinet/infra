@@ -1,0 +1,3 @@
+Package: bird3
+Pin: origin pkg.labs.nic.cz
+Pin-Priority: 1001

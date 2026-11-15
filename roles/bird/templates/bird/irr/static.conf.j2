@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+{% if item.irr_static_v4 is defined %}
+define irr_{{ item.slug }}_v4 = [{{ item.irr_static_v4 | join(', ') }}];
+{% endif %}
+{% if item.irr_static_v6 is defined %}
+define irr_{{ item.slug }}_v6 = [{{ item.irr_static_v6 | join(', ') }}];
+{% endif %}

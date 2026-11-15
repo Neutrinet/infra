@@ -1,0 +1,498 @@
+{{ ansible_managed | comment }}
+# Router firewall. Derived values (_nftables_*) come from roles/nftables/vars/main.yml.
+
+flush ruleset
+
+{% if nftables_provisioning_pool_ipv4 is defined %}
+define service_ipv4 = {{ bird_router_source_ipv4 }}
+define service_ipv6 = {{ bird_router_source_ipv6 }}
+define collect_ipv4 = {{ bird_krt_prefsrc_override.prefsrc }}
+
+define provision_pool = {{ nftables_provisioning_pool_ipv4 }}
+define provision_pool6 = {{ nftables_provisioning_pool_ipv6 }}
+define neutrinet_resolvers = { 80.67.181.21, 80.67.181.22 }
+define neutrinet_resolvers6 = { 2001:913:1000:200::21, 2001:913:1000:200::22 }
+define iperf_ports = 5201-5220
+
+{% endif %}
+table inet my_table {
+
+	# ---------------------------------------------------------------
+	# Static sets: prefixes allowed behind the keepalived interface
+	# ---------------------------------------------------------------
+
+{% if nftables_allowed_nets_ipv4 | length > 0 %}
+	set ipv4_allowed_nets {
+		type ipv4_addr
+		flags interval
+		elements = { {{ nftables_allowed_nets_ipv4 | join(', ') }} }
+	}
+
+{% endif %}
+{% if nftables_allowed_nets_ipv6 | length > 0 %}
+	set ipv6_allowed_nets {
+		type ipv6_addr
+		flags interval
+		elements = { {{ nftables_allowed_nets_ipv6 | join(', ') }} }
+	}
+
+{% endif %}
+
+	# ---------------------------------------------------------------
+	# Static sets: sources that must never come from an external peer
+	# ---------------------------------------------------------------
+
+{% if bird_role == 'border' %}
+	set ipv4_spoofed_sources {
+		type ipv4_addr
+		flags interval
+		elements = { {{ (_nftables_own_prefixes_ipv4 + _nftables_bogon_prefixes_ipv4) | join(', ') }} }
+	}
+
+	set ipv6_spoofed_sources {
+		type ipv6_addr
+		flags interval
+		elements = { {{ (_nftables_own_prefixes_ipv6 + _nftables_bogon_prefixes_ipv6) | join(', ') }} }
+	}
+
+	set ipv4_bogon_sources {
+		type ipv4_addr
+		flags interval
+		elements = { {{ _nftables_bogon_prefixes_ipv4 | join(', ') }} }
+	}
+
+	set ipv6_bogon_sources {
+		type ipv6_addr
+		flags interval
+		elements = { {{ _nftables_bogon_prefixes_ipv6 | join(', ') }} }
+	}
+
+	set ipv4_customer_sources {
+		type ipv4_addr
+		flags interval
+		auto-merge
+		elements = { {{ _nftables_customer_prefixes_ipv4 | join(', ') }} }
+	}
+
+	set ipv6_customer_sources {
+		type ipv6_addr
+		flags interval
+		auto-merge
+		elements = { {{ _nftables_customer_prefixes_ipv6 | join(', ') }} }
+	}
+
+{% endif %}
+
+	# ---------------------------------------------------------------
+	# Static sets: addresses of this router (interfaces and VIPs)
+	# ---------------------------------------------------------------
+
+	set ipv4_local_addr {
+		type ipv4_addr
+		flags interval
+		elements = { {{ _nftables_local_ipv4_addresses | join(', ') }} }
+	}
+
+	set ipv6_local_addr {
+		type ipv6_addr
+		flags interval
+		elements = { {{ _nftables_local_ipv6_addresses | join(', ') }} }
+	}
+
+	# ---------------------------------------------------------------
+	# Dynamic sets: per-source rate limits filled by the rules
+	# ---------------------------------------------------------------
+
+	set ping_ipv4 {
+		type ipv4_addr
+		size 65535
+		flags dynamic,timeout
+		timeout 1m
+	}
+
+	set ping_ipv6 {
+		type ipv6_addr
+		size 65535
+		flags dynamic,timeout
+		timeout 1m
+	}
+
+	set ssh_conn_ipv4 {
+		type ipv4_addr
+		size 65535
+		flags dynamic
+	}
+
+	set ssh_conn_ipv6 {
+		type ipv6_addr
+		size 65535
+		flags dynamic
+	}
+
+	set ssh_rate_ipv4 {
+		type ipv4_addr
+		size 65535
+		flags dynamic,timeout
+		timeout 5m
+	}
+
+	set ssh_rate_ipv6 {
+		type ipv6_addr
+		size 65535
+		flags dynamic,timeout
+		timeout 5m
+	}
+
+{% if nftables_provisioning_pool_ipv4 is defined %}
+	set provision_upload {
+		type ipv4_addr
+		flags dynamic
+		timeout 1m
+	}
+
+	set provision_download {
+		type ipv4_addr
+		flags dynamic
+		timeout 1m
+	}
+
+	set provision_upload6 {
+		type ipv6_addr
+		flags dynamic
+		timeout 1m
+	}
+
+	set provision_download6 {
+		type ipv6_addr
+		flags dynamic
+		timeout 1m
+	}
+
+	set provision_conn {
+		type ipv4_addr
+		size 65535
+		flags dynamic
+	}
+
+	set provision_conn6 {
+		type ipv6_addr
+		size 65535
+		flags dynamic
+	}
+
+{% endif %}
+
+	# ---------------------------------------------------------------
+	# Prerouting: only traffic to this router (and provisioning, which
+	# is NATed) is tracked, routed traffic bypasses conntrack; BGP and
+	# BFD are never tracked, a SYN flood cannot fill the table
+	# ---------------------------------------------------------------
+
+	chain my_prerouting {
+		type filter hook prerouting priority raw; policy accept;
+		udp dport { 3784, 33434-33523 } notrack
+		tcp dport bgp notrack
+		tcp sport bgp notrack
+		icmp type echo-request notrack
+		icmpv6 type echo-request notrack
+		ip daddr @ipv4_local_addr accept
+		ip6 daddr @ipv6_local_addr accept
+{% if nftables_provisioning_pool_ipv4 is defined %}
+		ip saddr $provision_pool accept
+		ip daddr $provision_pool accept
+		ip6 saddr $provision_pool6 accept
+		ip6 daddr $provision_pool6 accept
+{% endif %}
+		notrack
+	}
+
+	# ---------------------------------------------------------------
+	# SSH through the routing VRF: only to the service address, reached
+	# from input after the per-source limits (and before the global one
+	# for sources inside our own prefixes)
+	# ---------------------------------------------------------------
+
+	chain ssh_limit_exceeded {
+		limit rate 1/second burst 5 packets log prefix "[nftables] SSH limit: " level info
+		drop
+	}
+
+	chain ssh_through_vrf {
+		ip daddr {{ bird_router_source_ipv4 }} accept comment "Accept SSH through the VRF"
+		ip6 daddr {{ bird_router_source_ipv6 }} accept comment "Accept SSH through the VRF"
+	}
+
+	# ---------------------------------------------------------------
+	# BGP and BFD neighbors: reached from input for TCP port 179 in both
+	# directions (sessions are not tracked) and for BFD
+	# ---------------------------------------------------------------
+
+	chain bgp_neighbors {
+{% for peer in _nftables_peers %}
+{% for nft_family, neighbor_address in [('ip', peer.neighbor_ipv4), ('ip6', peer.neighbor_ipv6)] if neighbor_address | length > 0 %}
+{% if peer.multihop %}
+		iifname "routing" {{ nft_family }} saddr {{ neighbor_address }} accept comment "BGP from {{ peer.name }}"
+{% elif not peer.multihop %}
+		meta sdifname "{{ peer.neighbor_ipv6_interface }}" {{ nft_family }} saddr {{ neighbor_address }} accept comment "BGP from {{ peer.name }}"
+{% endif %}
+{% endfor %}
+{% endfor %}
+	}
+
+	chain bfd_neighbors {
+{% for peer in _nftables_directly_connected_peers | selectattr('type', 'in', ['core', 'border', 'access']) %}
+{% for nft_family, neighbor_address in [('ip', peer.neighbor_ipv4), ('ip6', peer.neighbor_ipv6)] if neighbor_address | length > 0 %}
+		meta sdifname "{{ peer.neighbor_ipv6_interface }}" {{ nft_family }} saddr {{ neighbor_address }} accept comment "BFD from {{ peer.name }}"
+{% endfor %}
+{% endfor %}
+	}
+
+	# ---------------------------------------------------------------
+	# Input: traffic to this router
+	# ---------------------------------------------------------------
+
+	chain my_input {
+		type filter hook input priority 0; policy drop;
+
+		# Base state
+		iifname lo accept comment "Accept any localhost traffic"
+		ct state invalid drop comment "Drop invalid connections"
+		ct state established,related accept comment "Accept traffic originated from us"
+
+		# ICMP and traceroute
+		icmp type echo-request update @ping_ipv4 { ip saddr limit rate over 10/second burst 20 packets } counter drop
+		icmpv6 type echo-request update @ping_ipv6 { ip6 saddr and ffff:ffff:ffff:ffff:: limit rate over 10/second burst 20 packets } counter drop
+		icmp type echo-request limit rate over 2000/second burst 4000 packets counter drop
+		icmpv6 type echo-request limit rate over 2000/second burst 4000 packets counter drop
+
+		tcp flags & (fin|syn|rst|ack) != syn ct state new counter drop
+
+		icmp type { destination-unreachable, echo-request, parameter-problem, time-exceeded } accept
+		icmpv6 type { destination-unreachable, echo-request, nd-neighbor-solicit, nd-neighbor-advert, packet-too-big, parameter-problem, time-exceeded } accept
+		icmpv6 type { mld-listener-query, mld-listener-report, mld-listener-reduction, mld2-listener-report } ip6 saddr fe80::/10 accept
+
+		udp dport 33434-33523 accept comment "Accept traceroute"
+
+		# Management network
+{% if nftables_librenms_ipv4 | length > 0 %}
+		iifname "{{ nftables_management_interface }}" udp dport snmp ip saddr { {{ nftables_librenms_ipv4 | join(', ') }} } accept comment "Accept SNMP from LibreNMS"
+{% endif %}
+{% if nftables_librenms_ipv6 | length > 0 %}
+		iifname "{{ nftables_management_interface }}" udp dport snmp ip6 saddr { {{ nftables_librenms_ipv6 | join(', ') }} } accept comment "Accept SNMP from LibreNMS"
+{% endif %}
+{% if nftables_management_networks_ipv4 | length > 0 %}
+		iifname "{{ nftables_management_interface }}" tcp dport ssh ip saddr { {{ nftables_management_networks_ipv4 | join(', ') }} } accept comment "Accept SSH from management"
+{% endif %}
+{% if nftables_management_networks_ipv6 | length > 0 %}
+		iifname "{{ nftables_management_interface }}" tcp dport ssh ip6 saddr { {{ nftables_management_networks_ipv6 | join(', ') }} } accept comment "Accept SSH from management"
+{% endif %}
+
+		# SSH through the routing VRF, limited per source then globally
+		iifname "routing" meta nfproto ipv4 tcp dport ssh ct state new add @ssh_conn_ipv4 { ip saddr ct count over 4 } counter jump ssh_limit_exceeded
+		iifname "routing" meta nfproto ipv6 tcp dport ssh ct state new add @ssh_conn_ipv6 { ip6 saddr and ffff:ffff:ffff:ffff:: ct count over 4 } counter jump ssh_limit_exceeded
+		iifname "routing" meta nfproto ipv4 tcp dport ssh ct state new update @ssh_rate_ipv4 { ip saddr limit rate over 6/minute burst 6 packets } counter jump ssh_limit_exceeded
+		iifname "routing" meta nfproto ipv6 tcp dport ssh ct state new update @ssh_rate_ipv6 { ip6 saddr and ffff:ffff:ffff:ffff:: limit rate over 6/minute burst 6 packets } counter jump ssh_limit_exceeded
+		iifname "routing" ip saddr { 80.67.181.0/24, 80.67.191.0/24 } tcp dport ssh jump ssh_through_vrf
+		iifname "routing" ip6 saddr 2001:913:1000::/36 tcp dport ssh jump ssh_through_vrf
+		iifname "routing" tcp dport ssh ct state new limit rate over 50/second burst 100 packets counter jump ssh_limit_exceeded
+		iifname "routing" tcp dport ssh jump ssh_through_vrf
+
+		# RPKI (routinator runs on the cores)
+{% if bird_role == 'core' and nftables_management_networks_ipv6 | length > 0 %}
+		iifname "{{ nftables_management_interface }}" tcp dport 3323 ip6 saddr { {{ nftables_management_networks_ipv6 | join(', ') }} } accept comment "Accept RPKI from management"
+{% endif %}
+
+		# BGP and BFD, untracked: see the bgp_neighbors and bfd_neighbors chains
+		tcp dport bgp jump bgp_neighbors
+		tcp sport bgp jump bgp_neighbors
+		udp dport 3784 jump bfd_neighbors
+
+		# VRRP between the keepalived pair
+{% for instance in _nftables_keepalived_ipv4_instances if instance.addresses | default([]) | length > 0 and _nftables_keepalived_peer_macs | length > 0 %}
+		meta sdifname "{{ keepalived_interface }}" ether saddr { {{ _nftables_keepalived_peer_macs | join(', ') }} } ip saddr { {{ instance.addresses | join(', ') }} } meta l4proto vrrp accept comment "Accept VRRP from the cores"
+{% endfor %}
+{% for instance in _nftables_keepalived_ipv6_instances if instance.addresses | default([]) | length > 0 and _nftables_keepalived_peer_macs | length > 0 %}
+		meta sdifname "{{ keepalived_interface }}" ether saddr { {{ _nftables_keepalived_peer_macs | join(', ') }} } ip6 saddr { {{ instance.addresses | join(', ') }} } meta l4proto vrrp accept comment "Accept VRRP from the cores"
+{% endfor %}
+
+		# iperf from the collect network
+{% if nftables_provisioning_pool_ipv4 is defined %}
+		meta sdifname "{{ nftables_peering_interface }}" meta l4proto { tcp, udp } th dport $iperf_ports ip daddr { $service_ipv4, $collect_ipv4 } accept comment "Accept iperf from collect"
+		meta sdifname "{{ nftables_peering_interface }}" meta l4proto { tcp, udp } th dport $iperf_ports ip6 daddr $service_ipv6 accept comment "Accept iperf from collect"
+{% endif %}
+
+		# Default drop
+		meta pkttype { broadcast, multicast } counter drop
+		limit rate 10/second burst 50 packets log prefix "[nftables] Input Denied: "
+		counter drop
+	}
+
+{% if nftables_provisioning_pool_ipv4 is defined %}
+	# ---------------------------------------------------------------
+	# Provisioning: members being installed get DNS, NTP and web only,
+	# with a per-member bandwidth limit
+	# ---------------------------------------------------------------
+
+	chain provision_from_members {
+		ip daddr $provision_pool counter drop
+		ct state new add @provision_conn { ip saddr ct count over 256 } counter drop
+		update @provision_upload { ip saddr limit rate over 125 kbytes/second burst 250 kbytes } counter drop
+		ip daddr $neutrinet_resolvers meta l4proto { tcp, udp } th dport 53 accept
+		ip daddr $neutrinet_resolvers udp dport 123 accept
+		tcp dport { 80, 443, 465, 587, 993, 995 } accept
+		udp dport 443 accept
+		ct state established,related accept
+		limit rate 10/second burst 50 packets log prefix "[nftables] Provision Denied: "
+		counter drop
+	}
+
+	chain provision_to_members {
+		update @provision_download { ip daddr limit rate over 625 kbytes/second burst 1250 kbytes } counter drop
+		ct state established,related accept
+		counter drop
+	}
+
+	chain provision_from_members6 {
+		ip6 daddr $provision_pool6 counter drop
+		ip6 daddr { 2001:913:1000:10::/64, 2001:913:1000:11::/64, 2001:913:1000:100::/56 } counter drop
+		ct state new add @provision_conn6 { ip6 saddr & ffff:ffff:ffff:fff0:: ct count over 256 } counter drop
+		update @provision_upload6 { ip6 saddr & ffff:ffff:ffff:fff0:: limit rate over 125 kbytes/second burst 250 kbytes } counter drop
+		ip6 daddr $neutrinet_resolvers6 meta l4proto { tcp, udp } th dport 53 accept
+		ip6 daddr $neutrinet_resolvers6 udp dport 123 accept
+		tcp dport { 80, 443, 465, 587, 993, 995 } accept
+		udp dport 443 accept
+		icmpv6 type { destination-unreachable, packet-too-big, time-exceeded, parameter-problem, echo-request } accept
+		ct state established,related accept
+		limit rate 10/second burst 50 packets log prefix "[nftables] Provision6 Denied: "
+		counter drop
+	}
+
+	chain provision_to_members6 {
+		update @provision_download6 { ip6 daddr & ffff:ffff:ffff:fff0:: limit rate over 625 kbytes/second burst 1250 kbytes } counter drop
+		ct state established,related accept
+		icmpv6 type { destination-unreachable, packet-too-big, time-exceeded, parameter-problem } accept
+		counter drop
+	}
+
+{% endif %}
+	# ---------------------------------------------------------------
+	# Forward: routed traffic
+	# ---------------------------------------------------------------
+
+	chain my_forward {
+		type filter hook forward priority 0; policy drop;
+
+		# Provisioning pool
+{% if nftables_provisioning_pool_ipv4 is defined %}
+		ip saddr $provision_pool jump provision_from_members
+		ip daddr $provision_pool jump provision_to_members
+		ip6 saddr $provision_pool6 jump provision_from_members6
+		ip6 daddr $provision_pool6 jump provision_to_members6
+{% endif %}
+
+		# Sources that only a given neighbor may use behind the keepalived interface
+{% for source in nftables_sources_by_mac %}
+{% if source.prefixes_ipv4 | length > 0 %}
+		meta sdifname "{{ keepalived_interface }}" ip saddr { {{ source.prefixes_ipv4 | join(', ') }} } ether saddr != { {{ source.macs | join(', ') }} } counter drop comment "Sources of {{ source.name }} only from its MAC"
+{% endif %}
+{% if source.prefixes_ipv6 | length > 0 %}
+		meta sdifname "{{ keepalived_interface }}" ip6 saddr { {{ source.prefixes_ipv6 | join(', ') }} } ether saddr != { {{ source.macs | join(', ') }} } counter drop comment "Sources of {{ source.name }} only from its MAC"
+{% endif %}
+{% endfor %}
+
+		# Sources allowed behind the keepalived interface (a family without
+		# any allowed prefix is dropped once the other family is filtered)
+{% if nftables_allowed_nets_ipv4 | length > 0 %}
+		meta sdifname "{{ keepalived_interface }}" ip saddr != @ipv4_allowed_nets counter drop
+{% elif _nftables_filters_keepalived_sources %}
+		meta sdifname "{{ keepalived_interface }}" meta nfproto ipv4 counter drop
+{% endif %}
+{% if nftables_allowed_nets_ipv6 | length > 0 %}
+		meta sdifname "{{ keepalived_interface }}" ip6 saddr != @ipv6_allowed_nets counter drop
+{% elif _nftables_filters_keepalived_sources %}
+		meta sdifname "{{ keepalived_interface }}" meta nfproto ipv6 counter drop
+{% endif %}
+
+		# Sources allowed from each BGP client (IRR static prefixes)
+{% for client in _nftables_antispoofing_clients %}
+{% if client.irr_static_v4 | length > 0 %}
+		meta sdifname "{{ client.neighbor_ipv6_interface }}" ip saddr != { {{ client.irr_static_v4 | map('regex_replace', '[+{].*$', '') | join(', ') }} } counter drop comment "Anti-spoofing {{ client.name }}"
+{% endif %}
+{% if client.irr_static_v6 | length > 0 %}
+		meta sdifname "{{ client.neighbor_ipv6_interface }}" ip6 saddr != { {{ (client.irr_static_v6 | map('regex_replace', '[+{].*$', '') | list + [client.neighbor_ipv6]) | select | join(', ') }} } counter drop comment "Anti-spoofing {{ client.name }}"
+{% endif %}
+{% endfor %}
+
+		# Bogon and own sources from external peers
+{% if bird_role == 'border' and _nftables_external_interfaces | length > 0 %}
+		meta sdifname { {{ _nftables_external_interfaces | map('to_json') | join(', ') }} } ip saddr @ipv4_spoofed_sources counter drop comment "Anti-spoofing from peers"
+		meta sdifname { {{ _nftables_external_interfaces | map('to_json') | join(', ') }} } ip6 saddr @ipv6_spoofed_sources counter drop comment "Anti-spoofing from peers"
+		meta sdifname { {{ _nftables_external_interfaces | map('to_json') | join(', ') }} } ip6 daddr 2001:913:1000:101::/64 counter drop comment "Routing VLAN unreachable from peers"
+		oifname { {{ _nftables_external_interfaces | map('to_json') | join(', ') }} } ip saddr @ipv4_bogon_sources counter drop comment "BCP 38 towards peers"
+		oifname { {{ _nftables_external_interfaces | map('to_json') | join(', ') }} } ip6 saddr @ipv6_bogon_sources counter drop comment "BCP 38 towards peers"
+		oifname { {{ _nftables_external_interfaces | map('to_json') | join(', ') }} } ip saddr != @ipv4_customer_sources counter drop comment "BCP 38 towards peers"
+		oifname { {{ _nftables_external_interfaces | map('to_json') | join(', ') }} } ip6 saddr != @ipv6_customer_sources counter drop comment "BCP 38 towards peers"
+{% endif %}
+
+		# Routed traffic towards each directly connected peer interface
+{% for forward_interface in _nftables_forward_interfaces %}
+{% if _nftables_filters_keepalived_sources and forward_interface == keepalived_interface %}
+{% if nftables_allowed_nets_ipv4 | length > 0 %}
+		iifname "routing" oifname "{{ forward_interface }}" ip daddr @ipv4_allowed_nets accept comment "Accept forwarding to {{ forward_interface }}"
+{% endif %}
+{% if nftables_allowed_nets_ipv6 | length > 0 %}
+		iifname "routing" oifname "{{ forward_interface }}" ip6 daddr @ipv6_allowed_nets accept comment "Accept forwarding to {{ forward_interface }}"
+{% endif %}
+{% elif not _nftables_filters_keepalived_sources or forward_interface != keepalived_interface %}
+		iifname "routing" oifname "{{ forward_interface }}" accept comment "Accept forwarding to {{ forward_interface }}"
+{% endif %}
+{% endfor %}
+
+		# Default drop
+		limit rate 10/second burst 50 packets log prefix "[nftables] Forward Denied: "
+		counter drop
+	}
+
+	chain my_output_raw {
+		type filter hook output priority raw; policy accept;
+		tcp dport bgp notrack
+		tcp sport bgp notrack
+	}
+
+	chain my_output {
+		type filter hook output priority 0; policy accept;
+		icmpv6 type nd-redirect counter drop comment "No IPv6 redirect from a router"
+	}
+{% if nftables_provisioning_pool_ipv4 is defined %}
+
+	chain provision_nat {
+		type nat hook postrouting priority srcnat; policy accept;
+		ip saddr $provision_pool ip daddr != $provision_pool snat ip to $service_ipv4
+	}
+{% endif %}
+}
+
+# Tables filled by sshguard
+table ip sshguard {
+	set attackers {
+		type ipv4_addr
+		flags interval
+	}
+
+	chain blacklist {
+		type filter hook input priority filter - 10; policy accept;
+		ip saddr @attackers drop
+	}
+}
+
+table ip6 sshguard {
+	set attackers {
+		type ipv6_addr
+		flags interval
+	}
+
+	chain blacklist {
+		type filter hook input priority filter - 10; policy accept;
+		ip6 saddr @attackers drop
+	}
+}

@@ -1,0 +1,8 @@
+gobgp_local_asn: 20562
+gobgp_router_id: 213.207.12.99
+
+gobgp_neighbors:
+  - address: 213.207.12.100
+    peer_as: 204059
+  - address: "2a02:10:0:1::243:10"
+    peer_as: 204059

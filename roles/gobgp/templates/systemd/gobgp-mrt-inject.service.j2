@@ -1,0 +1,23 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Automatic injection of MRT dumps into GoBGP at startup
+After=gobgpd.service
+Requires=gobgpd.service
+PartOf=gobgpd.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=-/usr/bin/gobgp -u ::1 mrt inject global /var/lib/gobgpd/dump-v4.mrt 25000
+ExecStart=-/usr/bin/gobgp -u ::1 mrt inject global /var/lib/gobgpd/dump-v6.mrt 8000
+LockPersonality=true
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectClock=true
+ProtectSystem=strict
+ProtectHome=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target

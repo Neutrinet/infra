@@ -2,7 +2,12 @@
 
 rtr-listen = ["{{ routinator_listen_rtr }}"]
 http-listen = ["[::1]:8323"]
+rtr-client-metrics = true
+log-level = "info"
 
 repository-dir = "/var/lib/routinator/rpki-cache"
-tal-dir = "/var/lib/routinator/tals"
-exceptions = ["/etc/routinator/exceptions.json"]
+enable-aspa = true
+{% if routinator_local_roas | length > 0 %}
+no-rir-tals = true
+exceptions = ["/etc/routinator/local-roas.json"]
+{% endif %}

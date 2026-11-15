@@ -1,0 +1,38 @@
+{{ ansible_managed | comment }}
+
+template bgp bgp_common {
+	vrf "routing";
+	local as my_asn;
+
+	graceful restart yes;
+	graceful restart time 0;
+	restart time 5 s;
+
+	long lived graceful restart yes;
+	long lived stale time 120;
+	max graceful restart time 120;
+	max long lived stale time 120;
+
+	ipv4 { import keep filtered; };
+	ipv6 { import keep filtered; };
+}
+
+template bgp bgp_internal from bgp_common {
+	bfd graceful;
+}
+
+template bgp bgp_std from bgp_common {
+	hold time 90;
+	keepalive time 30;
+	ipv4 { import none; export none; next hop self; import table on; };
+	ipv6 { import none; export none; next hop self; import table on; };
+}
+
+template bgp bgp_internal_std from bgp_internal {
+	ipv4 { import none; export none; next hop self; };
+	ipv6 { import none; export none; next hop self; };
+}
+
+template bgp bgp_rr_client from bgp_internal_std {
+	rr client;
+}

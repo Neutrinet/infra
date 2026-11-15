@@ -1,0 +1,41 @@
+---
+- name: Importer les dumps MRT du labo GNS3 et redémarrer gobgpd
+  hosts: gobgp
+  become: true
+  tasks:
+    - name: Vérifier la présence des dumps MRT temporaires
+      ansible.builtin.stat:
+        path: "/tmp/{{ item }}"
+      loop:
+        - dump-v4.mrt
+        - dump-v6.mrt
+      register: _gobgp_mrt_import_dumps
+
+    - name: Déplacer les dumps MRT vers /var/lib/gobgpd
+      ansible.builtin.copy:
+        src: "/tmp/{{ item.item }}"
+        dest: "/var/lib/gobgpd/{{ item.item }}"
+        remote_src: true
+        owner: root
+        group: root
+        mode: "ugo=r"
+      loop: "{{ _gobgp_mrt_import_dumps.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+      when: item.stat.exists
+      notify: Restart gobgpd
+
+    - name: Supprimer les dumps MRT temporaires
+      ansible.builtin.file:
+        path: "/tmp/{{ item }}"
+        state: absent
+      loop:
+        - dump-v4.mrt
+        - dump-v6.mrt
+
+  handlers:
+    - name: Restart gobgpd
+      ansible.builtin.systemd:
+        name: gobgpd
+        daemon_reload: true
+        state: restarted

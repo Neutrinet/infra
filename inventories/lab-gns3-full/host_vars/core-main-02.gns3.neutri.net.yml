@@ -1,0 +1,71 @@
+bird_router_id: 169.254.0.191
+bird_my_asn: 204059
+bird_router_source_ipv4: 80.67.181.2
+bird_router_source_ipv6: "2001:913:1000:100::192"
+bird_server_rpki_01: "fd25:6f26:9410::190"
+bird_server_rpki_02: "fd25:6f26:9410::191"
+bird_role: core
+bird_peers_upstreams:
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:200"
+    neighbor_ipv6_interface: ens1
+    name: Border Verixi 01
+    slug: "204059_200"
+    type: border
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:204"
+    neighbor_ipv6_interface: ens1
+    name: Border Verixi 02
+    slug: "204059_204"
+    type: border
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:205"
+    neighbor_ipv6_interface: ens1
+    name: Border Joint Transit
+    slug: "204059_205"
+    type: border
+
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:201"
+    neighbor_ipv6_interface: ens1
+    name: Border BelgiumIX
+    slug: "204059_201"
+    type: border
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:202"
+    neighbor_ipv6_interface: ens1
+    name: Border BNIX
+    slug: "204059_202"
+    type: border
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:203"
+    neighbor_ipv6_interface: ens1
+    name: Border NLIX
+    slug: "204059_203"
+    type: border
+
+bird_peers_downstreams:
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:220"
+    neighbor_ipv6_interface: ens1
+    name: Access Patata 01
+    slug: "204059_220"
+    type: access
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:221"
+    neighbor_ipv6_interface: ens1
+    name: Access Patata 02
+    slug: "204059_221"
+    type: access
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:222"
+    neighbor_ipv6_interface: ens1
+    name: Access Backhaul 01
+    slug: "204059_222"
+    type: access
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:223"
+    neighbor_ipv6_interface: ens1
+    name: Access Backhaul 02
+    slug: "204059_223"
+    type: access

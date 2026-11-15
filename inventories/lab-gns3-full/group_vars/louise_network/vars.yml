@@ -1,0 +1,13 @@
+commun_ssh_routing_vrf: true
+
+nftables_management_interface: enp2s0
+snmpd_interface: enp2s0
+nftables_management_networks_ipv4:
+  - 10.10.10.0/24
+nftables_management_networks_ipv6:
+  - "fd25:6f26:9410::/64"
+
+bird_transit_asns:
+  - 6696
+  - 20562
+  - 24785

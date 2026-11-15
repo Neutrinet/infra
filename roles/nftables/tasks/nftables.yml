@@ -5,6 +5,26 @@
     name: nftables
     state: present
 
+- name: nftables | Vérifier que les adresses MAC des voisins keepalived sont connues
+  ansible.builtin.assert:
+    that: _nftables_keepalived_peer_macs | length > 0
+    fail_msg: "Facts réseau du voisin keepalived absents : lancer le play sans --limit, ou avec les deux routeurs keepalived"
+    quiet: true
+  when: >-
+    'louise_network' in group_names and keepalived_instances is defined
+    and keepalived_instances | map(attribute='addresses', default=[]) | map('length') | max > 1
+
+- name: nftables | Déployer le pare-feu des routeurs
+  ansible.builtin.template:
+    src: nftables/louise_network.conf.j2
+    dest: /etc/nftables.conf
+    owner: root
+    group: root
+    mode: "u=r,go="
+    validate: nft -c -f %s
+  when: "'louise_network' in group_names"
+  notify: Reload nftables
+
 - name: Activation du service nftables au démarage
   ansible.builtin.service:
     name: nftables

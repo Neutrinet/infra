@@ -1,5 +1,11 @@
 ---
 
+- name: sysctl | Charger le module nf_conntrack au démarrage
+  community.general.modprobe:
+    name: nf_conntrack
+    state: present
+    persistent: present
+
 - name: Appliquer immédiatement les paramètres sysctl
   ansible.posix.sysctl:
     name: "{{ item.name }}"
@@ -9,6 +15,8 @@
     state: present
     reload: true
   loop:
+    - { name: 'net.ipv4.ip_forward', value: '1' }
+    - { name: 'net.ipv6.conf.all.forwarding', value: '1' }
     - { name: 'net.ipv4.conf.all.rp_filter', value: '0' }
     - { name: 'net.ipv4.conf.default.rp_filter', value: '0' }
     - { name: 'net.ipv4.route.max_size', value: '4194304' }
@@ -18,5 +26,54 @@
     - { name: 'net.ipv4.tcp_keepalive_probes', value: '6' }
     - { name: 'net.ipv4.route.gc_timeout', value: '100' }
     - { name: 'net.ipv6.route.gc_timeout', value: '100' }
-    - { name: 'net.ipv4.tcp_l3mdev_accept', value: '1' }
-    - { name: 'net.ipv4.udp_l3mdev_accept', value: '1' }
+    - { name: 'net.ipv4.tcp_l3mdev_accept', value: '0' }
+    - { name: 'net.ipv4.udp_l3mdev_accept', value: '0' }
+    - { name: 'net.ipv4.raw_l3mdev_accept', value: '0' }
+    - { name: 'net.ipv4.icmp_ratelimit', value: '100' }
+    - { name: 'net.ipv6.icmp.ratelimit', value: '100' }
+    - { name: 'net.ipv4.fib_multipath_hash_policy', value: '1' }
+    - { name: 'net.ipv6.fib_multipath_hash_policy', value: '1' }
+    - { name: 'net.netfilter.nf_conntrack_max', value: '262144' }
+    - { name: 'net.core.bpf_jit_harden', value: '2' }
+    - { name: 'net.ipv4.conf.all.accept_redirects', value: '0' }
+    - { name: 'net.ipv4.conf.default.accept_redirects', value: '0' }
+    - { name: 'net.ipv4.conf.all.secure_redirects', value: '0' }
+    - { name: 'net.ipv4.conf.default.secure_redirects', value: '0' }
+    - { name: 'net.ipv4.conf.all.send_redirects', value: '0' }
+    - { name: 'net.ipv4.conf.default.send_redirects', value: '0' }
+    - { name: 'net.ipv4.conf.all.accept_source_route', value: '0' }
+    - { name: 'net.ipv4.conf.default.accept_source_route', value: '0' }
+    - { name: 'net.ipv4.conf.all.shared_media', value: '0' }
+    - { name: 'net.ipv4.conf.default.shared_media', value: '0' }
+    - { name: 'net.ipv4.conf.all.arp_ignore', value: '1' }
+    - { name: 'net.ipv4.conf.all.arp_announce', value: '2' }
+    - { name: 'net.ipv4.conf.all.log_martians', value: '1' }
+    - { name: 'net.ipv4.conf.default.log_martians', value: '1' }
+    - { name: 'net.ipv4.tcp_rfc1337', value: '1' }
+
+- name: sysctl | Désactiver rp_filter sur chaque interface
+  ansible.builtin.copy:
+    content: |
+      net.ipv4.conf.*.rp_filter = 0
+    dest: /etc/sysctl.d/86-rp-filter.conf
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify: Restart systemd-sysctl
+
+- name: sysctl | Dimensionner la table des voisins des edges d'IX et des accès
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/60-neutrinet-neigh.conf
+    sysctl_set: true
+    state: present
+    reload: true
+  loop:
+    - { name: 'net.ipv4.neigh.default.gc_thresh1', value: '1024' }
+    - { name: 'net.ipv4.neigh.default.gc_thresh2', value: '4096' }
+    - { name: 'net.ipv4.neigh.default.gc_thresh3', value: '8192' }
+    - { name: 'net.ipv6.neigh.default.gc_thresh1', value: '1024' }
+    - { name: 'net.ipv6.neigh.default.gc_thresh2', value: '4096' }
+    - { name: 'net.ipv6.neigh.default.gc_thresh3', value: '8192' }
+  when: (bird_role == 'border' and bird_ixp_locality | default('private') != 'private') or bird_role == 'access'

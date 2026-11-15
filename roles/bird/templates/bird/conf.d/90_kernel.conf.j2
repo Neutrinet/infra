@@ -1,0 +1,79 @@
+{{ ansible_managed | comment }}
+filter kernel_v4_export {
+	if (bgp_large_community ~ [(my_asn, 0, 60)]) then {
+		dest = RTD_BLACKHOLE;
+		accept;
+	}
+
+	krt_prefsrc = my_krt_prefsrc_v4;
+{%- if bird_krt_prefsrc_override is defined -%}
+	if (net ~ [{{ bird_krt_prefsrc_override.net }}]) then krt_prefsrc = {{ bird_krt_prefsrc_override.prefsrc }};
+{%- endif %}
+
+	if (net = 0.0.0.0/0) then accept;
+	if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
+
+	if (bgp_large_community ~ [(my_asn, 0, 30)]) then {
+		if dest != RTD_BLACKHOLE && bgp_path.len = 0 then dest = RTD_UNREACHABLE;
+		accept;
+	}
+
+	if (bgp_large_community ~ [(my_asn, 0, 20)]) then accept;
+
+	reject;
+}
+
+filter kernel_v6_export {
+	if (bgp_large_community ~ [(my_asn, 0, 60)]) then {
+		dest = RTD_BLACKHOLE;
+		accept;
+	}
+
+	krt_prefsrc = my_krt_prefsrc_v6;
+
+	if (net = ::/0) then accept;
+	if (bgp_large_community ~ [(my_asn, 0, 40)]) then accept;
+
+	if (bgp_large_community ~ [(my_asn, 0, 30)]) then {
+		if dest != RTD_BLACKHOLE && bgp_path.len = 0 then dest = RTD_UNREACHABLE;
+		accept;
+	}
+
+	if (bgp_large_community ~ [(my_asn, 0, 20)]) then accept;
+
+	reject;
+}
+
+protocol kernel kernel_v4 {
+{% if bird_role in ['core', 'access'] %}
+	scan time 10;
+{% elif bird_role == 'border' %}
+	scan time 120;
+{% endif %}
+	netlink rx buffer 134217728;
+	vrf "routing";
+	kernel table 1011;
+	graceful restart yes;
+	merge paths on;
+	ipv4 {
+		import none;
+		export filter kernel_v4_export;
+	};
+}
+
+protocol kernel kernel_v6 {
+{% if bird_role in ['core', 'access'] %}
+	scan time 10;
+{% elif bird_role == 'border' %}
+	scan time 120;
+{% endif %}
+	netlink rx buffer 134217728;
+	vrf "routing";
+	kernel table 1011;
+	graceful restart yes;
+	merge paths on;
+	ipv6 {
+		import none;
+		export filter kernel_v6_export;
+	};
+}

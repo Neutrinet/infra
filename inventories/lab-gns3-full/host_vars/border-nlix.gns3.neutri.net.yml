@@ -1,0 +1,230 @@
+bird_router_id: 169.254.0.203
+bird_my_asn: 204059
+bird_router_source_ipv4: 80.67.181.0
+bird_router_source_ipv6: 2001:913:1000:100::203
+bird_server_rpki_01: fd25:6f26:9410::190
+bird_server_rpki_02: "fd25:6f26:9410::191"
+bird_role: border
+bird_ixp_locality: nlix
+bird_peers_upstreams:
+  - asn: 13335
+    neighbor_ipv4: 193.239.117.114
+    neighbor_ipv6: 2001:7f8:13::a501:3335:1
+    name: Cloudflare
+    slug: '13335_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS13335:AS-CLOUDFLARE"
+    max_prefix_v4: 160000
+    max_prefix_v6: 60000
+  - asn: 13335
+    neighbor_ipv4: 193.239.118.138
+    neighbor_ipv6: 2001:7f8:13::a501:3335:2
+    name: Cloudflare
+    slug: '13335_2'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS13335:AS-CLOUDFLARE"
+    max_prefix_v4: 160000
+    max_prefix_v6: 60000
+  - asn: 13335
+    neighbor_ipv4: 193.239.117.14
+    neighbor_ipv6: 2001:7f8:13::a501:3335:3
+    name: Cloudflare
+    slug: '13335_3'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS13335:AS-CLOUDFLARE"
+    max_prefix_v4: 160000
+    max_prefix_v6: 60000
+  - asn: 13335
+    neighbor_ipv4: 193.239.119.101
+    neighbor_ipv6: 2001:7f8:13::a501:3335:4
+    name: Cloudflare
+    slug: '13335_4'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS13335:AS-CLOUDFLARE"
+    passive: true
+    max_prefix_v4: 160000
+    max_prefix_v6: 60000
+  - asn: 136907
+    neighbor_ipv4: 193.239.116.44
+    neighbor_ipv6: 2001:7f8:13::a513:6907:1
+    name: Huawei Cloud Global
+    slug: '136907_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-HUAWEI"
+    passive: true
+    max_prefix_v4: 20000
+    max_prefix_v6: 20000
+  - asn: 136907
+    neighbor_ipv4: 193.239.116.136
+    neighbor_ipv6: 2001:7f8:13::a513:6907:2
+    name: Huawei Cloud Global
+    slug: '136907_2'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-HUAWEI"
+    passive: true
+    max_prefix_v4: 20000
+    max_prefix_v6: 20000
+  - asn: 136907
+    neighbor_ipv4: 193.239.117.121
+    neighbor_ipv6: 2001:7f8:13::a513:6907:3
+    name: Huawei Cloud Global
+    slug: '136907_3'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-HUAWEI"
+    passive: true
+    max_prefix_v4: 20000
+    max_prefix_v6: 20000
+  - asn: 136907
+    neighbor_ipv4: 193.239.117.122
+    neighbor_ipv6: 2001:7f8:13::a513:6907:4
+    name: Huawei Cloud Global
+    slug: '136907_4'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-HUAWEI"
+    passive: true
+    max_prefix_v4: 20000
+    max_prefix_v6: 20000
+  - asn: 15169
+    neighbor_ipv4: 193.239.117.141
+    neighbor_ipv6: 2001:7f8:13::a501:5169:1
+    name: Google LLC
+    slug: '15169_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-GOOGLE"
+    max_prefix_v4: 30000
+    max_prefix_v6: 20000
+    neighbor_ipv4_password: neutrinet-google-lab
+    neighbor_ipv6_password: neutrinet-google-lab
+  - asn: 204092
+    neighbor_ipv4: 193.239.117.189
+    neighbor_ipv6: 2001:7f8:13::a520:4092:1
+    name: GRIFON
+    slug: '204092_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS204092:AS-GRIFON"
+    max_prefix_v4: 60
+    max_prefix_v6: 60
+  - asn: 32934
+    neighbor_ipv4: 193.239.116.147
+    neighbor_ipv6: 2001:7f8:13::a503:2934:1
+    name: Meta
+    slug: '32934_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-FACEBOOK"
+    max_prefix_v4: 200
+    max_prefix_v6: 200
+  - asn: 32934
+    neighbor_ipv4: 193.239.116.148
+    neighbor_ipv6: 2001:7f8:13::a503:2934:2
+    name: Meta
+    slug: '32934_2'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-FACEBOOK"
+    max_prefix_v4: 200
+    max_prefix_v6: 200
+  - asn: 34307
+    neighbor_ipv4: 193.239.116.255
+    neighbor_ipv6: 2001:7f8:13::a503:4307:1
+    name: NL-ix Route Servers
+    slug: '34307_1'
+    type: route-server
+    max_prefix_v4: 500000
+    max_prefix_v6: 140000
+  - asn: 34307
+    neighbor_ipv4: 193.239.117.0
+    neighbor_ipv6: 2001:7f8:13::a503:4307:2
+    name: NL-ix Route Servers
+    slug: '34307_2'
+    type: route-server
+    max_prefix_v4: 500000
+    max_prefix_v6: 140000
+  - asn: 49544
+    neighbor_ipv4: 193.239.117.76
+    neighbor_ipv6: 2001:7f8:13::a504:9544:1
+    name: i3D.net
+    slug: '49544_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-INTERACTIVE3D"
+    max_prefix_v4: 10000
+    max_prefix_v6: 4000
+  - asn: 6507
+    neighbor_ipv4: 193.239.117.105
+    neighbor_ipv6: 2001:7f8:13::a500:6507:1
+    name: Riot Games
+    slug: '6507_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-RIOT"
+    passive: true
+    max_prefix_v4: 100
+    max_prefix_v6: 20
+  - asn: 6507
+    neighbor_ipv4: 193.239.117.106
+    neighbor_ipv6: 2001:7f8:13::a500:6507:2
+    name: Riot Games
+    slug: '6507_2'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-RIOT"
+    passive: true
+    max_prefix_v4: 100
+    max_prefix_v6: 20
+  - asn: 6939
+    neighbor_ipv4: 193.239.116.14
+    neighbor_ipv6: 2001:7f8:13::a500:6939:1
+    name: Hurricane Electric
+    slug: '6939_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-HURRICANE"
+    irr_as_set_v6: "AS-HURRICANEV6"
+    max_prefix_v4: 420000
+    max_prefix_v6: 360000
+  - asn: 714
+    neighbor_ipv4: 193.239.117.112
+    neighbor_ipv6: 2001:7f8:13::a500:714:1
+    name: Apple Inc.
+    slug: '714_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-APPLE"
+    passive: true
+    max_prefix_v4: 20000
+    max_prefix_v6: 2000
+  - asn: 714
+    neighbor_ipv4: 193.239.117.113
+    neighbor_ipv6: 2001:7f8:13::a500:714:2
+    name: Apple Inc.
+    slug: '714_2'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-APPLE"
+    passive: true
+    max_prefix_v4: 20000
+    max_prefix_v6: 2000
+bird_peers_downstreams:
+  - asn: 204059
+    neighbor_ipv6: 2001:913:1000:101::1:190
+    neighbor_ipv6_interface: ens2
+    name: Core Main 01
+    slug: '204059_190'
+    type: core
+  - asn: 204059
+    neighbor_ipv6: 2001:913:1000:101::1:191
+    neighbor_ipv6_interface: ens2
+    name: Core Main 02
+    slug: '204059_191'
+    type: core

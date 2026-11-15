@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT console=ttyS{{ serial_number }},115200n8 console=tty0"
+GRUB_TERMINAL_INPUT="console serial"
+GRUB_TERMINAL_OUTPUT="gfxterm serial"
+GRUB_SERIAL_COMMAND="serial --speed=115200 --unit={{ serial_number }} --word=8 --parity=no --stop=1"

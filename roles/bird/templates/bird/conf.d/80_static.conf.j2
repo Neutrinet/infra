@@ -1,0 +1,29 @@
+{{ ansible_managed | comment }}
+
+protocol static default_gw_v4 {
+{% if bird_role == 'access' %}
+	ipv4 { preference 1; };
+{% elif bird_role in ['core', 'border'] %}
+	ipv4;
+{% endif %}
+	vrf "routing";
+{% if bird_role == 'core' %}
+	route 0.0.0.0/0 recursive 193.0.14.129;
+{% elif bird_role in ['border', 'access'] %}
+	route 0.0.0.0/0 unreachable;
+{% endif %}
+}
+
+protocol static default_gw_v6 {
+{% if bird_role == 'access' %}
+	ipv6 { preference 1; };
+{% elif bird_role in ['core', 'border'] %}
+	ipv6;
+{% endif %}
+	vrf "routing";
+{% if bird_role == 'core' %}
+	route ::/0 recursive 2001:7fd::1;
+{% elif bird_role in ['border', 'access'] %}
+	route ::/0 unreachable;
+{% endif %}
+}

@@ -1,0 +1,173 @@
+bird_router_id: 169.254.0.202
+bird_my_asn: 204059
+bird_router_source_ipv4: 80.67.181.0
+bird_router_source_ipv6: "2001:913:1000:100::202"
+bird_server_rpki_01: "2001:913:1000:10::190"
+bird_server_rpki_02: "2001:913:1000:10::191"
+bird_role: border
+bird_ixp_locality: bnix
+bird_peers_upstreams:
+  - asn: 13335
+    neighbor_ipv4: 194.53.172.66
+    neighbor_ipv6: "2001:7f8:26::a501:3335:1"
+    name: Cloudflare
+    slug: '13335_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS13335:AS-CLOUDFLARE"
+    max_prefix_v4: 160000
+    max_prefix_v6: 60000
+  - asn: 16276
+    neighbor_ipv4: 194.53.172.70
+    neighbor_ipv6: "2001:7f8:26::a501:6276:1"
+    name: OVHcloud
+    slug: '16276_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-OVH"
+    max_prefix_v4: 10000
+    max_prefix_v6: 2000
+  - asn: 20940
+    neighbor_ipv4: 194.53.172.121
+    neighbor_ipv6: "2001:7f8:26::a502:940:1"
+    name: Akamai Technologies
+    slug: '20940_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-AKAMAI"
+    max_prefix_v4: 40000
+    max_prefix_v6: 12000
+  - asn: 2611
+    neighbor_ipv4: 194.53.172.65
+    neighbor_ipv6: "2001:7f8:26::a500:2611:1"
+    name: BELNET
+    slug: '2611_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-BELNET"
+    max_prefix_v4: 220
+    max_prefix_v6: 80
+  - asn: 2906
+    neighbor_ipv4: 194.53.172.32
+    neighbor_ipv6: "2001:7f8:26::a500:2906:2"
+    name: Netflix
+    slug: '2906_2'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-NFLX"
+    max_prefix_v4: 500
+    max_prefix_v6: 500
+  - asn: 32934
+    neighbor_ipv4: 194.53.172.35
+    neighbor_ipv6: "2001:7f8:26::a503:2934:1"
+    name: Meta
+    slug: '32934_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-FACEBOOK"
+    max_prefix_v4: 200
+    max_prefix_v6: 200
+  - asn: 32934
+    neighbor_ipv4: 194.53.172.45
+    neighbor_ipv6: "2001:7f8:26::a503:2934:2"
+    name: Meta
+    slug: '32934_2'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-FACEBOOK"
+    max_prefix_v4: 200
+    max_prefix_v6: 200
+  - asn: 34019
+    neighbor_ipv4: 194.53.172.36
+    neighbor_ipv6: "2001:7f8:26::a503:4019:1"
+    name: Hivane
+    slug: '34019_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS34019:AS-HIVANE"
+    max_prefix_v4: 400
+    max_prefix_v6: 400
+  - asn: 62044
+    neighbor_ipv4: 194.53.172.23
+    neighbor_ipv6: "2001:7f8:26::a506:2044:2"
+    name: Zscaler AS62044
+    slug: '62044_23'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-ZSCALER-EMEA"
+    max_prefix_v4: 2000
+    max_prefix_v6: 2000
+  - asn: 62044
+    neighbor_ipv4: 194.53.172.21
+    neighbor_ipv6: "2001:7f8:26::a506:2044:1"
+    name: Zscaler AS62044
+    slug: '62044_21'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-ZSCALER-EMEA"
+    max_prefix_v4: 2000
+    max_prefix_v6: 2000
+  - asn: 6939
+    neighbor_ipv4: 194.53.172.33
+    neighbor_ipv6: "2001:7f8:26::a500:6939:1"
+    name: Hurricane Electric
+    slug: '6939_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-HURRICANE"
+    irr_as_set_v6: "AS-HURRICANEV6"
+    max_prefix_v4: 420000
+    max_prefix_v6: 360000
+  - asn: 8368
+    neighbor_ipv4: 194.53.172.108
+    neighbor_ipv6: "2001:7f8:26::a500:8368:1"
+    name: DSTNY
+    slug: '8368_1'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-BENESOL"
+    max_prefix_v4: 1000
+    max_prefix_v6: 200
+  - asn: 8674
+    neighbor_ipv4: 194.53.172.100
+    neighbor_ipv6: "2001:7f8:26::a500:8674:2"
+    name: Netnod
+    slug: '8674_2'
+    type: peering
+    irr_filtered: true
+    irr_as_set: "AS-NETNOD"
+    max_prefix_v4: 1000
+    max_prefix_v6: 160
+  - asn: 5406
+    neighbor_ipv4: 194.53.172.1
+    neighbor_ipv6: "2001:7f8:26::a500:5406:1"
+    name: BNIX Route Servers
+    slug: '5406_1'
+    type: route-server
+    max_prefix_v4: 211292
+    max_prefix_v6: 130866
+  - asn: 5406
+    neighbor_ipv4: 194.53.172.2
+    neighbor_ipv6: "2001:7f8:26::a500:5406:2"
+    name: BNIX Route Servers
+    slug: '5406_2'
+    type: route-server
+    max_prefix_v4: 211076
+    max_prefix_v6: 130866
+bird_peers_downstreams:
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:190"
+    neighbor_ipv6_interface: bond0.13
+    name: Route Reflector 01
+    slug: '204059_190'
+    type: core
+  - asn: 204059
+    neighbor_ipv6: "2001:913:1000:101::1:191"
+    neighbor_ipv6_interface: bond0.13
+    name: Route Reflector 02
+    slug: '204059_191'
+    type: core
+commun_ntp_clients:
+  - address: "2001:913:1000:10::61"
+  - address: "2001:913:1000:10::62"
+nftables_peering_interface: bond0.52.1651

@@ -1,0 +1,7 @@
+borgmatic_repositories:
+  - host: "{{ inventory_hostname }}"
+    path: /media/data/backups
+    user: backup-borg
+    ssh_known_hosts:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCiP8U4MZ5oKzZyO9RsOM9hkbxq3sbhzI2q/TRZeOTVWZeHBC4W8Vl+oyOk0NN/IC4l82Ys7vznrueNHtQAyBcK+6fbXJ9NnON6HoG0fPv3IO7RpGZ2P2iTV1zfWEdfnbvvyubfMqS/MuP3JvFKS0fZoMCjo/LRsyVO4jpahM9MNhLdtI7PpDF7qiAVNUej9jKf+wKKD0KKOZW8plP+Dg/qte60J1knqx5/02p5yLSmW0m0p+9JKrW2a3klI9yGwqcGTw2LABrzi5TD7cz6/t+a6JPhvFQgT/2TfK/VqNBTSDiW8oCK1xUXTc8WXWxVwPJXaorjKCMp/Ci9n/LBMCDSQBr63L+HUY+CyJpdpV+I+aGsbqyUmJIj8mn7f+He65kAViYrZKxskyJAIydCd+z6cR4sADLhqlHwT3/B5nMnJuL/qV/ZzvYpHx0YafY5zFFDcE7kGWsRYqYcfLhkV4oq6cYWrbB5HGOCq2qHbq/RTub2/KXXwbh/EZQ5sAOJbzvQD2j6bCcsyHlHp+aSwrLiFBO5D8WJZfVJp6SrdgVNFuT3H+JvtCk3ZsUegzfn19hJjaQPSAJeSTzynUr0KPMGmxa4m84ByLWPw0a7AtpWOxsxv4bSg53ynSg8MWQKuQcZXzA6K4c94O9XNLuqtVQdIzgm8X7OgZM0TB5BHvsmHw==
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAAmFTN5VkVzqzTB5d3XcuRj5Mca76zUPxHbJh7ytIfH

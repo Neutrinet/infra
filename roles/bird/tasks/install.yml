@@ -1,0 +1,29 @@
+---
+- name: install | Ajout du dépôt APT CZ.NIC pour bird3
+  ansible.builtin.deb822_repository:
+    name: bird3
+    types: deb
+    signed_by: https://pkg.labs.nic.cz/gpg
+    uris: https://pkg.labs.nic.cz/bird3
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components:
+      - main
+    state: present
+  register: _bird_repository
+
+- name: install | Priorité APT de bird3 sur le dépôt CZ.NIC
+  ansible.builtin.copy:
+    src: apt-preferences/80cznic-bird3
+    dest: /etc/apt/preferences.d/80cznic-bird3
+    owner: root
+    group: root
+    mode: "ugo=r"
+
+- name: install | Installation de bird3
+  ansible.builtin.apt:
+    name:
+      - bird3
+      - bgpq4
+    state: present
+    update_cache: true
+    cache_valid_time: "{{ 0 if _bird_repository.changed else 3600 }}"

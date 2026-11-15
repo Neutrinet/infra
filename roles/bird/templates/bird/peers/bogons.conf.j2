@@ -1,0 +1,28 @@
+{{ ansible_managed | comment }}
+{% for item in peer_group[1] %}
+protocol bgp bogons_{{ item.slug }}_v6 from bgp_std {
+	neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
+	source address {{ bird_router_source_ipv6 }};
+{% if item.multihop | default(false) %}
+	multihop;
+{% endif %}
+{% if 'neighbor_ipv6_password' in item %}
+	password "{{ item.neighbor_ipv6_password }}";
+{% endif %}
+	description "[bogons] {{ item.name }} ({{ item.asn }})";
+
+	ipv4 {
+		import where bgp_import_bogons_to_core({{ item.asn }});
+		extended next hop on;
+{% if item.max_prefix_v4 is defined %}
+		import limit {{ item.max_prefix_v4 }} action {{ item.max_prefix_action | default('block') }};
+{% endif %}
+	};
+	ipv6 {
+		import where bgp_import_bogons_to_core({{ item.asn }});
+{% if item.max_prefix_v6 is defined %}
+		import limit {{ item.max_prefix_v6 }} action {{ item.max_prefix_action | default('block') }};
+{% endif %}
+	};
+}
+{%- endfor %}

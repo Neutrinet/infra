@@ -1,0 +1,32 @@
+{{ ansible_managed | comment }}
+{% for item in peer_group[1] %}
+protocol bgp border_{{ item.slug }}_v6 from bgp_rr_client {
+	neighbor {{ item.neighbor_ipv6 }} as {{ item.asn }};
+{% if item.multihop | default(false) %}
+	multihop;
+{% endif %}
+{% if 'neighbor_ipv6_interface' in item %}
+	interface "{{ item.neighbor_ipv6_interface }}";
+	direct;
+{% endif %}
+{% if 'neighbor_ipv6_password' in item %}
+	password "{{ item.neighbor_ipv6_password }}";
+{% endif %}
+{% if item.passive | default(false) %}
+	passive on;
+{% endif %}
+	description "[border] {{ item.name }} ({{ item.asn }})";
+
+	ipv4 {
+		import where bgp_import_border_to_core({{ item.asn }});
+		export where bgp_export_core_to_border({{ item.asn }});
+		add paths on;
+		extended next hop on;
+	};
+	ipv6 {
+		import where bgp_import_border_to_core({{ item.asn }});
+		export where bgp_export_core_to_border({{ item.asn }});
+		add paths on;
+	};
+}
+{%- endfor %}

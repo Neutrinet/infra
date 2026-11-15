@@ -8,12 +8,6 @@
       ansible.builtin.apt:
         update_cache: true
 
-    # Le rôle n'installe pas bird, bird_exporter a besoin de son groupe
-    - name: Installation de Bird2
-      ansible.builtin.package:
-        name: bird2
-        state: present
-
   roles:
     - vector
     - borgmatic

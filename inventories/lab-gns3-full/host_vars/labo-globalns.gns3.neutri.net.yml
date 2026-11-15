@@ -1,0 +1,12 @@
+gobgp_local_asn: 398987
+gobgp_router_id: 80.67.181.24
+
+gobgp_neighbors:
+  - address: 80.67.181.18
+    peer_as: 204059
+  - address: 80.67.181.19
+    peer_as: 204059
+  - address: "2001:913:1000:200::18"
+    peer_as: 204059
+  - address: "2001:913:1000:200::19"
+    peer_as: 204059

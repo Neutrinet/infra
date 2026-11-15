@@ -1,12 +1,15 @@
+{{ ansible_managed | comment }}
+
 log syslog all;
 timeformat protocol iso long;
 debug protocols { states };
 
+threads {{ bird_threads | default(2) }};
+
+graceful restart wait 30;
+
 router id {{ bird_router_id }};
 define my_asn = {{ bird_my_asn }};
-
-define neutrinet_network_v4 = [80.67.181.0/24+, 80.67.191.0/24+];
-define neutrinet_network_v6 = [2001:913:1000::/36+];
 
 define my_krt_prefsrc_v6 = {{ bird_router_source_ipv6 }};
 define my_krt_prefsrc_v4 = {{ bird_router_source_ipv4 }};
@@ -16,7 +19,9 @@ define rpki_routinator_2 = {{ bird_server_rpki_02 }};
 
 roa4 table roa_v4;
 roa6 table roa_v6;
+aspa table aspa_t;
 
+include "/etc/bird/irr/*.conf";
 include "/etc/bird/conf.d/*.conf";
 include "/etc/bird/peers/upstreams/*.conf";
 include "/etc/bird/peers/downstreams/*.conf";

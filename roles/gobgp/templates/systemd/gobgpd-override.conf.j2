@@ -1,0 +1,4 @@
+{{ ansible_managed | comment }}
+[Service]
+ExecStart=
+ExecStart=/usr/bin/gobgpd -f /etc/gobgpd.conf --sdnotify --api-hosts=[::1]:50051

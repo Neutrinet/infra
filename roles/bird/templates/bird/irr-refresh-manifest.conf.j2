@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+{% set _ebgp_irr_peers = (bird_peers_upstreams + bird_peers_downstreams) | selectattr('type', 'equalto', 'peering')
+    | selectattr('irr_filtered', 'defined') | selectattr('irr_filtered')
+    | rejectattr('irr_static_v4', 'defined') | rejectattr('irr_static_v6', 'defined') | list %}
+{% for item in _ebgp_irr_peers %}
+{{ item.slug }} {{ item.irr_as_set | default('AS' ~ item.asn) }} {{ item.irr_as_set_v6 | default('') }}
+{% endfor %}

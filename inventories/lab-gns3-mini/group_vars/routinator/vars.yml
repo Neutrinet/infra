@@ -1,0 +1,33 @@
+routinator_local_roas:
+  - asn: 204059
+    prefix: "80.67.181.0/24"
+    maxPrefixLength: 24
+    comment: "Neutrinet"
+  - asn: 204059
+    prefix: "80.67.191.0/24"
+    maxPrefixLength: 24
+    comment: "Neutrinet"
+  - asn: 204059
+    prefix: "2001:913:1000::/36"
+    maxPrefixLength: 36
+    comment: "Neutrinet"
+  - asn: 398987
+    prefix: "23.128.97.0/24"
+    maxPrefixLength: 24
+    comment: "NS-Global"
+  - asn: 398987
+    prefix: "2607:7c80:53::/48"
+    maxPrefixLength: 48
+    comment: "NS-Global"
+  - asn: 25152
+    prefix: "193.0.14.0/23"
+    maxPrefixLength: 24
+    comment: "K-root, anchor of the core default route"
+  - asn: 25152
+    prefix: "2001:7fd::/32"
+    maxPrefixLength: 48
+    comment: "K-root, anchor of the core default route"
+  - asn: 64496
+    prefix: "17.136.172.0/22"
+    maxPrefixLength: 22
+    comment: "Deliberately wrong origin: 17.136.172.0/22 from AS714, sent by labo-verixi-01, must be ROA invalid and rejected"

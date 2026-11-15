@@ -1,2 +1,137 @@
 ---
 # vars file for nftables
+
+# Values derived from the bird, keepalived and nftables inventory variables
+# for the router firewall (templates/nftables/louise_network.conf.j2).
+# They are evaluated lazily, only on the hosts that render this template.
+
+# Every BGP peer, with the optional keys filled in so that the template
+# and the filters below never test for an undefined attribute.
+_nftables_peer_defaults:
+  multihop: false
+  neighbor_ipv4: ""
+  neighbor_ipv6: ""
+  neighbor_ipv6_interface: "{{ nftables_peering_interface }}"
+
+_nftables_peers: "{{ [_nftables_peer_defaults] | product(bird_peers_upstreams + bird_peers_downstreams) | map('combine') | list }}"
+
+_nftables_directly_connected_peers: "{{ _nftables_peers | rejectattr('multihop') | list }}"
+
+_nftables_forward_interfaces: "{{ _nftables_directly_connected_peers | map(attribute='neighbor_ipv6_interface') | unique | list }}"
+
+_nftables_external_interfaces: >-
+  {{ _nftables_directly_connected_peers
+     | rejectattr('type', 'in', ['core', 'border', 'access'])
+     | map(attribute='neighbor_ipv6_interface')
+     | unique | list }}
+
+# BGP clients that get a source filter in the forward chain: the ones behind
+# the keepalived interface are already covered by nftables_allowed_nets_*.
+_nftables_client_defaults:
+  irr_static_v4: []
+  irr_static_v6: []
+  neighbor_ipv6: ""
+  neighbor_ipv6_interface: "{{ nftables_peering_interface }}"
+
+_nftables_antispoofing_clients: >-
+  {{ [_nftables_client_defaults]
+     | product(bird_peers_downstreams | selectattr('type', 'equalto', 'client'))
+     | map('combine')
+     | rejectattr('neighbor_ipv6_interface', 'equalto', keepalived_interface | default(''))
+     | list }}
+
+_nftables_filters_keepalived_sources: "{{ (nftables_allowed_nets_ipv4 + nftables_allowed_nets_ipv6) | length > 0 }}"
+
+_nftables_keepalived_ipv4_instances: "{{ keepalived_instances | default([]) | selectattr('type', 'equalto', 'ipv4') | list }}"
+_nftables_keepalived_ipv6_instances: "{{ keepalived_instances | default([]) | selectattr('type', 'equalto', 'ipv6') | list }}"
+
+_nftables_keepalived_ipv4_addresses: >-
+  {{ ((_nftables_keepalived_ipv4_instances | map(attribute='vip') | list)
+      + (_nftables_keepalived_ipv4_instances | map(attribute='additional_vip', default=[]) | flatten))
+     | map('regex_replace', '/[0-9]+$', '') | list }}
+
+_nftables_keepalived_ipv6_addresses: >-
+  {{ ((_nftables_keepalived_ipv6_instances | map(attribute='vip') | list)
+      + (_nftables_keepalived_ipv6_instances | map(attribute='additional_vip', default=[]) | flatten))
+     | map('regex_replace', '/[0-9]+$', '') | list }}
+
+_nftables_local_ipv4_addresses: >-
+  {{ ((ansible_facts['all_ipv4_addresses'] | reject('match', '127\\.') | list)
+      + _nftables_keepalived_ipv4_addresses
+      + ['127.0.0.0/8'])
+     | unique | list }}
+
+_nftables_local_ipv6_addresses: >-
+  {{ ((ansible_facts['all_ipv6_addresses'] | reject('match', '(?i)fe80:') | reject('equalto', '::1') | list)
+      + _nftables_keepalived_ipv6_addresses
+      + ['::1', 'fe80::/10'])
+     | unique | list }}
+
+# Our own prefixes, and the bogon prefixes of the BIRD hygiene filters
+# (roles/bird/templates/bird/conf.d/10_bgp_filters_hygiene.conf.j2).
+_nftables_own_prefixes_ipv4:
+  - 80.67.181.0/24
+  - 80.67.191.0/24
+
+_nftables_own_prefixes_ipv6:
+  - 2001:913:1000::/36
+
+_nftables_bogon_prefixes_ipv4:
+  - 0.0.0.0/8
+  - 10.0.0.0/8
+  - 100.64.0.0/10
+  - 127.0.0.0/8
+  - 169.254.0.0/16
+  - 172.16.0.0/12
+  - 192.0.0.0/24
+  - 192.0.2.0/24
+  - 192.88.99.0/24
+  - 192.168.0.0/16
+  - 198.18.0.0/15
+  - 198.51.100.0/24
+  - 203.0.113.0/24
+  - 224.0.0.0/4
+  - 240.0.0.0/4
+
+_nftables_bogon_prefixes_ipv6:
+  - ::/8
+  - 100::/64
+  - 2001:2::/48
+  - 2001:10::/28
+  - 2001:db8::/32
+  - 2002::/16
+  - 3ffe::/16
+  - 3fff::/20
+  - 5f00::/16
+  - fc00::/7
+  - fe80::/10
+  - fec0::/10
+  - ff00::/8
+
+# Prefixes of every BGP client of the network (static IRR lists of all
+# the routers): with our own prefixes, the only sources a border sends out.
+_nftables_network_clients: >-
+  {{ groups['louise_network'] | map('extract', hostvars, 'bird_peers_downstreams') | select('defined') | flatten
+     | selectattr('type', 'equalto', 'client') | list }}
+
+_nftables_customer_prefixes_ipv4: >-
+  {{ (_nftables_own_prefixes_ipv4
+      + (_nftables_network_clients | map(attribute='irr_static_v4', default=[]) | flatten | map('regex_replace', '[+{].*$', '') | list))
+     | unique | list }}
+
+_nftables_customer_prefixes_ipv6: >-
+  {{ (_nftables_own_prefixes_ipv6
+      + (_nftables_network_clients | map(attribute='irr_static_v6', default=[]) | flatten | map('regex_replace', '[+{].*$', '') | list))
+     | unique | list }}
+
+# MAC addresses of the other keepalived routers on the keepalived interface,
+# from their facts: VRRP is only accepted from them.
+_nftables_keepalived_peer_macs: >-
+  {{ groups['louise_network'] | difference([inventory_hostname])
+     | map('extract', hostvars)
+     | selectattr('keepalived_interface', 'defined')
+     | selectattr('keepalived_interface', 'equalto', keepalived_interface | default(''))
+     | map(attribute='ansible_facts')
+     | map(attribute=keepalived_interface | default('') | replace('.', '_') | replace('-', '_'))
+     | map(attribute='macaddress')
+     | list }}

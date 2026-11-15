@@ -1,0 +1,14 @@
+---
+- name: service | Activer et démarrer gobgpd
+  ansible.builtin.systemd:
+    name: gobgpd
+    daemon_reload: true
+    state: started
+    enabled: true
+
+- name: service | Activer et démarrer l'injection automatique des dumps MRT
+  ansible.builtin.systemd:
+    name: gobgp-mrt-inject
+    daemon_reload: true
+    state: started
+    enabled: true
