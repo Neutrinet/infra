@@ -1,6 +1,8 @@
 {{ ansible_managed | comment }}
 
 {
+    admin [::1]:2019
+    default_bind tcp6/[::]
     metrics {
         per_host
     }

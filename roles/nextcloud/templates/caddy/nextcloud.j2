@@ -11,7 +11,6 @@ http://{{ nextcloud_domain }} {
 
     php_fastcgi unix//var/run/php/php{{ php_version }}-{{ nextcloud_owner }}.sock {
         env front_controller_active true
-        trusted_proxies {{ caddy_trusted_proxies | join(' ') }}
     }
 
     redir /.well-known/carddav /remote.php/dav 301

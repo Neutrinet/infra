@@ -1,7 +1,7 @@
 valkey_members:
   - name: "trixie-valkey-01-molecule"
-    ipv4: 172.29.129.31
+    ipv6: "fd29:129::31"
   - name: "trixie-valkey-02-molecule"
-    ipv4: 172.29.129.32
+    ipv6: "fd29:129::32"
   - name: "trixie-valkey-03-molecule"
-    ipv4: 172.29.129.33
+    ipv6: "fd29:129::33"

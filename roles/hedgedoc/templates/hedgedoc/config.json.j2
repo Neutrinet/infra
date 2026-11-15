@@ -1,8 +1,7 @@
 {
     "production": {
         "domain": "{{ hedgedoc_domain }}",
-        "host": "::",
-        "allowOrigins": ["localhost", "{{ hedgedoc_domain }}"],
+        "host": "{{ ansible_facts['default_ipv6']['address'] }}",
         "loglevel": "info",
         "protocolUseSSL": true,
         "hsts": {

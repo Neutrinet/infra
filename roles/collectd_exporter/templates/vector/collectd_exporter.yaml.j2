@@ -2,7 +2,7 @@
 
 type: prometheus_scrape
 endpoints:
-    - http://localhost:9103/metrics
+    - http://[{{ ansible_facts['default_ipv6']['address'] }}]:9103/metrics
 
 scrape_interval_secs: 15
 scrape_timeout_secs: 10

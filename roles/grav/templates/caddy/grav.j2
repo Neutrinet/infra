@@ -5,9 +5,7 @@ http://{{ grav_domain }} {
     encode gzip
     file_server
 
-    php_fastcgi unix//var/run/php/php{{ php_version }}-{{ grav_owner }}.sock {
-        trusted_proxies {{ caddy_trusted_proxies | join(' ') }}
-    }
+    php_fastcgi unix//var/run/php/php{{ php_version }}-{{ grav_owner }}.sock
 
     @forbidden {
         # Deny all direct access for these folders

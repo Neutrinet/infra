@@ -56,7 +56,7 @@
     group: root
     mode: "u=rw,go=r"
     validate: caddy-validate %s
-  notify: Reload caddy
+  notify: Restart caddy
 
 - name: Copie de la config du healthcheck
   ansible.builtin.template:
