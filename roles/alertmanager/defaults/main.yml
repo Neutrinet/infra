@@ -1,5 +1,5 @@
 # renovate: datasource=github-releases depName=prometheus/alertmanager extractVersion=^v(?<version>.+)$
-alertmanager_version: 0.34.1
+alertmanager_version: 0.34.2
 alertmanager_repeat_interval: 1h
 
 alertmanager_matrix_username: "neutribot-test"
