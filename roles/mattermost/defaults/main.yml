@@ -1,7 +1,7 @@
 mattermost_domain: chat.example.com
 mattermost_owner: "{{ mattermost_domain | replace('.', '-') }}"
 # renovate: datasource=github-releases depName=mattermost/mattermost extractVersion=^v(?<version>.+)$
-mattermost_version: 11.7.12
+mattermost_version: 11.7.15
 
 postgresql_host: localhost
 
