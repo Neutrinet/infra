@@ -14,6 +14,14 @@
     mode: "u=rwx,go=rx"
     state: directory
 
+- name: Droits du dossier de l'utilisateur {{ domain_owner }}
+  ansible.builtin.file:
+    path: "/var/www/{{ domain_owner }}"
+    owner: "{{ domain_owner }}"
+    group: "{{ domain_owner }}"
+    mode: "u=rwx,go=rx"
+    state: directory
+
 - name: Création du dossier racine du site
   ansible.builtin.file:
     path: "/var/www/{{ domain_owner }}/dist"
@@ -31,7 +39,7 @@
     mode: "u=rw,go=r"
     validate: caddy-validate %s
   notify: Reload caddy
-  tags: ['caddy_config']
+  tags: ["caddy_config"]
 
 - name: Trigger Caddy handlers
   ansible.builtin.meta: flush_handlers
@@ -44,4 +52,4 @@
     group: root
     mode: "u=rw,go="
     validate: borgmatic config validate --show -c %s
-  tags: ['borgmatic_config']
+  tags: ["borgmatic_config"]

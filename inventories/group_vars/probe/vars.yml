@@ -40,10 +40,8 @@ blackbox_exporter_http_probes:
     check_cert_expiry: true
   # Dokuwiki
   - url: https://wiki.neutrinet.be
-  # Discourse
-  - name: https://meta.neutrinet.be
-    url: https://meta.neutrinet.be/srv/status
-    body: ^ok$
+  # Archived Discourse
+  - url: https://meta.neutrinet.be
   # Hedgedoc
   - name: https://doc.neutrinet.be
     url: https://doc.neutrinet.be/status
