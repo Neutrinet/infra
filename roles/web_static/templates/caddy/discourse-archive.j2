@@ -1,0 +1,29 @@
+{{ ansible_managed | comment }}
+
+http://{{ domain.name }} {
+    root * /var/www/{{ domain_owner }}/dist
+    encode gzip
+
+    # ?page=N lists are stored as <path>.page-N.html
+    @paginated query page=*
+    handle @paginated {
+        try_files {path}.page-{query.page}.html {path} {path}.html {path}/index.html
+        file_server
+    }
+
+    # Unmirrored /t/<slug>/<id>/<post> links redirect to the topic anchor
+    @unarchived_post_link {
+        path_regexp post_link ^/t/([^/]+)/(\d+)/(\d+)$
+        not file {path}.html
+    }
+    redir @unarchived_post_link /t/{re.post_link.1}/{re.post_link.2}#post_{re.post_link.3} permanent
+
+    handle {
+        try_files {path} {path}.html {path}/index.html
+        file_server
+    }
+
+    log {
+        output file /var/log/caddy/{{ domain_owner }}.log
+    }
+}

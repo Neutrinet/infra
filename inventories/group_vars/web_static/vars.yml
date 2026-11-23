@@ -14,3 +14,5 @@ web_static_domains:
     template: caddy/labriqueinternet.j2
   - name: user.neutrinet.be
     template: caddy/static.j2
+  - name: meta.neutrinet.be
+    template: caddy/discourse-archive.j2
