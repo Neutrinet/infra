@@ -285,7 +285,7 @@ dependencies = [
 requires-dist = [
     { name = "ansible", specifier = ">=14.5.0" },
     { name = "ansible-lint", specifier = ">=26.10.1" },
-    { name = "dnspython", specifier = ">=2.9.0" },
+    { name = "dnspython", specifier = ">=2.9.2" },
     { name = "molecule", specifier = ">=26.10.0" },
     { name = "molecule-plugins", extras = ["vagrant"], specifier = ">=26.10.12" },
     { name = "passlib", specifier = ">=1.7.4" },
