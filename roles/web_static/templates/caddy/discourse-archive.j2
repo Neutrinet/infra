@@ -4,19 +4,87 @@ http://{{ domain.name }} {
     root * /var/www/{{ domain_owner }}/dist
     encode gzip
 
-    # ?page=N lists are stored as <path>.page-N.html
+    # Lists ?page=N are stored as <path>.page-N.html
     @paginated query page=*
     handle @paginated {
         try_files {path}.page-{query.page}.html {path} {path}.html {path}/index.html
         file_server
     }
 
-    # Unmirrored /t/<slug>/<id>/<post> links redirect to the topic anchor
-    @unarchived_post_link {
-        path_regexp post_link ^/t/([^/]+)/(\d+)/(\d+)$
+    # Old Discourse topic links: /t/<id>, /t/<old slug>/<id>, /t/<slug>/<id>/<post>
+    @topic_link {
+        path_regexp topic ^/t/(?:[^/]*[^/0-9][^/]*/)?(\d+)(?:/(\d+))?/?$
         not file {path}.html
     }
-    redir @unarchived_post_link /t/{re.post_link.1}/{re.post_link.2}#post_{re.post_link.3} permanent
+    handle @topic_link {
+        # Topic id -> archived topic page
+        map {re.topic.1} {topic_page} {
+            7   /t/welcome-to-discourse/7
+            17  /t/a-propos-des-langues/17
+            18  /t/a-propos-du-nextcloud-et-des-fichiers/18
+            19  /t/a-propos-de-lagenda/19
+            20  /t/dautres-extensions/20
+            30  /t/je-suis-un-evenement/30
+            53  /t/recetpion-de-mails-et-autre-tests/53
+            54  /t/un-message-juste-pour-essayer/54
+            56  /t/remplacer-des-outils-existants-de-neutrinet/56
+            57  /t/creer-un-compte-neutrinet-pour-obtenir-un-vpn-et-une-adresse-ip/57
+            59  /t/bilan-2015-2016/59
+            65  /t/comprendre-les-niveaux-de-confiance-trust-levels/65
+            76  /t/les-nouveaux-statuts/76
+            77  /t/guide-des-moderateurs/77
+            82  /t/lutilisation-des-tags-etiquettes/82
+            96  /t/lutilisation-des-categories/96
+            104 /t/se-connecter-au-terminal-dune-olimex-lime1-ou-lime2-avec-un-cable-serie/104
+            109 /t/commander-des-autocollants-neutrinet/109
+            112 /t/labo-ssh-apprendre-a-generer-et-a-utiliser-une-paire-de-cles/112
+            114 /t/test-denvois-a-toutes-et-tous/114
+            115 /t/a-propos-de-la-categorie-utilisation-de-discourse/115
+            119 /t/reagir-a-un-topic-avec-des-emojis/119
+            120 /t/ajouter-des-check-lists/120
+            127 /t/visibilite-des-categories-et-du-calendrier/127
+            128 /t/lutilisation-des-groupes/128
+            141 /t/pourquoi-neutrinet-asbl-devrait-mettre-en-avant-leducation-permanente/141
+            142 /t/reunion-admin-29-mars-2021/142
+            144 /t/reunion-admin-17-avril-2021/144
+            145 /t/neutriton-postgresql-ha-3-avril-2021/145
+            146 /t/objets-sociaux-de-neutrinet/146
+            147 /t/liste-des-activites-responsabilites-de-neutrinet/147
+            150 /t/a-propos-de-la-categorie-tutoriels/150
+            152 /t/a-propos-de-la-categorie-hub-admin/152
+            153 /t/a-propos-de-la-categorie-hub-infra/153
+            154 /t/a-propos-de-la-categorie-hub-cube/154
+            155 /t/a-propos-de-la-categorie-hub-datacenter/155
+            156 /t/a-propos-de-la-categorie-hub-collect/156
+            157 /t/a-propos-de-la-categorie-hub-communication/157
+            158 /t/a-propos-de-la-categorie-hub-fiesta/158
+            159 /t/liste-des-fetes-en-attente/159
+            160 /t/a-propos-du-reglement-dordre-interieur/160
+            161 /t/a-propos-de-lexercie-social/161
+            165 /t/test-de-la-mention-des-groupes/165
+            168 /t/remaniement-des-adresses-ip/168
+            169 /t/neutriton-pfsense-nat-25-avril-2021/169
+            171 /t/neutriton-installation-des-vms-23-mai-2021/171
+            173 /t/verifier-le-systeme-de-fichier-ext4-sur-une-carte-microsd/173
+            175 /t/statuts-de-lasbl-neutrinet-en-un-seul-sujet-de-discussion/175
+            176 /t/neutrition-bascule-des-vms-12-juin-2021/176
+            177 /t/a-propos-des-factures/177
+            178 /t/neutriton-monitoring-4-juillet-2021/178
+            181 /t/a-propos-de-la-categorie-hubs/181
+            182 /t/bilan-2015-2016/182
+            183 /t/about-the-support-category/183
+            186 /t/la-brique-internet-associalibre-2021/186
+            195 /t/grafana-service-unavailable/195
+            default ""
+        }
+        map {re.topic.2} {post_anchor} {
+            ""      ""
+            default "#post_{re.topic.2}"
+        }
+        @known_topic not vars {topic_page} ""
+        redir @known_topic {topic_page}{post_anchor} permanent
+        file_server
+    }
 
     handle {
         try_files {path} {path}.html {path}/index.html
